@@ -1,43 +1,47 @@
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "../ui/button"
-import NavItems from "./NavItems"
-import MobileNav from "./MobileNav"
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "../ui/button";
+import NavItems from "./NavItems";
+import MobileNav from "./MobileNav";
+import { ModeToggle } from "../ModeToggle";
 
 const Header = () => {
   return (
-    <header className="w-full border-b">
+    <header className=" w-full fixed border-b backdrop-blur glass  z-50  ">
       <div className="wrapper flex items-center justify-between">
-        <Link href="/" className="w-36">
-          <Image 
-            src="/assets/images/logo.svg" width={128} height={38}
-            alt="Evently logo" 
-          />
-        </Link>
-
+        <div className="flex-row flex items-center ">
+          <Link href="/" className=" d-flex flex-row">
+            <Image
+              src="/assets/images/logo.png"
+              width={38}
+              height={38}
+              alt="BadjiTn logo"
+            />
+          </Link>
+          <h1 className=" h3-bold ">adjiTn</h1>
+        </div>
         <SignedIn>
           <nav className="md:flex-between hidden w-full max-w-xs">
             <NavItems />
           </nav>
         </SignedIn>
 
-        <div className="flex w-32 justify-end gap-3">
+        <div className="flex w-32 justify-end items-center align-middle gap-3">
+          <ModeToggle />
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
             <MobileNav />
           </SignedIn>
           <SignedOut>
             <Button asChild className="rounded-full" size="lg">
-              <Link href="/sign-in">
-                Login
-              </Link>
+              <Link href="/sign-in">Login</Link>
             </Button>
           </SignedOut>
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

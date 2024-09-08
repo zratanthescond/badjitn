@@ -78,8 +78,7 @@ body {
 }
 
 .filter-grey {
-  filter: brightness(0) saturate(100%) invert(47%) sepia(0%) saturate(217%)
-    hue-rotate(32deg) brightness(98%) contrast(92%);
+  filter: brightness(0) saturate(100%) invert(47%) sepia(0%) saturate(217%) hue-rotate(32deg) brightness(98%) contrast(92%);
 }
 
 /* ========================================== TAILWIND STYLES */
@@ -99,7 +98,7 @@ body {
   /* TYPOGRAPHY */
   /* 64 */
   .h1-bold {
-    @apply font-bold text-[40px] leading-[48px] lg:text-[48px] lg:leading-[60px]  xl:text-[58px] xl:leading-[74px];
+    @apply font-bold text-[40px] leading-[48px] lg:text-[48px] lg:leading-[60px] xl:text-[58px] xl:leading-[74px];
   }
 
   /* 40 */
@@ -222,7 +221,7 @@ body {
   }
 
   .select-item {
-    @apply py-3 cursor-pointer  focus:bg-primary-50;
+    @apply py-3 cursor-pointer focus:bg-primary-50;
   }
 
   .toggle-switch {
@@ -275,3 +274,14 @@ body {
   background-color: #624cf5 !important;
 }
 
+
+.glass,
+.glass.btn-active {
+  border: none;
+  -webkit-backdrop-filter: blur(var(--glass-blur, 40px));
+  backdrop-filter: blur(var(--glass-blur, 40px));
+  background-color: transparent;
+  background-image: linear-gradient(135deg, rgb(255 255 255/var(--glass-opacity, 30%)), #0000), linear-gradient(var(--glass-reflex-degree, 100deg), rgb(255 255 255/var(--glass-reflex-opacity, 10%)) 25%, rgb(0 0 0/0%) 25%);
+  box-shadow: 0 0 0 1px rgb(255 255 255/var(--glass-border-opacity, 10%)) inset, 0 0 0 2px #0000000d;
+  text-shadow: 0 1px rgb(0 0 0/var(--glass-text-shadow-opacity, 5%));
+}
