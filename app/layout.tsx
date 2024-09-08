@@ -12,10 +12,10 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Evently",
-  description: "Evently is a platform for event management.",
+  title: "BadjiTn",
+  description: "BadjiTn is a platform for event management.",
   icons: {
-    icon: "/assets/images/logo.svg",
+    icon: "/assets/images/logo.png",
   },
 };
 
