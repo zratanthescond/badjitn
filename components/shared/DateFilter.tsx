@@ -25,15 +25,14 @@ export function DatePickerWithPresets() {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          className={cn(
-            " justify-start text-left text-gray-600 font-normal select-field",
-            !date && "select-field"
-          )}
-        >
+      <PopoverTrigger>
+        <Button className="glass min-h-[54px] rounded-full flex-1 md:w-52 w-full ">
           <CalendarIcon className="mr-2 h-4 w-4 " />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date ? (
+            <span className="">{format(date, "PPP")}</span>
+          ) : (
+            <span className=" ">Pick a date</span>
+          )}
         </Button>
       </PopoverTrigger>
 

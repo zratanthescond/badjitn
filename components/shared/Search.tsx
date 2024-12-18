@@ -5,6 +5,13 @@ import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { Search as SearchIcon } from "lucide-react";
 
 const Search = ({
   placeholder = "Search title...",
@@ -39,20 +46,24 @@ const Search = ({
   }, [query, searchParams, router]);
 
   return (
-    <div className="flex-center min-h-[54px] w-full overflow-hidden rounded-full bg-grey-50 px-4 py-2">
-      <Image
-        src="/assets/icons/search.svg"
-        alt="search"
-        width={24}
-        height={24}
-      />
-      <Input
-        type="text"
-        placeholder={placeholder}
-        onChange={(e) => setQuery(e.target.value)}
-        className="p-regular-16 border-0 bg-transparent outline-offset-0 placeholder:text-grey-500 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-      />
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button className="sm:w-52 min-h-[54px] glass rounded-full w-full">
+          <SearchIcon className="h-4 w-4 mr-2" />
+          Search
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-full p-2 rounded-full">
+        <div className="flex-center  w-full overflow-hidden rounded-full glass bg-muted ">
+          <Input
+            type="text"
+            placeholder={placeholder}
+            onChange={(e) => setQuery(e.target.value)}
+            className="p-regular-16 border-0 bg-transparent outline-offset-0 placeholder:text-grey-500 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+          />
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

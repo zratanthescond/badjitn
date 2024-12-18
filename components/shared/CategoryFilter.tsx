@@ -12,6 +12,8 @@ import { ICategory } from "@/lib/database/models/category.model";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { Badge } from "../ui/badge";
 
 const CategoryFilter = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -48,26 +50,21 @@ const CategoryFilter = () => {
   };
 
   return (
-    <Select onValueChange={(value: string) => onSelectCategory(value)}>
-      <SelectTrigger className="select-field text-gray-700">
-        <SelectValue placeholder="Category" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="All" className="select-item p-regular-14">
-          All
-        </SelectItem>
-
-        {categories.map((category) => (
-          <SelectItem
-            value={category.name}
-            key={category._id}
-            className="select-item p-regular-14 "
-          >
+    <ScrollArea className="w-full rounded-full whitespace-nowrap glass py-2 backdrop:blur ">
+      {categories.map((category) => (
+        <Badge
+          key={category._id}
+          className="select-item p-regular-14 mx-2 glass text-bold font-size-14"
+          onClick={() => onSelectCategory(category.name)}
+        >
+          <span className="capitalize font-bold text-purple-50">
+            {" "}
             {category.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+          </span>
+        </Badge>
+      ))}
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   );
 };
 

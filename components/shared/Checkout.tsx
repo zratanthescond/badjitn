@@ -1,44 +1,74 @@
-import React, { useEffect } from 'react'
-import { loadStripe } from '@stripe/stripe-js';
+import React, { useEffect, useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 
-import { IEvent } from '@/lib/database/models/event.model';
-import { Button } from '../ui/button';
-import { checkoutOrder } from '@/lib/actions/order.actions';
+import { IEvent } from "@/lib/database/models/event.model";
+import { Button } from "../ui/button";
+import { checkoutOrder } from "@/lib/actions/order.actions";
 
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-const Checkout = ({ event, userId }: { event: IEvent, userId: string }) => {
+const Checkout = ({
+  event,
+  userId,
+  chekedPlans,
+}: {
+  event: IEvent;
+  userId: string;
+  chekedPlans: number[];
+}) => {
+  const [price, setPrice] = useState<number>(0);
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
-    if (query.get('success')) {
-      console.log('Order placed! You will receive an email confirmation.');
+    if (query.get("success")) {
+      console.log("Order placed! You will receive an email confirmation.");
     }
 
-    if (query.get('canceled')) {
-      console.log('Order canceled -- continue to shop around and checkout when you’re ready.');
+    if (query.get("canceled")) {
+      console.log(
+        "Order canceled -- continue to shop around and checkout when you’re ready."
+      );
     }
   }, []);
-
+  useEffect(() => {
+    if (parseFloat(event.price) > 0) {
+      console.log("price bigger than 0");
+      setPrice(parseFloat(event.price));
+    }
+    if (chekedPlans.length > 0) {
+      let p = 0;
+      event.pricePlan?.map((plan, index) => {
+        if (chekedPlans.indexOf(index) !== -1) {
+          p += plan.price;
+        }
+      });
+      setPrice(p);
+    }
+  }, [event]);
   const onCheckout = async () => {
     const order = {
       eventTitle: event.title,
       eventId: event._id,
-      price: event.price,
+      price: price,
       isFree: event.isFree,
-      buyerId: userId
-    }
+      buyerId: userId,
+    };
 
     await checkoutOrder(order);
-  }
+  };
 
   return (
     <form action={onCheckout} method="post">
-      <Button type="submit" role="link" size="lg" className="button sm:w-fit">
-        {event.isFree ? 'Get Ticket' : 'Buy Ticket'}
+      <Button
+        type="submit"
+        role="link"
+        size="sm"
+        className=" sm:w-fit h-10 m-4"
+      >
+        {event.isFree ? "Get Ticket" : "Buy Ticket"}
       </Button>
     </form>
-  )
-}
+  );
+};
 
-export default Checkout
+export default Checkout;

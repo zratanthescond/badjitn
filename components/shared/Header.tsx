@@ -1,14 +1,14 @@
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import NavItems from "./NavItems";
 import MobileNav from "./MobileNav";
 import { ModeToggle } from "../ModeToggle";
-
-const Header = () => {
+import { auth } from "../../app/auth";
+import { SignedIn, SignedOut, UserButton } from "../auth/Helper";
+const Header = async () => {
   return (
-    <header className=" w-full fixed border-b backdrop-blur glass  z-50  ">
+    <header className="flex flex-1 w-full fixed border-b backdrop-blur glass  z-50  ">
       <div className="wrapper flex items-center justify-between">
         <div className="flex-row flex items-center ">
           <Link href="/" className=" d-flex flex-row">

@@ -1,10 +1,19 @@
-import { Document, Schema, model, models } from "mongoose";
+import mongoose, { Document, Schema, model, models } from "mongoose";
+import { number, string } from "zod";
 
 export interface IEvent extends Document {
   _id: string;
   title: string;
   description?: string;
-  location?: string;
+  location?: {
+    name: string;
+    lon: number;
+    lat: number;
+  };
+  pricePlan?: {
+    name: string;
+    price: number;
+  }[];
   createdAt: Date;
   imageUrl: string;
   startDateTime: Date;
@@ -12,14 +21,30 @@ export interface IEvent extends Document {
   price: string;
   isFree: boolean;
   url?: string;
-  category: { _id: string, name: string }
-  organizer: { _id: string, firstName: string, lastName: string }
+  isOnline?: boolean;
+  category: { _id: string; name: string };
+  organizer: { _id: string; firstName: string; lastName: string };
 }
-
+const pricePlanSchema = new mongoose.Schema({
+  name: { type: String },
+  price: { type: Number },
+});
 const EventSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
-  location: { type: String },
+  location: {
+    name: {
+      type: String,
+      trim: true,
+    },
+    lon: {
+      type: Number,
+    },
+    lat: {
+      type: Number,
+    },
+  },
+  pricePlan: { type: [pricePlanSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },
   startDateTime: { type: Date, default: Date.now },
@@ -27,10 +52,11 @@ const EventSchema = new Schema({
   price: { type: String },
   isFree: { type: Boolean, default: false },
   url: { type: String },
-  category: { type: Schema.Types.ObjectId, ref: 'Category' },
-  organizer: { type: Schema.Types.ObjectId, ref: 'User' },
-})
+  isOnline: { type: Boolean },
+  category: { type: Schema.Types.ObjectId, ref: "Category" },
+  organizer: { type: Schema.Types.ObjectId, ref: "User" },
+});
 
-const Event = models.Event || model('Event', EventSchema);
+const Event = models.Event || model("Event", EventSchema);
 
 export default Event;
