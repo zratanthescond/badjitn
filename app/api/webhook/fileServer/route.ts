@@ -7,7 +7,6 @@ import mongoose, { Mongoose } from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest, res: NextResponse) {
-  const session = await auth(req, res);
   const body = await req.json();
 
   const data = body.metadata;

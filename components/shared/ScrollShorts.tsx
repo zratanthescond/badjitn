@@ -20,11 +20,15 @@ import { Button } from "../ui/button";
 import ReelDetails from "../ReelDetails";
 import { Event } from "@/types";
 type Props = {
-  data: Event[];
+  data: any;
   totalPages: number;
 };
-const ShortsScroll = ({ videos }: { videos: Props }) => {
+const ShortsScroll = ({ videos }: { videos?: Props }) => {
   const parentRef = useRef<HTMLDivElement>(null);
+  if (!videos) {
+    return <div>Loading...</div>; // Fallback UI
+  }
+
   console.log(videos.data[0].organizer);
   const { height: containerHeight } =
     parentRef.current?.getBoundingClientRect() || { height: 0 };
