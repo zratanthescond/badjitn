@@ -42,7 +42,7 @@ export type CreateEventParams = {
     categoryId: string;
     price: string;
     isFree: boolean;
-    isOnline: boolean;
+    isOnline?: boolean;
     url: string;
   };
   path: string;
@@ -66,7 +66,7 @@ export type UpdateEventParams = {
     categoryId: string;
     price: string;
     isFree: boolean;
-    isOnline: boolean;
+    isOnline?: boolean;
     url: string;
   };
   path: string;

@@ -13,13 +13,33 @@ import {
   Link,
   MapPin,
   Menu,
+  MessageSquareIcon,
   Wallet,
 } from "lucide-react";
 import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { MinimalTiptapEditor } from "./minimal-tiptap";
 
 export default function ReelDetails({ event }: { event: Event }) {
   const [section, setSection] = useState<string>("details");
+  const FeedBackComponenet = () => {
+    return (
+      <div className="flex w-full h-full">
+        <MinimalTiptapEditor
+          // value={field.value}
+          // onChange={(e) => field.onChange(e)}
+          className="w-full min-h-max"
+          editorContentClassName="p-1 h-52"
+          output="html"
+          placeholder="Type your Feedback here..."
+          autofocus={true}
+          editable={true}
+          editorClassName="focus:outline-none"
+        />
+      </div>
+    );
+  };
   const DetailComponent = () => {
     return (
       <div className="w-full gap-2 glass p-2 rounded-2xl items-start flex flex-col">
@@ -27,7 +47,7 @@ export default function ReelDetails({ event }: { event: Event }) {
           {event.category.name}
         </Badge>
         <div
-          className="border-2 glass p-1 rounded-lg mt-4 w-full truncate"
+          className="border-2 glass p-1 rounded-lg mt-4 w-full "
           dangerouslySetInnerHTML={{ __html: event.description }}
         ></div>
         <Badge>
@@ -72,6 +92,8 @@ export default function ReelDetails({ event }: { event: Event }) {
         return <EventLocationComponent event={event} />;
       case "price":
         return <EventPriceComponent event={event} />;
+      case "feedback":
+        return <FeedBackComponenet />;
       default:
         break;
     }
@@ -80,48 +102,63 @@ export default function ReelDetails({ event }: { event: Event }) {
     RenderComponent();
   }, [event, section]);
   return (
-    <>
-      <div className="flex glass p-2 rounded-md flex-row items-start w-full justify-between gap-2">
-        <Button
-          onClick={() => setSection("details")}
-          variant={"default"}
-          size={"sm"}
-          className="glass text-pink-500"
-        >
-          <Menu />
-          Details
-        </Button>
-        <Button
-          onClick={() => setSection("date")}
-          variant={"default"}
-          size={"sm"}
-          className="glass text-pink-500"
-        >
-          <CalendarDays />
-          Date
-        </Button>
-        <Button
-          onClick={() => setSection("location")}
-          variant={"default"}
-          size={"sm"}
-          className="glass text-pink-500"
-        >
-          <MapPin />
-          Location
-        </Button>
-        <Button
-          onClick={() => setSection("price")}
-          variant={"default"}
-          size={"sm"}
-          className="glass text-pink-500"
-        >
-          <Wallet />
-          Price
-        </Button>
+    <div className=" flex w-full h-full flex-col">
+      <ScrollArea>
+        <div className="flex glass p-2 rounded-md flex-row items-start w-full  justify-between gap-2">
+          <Button
+            onClick={() => setSection("details")}
+            variant={"default"}
+            size={"sm"}
+            className="glass text-pink-500"
+          >
+            <Menu />
+            Details
+          </Button>
+          <Button
+            onClick={() => setSection("date")}
+            variant={"default"}
+            size={"sm"}
+            className="glass text-pink-500"
+          >
+            <CalendarDays />
+            Date
+          </Button>
+          <Button
+            onClick={() => setSection("location")}
+            variant={"default"}
+            size={"sm"}
+            className="glass text-pink-500"
+          >
+            <MapPin />
+            Location
+          </Button>
+          <Button
+            onClick={() => setSection("price")}
+            variant={"default"}
+            size={"sm"}
+            className="glass text-pink-500"
+          >
+            <Wallet />
+            Price
+          </Button>
+          <Button
+            onClick={() => setSection("feedback")}
+            variant={"default"}
+            size={"sm"}
+            className="glass text-pink-500"
+          >
+            <MessageSquareIcon />
+            Feedback
+          </Button>
+          <ScrollBar orientation="horizontal" />
+        </div>
+      </ScrollArea>
+      <div className="flex w-full  p-4">
+        <ScrollArea className="w-full max-h-64 pb-2">
+          <RenderComponent />
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
       </div>
-      <div className="flex w-full p-4">
-        <RenderComponent />
-      </div>
-    </>
+    </div>
   );
 }

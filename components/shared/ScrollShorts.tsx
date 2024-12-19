@@ -108,7 +108,7 @@ const ShortsScroll = ({ videos }: { videos: Props }) => {
                 controls
                 className="md:rounded-xl object-fill w-full h-full md:w-1/4 "
               />
-              <div className="flex flex-col absolute md:relative glass rounded-lg w-full h-full items-center justify-start gap-2 p-2 md:w-1/4">
+              <div className="flex flex-col absolute md:relative glass rounded-lg w-full h-full items-center justify-start gap-2 p-2 md:w-1/2">
                 <div className="flex flex-row items-center justify-between w-full">
                   <div className="flex flex-col items-start ">
                     <Image

@@ -11,7 +11,7 @@ export const eventFormSchema = z
     description: z
       .string()
       .min(3, "Description must be at least 3 characters")
-      .max(400, "Description must be less than 400 characters"),
+      .max(40000, "Description must be less than 400 characters"),
     location: z.union([locationSchema, z.null()]),
     imageUrl: z.string(),
     startDateTime: z.date(),

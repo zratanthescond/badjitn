@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import Video from "next-video";
 import { useEffect, useRef, useState } from "react";
@@ -70,59 +70,65 @@ export function ModifyVideo({ video, setVideo }: any) {
     reelMutate();
   };
   return (
-    <div className="absolute top-4 left-4 z-50 w-1/2 max-w-full">
+    <div className="absolute top-4 left-4 z-50 w-1/2 max-w-full ">
       <AlertDialog>
         <AlertDialogTrigger className="flex-1 glass backdrop:blur p-2 rounded-sm text-primary-50">
           Modify Video
         </AlertDialogTrigger>
-
-        <AlertDialogContent className="glass backdrop:blur backdrop-brightness-90  wrapper px-4">
-          <AlertDialogHeader className="px-6">
-            <AlertDialogTitle>Modify Video</AlertDialogTitle>
-          </AlertDialogHeader>
-          <div className="flex flex-col md:flex-row justify-around items-start w-full md:max-w-1/2 ">
-            <ScrollArea className="h-96  w-full md:w-1/2">
-              <div className="p-4">
-                <div className="mb-4 p-2 rounded-xl justify-between flex flex-row text-sm font-medium leading-none sticky top-0 z-10 glass">
-                  <div className="flex items-center gap-2 bg-pink-500 p-1 m-1 rounded-lg">
-                    <ListMusic className="w-8 h-8" color="white" />
+        <AlertDialogContent className="glass backdrop:blur backdrop-brightness-90 max-h-screen wrapper  px-4">
+          <ScrollArea className="w-full h-screen pb-10">
+            {" "}
+            <AlertDialogHeader className="px-6">
+              <AlertDialogTitle>Modify Video</AlertDialogTitle>
+            </AlertDialogHeader>
+            <div className="flex flex-col md:flex-row justify-around items-start w-full md:max-w-1/2 ">
+              <ScrollArea className="h-96  w-full md:w-1/2">
+                <div className="p-4">
+                  <div className="mb-4 p-2 rounded-xl justify-between flex flex-row text-sm font-medium leading-none sticky top-0 z-10 glass">
+                    <div className="flex items-center gap-2 bg-pink-500 p-1 m-1 rounded-lg">
+                      <ListMusic className="w-8 h-8" color="white" />
+                    </div>
+                    <MusicUploader />
                   </div>
-                  <MusicUploader />
+                  {data && (
+                    <AudioPlayerList
+                      players={data}
+                      setUsedTrack={SetUsedTrack}
+                    />
+                  )}
                 </div>
-                {data && (
-                  <AudioPlayerList players={data} setUsedTrack={SetUsedTrack} />
-                )}
-              </div>
-            </ScrollArea>
+              </ScrollArea>
 
-            <div className="p-4 w-full rounded-lg md:w-1/2 flex flex-row content-center  items-center justify-center h-96">
-              <div className="rounded-lg flex flex-wrap md:w-48">
-                <HLSPlayer
-                  manifest={video}
-                  ref={videoRef}
-                  onLoadedMetadata={handleMetadataLoaded}
-                  className="rounded-lg"
-                  autoPlay={false}
-                  loop={false}
-                />
+              <div className="p-4 w-full rounded-lg md:w-1/2 flex flex-row content-center  items-center justify-center h-96">
+                <div className="rounded-lg flex flex-wrap md:w-48">
+                  <HLSPlayer
+                    manifest={video}
+                    ref={videoRef}
+                    onLoadedMetadata={handleMetadataLoaded}
+                    className="rounded-lg"
+                    autoPlay={false}
+                    loop={false}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <Mixer
-            selectedTime={selectedTime}
-            setSelectedTime={setSelectedTime}
-            src={video}
-            usedTrack={usedTrack}
-            videoRef={videoRef}
-            duration={duration}
-          />
-          <AlertDialogFooter className="px-6 ">
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Mixer
+              selectedTime={selectedTime}
+              setSelectedTime={setSelectedTime}
+              src={video}
+              usedTrack={usedTrack}
+              videoRef={videoRef}
+              duration={duration}
+            />
+            <AlertDialogFooter className="px-6 ">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-            <AlertDialogAction onClick={(e) => processVideo(e)}>
-              Save changes
-            </AlertDialogAction>
-          </AlertDialogFooter>
+              <AlertDialogAction onClick={(e) => processVideo(e)}>
+                Save changes
+              </AlertDialogAction>
+            </AlertDialogFooter>{" "}
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
         </AlertDialogContent>
       </AlertDialog>
     </div>

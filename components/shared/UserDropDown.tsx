@@ -21,13 +21,13 @@ export function UserDropDown({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="rounded-full  " size="icon">
           <Avatar className="w-10 h-10">
-            <AvatarImage src={user?.userData?.photo} />
+            <AvatarImage
+              src={user?.userData?.photo || user?.userData?.image}
+              className="rounded-full"
+            />
             <AvatarFallback>
               {user?.userData?.username &&
-                user?.userData?.username[0].toUpperCase() +
-                  "" +
-                  user?.userData?.username &&
-                user?.userData?.username[1].toUpperCase()}
+                user?.userData?.username[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </Button>
