@@ -94,7 +94,7 @@ const authOptions = {
     },
   },
 
-  secret: process.env.NEXT_AUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
   database: process.env.DB_URL,
 };
 
