@@ -4,11 +4,9 @@ import FacebookProvider from "next-auth/providers/facebook";
 import twitter from "next-auth/providers/twitter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { v4 as uuidv4 } from "uuid";
+
 import { MongoClient } from "mongodb";
 import { IUser } from "@/lib/database/models/user.model";
-import { createUser } from "@/lib/actions/user.actions";
-import { sendVerificationEmail } from "@/lib/mail";
 /**
  * Takes a token, and returns a new token with updated
  * `accessToken` and `accessTokenExpires`. If an error occurs,
@@ -74,75 +72,8 @@ const authOptions = {
     updateAge: 24 * 60 * 60,
   },
   callbacks: {
-    jwt: async ({ token, user, account, profile }) => {
-      // console.log("JWT callback invoked:");
-      // console.log("User:", user);
-      // console.log("Account:", account);
-      // console.log("Profile:", profile);
-      // if (account?.provider === "google") {
-      //   console.log("google provider invoked/////////////////////");
-      //   const userExist = await authOptions?.adapter?.getUserByEmail(
-      //     profile.email
-      //   );
-      //   if (!userExist) {
-      //     console.log("user not exist/////////////////////////////");
-      //     const userData = {
-      //       password: null,
-      //       phoneNumber: "",
-      //       firstName: profile.name.split(" ")[0],
-      //       lastName: profile.name.split(" ")[1],
-      //       photo: profile?.picture,
-      //       email: profile.email,
-      //       username: profile.name.replace(" ", ""),
-      //       createdAt: new Date(),
-      //       emailTocken: uuidv4(),
-      //       isActive: false,
-      //       new: true,
-      //     };
-      //     console.log("userData", userData);
-      //     const response = await createUser(userData);
-      //     console.log("response", response);
-      //     if (response._id) {
-      //       token.uid = response;
-      //       sendVerificationEmail(response.email, response.emailTocken);
-      //     }
-      //   } else {
-      //     console.log("user exist in the db/////////////");
-      //     token.uid = userExist;
-      //   }
-      //   return token;
-      // }
-
-      // if (account?.provider == "facebook") {
-      //   const userExist = await authOptions?.adapter?.getUserByEmail(
-      //     profile.email
-      //   );
-      //   if (!userExist) {
-      //     const userData = {
-      //       password: null,
-      //       phoneNumber: "",
-      //       firstName: profile.name.split(" ")[0],
-      //       lastName: profile.name.split(" ")[1],
-      //       photo: profile?.picture?.data?.url,
-      //       email: profile.email,
-      //       username: profile.name.replace(" ", ""),
-      //       createdAt: new Date(),
-      //       emailTocken: uuidv4(),
-      //       isActive: false,
-      //       new: true,
-      //     };
-      //     console.log("userData", userData);
-      //     const response = await createUser(userData);
-      //     console.log("response", response);
-      //     if (response._id) {
-      //       token.uid = response;
-      //       sendVerificationEmail(response.email, response.emailTocken);
-      //     }
-      //   } else {
-      //     token.uid = userExist;
-      //   }
-      //   return token;
-      // }
+    jwt: async ({ token, user, account }) => {
+      console.log(account);
       if (user) {
         token.uid = user;
       }

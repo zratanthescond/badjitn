@@ -1,5 +1,3 @@
-import { number } from "zod";
-
 // ====== USER PARAMS
 export type CreateUserParams = {
   firstName: string;
