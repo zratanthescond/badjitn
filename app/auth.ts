@@ -17,7 +17,7 @@ const client = new MongoClient(process.env.MONGODB_URI || "");
 const clientPromise = client.connect();
 
 const authOptions = {
-  adapter: MongoDBAdapter(clientPromise),
+  //  adapter: MongoDBAdapter(clientPromise),
   providers: [
     CredentialsProvider({
       credentials: {
@@ -28,21 +28,29 @@ const authOptions = {
         console.log(credentials);
         if (credentials === null) return null;
 
-        try {
-          const user: IUser = await authOptions?.adapter?.getUserByEmail(
-            credentials.email
-          );
-          console.log("user", user);
+        // try {
+        //   const user: IUser = await authOptions?.adapter?.getUserByEmail(
+        //     credentials.email
+        //   );
+        //   console.log("user", user);
 
-          if (!user) {
-            return null;
-          }
-          return user;
-        } catch (e) {
-          console.log("******************************************************");
-          console.error(e);
-          console.log("******************************************************");
-          return null;
+        //   if (!user) {
+        //     return null;
+        //   }
+        //   return user;
+        // } catch (e) {
+        //   console.log("******************************************************");
+        //   console.error(e);
+        //   console.log("******************************************************");
+        //   return null;
+        // }
+        return{
+          name:"ali"
+          username:"flash"
+          lastName:'dddfff',
+          id:'sdfsfsfsfsf',
+          email:"dsdsdgsdgsdgdg",
+          image:'dgdgdvdbbfbdbdb'
         }
       },
     }),
