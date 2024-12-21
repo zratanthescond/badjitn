@@ -6101,9 +6101,9 @@ nanoid@^3.3.6, nanoid@^3.3.7:
   resolved "https://registry.npmjs.org/nanoid/-/nanoid-3.3.7.tgz"
   integrity sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==
 
-next-auth@^5.0.0-beta.20:
+next-auth@^5.0.0-beta.25:
   version "5.0.0-beta.25"
-  resolved "https://registry.npmjs.org/next-auth/-/next-auth-5.0.0-beta.25.tgz"
+  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-5.0.0-beta.25.tgz#3a9f9734e1d8fa5ced545360f1afc24862cb92d5"
   integrity sha512-2dJJw1sHQl2qxCrRk+KTQbeH+izFbGFPuJj5eGgBZFYyiYYtvlrBeUw1E/OJJxTRjuxbSYGnCTkUIRsIIW0bog==
   dependencies:
     "@auth/core" "0.37.2"
