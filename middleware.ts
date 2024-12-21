@@ -13,7 +13,7 @@ import {
 } from "./lib/route";
 
 export async function middleware(request: NextRequest) {
-  // const { nextUrl } = request;
+  const { nextUrl } = request;
   // const session = await auth();
   // console.log(session);
   // const isAuthenticated = !!session?.user;
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   //   isAuthenticated &&
   //   (nextUrl.pathname.startsWith(SIGN_UP) || nextUrl.pathname.startsWith(LOGIN))
   // )
-  //   return NextResponse.rewrite(new URL(ROOT, nextUrl));
+  return NextResponse.rewrite(new URL(ROOT, nextUrl));
 }
 
 export const config = {
