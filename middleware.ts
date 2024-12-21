@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   //   isAuthenticated &&
   //   (nextUrl.pathname.startsWith(SIGN_UP) || nextUrl.pathname.startsWith(LOGIN))
   // )
-  return NextResponse.rewrite(new URL(ROOT, nextUrl));
+  return NextResponse.rewrite(new URL(nextUrl));
 }
 
 export const config = {
