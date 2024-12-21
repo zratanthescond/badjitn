@@ -44,14 +44,13 @@ const authOptions = {
         //   console.log("******************************************************");
         //   return null;
         // }
-        return{
-          name:"ali"
-          username:"flash"
-          lastName:'dddfff',
-          id:'sdfsfsfsfsf',
-          email:"dsdsdgsdgsdgdg",
-          image:'dgdgdvdbbfbdbdb'
-        }
+        return {
+          name: "ali",
+
+          id: "sdfsfsfsfsf",
+          email: "dsdsdgsdgsdgdg",
+          image: "dgdgdvdbbfbdbdb",
+        };
       },
     }),
     GoogleProvider({
