@@ -19,33 +19,33 @@ const clientPromise = client.connect();
 const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
   providers: [
-    CredentialsProvider({
-      credentials: {
-        email: {},
-        password: {},
-      },
-      async authorize(credentials) {
-        console.log(credentials);
-        if (credentials === null) return null;
+    // CredentialsProvider({
+    //   credentials: {
+    //     email: {},
+    //     password: {},
+    //   },
+    //   async authorize(credentials) {
+    //     console.log(credentials);
+    //     if (credentials === null) return null;
 
-        try {
-          const user: IUser = await authOptions?.adapter?.getUserByEmail(
-            credentials.email
-          );
-          console.log("user", user);
+    //     try {
+    //       const user: IUser = await authOptions?.adapter?.getUserByEmail(
+    //         credentials.email
+    //       );
+    //       console.log("user", user);
 
-          if (!user) {
-            return null;
-          }
-          return user;
-        } catch (e) {
-          console.log("******************************************************");
-          console.error(e);
-          console.log("******************************************************");
-          return null;
-        }
-      },
-    }),
+    //       if (!user) {
+    //         return null;
+    //       }
+    //       return user;
+    //     } catch (e) {
+    //       console.log("******************************************************");
+    //       console.error(e);
+    //       console.log("******************************************************");
+    //       return null;
+    //     }
+    //   },
+    // }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
