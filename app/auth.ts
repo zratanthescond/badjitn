@@ -75,7 +75,7 @@ const authOptions = {
     jwt: async ({ token, user, account }) => {
       console.log(account);
       if (user) {
-        token.uid = user;
+        token = user;
       }
 
       return token;
@@ -87,14 +87,12 @@ const authOptions = {
       // sometimes the user data get stored in just token.uid
       //console.log("account", account);
       //console.log("token", token);
-      token.uid.password = null;
-      session.userData = token.uid;
+      // token.uid.password = null;
+      session.user = token;
 
       return session;
     },
   },
-
-  secret: process.env.AUTH_SECRET,
 };
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
