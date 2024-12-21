@@ -12,7 +12,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   theme: { logo: "https://authjs.dev/img/logo-sm.png" },
 
   providers: [Facebook, Google, Twitter],
-  basePath: "api/auth",
+  //basePath: "api/auth",
   session: { strategy: "jwt" },
   callbacks: {
     authorized({ request, auth }) {
