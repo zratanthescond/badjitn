@@ -1,7 +1,7 @@
 "use client";
 
 import { IEvent } from "@/lib/database/models/event.model";
-import { SignedIn, SignedOut } from "@/components/auth/Helper";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
@@ -32,11 +32,7 @@ const CheckoutButton = ({
           </SignedOut>
 
           <SignedIn>
-            <Checkout
-              event={event}
-              userId={session?.userData?.id}
-              chekedPlans={checkPlan}
-            />
+            <Checkout event={event} />
           </SignedIn>
         </>
       )}
