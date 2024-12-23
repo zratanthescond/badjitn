@@ -4,8 +4,7 @@ import { Button } from "../ui/button";
 import NavItems from "./NavItems";
 import MobileNav from "./MobileNav";
 import { ModeToggle } from "../ModeToggle";
-import { auth } from "../../app/auth";
-import { SignedIn, SignedOut, UserButton } from "../auth/Helper";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 const Header = async () => {
   return (
     <header className="flex flex-1 w-full fixed border-b backdrop-blur glass  z-50  ">
