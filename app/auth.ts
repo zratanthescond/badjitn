@@ -1,147 +1,98 @@
 import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import twitter from "next-auth/providers/twitter";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
 
-// import Apple from "next-auth/providers/apple"
-// import Auth0 from "next-auth/providers/auth0"
-// import Authentik from "next-auth/providers/authentik"
-// import AzureAD from "next-auth/providers/azure-ad"
-// import AzureB2C from "next-auth/providers/azure-ad-b2c"
-// import Battlenet from "next-auth/providers/battlenet"
-// import Box from "next-auth/providers/box"
-// import BoxyHQSAML from "next-auth/providers/boxyhq-saml"
-// import Bungie from "next-auth/providers/bungie"
-// import Cognito from "next-auth/providers/cognito"
-// import Coinbase from "next-auth/providers/coinbase"
-// import Discord from "next-auth/providers/discord"
-// import Dropbox from "next-auth/providers/dropbox"
-// import DuendeIDS6 from "next-auth/providers/duende-identity-server6"
-// import Eveonline from "next-auth/providers/eveonline"
-// import Facebook from "next-auth/providers/facebook"
-// import Faceit from "next-auth/providers/faceit"
-// import FortyTwoSchool from "next-auth/providers/42-school"
-// import Foursquare from "next-auth/providers/foursquare"
-// import Freshbooks from "next-auth/providers/freshbooks"
-// import Fusionauth from "next-auth/providers/fusionauth"
-//import GitHub from "next-auth/providers/github";
-// import GitLab from "next-auth/providers/gitlab"
-import Google from "next-auth/providers/google";
-// import Hubspot from "next-auth/providers/hubspot"
-// import Instagram from "next-auth/providers/instagram"
-// import Kakao from "next-auth/providers/kakao"
-// import Keycloak from "next-auth/providers/keycloak"
-// import Line from "next-auth/providers/line"
-// import LinkedIn from "next-auth/providers/linkedin"
-// import Mailchimp from "next-auth/providers/mailchimp"
-// import Mailru from "next-auth/providers/mailru"
-// import Medium from "next-auth/providers/medium"
-// import Naver from "next-auth/providers/naver"
-// import Netlify from "next-auth/providers/netlify"
-// import Okta from "next-auth/providers/okta"
-// import Onelogin from "next-auth/providers/onelogin"
-// import Osso from "next-auth/providers/osso"
-// import Osu from "next-auth/providers/osu"
-// import Passage from "next-auth/providers/passage"
-// import Patreon from "next-auth/providers/patreon"
-// import Pinterest from "next-auth/providers/pinterest"
-// import Pipedrive from "next-auth/providers/pipedrive"
-// import Reddit from "next-auth/providers/reddit"
-// import Salesforce from "next-auth/providers/salesforce"
-// import Slack from "next-auth/providers/slack"
-// import Spotify from "next-auth/providers/spotify"
-// import Strava from "next-auth/providers/strava"
-// import Todoist from "next-auth/providers/todoist"
-// import Trakt from "next-auth/providers/trakt"
-// import Twitch from "next-auth/providers/twitch"
-// import Twitter from "next-auth/providers/twitter"
-// import UnitedEffects from "next-auth/providers/united-effects"
-// import Vk from "next-auth/providers/vk"
-// import Wikimedia from "next-auth/providers/wikimedia"
-// import WordPress from "next-auth/providers/wordpress"
-// import WorkOS from "next-auth/providers/workos"
-// import Yandex from "next-auth/providers/yandex"
-// import Zitadel from "next-auth/providers/zitadel"
-// import Zoho from "next-auth/providers/zoho"
-// import Zoom from "next-auth/providers/zoom"
+import { MongoClient } from "mongodb";
+import { IUser } from "@/lib/database/models/user.model";
+/**
+ * Takes a token, and returns a new token with updated
+ * `accessToken` and `accessTokenExpires`. If an error occurs,
+ * returns the old token and an error property
+ */
 
-import type { NextAuthConfig } from "next-auth";
+const client = new MongoClient(process.env.MONGODB_URI || "");
+const clientPromise = client.connect();
 
-export const config = {
-  theme: {
-    logo: "https://next-auth.js.org/img/logo-sm.png",
-  },
+const authOptions = {
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
-    // Apple,
-    // Auth0,
-    // Authentik,
-    // AzureAD,
-    // AzureB2C,
-    // Battlenet,
-    // Box,
-    // BoxyHQSAML,
-    // Bungie,
-    // Cognito,
-    // Coinbase,
-    // Discord,
-    // Dropbox,
-    // DuendeIDS6,
-    // Eveonline,
-    // Facebook,
-    // Faceit,
-    // FortyTwoSchool,
-    // Foursquare,
-    // Freshbooks,
-    // Fusionauth,
-    //GitHub,
-    // GitLab,
-    Google,
-    // Hubspot,
-    // Instagram,
-    // Kakao,
-    // Keycloak,
-    // Line,
-    // LinkedIn,
-    // Mailchimp,
-    // Mailru,
-    // Medium,
-    // Naver,
-    // Netlify,
-    // Okta,
-    // Onelogin,
-    // Osso,
-    // Osu,
-    // Passage,
-    // Patreon,
-    // Pinterest,
-    // Pipedrive,
-    // Reddit,
-    // Salesforce,
-    // Slack,
-    // Spotify,
-    // Strava,
-    // Todoist,
-    // Trakt,
-    // Twitch,
-    // Twitter,
-    // UnitedEffects,
-    // Vk,
-    // Wikimedia,
-    // WordPress,
-    // WorkOS,
-    // Yandex,
-    // Zitadel,
-    // Zoho,
-    // Zoom,
+    // CredentialsProvider({
+    //   credentials: {
+    //     email: {},
+    //     password: {},
+    //   },
+    //   async authorize(credentials) {
+    //     console.log(credentials);
+    //     if (credentials === null) return null;
+
+    //     try {
+    //       const user: IUser = await authOptions?.adapter?.getUserByEmail(
+    //         credentials.email
+    //       );
+    //       console.log("user", user);
+
+    //       if (!user) {
+    //         return null;
+    //       }
+    //       return user;
+    //     } catch (e) {
+    //       console.log("******************************************************");
+    //       console.error(e);
+    //       console.log("******************************************************");
+    //       return null;
+    //     }
+    //   },
+    // }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
+    FacebookProvider({
+      clientId: process.env.AUTH_FACEBOOK_ID,
+      clientSecret: process.env.AUTH_FACEBOOK_SECRET,
+    }),
+    twitter({
+      clientId: process.env.AUTH_TWITTER_ID,
+      clientSecret: process.env.AUTH_TWITTER_SECRET,
+    }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
+  },
   callbacks: {
-    authorized({ request, auth }) {
-      const { pathname } = request.nextUrl;
-      if (pathname === "/middleware-example") return !!auth;
-      return true;
-    },
-    jwt({ token, trigger, session }) {
-      if (trigger === "update") token.name = session.user.name;
+    jwt: async ({ token, user, account }) => {
+      console.log(account);
+      if (user) {
+        token = user;
+      }
+
       return token;
     },
-  },
-} satisfies NextAuthConfig;
+    session: async ({ session, token }) => {
+      // here we put session.useData and put inside it whatever you want to be in the session
+      // here try to console.log(token) and see what it will have
+      // sometimes the user get stored in token.uid.userData
+      // sometimes the user data get stored in just token.uid
+      //console.log("account", account);
+      //console.log("token", token);
+      // token.uid.password = null;
+      session.user = token;
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+      return session;
+    },
+  },
+};
+
+export const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
