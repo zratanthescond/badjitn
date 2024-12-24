@@ -38,6 +38,7 @@ export async function POST(req: Request) {
   let evt: WebhookEvent;
 
   // Verify the payload with the headers
+  console.log(evt);
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
   }
 
   // Get the ID and type
-  console.log(evt);
+
   const { id } = evt.data;
   const eventType = evt.type;
 
