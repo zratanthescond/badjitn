@@ -27,7 +27,8 @@ export async function createUser(user: CreateUserParams) {
       phoneNumber: user.phoneNumber,
     });
     if (userMatchingPhoneNumber) {
-      return { error: `phone number ${user.phoneNumber} already used` };
+      /// return { error: `phone number ${user.phoneNumber} already used` };
+      console.log(`phone number ${user.phoneNumber} already used`);
     }
     const newUser = await User.create(user);
     return JSON.parse(JSON.stringify(newUser));
