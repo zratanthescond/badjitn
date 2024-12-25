@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   let evt: WebhookEvent;
 
   // Verify the payload with the headers
-  console.log(body);
+
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
@@ -58,6 +58,9 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === "user.created") {
+    console.log("user created");
+    console.log(evt.data);
+
     const { id, email_addresses, image_url, first_name, last_name, username } =
       evt.data;
 
