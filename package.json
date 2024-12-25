@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.7.0",
+    "@clerk/elements": "^0.22.5",
     "@clerk/nextjs": "^4.27.5",
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",

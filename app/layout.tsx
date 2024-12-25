@@ -32,26 +32,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body
-        className={
-          (poppins.variable,
-          " flex flex-1 min-h-screen flex-col items-center justify-center  bg-gradient-to-r from-primary via-purple-500 to-pink-500 dark:to-pink-800 dark:via-purple-800 dark:from-indigo-800")
-        }
-      >
-        <ClerkProvider>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={
+            (poppins.variable,
+            " flex flex-1 min-h-screen flex-col items-center justify-center  bg-gradient-to-r from-primary via-purple-500 to-pink-500 dark:to-pink-800 dark:via-purple-800 dark:from-indigo-800")
+          }
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
-            disableTransitionOnChange
+            //disableTransitionOnChange
           >
             <TooltipProvider>{children}</TooltipProvider>
           </ThemeProvider>
 
           <Toaster />
-        </ClerkProvider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
