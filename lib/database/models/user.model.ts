@@ -24,7 +24,12 @@ const UserSchema = new Schema({
   firstName: { type: String },
   lastName: { type: String },
   photo: { type: String },
-  phoneNumber: { type: String, unique: true },
+  phoneNumber: {
+    type: String,
+    unique: true,
+    sparse: true,
+    set: (value: string) => (value === "" ? null : value),
+  },
   createdAt: { type: Date, default: Date.now },
   password: { type: String },
   emailTocken: { type: String },
