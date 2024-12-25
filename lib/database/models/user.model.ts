@@ -26,9 +26,6 @@ const UserSchema = new Schema({
   photo: { type: String },
   phoneNumber: {
     type: String,
-    unique: true,
-    sparse: true,
-    set: (value: string) => (value === "" ? null : value),
   },
   createdAt: { type: Date, default: Date.now },
   password: { type: String },
