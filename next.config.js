@@ -29,6 +29,11 @@ const nextConfig = {
         port: "",
       },
       {
+        protocol: "https",
+        hostname: "fileserver.badgi.net",
+        port: "",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "4000", // Include the port number if you're running on a specific port
