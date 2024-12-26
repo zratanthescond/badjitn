@@ -1,7 +1,7 @@
 import { connectToDatabase } from "@/lib/database";
 import Music from "@/lib/database/models/music.model";
 import { handleError } from "@/lib/utils";
-export const dynamic = "force-dynamic";
+export const revalidate = 0;
 export async function GET(req: Request, res: Response) {
   try {
     await connectToDatabase();
