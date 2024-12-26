@@ -7,9 +7,20 @@ import User from "@/lib/database/models/user.model";
 import Order from "@/lib/database/models/order.model";
 import Event from "@/lib/database/models/event.model";
 import { handleError } from "@/lib/utils";
-
+import { currentUser } from "@clerk/nextjs";
 import { CreateUserParams, UpdateUserParams } from "@/types";
+export async function useUser() {
+  try {
+    await connectToDatabase();
+    const { id } = await currentUser();
 
+    console.log("clerkId", id);
+    const user = await User.findOne({ clerkId: id });
+    return user;
+  } catch (error) {
+    handleError(error);
+  }
+}
 export async function createUser(user: CreateUserParams) {
   try {
     await connectToDatabase();
