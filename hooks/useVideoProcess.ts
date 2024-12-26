@@ -4,7 +4,7 @@ const uploadVideo = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
   const video = await axios.post(
-    "http://localhost:4000/process-video",
+    `${process.env.NEXT_PUBLIC_FILE_SERVER_URL}/process-video`,
     formData,
     {
       headers: {
