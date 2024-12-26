@@ -23,9 +23,11 @@ import HLSPlayer from "./HlsPlayer";
 export default function VideoEditor({
   url,
   setReel,
+  userId,
 }: {
   url: File | string;
   setReel: React.Dispatch<React.SetStateAction<string>>;
+  userId: string;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [open, setOpen] = useState(true);
@@ -60,7 +62,7 @@ export default function VideoEditor({
   }, [videoUrl]);
   return data || videoUrl ? (
     <div className="flex z-10 flex-col items-center justify-center h-full w-full">
-      <ModifyVideo video={videoUrl} setVideo={setVideoUrl} />
+      <ModifyVideo video={videoUrl} setVideo={setVideoUrl} userId={userId} />
 
       <HLSPlayer
         className="rounded-lg w-full h-full aspect-video object-fill relative "

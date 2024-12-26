@@ -1,5 +1,5 @@
 "use sever";
-import { auth } from "@/app/auth";
+
 import { connectToDatabase } from "@/lib/database";
 import Music from "@/lib/database/models/music.model";
 import { IUser } from "@/lib/database/models/user.model";

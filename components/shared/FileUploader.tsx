@@ -32,6 +32,7 @@ type FileUploaderProps = {
   imageUrl: string;
   setFiles: Dispatch<SetStateAction<File[]>>;
   setReel: Dispatch<SetStateAction<string>>;
+  userId: string;
 };
 
 export function FileUploader({
@@ -39,6 +40,7 @@ export function FileUploader({
   onFieldChange,
   setFiles,
   setReel,
+  userId,
 }: FileUploaderProps) {
   const [fileToUpload, setFileToUpload] = useState<File | string>(null);
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -73,7 +75,7 @@ export function FileUploader({
                 alt="image"
               /> */}
           <AspectRatio ratio={7.5 / 15}>
-            <VideoEditor url={fileToUpload} setReel={setReel} />
+            <VideoEditor url={fileToUpload} setReel={setReel} userId={userId} />
 
             <div className="absolute right-0  top-0  h-full p-4">
               <div className="flex w-full justify-end">

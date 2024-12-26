@@ -25,7 +25,7 @@ import { Mixer } from "./Mixer";
 import { IMusic } from "@/lib/database/models/music.model";
 import { useReelCreate } from "@/hooks/useReelCreate";
 import HLSPlayer from "./HlsPlayer";
-export function ModifyVideo({ video, setVideo }: any) {
+export function ModifyVideo({ video, setVideo, userId }: any) {
   const { data, isLoading, error } = useMusic(10);
   const [usedTrack, SetUsedTrack] = useState<IMusic | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -88,7 +88,7 @@ export function ModifyVideo({ video, setVideo }: any) {
                     <div className="flex items-center gap-2 bg-pink-500 p-1 m-1 rounded-lg">
                       <ListMusic className="w-8 h-8" color="white" />
                     </div>
-                    <MusicUploader />
+                    <MusicUploader userId={userId} />
                   </div>
                   {data && (
                     <AudioPlayerList

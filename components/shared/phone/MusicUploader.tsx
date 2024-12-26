@@ -14,16 +14,16 @@ import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { generateClientDropzoneAccept } from "uploadthing/client";
-import { useSession } from "next-auth/react";
-const MusicUploader = () => {
+
+const MusicUploader = ({ userId }: { userId: string }) => {
   const [uploadedFiles, setUploadedFiles] = useState<File>();
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(0);
-  const { data: session } = useSession();
+
   const { data, isPending, error, mutate } = useUploadMusic(
     uploadedFiles,
-    session?.userData?.id
+    userId
   );
 
   const handleDrop = (acceptedFiles: File[]) => {

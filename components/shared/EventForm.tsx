@@ -455,6 +455,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       onFieldChange={field.onChange}
                       imageUrl={field.value}
                       setFiles={setFiles}
+                      userId={userId}
                     />
                   </FormControl>
                   <FormMessage />
