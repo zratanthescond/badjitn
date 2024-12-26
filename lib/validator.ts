@@ -8,10 +8,7 @@ const locationSchema = z.object({
 export const eventFormSchema = z
   .object({
     title: z.string().min(3, "Title must be at least 3 characters"),
-    description: z
-      .string()
-      .min(3, "Description must be at least 3 characters")
-      .max(40000, "Description must be less than 400 characters"),
+    description: z.string().min(3, "Description must be at least 3 characters"),
     location: z.union([locationSchema, z.null()]),
     imageUrl: z.string(),
     startDateTime: z.date(),
@@ -19,7 +16,7 @@ export const eventFormSchema = z
     categoryId: z.string(),
     price: z.string(),
     isFree: z.boolean(),
-    isOnline: z.boolean(),
+    isOnline: z.boolean().optional(),
     url: z.string().url(),
   })
   .refine((data) => data.isOnline || data.location !== null, {
