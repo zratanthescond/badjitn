@@ -133,7 +133,7 @@ export type CreateCategoryParams = {
 export type CheckoutOrderParams = {
   eventTitle: string;
   eventId: string;
-  price: string;
+  price: number;
   isFree: boolean;
   buyerId: string;
 };

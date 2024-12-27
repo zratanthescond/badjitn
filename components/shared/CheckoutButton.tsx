@@ -32,7 +32,7 @@ const CheckoutButton = ({
           </SignedOut>
 
           <SignedIn>
-            <Checkout event={event} />
+            <Checkout chekedPlans={checkPlan} event={event} />
           </SignedIn>
         </>
       )}

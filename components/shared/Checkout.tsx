@@ -14,7 +14,7 @@ const Checkout = ({
 }: {
   event: IEvent;
   userId: string;
-  chekedPlans: number[];
+  chekedPlans?: number[];
 }) => {
   const [price, setPrice] = useState<number>(0);
   useEffect(() => {
@@ -35,7 +35,7 @@ const Checkout = ({
       console.log("price bigger than 0");
       setPrice(parseFloat(event.price));
     }
-    if (chekedPlans.length > 0) {
+    if (chekedPlans && chekedPlans.length > 0) {
       let p = 0;
       event.pricePlan?.map((plan, index) => {
         if (chekedPlans.indexOf(index) !== -1) {
