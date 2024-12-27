@@ -6,7 +6,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
 import Checkout from "./Checkout";
-import { useSession } from "next-auth/react";
+import { useSession } from "@clerk/clerk-react";
 const CheckoutButton = ({
   event,
   checkPlan,
@@ -14,7 +14,8 @@ const CheckoutButton = ({
   event: IEvent;
   checkPlan?: number[];
 }) => {
-  const { data: session } = useSession();
+  const { session } = useSession();
+  console.log(session);
   const hasEventFinished = new Date(event.endDateTime) < new Date();
 
   return (
@@ -32,7 +33,11 @@ const CheckoutButton = ({
           </SignedOut>
 
           <SignedIn>
-            <Checkout chekedPlans={checkPlan} event={event} />
+            <Checkout
+              chekedPlans={checkPlan}
+              event={event}
+              userId={session?.id}
+            />
           </SignedIn>
         </>
       )}

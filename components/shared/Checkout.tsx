@@ -13,7 +13,7 @@ const Checkout = ({
   chekedPlans,
 }: {
   event: IEvent;
-  userId: string;
+  userId?: string;
   chekedPlans?: number[];
 }) => {
   const [price, setPrice] = useState<number>(0);
