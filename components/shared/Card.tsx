@@ -16,7 +16,7 @@ type CardProps = {
 };
 
 const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
-  const  user= = await useUser();
+  const user = await useUser();
   const userId = user?._id!;
   const isEventCreator = userId === event.organizer._id.toString();
 
