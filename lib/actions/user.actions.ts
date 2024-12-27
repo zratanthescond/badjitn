@@ -12,10 +12,10 @@ import { CreateUserParams, UpdateUserParams } from "@/types";
 export async function useUser() {
   try {
     await connectToDatabase();
-    const { id } = await currentUser();
+    const clerkUser = await currentUser();
 
-    console.log("clerkId", id);
-    const user = await User.findOne({ clerkId: id });
+    console.log("clerkId", clerkUser?.id);
+    const user = await User.findOne({ clerkId: clerkUser?.id! });
     return user;
   } catch (error) {
     handleError(error);
