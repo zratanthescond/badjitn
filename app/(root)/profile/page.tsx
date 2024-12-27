@@ -10,7 +10,7 @@ import Link from "next/link";
 import React from "react";
 
 const ProfilePage = async ({ searchParams }: SearchParamProps) => {
-  const user = useUser();
+  const user = await useUser();
   const userId = user._id;
   const ordersPage = Number(searchParams?.ordersPage) || 1;
   const eventsPage = Number(searchParams?.eventsPage) || 1;
