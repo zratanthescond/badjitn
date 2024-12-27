@@ -44,7 +44,7 @@ const Checkout = ({
       });
       setPrice(p);
     }
-  }, [event]);
+  }, [event, chekedPlans]);
   const onCheckout = async () => {
     const order = {
       eventTitle: event.title,
