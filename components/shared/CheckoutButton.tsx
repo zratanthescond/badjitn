@@ -36,7 +36,7 @@ const CheckoutButton = ({
             <Checkout
               chekedPlans={checkPlan}
               event={event}
-              userId={session?.id}
+              userId={session?.user.id!}
             />
           </SignedIn>
         </>
