@@ -4,6 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { IEvent } from "@/lib/database/models/event.model";
 import { Button } from "../ui/button";
 import { checkoutOrder } from "@/lib/actions/order.actions";
+import { Detail } from "@/lib/database/models/order.model";
 
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -17,6 +18,7 @@ const Checkout = ({
   chekedPlans?: number[];
 }) => {
   const [price, setPrice] = useState<number>(0);
+  const [details, setDetails] = useState<Detail[]>([]);
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
@@ -37,12 +39,15 @@ const Checkout = ({
     }
     if (chekedPlans && chekedPlans.length > 0) {
       let p = 0;
+      let detail: Detail[] = [];
       event.pricePlan?.map((plan, index) => {
         if (chekedPlans.indexOf(index) !== -1) {
           p += plan.price;
+          detail.push({ name: plan.name, price: plan.price.toString() });
         }
       });
       setPrice(p);
+      setDetails(detail);
     }
   }, [event, chekedPlans]);
   const onCheckout = async () => {
@@ -52,6 +57,7 @@ const Checkout = ({
       price: price,
       isFree: event.isFree,
       buyerId: userId,
+      details: details,
     };
 
     await checkoutOrder(order);

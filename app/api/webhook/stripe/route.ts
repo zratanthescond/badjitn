@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createOrder } from "@/lib/actions/order.actions";
 import { connectToDatabase } from "@/lib/database";
 import User from "@/lib/database/models/user.model";
+import { de } from "date-fns/locale";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
       buyerId: userId?._id || "",
       totalAmount: amount_total ? (amount_total / 100).toString() : "0",
       createdAt: new Date(),
+      details: metadata?.details,
     };
 
     const newOrder = await createOrder(order);

@@ -1,3 +1,5 @@
+import { Detail } from "@/lib/database/models/order.model";
+
 // ====== USER PARAMS
 export type CreateUserParams = {
   firstName: string;
@@ -136,6 +138,7 @@ export type CheckoutOrderParams = {
   price: number;
   isFree: boolean;
   buyerId: string;
+  details: Detail[];
 };
 
 export type CreateOrderParams = {
