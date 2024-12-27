@@ -7,6 +7,7 @@ import React from "react";
 import { DeleteConfirmation } from "./DeleteConfirmation";
 import HLSPlayer from "./phone/HlsPlayer";
 import HomePostContainer from "./HomePostContainer";
+import { useUser } from "@/lib/actions/user.actions";
 
 type CardProps = {
   event: IEvent;
@@ -15,10 +16,8 @@ type CardProps = {
 };
 
 const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
-  const { sessionClaims } = auth();
-  const userId = sessionClaims?.userId as string;
-  console.log("userId", userId);
-
+  const { _id } = await useUser();
+  const userId = _id!;
   const isEventCreator = userId === event.organizer._id.toString();
 
   return (
