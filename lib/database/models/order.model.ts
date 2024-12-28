@@ -2,7 +2,7 @@ import { Schema, model, models, Document } from "mongoose";
 
 enum OrderType {
   PAID = "paid",
-  HOTED = "hoted",
+  HOSTED = "hosted",
 }
 
 export type Detail = {

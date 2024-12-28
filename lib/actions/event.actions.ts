@@ -16,6 +16,8 @@ import {
   GetEventsByUserParams,
   GetRelatedEventsByCategoryParams,
 } from "@/types";
+import { differenceInDays, isValid, parseISO } from "date-fns";
+import Sponsor from "../database/models/sponor.model";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: "i" } });
@@ -209,3 +211,61 @@ export async function getRelatedEventsByCategory({
     handleError(error);
   }
 }
+export const createSponsorAction = async ({
+  eventId,
+
+  fromDate,
+  toDate,
+  costPerDay,
+}: {
+  eventId: string;
+
+  fromDate: string;
+  toDate: string;
+  costPerDay: number;
+}) => {
+  try {
+    // Validate input
+    if (!eventId || !fromDate || !toDate || !costPerDay) {
+      throw new Error("Missing required fields.");
+    }
+
+    const from = parseISO(fromDate);
+    const to = parseISO(toDate);
+
+    if (!isValid(from) || !isValid(to)) {
+      throw new Error("Invalid date format.");
+    }
+
+    const days = differenceInDays(to, from) + 1;
+    if (days <= 0) {
+      throw new Error('"To Date" must be after "From Date".');
+    }
+
+    const totalCost = days * costPerDay;
+
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Save sponsorship to the database
+    const sponsor = new Sponsor({
+      eventId,
+      fromDate: from,
+      toDate: to,
+      totalCost,
+    });
+
+    await sponsor.save();
+
+    return {
+      success: true,
+      message: "Sponsorship created successfully!",
+    };
+  } catch (error: any) {
+    console.error("Error creating sponsorship:", error.message);
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+};

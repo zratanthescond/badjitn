@@ -8,6 +8,17 @@ import { DeleteConfirmation } from "./DeleteConfirmation";
 import HLSPlayer from "./phone/HlsPlayer";
 import HomePostContainer from "./HomePostContainer";
 import { useUser } from "@/lib/actions/user.actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { PiHandCoins } from "react-icons/pi";
+import { FaHandshake } from "react-icons/fa";
+import SponsorComponent from "../SopnsorComponent";
+import ContributorSelection from "../HostContrebuer";
 
 type CardProps = {
   event: IEvent;
@@ -18,6 +29,7 @@ type CardProps = {
 const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const user = await useUser();
   const userId = user?._id!;
+  // const userId = "676c87bddaac23a02d164642";
   const isEventCreator = userId === event.organizer._id.toString();
 
   return (
@@ -68,22 +80,49 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
         <div className="flex-between w-full">
           <p className="p-medium-14 md:p-medium-16 ">
             {event.organizer.firstName} {event.organizer.lastName}
-          </p>
+          </p>*/}
 
-          {hasOrderLink && (
-            <Link href={`/orders?eventId=${event._id}`} className="flex gap-2">
-              <p className="text-primary-500">Order Details</p>
-              <Image
-                src="/assets/icons/arrow.svg"
-                alt="search"
-                width={10}
-                height={10}
-              />
-            </Link>
-          )}
+      {hasOrderLink && (
+        <div className="flex flex-col gap-2 absolute left-2 top-2 p-3 justify-start items-start">
+          <Link
+            href={`/orders?eventId=${event._id}`}
+            className=" flex flex-row gap-2 rounded-xl glass p-2 shadow-sm transition-all"
+          >
+            <p className="text-white">Order Details</p>
+            <Image
+              src="/assets/icons/arrow.svg"
+              alt="search"
+              width={10}
+              height={10}
+            />
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger className="flex flex-row gap-2 rounded-xl glass p-2 shadow-sm transition-all">
+              <p className="text-white"> Sponsor </p>
+              <PiHandCoins size={20} stroke="white" color="white" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <SponsorComponent eventId={event._id} />
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction>Return</AlertDialogAction>
+            </AlertDialogContent>
+          </AlertDialog>
+          <AlertDialog>
+            <AlertDialogTrigger className="flex flex-row gap-2 rounded-xl glass p-2 shadow-sm transition-all">
+              <p className="text-white"> Host a contrebuter </p>
+              <FaHandshake size={20} stroke="white" color="white" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <ContributorSelection eventId={event._id} />
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction>Return</AlertDialogAction>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
-      </div> */}
+      )}
     </div>
+    //   </div>
+    // </div>
   );
 };
 

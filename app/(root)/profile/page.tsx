@@ -12,6 +12,7 @@ import React from "react";
 const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   const user = await useUser();
   const userId = user?._id;
+  //const userId = "676c87bddaac23a02d164642";
   const ordersPage = Number(searchParams?.ordersPage) || 1;
   const eventsPage = Number(searchParams?.eventsPage) || 1;
 
