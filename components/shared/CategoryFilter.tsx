@@ -14,7 +14,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Badge } from "../ui/badge";
-
+import { v4 as uuidv4 } from "uuid";
 const CategoryFilter = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const router = useRouter();
@@ -51,6 +51,13 @@ const CategoryFilter = () => {
 
   return (
     <ScrollArea className="w-full rounded-full whitespace-nowrap glass py-2 backdrop:blur ">
+      <Badge
+        key={uuidv4()}
+        className="select-item p-regular-14 mx-2 glass text-bold font-size-14"
+        onClick={() => onSelectCategory("For you")}
+      >
+        <span className="capitalize font-bold text-purple-50"> For you</span>
+      </Badge>
       {categories.map((category) => (
         <Badge
           key={category._id}

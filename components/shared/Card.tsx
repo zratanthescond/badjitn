@@ -19,6 +19,8 @@ import { PiHandCoins } from "react-icons/pi";
 import { FaHandshake } from "react-icons/fa";
 import SponsorComponent from "../SopnsorComponent";
 import ContributorSelection from "../HostContrebuer";
+import QRCode from "react-qr-code";
+import { QrCode } from "lucide-react";
 
 type CardProps = {
   event: IEvent;
@@ -29,7 +31,7 @@ type CardProps = {
 const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const user = await useUser();
   const userId = user?._id!;
-  // const userId = "676c87bddaac23a02d164642";
+  //const userId = "676c87bddaac23a02d164642";
   const isEventCreator = userId === event.organizer._id.toString();
 
   return (
@@ -40,6 +42,17 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
       >
         {/* IS EVENT CREATOR ... */}
         <HomePostContainer src={event.imageUrl} />
+        {hidePrice && (
+          <AlertDialog>
+            <AlertDialogTrigger className="absolute top-2 left-2 glass p-3 rounded-lg text-white flex flex-row gap-2">
+              <p>details</p> <QrCode />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <QRCode value={event._id} />
+              <AlertDialogCancel>Return</AlertDialogCancel>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
         {isEventCreator && !hidePrice && (
           <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl glass p-3 shadow-sm transition-all">
             <Link href={`/events/${event._id}/update`}>
