@@ -5,6 +5,7 @@ import { handleError } from "@/lib/utils";
 import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 export async function POST(req: Request, res: Response) {
   const data = await req.json();
   console.log(data);
@@ -12,7 +13,7 @@ export async function POST(req: Request, res: Response) {
     const order = await createOrder({
       buyerId: data.contributorId as string,
       eventId: data.eventId,
-      stripeId: "this event is hosted",
+      stripeId: uuidv4(),
       createdAt: new Date(),
       totalAmount: "0",
       type: "hosted",
