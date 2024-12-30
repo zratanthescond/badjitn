@@ -35,7 +35,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const isEventCreator = userId === event.organizer._id.toString();
 
   return (
-    <div className="group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm glass shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
+    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm glass shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
       <Link
         href={`/events/${event._id}`}
         className="flex-center flex-grow glass bg-cover bg-center text-grey-500"

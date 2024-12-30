@@ -43,17 +43,21 @@ export default function ReelDetails({ event }: { event: Event }) {
   const DetailComponent = () => {
     return (
       <div className="w-full gap-2 glass p-2 rounded-2xl items-start flex flex-col">
-        <Badge variant={"destructive"} className="p-2  text-white">
-          {event.category.name}
-        </Badge>
+        <div className="flex w-full flex-row items-center justify-around">
+          <Badge variant={"destructive"} className="p-2  text-whit bg-pink-500">
+            {event.category.name}
+          </Badge>
+          <Badge className="mr-2 p-3">
+            <Link size={15} color="white" />
+            <a href={event.url} className="text-white">
+              {event.url}
+            </a>
+          </Badge>
+        </div>
         <div
-          className="border-2 glass p-1 rounded-lg mt-4 w-full "
+          className="border-2  p-1 rounded-lg mt-4 w-full bg-indigo-950"
           dangerouslySetInnerHTML={{ __html: event.description }}
         ></div>
-        <Badge>
-          <Link size={15} className="mr-2 " />
-          <a href={event.url}>{event.url}</a>
-        </Badge>
       </div>
     );
   };
