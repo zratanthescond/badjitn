@@ -55,7 +55,7 @@ export default function ReelDetails({ event }: { event: Event }) {
           </Badge>
         </div>
         <div
-          className="border-2  p-1 rounded-lg mt-4 w-full bg-indigo-950"
+          className="border-2  p-1 rounded-lg mt-4 w-full bg-indigo-600"
           dangerouslySetInnerHTML={{ __html: event.description }}
         ></div>
       </div>
@@ -106,9 +106,9 @@ export default function ReelDetails({ event }: { event: Event }) {
     RenderComponent();
   }, [event, section]);
   return (
-    <div className=" flex w-full h-full flex-col">
-      <ScrollArea>
-        <div className="flex glass p-2 rounded-md flex-row items-start w-full  justify-between gap-2">
+    <div className=" flex max-w-prose h-full flex-col">
+      <ScrollArea className="w-96 md:w-full">
+        <div className="flex max-w-full glass p-2 rounded-md flex-row items-start w-full  justify-between gap-2">
           <Button
             onClick={() => setSection("details")}
             variant={"default"}
@@ -154,14 +154,11 @@ export default function ReelDetails({ event }: { event: Event }) {
             <MessageSquareIcon />
             Feedback
           </Button>
-          <ScrollBar orientation="horizontal" />
-        </div>
+        </div>{" "}
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
       <div className="flex w-full  p-4">
-        <ScrollArea className="w-full max-h-64 pb-2">
-          <RenderComponent />
-          <ScrollBar orientation="vertical" />
-        </ScrollArea>
+        <RenderComponent />
       </div>
     </div>
   );

@@ -43,6 +43,7 @@ import {
 
 import { Input } from "../ui/input";
 import { FaWhatsapp } from "react-icons/fa6";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 type Props = {
   data: any;
   totalPages: number;
@@ -199,36 +200,42 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                   show ? "flex" : "hidden"
                 } flex-col absolute bottom-0  md:relative glass rounded-lg w-full h-5/6 md:h-full items-center justify-start gap-2 p-2 md:w-1/2 animate-accordion-down repeat-1`}
               >
-                <div className="flex flex-row items-start justify-between w-full">
-                  <div className="flex flex-col items-start ">
-                    <Image
-                      src={video.organizer.photo}
-                      alt="avatar"
-                      width={40}
-                      height={40}
-                      className="rounded-full ml-3"
-                    />
-                    <div className="flex flex-col items-start justify-start">
-                      <h3 className="font-bold">{video.organizer.firstName}</h3>
+                <ScrollArea>
+                  <div className="flex flex-row items-start justify-between max-w-5/6">
+                    <div className="flex flex-col items-start ">
+                      <Image
+                        src={video.organizer.photo}
+                        alt="avatar"
+                        width={40}
+                        height={40}
+                        className="rounded-full ml-3"
+                      />
+                      <div className="flex flex-col items-start justify-start">
+                        <h3 className="font-bold">
+                          {video.organizer.firstName}
+                        </h3>
+                        <Button variant={"link"} size={"sm"}>
+                          <p className="w-full">@{video.organizer.username}</p>
+                        </Button>
+                      </div>
                       <Button variant={"link"} size={"sm"}>
-                        <p className="w-full">@{video.organizer.username}</p>
+                        Follow
                       </Button>
                     </div>
-                    <Button variant={"link"} size={"sm"}>
-                      Follow
+                    <Button
+                      size={"icon"}
+                      className="glass rounded-full h-10 w-10"
+                      onClick={() => {
+                        setShow(!show);
+                      }}
+                    >
+                      <IoClose size={25} strokeWidth={25} color="white" />
                     </Button>
                   </div>
-                  <Button
-                    className="glass rounded-full h-10 w-10"
-                    onClick={() => {
-                      setShow(!show);
-                    }}
-                  >
-                    <IoClose size={25} strokeWidth={25} color="white" />
-                  </Button>
-                </div>
-                <h1>{video.title}</h1>
-                <ReelDetails event={video} />
+                  <h1>{video.title}</h1>
+                  <ReelDetails event={video} />
+                  <ScrollBar orientation="vertical" />
+                </ScrollArea>
               </div>
             </div>
           );
