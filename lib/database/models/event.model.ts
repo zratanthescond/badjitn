@@ -55,6 +55,7 @@ const EventSchema = new Schema({
   isOnline: { type: Boolean },
   category: { type: Schema.Types.ObjectId, ref: "Category" },
   organizer: { type: Schema.Types.ObjectId, ref: "User" },
+  sponsors: [{ type: Schema.Types.ObjectId, ref: "Sponsor" }],
 });
 
 const Event = models.Event || model("Event", EventSchema);

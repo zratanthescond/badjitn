@@ -123,6 +123,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
               key={video._id}
               className="h-screen glass snap-start flex items-center justify-center gap-2 md:p-4 md:m-4 "
             >
+              {console.log(video)}
               <div className="flex h-full w-full md:w-1/4 lg:w-1/4">
                 <HLSPlayer
                   manifest={video.imageUrl}

@@ -7,7 +7,7 @@ const nextConfig = {
         headers: [
           {
             key: "Cross-Origin-Embedder-Policy",
-            value: "require-corp",
+            value: "unsafe-none",
           },
           {
             key: "Cross-Origin-Opener-Policy",
@@ -52,6 +52,7 @@ const nextConfig = {
         "http://localhost:3000",
         "http://127.0.0.1:5500",
         "*",
+        "https://maps.googleapis.com",
         // "https://73twcr2k-3000.euw.devtunnels.ms",
       ],
     },

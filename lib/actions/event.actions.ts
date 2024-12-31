@@ -18,6 +18,7 @@ import {
 } from "@/types";
 import { differenceInDays, isValid, parseISO } from "date-fns";
 import Sponsor from "../database/models/sponor.model";
+import { model } from "mongoose";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: "i" } });
@@ -30,7 +31,8 @@ const populateEvent = (query: any) => {
       model: User,
       select: "_id firstName lastName username photo",
     })
-    .populate({ path: "category", model: Category, select: "_id name" });
+    .populate({ path: "category", model: Category, select: "_id name" })
+    .populate({ path: "sponsors", model: Sponsor, select: "_id" });
 };
 
 // CREATE
