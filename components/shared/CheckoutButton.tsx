@@ -28,7 +28,7 @@ const CheckoutButton = ({
         <>
           <SignedOut>
             <Button asChild className="button rounded-full" size="sm">
-              <Link href="/sign-in">Get Tickets</Link>
+              <Link href="/sign-in">Pay now</Link>
             </Button>
           </SignedOut>
 

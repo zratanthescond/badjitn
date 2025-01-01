@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const music = await Music.create({
     title: data.title,
     artist: data.artist,
-    album: data.album,
+    album: data.album || "no album",
     path: body.outputPath,
     image: data.thumbnail,
     wave: data.wave,

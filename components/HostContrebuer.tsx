@@ -12,6 +12,11 @@ import {
   SelectItem,
 } from "@/components/ui/select"; // ShadCN Select
 import { Label } from "@/components/ui/label"; // ShadCN Label
+import { Event } from "@/types";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Checkbox } from "./ui/checkbox";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 interface User {
   _id: string;
@@ -20,7 +25,7 @@ interface User {
 }
 
 interface ContributorProps {
-  eventId: string; // The ID of the event
+  event: Event; // The ID of the event
 }
 
 const fetchContributors = async (query: string) => {
@@ -28,7 +33,7 @@ const fetchContributors = async (query: string) => {
   return response.data;
 };
 
-const ContributorSelection: React.FC<ContributorProps> = ({ eventId }) => {
+const ContributorSelection: React.FC<ContributorProps> = ({ event }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedContributor, setSelectedContributor] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -43,7 +48,7 @@ const ContributorSelection: React.FC<ContributorProps> = ({ eventId }) => {
   });
   // Mutation to host a contributor
   const mutationFn = (contributorId: string) =>
-    axios.post("/api/hostcontributor", { eventId, contributorId });
+    axios.post("/api/hostcontributor", { event, contributorId });
 
   const mutation = useMutation({
     mutationFn: () => mutationFn(selectedContributor),
@@ -76,6 +81,22 @@ const ContributorSelection: React.FC<ContributorProps> = ({ eventId }) => {
   }, [selectedContributor]);
   return (
     <div className="w-full p-6 shadow-md rounded-md">
+      {event.pricePlan && event.pricePlan.length > 0 && (
+        <Card className="glass w-full flex flex-col">
+          <CardHeader>
+            <CardTitle>Choose a plan</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col w-full gap-2">
+            {event.pricePlan.map((plan) => (
+              <div className="flex glass p-2 rounded-lg flex-row w-full items-center justify-between">
+                <span>{plan.name}</span>
+                <Badge>{plan.price}</Badge>
+                <Checkbox />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
       <h2 className="text-xl font-semibold mb-4">Host a Contributor</h2>
       <div className="mb-4">
         <Label htmlFor="search" className="mb-2">
@@ -122,7 +143,7 @@ const ContributorSelection: React.FC<ContributorProps> = ({ eventId }) => {
       </Button>
       {message && (
         <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
-      )}
+      )}{" "}
     </div>
   );
 };

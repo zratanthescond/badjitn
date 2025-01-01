@@ -71,7 +71,7 @@ const Checkout = ({
         size="sm"
         className=" sm:w-fit h-10 m-4"
       >
-        {event.isFree ? "Get Ticket" : "Buy Ticket"}
+        {event.isFree ? "Get Ticket" : "Pay now"}
       </Button>
     </form>
   );

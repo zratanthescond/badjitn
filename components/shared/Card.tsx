@@ -21,6 +21,7 @@ import SponsorComponent from "../SopnsorComponent";
 import ContributorSelection from "../HostContrebuer";
 import QRCode from "react-qr-code";
 import { QrCode } from "lucide-react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 type CardProps = {
   event: IEvent;
@@ -116,7 +117,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <SponsorComponent eventId={event._id} />
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+
               <AlertDialogAction>Return</AlertDialogAction>
             </AlertDialogContent>
           </AlertDialog>
@@ -126,10 +127,15 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
               <FaHandshake size={20} stroke="white" color="white" />
             </AlertDialogTrigger>
             <AlertDialogContent>
-              <ContributorSelection eventId={event._id} />
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <ScrollArea>
+                <div className="max-h-96 w-full">
+                  <ContributorSelection event={event} />
+                  <ScrollBar orientation="vertical" />{" "}
+                </div>
+              </ScrollArea>
+
               <AlertDialogAction>Return</AlertDialogAction>
-            </AlertDialogContent>
+            </AlertDialogContent>{" "}
           </AlertDialog>
         </div>
       )}
