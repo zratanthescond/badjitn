@@ -15,7 +15,6 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 export default function EventPriceComponent({ event }: { event: IEvent }) {
-  const session = useSession();
   const [checkPlan, setCheckedPlan] = useState<number[]>([]);
   const handleAddPlan = (num: number) => {
     setCheckedPlan((prevNumbers) => {

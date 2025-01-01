@@ -37,7 +37,7 @@ const ContributorSelection: React.FC<ContributorProps> = ({ event }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedContributor, setSelectedContributor] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-
+  const [checkPlan, setCheckedPlan] = useState<number[]>([]);
   const [contributors, setContributors] = useState([]);
 
   // Fetch contributors based on search query
@@ -48,7 +48,7 @@ const ContributorSelection: React.FC<ContributorProps> = ({ event }) => {
   });
   // Mutation to host a contributor
   const mutationFn = (contributorId: string) =>
-    axios.post("/api/hostcontributor", { event, contributorId });
+    axios.post("/api/hostcontributor", { event, contributorId, checkPlan });
 
   const mutation = useMutation({
     mutationFn: () => mutationFn(selectedContributor),
@@ -79,25 +79,40 @@ const ContributorSelection: React.FC<ContributorProps> = ({ event }) => {
   useEffect(() => {
     console.log(selectedContributor);
   }, [selectedContributor]);
+
+  const handleAddPlan = (num: number) => {
+    setCheckedPlan((prevNumbers) => {
+      if (prevNumbers.includes(num)) {
+        // If the number exists, remove it
+        return prevNumbers.filter((n) => n !== num);
+      } else {
+        // If the number does not exist, add it
+        return [...prevNumbers, num];
+      }
+    });
+  };
   return (
-    <div className="w-full p-6 shadow-md rounded-md">
+    <div className="w-full glass p-6 shadow-md rounded-md">
+      <h2 className="text-xl font-semibold mb-4">Host a Contributor</h2>
       {event.pricePlan && event.pricePlan.length > 0 && (
         <Card className="glass w-full flex flex-col">
           <CardHeader>
             <CardTitle>Choose a plan</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col w-full gap-2">
-            {event.pricePlan.map((plan) => (
+            {event.pricePlan.map((plan, index) => (
               <div className="flex glass p-2 rounded-lg flex-row w-full items-center justify-between">
                 <span>{plan.name}</span>
                 <Badge>{plan.price}</Badge>
-                <Checkbox />
+                <Checkbox
+                  className="h-8 w-8"
+                  onCheckedChange={() => handleAddPlan(index)}
+                />
               </div>
             ))}
           </CardContent>
         </Card>
       )}
-      <h2 className="text-xl font-semibold mb-4">Host a Contributor</h2>
       <div className="mb-4">
         <Label htmlFor="search" className="mb-2">
           Search Contributors
@@ -134,6 +149,9 @@ const ContributorSelection: React.FC<ContributorProps> = ({ event }) => {
           </SelectContent>
         </Select>
       </div>
+      {message && (
+        <p className="mt-4 text-center text-sm text-pink-500">{message}</p>
+      )}{" "}
       <Button
         onClick={handleSubmit}
         className="w-full bg-indigo-600"
@@ -141,9 +159,6 @@ const ContributorSelection: React.FC<ContributorProps> = ({ event }) => {
       >
         {mutation.isPending ? "Hosting..." : "Host Contributor"}
       </Button>
-      {message && (
-        <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
-      )}{" "}
     </div>
   );
 };

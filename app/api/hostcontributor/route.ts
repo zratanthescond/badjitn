@@ -8,15 +8,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 export async function POST(req: Request, res: Response) {
   const data = await req.json();
-  console.log(data);
-  if (data.eventId && data.contributorId) {
+  // console.log(data);
+  const details = [];
+  if (data.checkPlan && data.checkPlan.length > 0) {
+    data.checkPlan.map((plan: number) => {
+      details.push(data.event.pricePlan[plan]);
+    });
+  }
+  console.log(details);
+  if (data.event && data.contributorId) {
     const order = await createOrder({
       buyerId: data.contributorId as string,
-      eventId: data.eventId,
+      eventId: data.event._id,
       stripeId: uuidv4(),
       createdAt: new Date(),
       totalAmount: "0",
       type: "hosted",
+      details: details,
     });
     if (order) {
       return NextResponse.json(

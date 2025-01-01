@@ -55,9 +55,17 @@ const EventSchema = new Schema({
   isOnline: { type: Boolean },
   category: { type: Schema.Types.ObjectId, ref: "Category" },
   organizer: { type: Schema.Types.ObjectId, ref: "User" },
-  sponsors: [{ type: Schema.Types.ObjectId, ref: "Sponsor" }],
 });
-
+EventSchema.virtual("Sponsors", {
+  ref: "Sponsor",
+  localField: "_id",
+  foreignField: "eventId",
+  match: {
+    toDate: { $gte: Date.now() },
+  },
+});
+EventSchema.set("toObject", { virtuals: true });
+EventSchema.set("toJSON", { virtuals: true });
 const Event = models.Event || model("Event", EventSchema);
 
 export default Event;

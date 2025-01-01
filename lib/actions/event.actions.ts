@@ -32,7 +32,7 @@ const populateEvent = (query: any) => {
       select: "_id firstName lastName username photo",
     })
     .populate({ path: "category", model: Category, select: "_id name" })
-    .populate({ path: "sponsors", model: Sponsor, select: "_id" });
+    .populate({ path: "Sponsors", model: Sponsor, select: "_id" });
 };
 
 // CREATE

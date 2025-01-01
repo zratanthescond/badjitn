@@ -22,6 +22,8 @@ import ContributorSelection from "../HostContrebuer";
 import QRCode from "react-qr-code";
 import { QrCode } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { classNames } from "uploadthing/client";
+import { Badge } from "../ui/badge";
 
 type CardProps = {
   event: IEvent;
@@ -34,15 +36,28 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const userId = user?._id!;
   //const userId = "676c87bddaac23a02d164642";
   const isEventCreator = userId === event.organizer._id.toString();
+  const sponsored = event.Sponsors && event.Sponsors.length > 0;
 
   return (
     <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm glass shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
       <Link
         href={`/events/${event._id}`}
-        className="flex-center flex-grow glass bg-cover bg-center text-grey-500"
+        className={`flex-center flex-grow glass bg-cover bg-center text-grey-500 `}
       >
         {/* IS EVENT CREATOR ... */}
-        <HomePostContainer src={event.imageUrl} />
+        <div
+          className={`${
+            sponsored && " border-2  border-yellow-500 rounded-xl"
+          }`}
+        >
+          {sponsored && (
+            <Badge className="absolute rounded-t-none  top-0 left-1/2 transform -translate-x-1/2 bg-yellow-500">
+              Sponsored
+            </Badge>
+          )}
+
+          <HomePostContainer src={event.imageUrl} className="rounded-xl" />
+        </div>
         {hidePrice && (
           <AlertDialog>
             <AlertDialogTrigger className="absolute top-2 left-2 glass p-3 rounded-lg text-white flex flex-row gap-2">
