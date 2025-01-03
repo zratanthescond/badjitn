@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,13 +11,12 @@ const Footer = () => {
             <Image
               src="/assets/images/logo.png"
               alt="logo"
-              width={38}
+              width={128}
               height={38}
             />
           </Link>
-          <h1 className="h3-bold">adjiTn</h1>
         </div>
-        <p>2024 BadjiTN. All Rights reserved.</p>
+        <p>{new Date().getFullYear()} Badgi.net. All Rights reserved.</p>
       </div>
     </footer>
   );

@@ -15,7 +15,7 @@ export async function useUser() {
     const clerkUser = await currentUser();
 
     console.log("clerkId", clerkUser?.id);
-    //const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
+    //s const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
     const clerkId = clerkUser?.id;
     const user = await User.findOne({ clerkId: clerkId });
     return user;

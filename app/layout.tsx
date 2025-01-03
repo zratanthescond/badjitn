@@ -19,8 +19,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "BadjiTn",
-  description: "BadjiTn is a platform for event management.",
+  title: "Badgi.net",
+  description: "Badgi.net is a platform for event management.",
   icons: {
     icon: "/assets/images/logo.png",
   },

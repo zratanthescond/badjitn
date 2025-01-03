@@ -3,7 +3,7 @@ import { formatDateTime } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { use } from "react";
 import { DeleteConfirmation } from "./DeleteConfirmation";
 import HLSPlayer from "./phone/HlsPlayer";
 import HomePostContainer from "./HomePostContainer";
@@ -35,19 +35,26 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const user = await useUser();
   const userId = user?._id!;
   //const userId = "676c87bddaac23a02d164642";
-  const isEventCreator = userId === event.organizer._id.toString();
+  const isEventCreator = userId.toString() === event.organizer._id.toString();
+  console.log(
+    "userId:",
+    user?._id,
+    "organizerId:",
+    event.organizer._id.toString()
+  );
   const sponsored = event.Sponsors && event.Sponsors.length > 0;
 
   return (
-    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm glass shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
+    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm glass shadow-md transition-all hover:shadow-lg md:min-h-[400px]">
       <Link
         href={`/events/${event._id}`}
-        className={`flex-center flex-grow glass bg-cover bg-center text-grey-500 `}
+        className={`flex-center flex-grow glass bg-cover bg-center text-grey-500  md:min-h-[400px]`}
       >
         {/* IS EVENT CREATOR ... */}
         <div
           className={`${
-            sponsored && " border-2  border-yellow-500 rounded-xl"
+            sponsored &&
+            " border-2  border-yellow-500 rounded-xl md:min-h-[400px]"
           }`}
         >
           {sponsored && (
@@ -138,7 +145,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
           </AlertDialog>
           <AlertDialog>
             <AlertDialogTrigger className="flex flex-row gap-2 rounded-xl glass p-2 shadow-sm transition-all">
-              <p className="text-white"> Host a contrebuter </p>
+              <p className="text-white"> Host a contributer </p>
               <FaHandshake size={20} stroke="white" color="white" />
             </AlertDialogTrigger>
             <AlertDialogContent>

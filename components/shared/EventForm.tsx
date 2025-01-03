@@ -62,12 +62,19 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
     event && type === "Update"
       ? {
           ...event,
-          pricePlan: pricePlan,
+
           startDateTime: new Date(event.startDateTime),
           endDateTime: new Date(event.endDateTime),
         }
       : eventDefaultValues;
   const router = useRouter();
+
+  useEffect(() => {
+    if (event?.pricePlan && event.pricePlan.length > 0 && type === "Update") {
+      setIsPricePlan(true);
+      setPricePlan(event.pricePlan);
+    }
+  }, []);
 
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),

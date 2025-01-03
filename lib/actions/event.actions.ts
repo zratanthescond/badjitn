@@ -75,6 +75,7 @@ export async function getEventById(eventId: string) {
 // UPDATE
 export async function updateEvent({ userId, event, path }: UpdateEventParams) {
   console.log(event);
+  console.log(userId);
   try {
     await connectToDatabase();
 
@@ -88,7 +89,6 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
       {
         ...event,
         category: event.categoryId,
-        pricePlan: [{ name: "sqdqsdqsdq", price: 200 }],
       },
       { new: true }
     );

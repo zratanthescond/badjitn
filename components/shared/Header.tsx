@@ -10,15 +10,19 @@ const Header = async () => {
     <header className="flex flex-1 w-full fixed border-b backdrop-blur glass  z-50  ">
       <div className="wrapper flex items-center justify-between">
         <div className="flex-row flex items-center ">
-          <Link href="/" className=" d-flex flex-row">
+          <Link href="/" className=" d-flex flex-row ">
             <Image
               src="/assets/images/logo.png"
-              width={38}
+              width={128}
               height={38}
               alt="BadjiTn logo"
+              className="object-cover  "
+              style={{
+                filter:
+                  "invert(32%) sepia(99%) saturate(3870%) hue-rotate(239deg) brightness(97%) contrast(97%);",
+              }}
             />
           </Link>
-          <h1 className=" h3-bold ">adjiTn</h1>
         </div>
         <SignedIn>
           <nav className="md:flex-between hidden w-full max-w-xs">

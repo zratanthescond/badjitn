@@ -198,7 +198,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
               </div>
               <div
                 className={`${
-                  show ? "flex" : "hidden"
+                  show ? "flex" : "hidden md:flex"
                 } flex-col absolute bottom-0  md:relative glass rounded-lg w-full h-5/6 md:h-full items-center justify-start gap-2 p-2 md:w-1/2 animate-accordion-down repeat-1`}
               >
                 <ScrollArea>
