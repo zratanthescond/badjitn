@@ -42,7 +42,7 @@ import GoogleMapComponent from "./GoogleMap";
 import { ListChecks } from "lucide-react";
 import PricePlanComponent from "./PricePlanComponent";
 import { pricePlan } from "@/types";
-import FormBuilder from "./formBuilder";
+import FormBuilder from "./FormBuilder";
 
 type EventFormProps = {
   userId: string;
