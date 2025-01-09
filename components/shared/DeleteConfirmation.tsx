@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useTransition } from 'react'
-import { usePathname } from 'next/navigation'
-import Image from 'next/image'
+import { useTransition } from "react";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 import {
   AlertDialog,
@@ -14,21 +14,23 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from "@/components/ui/alert-dialog";
 
-import { deleteEvent } from '@/lib/actions/event.actions'
+import { deleteEvent } from "@/lib/actions/event.actions";
 
-export const DeleteConfirmation = ({ eventId }: { eventId: string }) => {
-  const pathname = usePathname()
-  let [isPending, startTransition] = useTransition()
+export const DeleteConfirmation = ({
+  eventId,
+  open,
+  onOpenChange,
+}: {
+  eventId: string;
+}) => {
+  const pathname = usePathname();
+  let [isPending, startTransition] = useTransition();
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger>
-        <Image src="/assets/icons/delete.svg" alt="edit" width={20} height={20} />
-      </AlertDialogTrigger>
-
-      <AlertDialogContent className="bg-white">
+    <AlertDialog onOpenChange={() => onOpenChange()} open={open}>
+      <AlertDialogContent className="glass">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure you want to delete?</AlertDialogTitle>
           <AlertDialogDescription className="p-regular-16 text-grey-600">
@@ -42,13 +44,14 @@ export const DeleteConfirmation = ({ eventId }: { eventId: string }) => {
           <AlertDialogAction
             onClick={() =>
               startTransition(async () => {
-                await deleteEvent({ eventId, path: pathname })
+                await deleteEvent({ eventId, path: pathname });
               })
-            }>
-            {isPending ? 'Deleting...' : 'Delete'}
+            }
+          >
+            {isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};

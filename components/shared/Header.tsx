@@ -17,10 +17,6 @@ const Header = async () => {
               height={38}
               alt="BadjiTn logo"
               className="object-cover  "
-              style={{
-                filter:
-                  "invert(32%) sepia(99%) saturate(3870%) hue-rotate(239deg) brightness(97%) contrast(97%);",
-              }}
             />
           </Link>
         </div>

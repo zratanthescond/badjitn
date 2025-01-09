@@ -46,11 +46,16 @@ export const formatDateTime = (dateString: Date) => {
     "en-US",
     timeOptions
   );
+  const homeEvents: string = new Date(dateString).toLocaleString("en-US", {
+    month: "short",
+    day: "2-digit",
+  });
 
   return {
     dateTime: formattedDateTime,
     dateOnly: formattedDate,
     timeOnly: formattedTime,
+    homeEvents: homeEvents,
   };
 };
 
@@ -111,4 +116,10 @@ export function formatSeconds(seconds: number): string {
   return `${hours.toString().padStart(2, "0")}:${minutes
     .toString()
     .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+}
+export function getLastTwoWords(str: string) {
+  // Split the string into an array of words
+  const words = str.trim().split(","); // Split by spaces, handling multiple spaces
+  // Get the last two words
+  return words.slice(-2).join(" ").replace(/\d+/g, "").trim(); // Join them back into a string
 }

@@ -27,11 +27,11 @@ const MobileNav = () => {
           <div className="flex flex-row justify-center">
             <Image
               src="/assets/images/logo.png"
-              alt="logo"
-              width={38}
+              width={128}
               height={38}
+              alt="BadjiTn logo"
+              className="object-cover  "
             />
-            <h1 className="h3-bold">adjiTn</h1>
           </div>
           <Separator className="border border-gray-50" />
           <NavItems />

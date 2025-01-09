@@ -1,5 +1,5 @@
 import { IEvent } from "@/lib/database/models/event.model";
-import { formatDateTime } from "@/lib/utils";
+import { formatDateTime, getLastTwoWords } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,10 +20,20 @@ import { FaHandshake } from "react-icons/fa";
 import SponsorComponent from "../SopnsorComponent";
 import ContributorSelection from "../HostContrebuer";
 import QRCode from "react-qr-code";
-import { QrCode } from "lucide-react";
+import { CogIcon, MapPin, QrCode, Radio } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { classNames } from "uploadthing/client";
 import { Badge } from "../ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { EventControls } from "./EventsControls";
+import { Separator } from "../ui/separator";
 
 type CardProps = {
   event: IEvent;
@@ -45,24 +55,53 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const sponsored = event.Sponsors && event.Sponsors.length > 0;
 
   return (
-    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm glass shadow-md transition-all hover:shadow-lg md:min-h-[400px]">
+    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm glass shadow-md transition-all hover:shadow-lg md:min-h-[380px]">
       <Link
         href={`/events/${event._id}`}
-        className={`flex-center flex-grow glass bg-cover bg-center text-grey-500  md:min-h-[400px]`}
+        className={`flex-center flex-grow glass bg-cover bg-center text-grey-500 w-full h-full`}
       >
         {/* IS EVENT CREATOR ... */}
         <div
           className={`${
             sponsored &&
-            " border-2  border-yellow-500 rounded-xl md:min-h-[400px]"
+            " border-2 flex items-center border-yellow-500 rounded-xl w-full h-full"
           }`}
         >
-          {sponsored && (
+          {!hasOrderLink && sponsored && (
             <Badge className="absolute rounded-t-none  top-0 left-1/2 transform -translate-x-1/2 bg-yellow-500">
               Sponsored
             </Badge>
           )}
-
+          {!hidePrice && !hasOrderLink && (
+            <>
+              <div className="absolute right-2 top-2 flex flex-col gap-0 items-center p-1 bg-white/30  backdrop-brightness-100 rounded-full backdrop-blur-3xl w-11 h-11   shadow-sm transition-all">
+                <span className="text-white text-xs  font-bold">
+                  {formatDateTime(event.startDateTime).homeEvents.split(" ")[1]}
+                </span>
+                <Separator className="m-0 p-0" />
+                <span className="text-white text-sm font-semibold">
+                  {formatDateTime(event.startDateTime).homeEvents.split(" ")[0]}
+                </span>
+              </div>
+              <div className="absolute bottom-0 flex flex-col gap-0 items-center justify-evenly p-1  bg-white/10 backdrop-brightness-100 rounded-b-xl backdrop-blur-sm w-full h-1/5  shadow-sm transition-all">
+                <span className="text-white text-xs  line-clamp-2 max-w-full max-h-1/2  font-semibold">
+                  {event.title}
+                </span>
+                <Separator className="m-0 p-0" />
+                <span className="text-white flex flex-row text-sm font-semibold">
+                  {event.isOnline ? (
+                    <Radio stroke="red-500" />
+                  ) : (
+                    <div className="flex flex-row items-center justify-evenly">
+                      <MapPin size={16} />
+                      {getLastTwoWords(event.location?.name!)}-
+                      {formatDateTime(event.startDateTime).timeOnly}
+                    </div>
+                  )}
+                </span>
+              </div>
+            </>
+          )}
           <HomePostContainer src={event.imageUrl} className="rounded-xl" />
         </div>
         {hidePrice && (
@@ -75,20 +114,6 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
               <AlertDialogCancel>Return</AlertDialogCancel>
             </AlertDialogContent>
           </AlertDialog>
-        )}
-        {isEventCreator && !hidePrice && (
-          <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl glass p-3 shadow-sm transition-all">
-            <Link href={`/events/${event._id}/update`}>
-              <Image
-                src="/assets/icons/edit.svg"
-                alt="edit"
-                width={20}
-                height={20}
-              />
-            </Link>
-
-            <DeleteConfirmation eventId={event._id} />
-          </div>
         )}
       </Link>
       {/* <div className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4">
@@ -120,45 +145,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
       {hasOrderLink && (
         <div className="flex flex-col gap-2 absolute left-2 top-2 p-3 justify-start items-start">
-          <Link
-            href={`/orders?eventId=${event._id}`}
-            className=" flex flex-row gap-2 rounded-xl glass p-2 shadow-sm transition-all"
-          >
-            <p className="text-white">Order Details</p>
-            <Image
-              src="/assets/icons/arrow.svg"
-              alt="search"
-              width={10}
-              height={10}
-            />
-          </Link>
-          <AlertDialog>
-            <AlertDialogTrigger className="flex flex-row gap-2 rounded-xl glass p-2 shadow-sm transition-all">
-              <p className="text-white"> Sponsor </p>
-              <PiHandCoins size={20} stroke="white" color="white" />
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <SponsorComponent eventId={event._id} />
-
-              <AlertDialogAction>Return</AlertDialogAction>
-            </AlertDialogContent>
-          </AlertDialog>
-          <AlertDialog>
-            <AlertDialogTrigger className="flex flex-row gap-2 rounded-xl glass p-2 shadow-sm transition-all">
-              <p className="text-white"> Host a contributer </p>
-              <FaHandshake size={20} stroke="white" color="white" />
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <ScrollArea>
-                <div className="max-h-96 w-full">
-                  <ContributorSelection event={event} />
-                  <ScrollBar orientation="vertical" />{" "}
-                </div>
-              </ScrollArea>
-
-              <AlertDialogAction>Return</AlertDialogAction>
-            </AlertDialogContent>{" "}
-          </AlertDialog>
+          <EventControls event={event} />
         </div>
       )}
     </div>

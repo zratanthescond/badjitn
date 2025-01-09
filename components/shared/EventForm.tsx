@@ -42,6 +42,7 @@ import GoogleMapComponent from "./GoogleMap";
 import { ListChecks } from "lucide-react";
 import PricePlanComponent from "./PricePlanComponent";
 import { pricePlan } from "@/types";
+import FormBuilder from "./formBuilder";
 
 type EventFormProps = {
   userId: string;
@@ -450,25 +451,30 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               )}
             />
           </div>
-          <div className="w-full">
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl className="h-full">
-                    <FileUploader
-                      setReel={setReel}
-                      onFieldChange={field.onChange}
-                      imageUrl={field.value}
-                      setFiles={setFiles}
-                      userId={userId}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <div className="flex flex-col w-full ">
+            <div className="w-full">
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl className="h-full">
+                      <FileUploader
+                        setReel={setReel}
+                        onFieldChange={field.onChange}
+                        imageUrl={field.value}
+                        setFiles={setFiles}
+                        userId={userId}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full">
+              <FormBuilder />
+            </div>
           </div>
         </div>
 
