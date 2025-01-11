@@ -16,7 +16,14 @@ const Header = async () => {
               width={128}
               height={38}
               alt="BadjiTn logo"
-              className="object-cover  "
+              className="object-cover hidden dark:block  "
+            />
+            <Image
+              src="/assets/images/logoDark.png"
+              width={128}
+              height={38}
+              alt="BadjiTn logo"
+              className="object-cover  block dark:hidden"
             />
           </Link>
         </div>

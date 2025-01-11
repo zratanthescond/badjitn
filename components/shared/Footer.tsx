@@ -10,9 +10,17 @@ const Footer = () => {
           <Link href="/">
             <Image
               src="/assets/images/logo.png"
-              alt="logo"
               width={128}
               height={38}
+              alt="BadjiTn logo"
+              className="object-cover hidden dark:block  "
+            />
+            <Image
+              src="/assets/images/logoDark.png"
+              width={128}
+              height={38}
+              alt="BadjiTn logo"
+              className="object-cover  block dark:hidden"
             />
           </Link>
         </div>
