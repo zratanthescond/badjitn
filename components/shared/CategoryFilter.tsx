@@ -50,26 +50,26 @@ const CategoryFilter = () => {
   };
 
   return (
-    <ScrollArea className="w-full rounded-full whitespace-nowrap glass py-2 backdrop:blur ">
+    <ScrollArea className="w-full rounded-full whitespace-nowrap glass  ">
       <Badge
+        variant={"outline"}
         key={uuidv4()}
-        className="select-item p-regular-14 mx-2 glass text-bold font-size-14"
+        className="select-item p-regular-14 m-1 glass text-bold font-size-14"
         onClick={() => onSelectCategory("For you")}
       >
-        <span className="capitalize font-bold text-purple-50"> For you</span>
+        <span className="capitalize font-bold "> For you</span>
       </Badge>
       {categories.map((category) => (
         <Badge
+          variant={"outline"}
           key={category._id}
-          className="select-item p-regular-14 mx-2 glass text-bold font-size-14"
+          className="select-item p-regular-14 m-1 glass text-bold font-size-14"
           onClick={() => onSelectCategory(category.name)}
         >
-          <span className="capitalize font-bold text-purple-50">
-            {" "}
-            {category.name}
-          </span>
+          <span className="capitalize font-bold "> {category.name}</span>
         </Badge>
       ))}
+
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );

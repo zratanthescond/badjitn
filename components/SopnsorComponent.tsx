@@ -61,40 +61,36 @@ export default function SponsorComponent({ eventId }: { eventId: string }) {
   return (
     <Card className="flex w-full glass flex-col">
       <CardHeader>
-        <CardTitle className="text-white">Sponsor Your Event</CardTitle>
+        <CardTitle>Sponsor Your Event</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="fromDate" className="text-white">
-              From Date
-            </Label>
+            <Label htmlFor="fromDate">From Date</Label>
             <Input
               id="fromDate"
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
               min={new Date().toISOString()}
-              className="mt-2 glass flex w-full text-white"
+              className="mt-2 glass flex w-full"
             />
           </div>
           <div>
-            <Label htmlFor="toDate" className="text-white">
-              To Date
-            </Label>
+            <Label htmlFor="toDate">To Date</Label>
             <Input
               id="toDate"
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
               min={fromDate}
-              className="mt-2 flex glass w-full text-white"
+              className="mt-2 flex glass w-full"
             />
           </div>
           {errorMessage && <p className="text-red-600">{errorMessage}</p>}
           {successMessage && <p className="text-green-600">{successMessage}</p>}
           <div>
-            <p className="text-white">
+            <p>
               Total Cost: <strong>${totalCost}</strong>
             </p>
           </div>

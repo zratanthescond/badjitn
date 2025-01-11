@@ -48,7 +48,10 @@ const Search = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="sm:w-52 min-h-[54px] glass rounded-full w-full">
+        <Button
+          variant={"ghost"}
+          className="sm:w-52 min-h-[54px] glass rounded-full w-full"
+        >
           <SearchIcon className="h-4 w-4 mr-2" />
           Search
         </Button>

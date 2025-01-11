@@ -26,13 +26,12 @@ export function DatePickerWithPresets() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button className="glass min-h-[54px] rounded-full flex-1 md:w-52 w-full ">
+        <Button
+          variant={"ghost"}
+          className="glass min-h-[54px] rounded-full flex-1 md:w-52 w-full "
+        >
           <CalendarIcon className="mr-2 h-4 w-4 " />
-          {date ? (
-            <span className="">{format(date, "PPP")}</span>
-          ) : (
-            <span className=" ">Pick a date</span>
-          )}
+          {date ? <span>{format(date, "PPP")}</span> : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
 

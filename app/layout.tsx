@@ -37,9 +37,38 @@ export default function RootLayout({
         <body
           className={
             (poppins.variable,
-            " flex flex-1 min-h-screen flex-col items-center justify-center  bg-gradient-to-r from-primary via-purple-500 to-pink-500 dark:to-pink-800 dark:via-purple-800 dark:from-indigo-800")
+            " flex flex-1 min-h-screen flex-col items-center justify-center  antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900")
           }
         >
+          <div className="absolute z-20 top-0 inset-x-0 flex justify-center overflow-hidden pointer-events-none">
+            <div className="w-full flex-none flex justify-end">
+              <picture>
+                <source
+                  srcSet="/assets/images//docs@30.8b9a76a2.avif"
+                  type="image/avif"
+                />
+                <img
+                  src="/assets/images/docs@tinypng.d9e4dcdc.png"
+                  alt=""
+                  className="w-[71.75rem] flex-none max-w-none dark:hidden"
+                  decoding="async"
+                />
+              </picture>
+              <picture>
+                <source
+                  srcSet="/assets/images//docs-dark@30.1a9f8cbf.avif"
+                  type="image/avif"
+                />
+                <img
+                  src="/assets/images//docs-dark@tinypng.1bbe175e.png"
+                  alt=""
+                  className="w-[90rem] flex-none max-w-none hidden dark:block"
+                  decoding="async"
+                />
+              </picture>
+            </div>
+          </div>
+
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
