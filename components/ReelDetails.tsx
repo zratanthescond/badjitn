@@ -113,7 +113,7 @@ export default function ReelDetails({ event }: { event: Event }) {
             onClick={() => setSection("details")}
             variant={"default"}
             size={"sm"}
-            className="glass text-pink-500"
+            className="glass text-slate-500"
           >
             <Menu />
             Details
@@ -122,7 +122,7 @@ export default function ReelDetails({ event }: { event: Event }) {
             onClick={() => setSection("date")}
             variant={"default"}
             size={"sm"}
-            className="glass text-pink-500"
+            className="glass text-slate-500"
           >
             <CalendarDays />
             Date
@@ -131,7 +131,7 @@ export default function ReelDetails({ event }: { event: Event }) {
             onClick={() => setSection("location")}
             variant={"default"}
             size={"sm"}
-            className="glass text-pink-500"
+            className="glass text-slate-500"
           >
             <MapPin />
             Location
@@ -140,7 +140,7 @@ export default function ReelDetails({ event }: { event: Event }) {
             onClick={() => setSection("price")}
             variant={"default"}
             size={"sm"}
-            className="glass text-pink-500"
+            className="glass text-slate-500"
           >
             <Wallet />
             Price
@@ -149,7 +149,7 @@ export default function ReelDetails({ event }: { event: Event }) {
             onClick={() => setSection("feedback")}
             variant={"default"}
             size={"sm"}
-            className="glass text-pink-500"
+            className="glass text-slate-500"
           >
             <MessageSquareIcon />
             Feedback

@@ -43,6 +43,7 @@ import { ListChecks } from "lucide-react";
 import PricePlanComponent from "./PricePlanComponent";
 import { pricePlan } from "@/types";
 import FormBuilder from "./FormBuilder";
+import { SelectPills } from "../ui/currency-select";
 
 type EventFormProps = {
   userId: string;
@@ -370,7 +371,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <div className="flex-center h-[54px] w-full overflow-hidden rounded-full  px-4 py-2">
+                      <div className="flex-center h-[54px] w-full  glass overflow-hidden rounded-full  px-4 py-2">
                         <Image
                           src="/assets/icons/dollar.svg"
                           alt="dollar"
@@ -473,7 +474,64 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               />
             </div>
             <div className="w-full">
-              <FormBuilder />
+              <FormField
+                control={form.control}
+                name="requiredInfo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Required info</FormLabel>
+                    <FormControl>
+                      <SelectPills
+                        data={[
+                          { id: "1", name: "name" },
+                          { id: "2", name: "mail" },
+                          { id: "3", name: "location" },
+                          { id: "4", name: "phone" },
+                          { id: "5", name: "activity" },
+                          { id: "6", name: "speciality" },
+                        ]}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        placeholder="Search for required info"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Select one or more required info
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full">
+              <FormField
+                control={form.control}
+                name="sponsors"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Select your sponsors</FormLabel>
+                    <FormControl>
+                      <SelectPills
+                        data={[
+                          { id: "1", name: "Medis" },
+                          { id: "2", name: "Adwya" },
+                          { id: "3", name: "Taha Pharma" },
+                          { id: "4", name: "Unimed" },
+                          { id: "5", name: "Philadelphia" },
+                          { id: "6", name: "pfizer" },
+                        ]}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        placeholder="Search for Sponsors"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Select one or more Sponsors
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </div>
         </div>

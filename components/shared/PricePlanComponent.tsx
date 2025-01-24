@@ -44,12 +44,12 @@ export default function PricePlanComponent({
   };
   return (
     <div className="w-full flex flex-col items-center justify-center rounded-3xl glass p-2">
-      <span className="text-white font-semibold p-2  w-full text-center">
+      <span className=" font-semibold p-2  w-full text-center">
         Add price plan
       </span>
-      <div className="flex p-4 flex-col w-full items-center bg-white gap-4 rounded-2xl    justify-between">
+      <div className="flex p-4 flex-col w-full items-center  gap-4 rounded-2xl    justify-between">
         <textarea
-          className=" focus:outline-none bg-slate-100 p-2 rounded-lg  w-full"
+          className=" focus:outline-none  p-2 rounded-lg  w-full"
           placeholder="Plan description"
           tabIndex={3}
           value={planDecription}
@@ -63,7 +63,7 @@ export default function PricePlanComponent({
         <div className="flex gap-3  flex-row w-full items-center justify-center">
           <input
             type="number"
-            className="input-field focus:outline-none w-1/2"
+            className="input-field focus:outline-none w-1/2 dark:text-white"
             placeholder="price"
             onChange={(e) => setPlanPrice(Number(e.target.value))}
             value={planPrice}
@@ -107,7 +107,7 @@ export default function PricePlanComponent({
             ))
             .reverse()
         ) : (
-          <div className="w-full flex rounded-3xl bg-white p-4 mt-4 items-center justify-center">
+          <div className="w-full flex rounded-3xl  p-4 mt-4 items-center justify-center">
             <Button variant={"link"} onClick={() => setIsPricePlan(false)}>
               return to simple price
             </Button>

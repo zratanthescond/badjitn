@@ -3,6 +3,7 @@ import Collection from "@/components/shared/Collection";
 import { DatePickerWithPresets } from "@/components/shared/DateFilter";
 import Search from "@/components/shared/Search";
 import { Button } from "@/components/ui/button";
+import { CountryDropdown } from "@/components/ui/country-dropdown";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import { SearchParamProps } from "@/types";
 import Image from "next/image";
@@ -27,6 +28,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
         className="wrapper  my-2 flex flex-col gap-8 md:gap-12 rounded-xl  p-2 md:p-3"
       >
         <div className="flex w-full flex-col  gap-5 md:flex-row">
+          <CountryDropdown slim defaultValue="TUN" />
           <Search />
           <DatePickerWithPresets />
           <CategoryFilter />

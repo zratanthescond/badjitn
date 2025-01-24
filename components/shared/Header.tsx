@@ -5,6 +5,7 @@ import NavItems from "./NavItems";
 import MobileNav from "./MobileNav";
 import { ModeToggle } from "../ModeToggle";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { CountryDropdown } from "../ui/country-dropdown";
 const Header = async () => {
   return (
     <header className="flex flex-1 w-full fixed border-b backdrop-blur glass  z-50  ">
@@ -32,9 +33,8 @@ const Header = async () => {
             <NavItems />
           </nav>
         </SignedIn>
-
-        <div className="flex w-32 justify-end items-center align-middle gap-3">
-          <ModeToggle />
+        <div className="flex w-36 justify-end items-center align-middle gap-3">
+          <ModeToggle />{" "}
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
             <MobileNav />
@@ -44,7 +44,7 @@ const Header = async () => {
               <Link href="/sign-in">Login</Link>
             </Button>
           </SignedOut>
-        </div>
+        </div>{" "}
       </div>
     </header>
   );

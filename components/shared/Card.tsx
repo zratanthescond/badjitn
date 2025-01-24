@@ -102,7 +102,10 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
               </div>
             </>
           )}
-          <HomePostContainer src={event.imageUrl} className="rounded-xl" />
+          <HomePostContainer
+            src={event.imageUrl}
+            className="rounded-xl w-full min-h-full"
+          />
         </div>
         {hidePrice && (
           <AlertDialog>
