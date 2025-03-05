@@ -190,8 +190,7 @@ export default function TiketComponent({
                         {order?.event.pricePlan?.map(
                           (plan: pricePlan, index: number) => (
                             <li key={index}>
-                              • {plan.name} -{" "}
-                              {formatPrice(plan?.price.toString(), "TND")}
+                              • {plan.name} - {formatPrice(plan?.price, "TND")}
                             </li>
                           )
                         )}
