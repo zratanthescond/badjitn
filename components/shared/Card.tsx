@@ -71,7 +71,13 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
           )}
           {!hidePrice && !hasOrderLink && (
             <>
-              <ReportComponent eventId={event._id} userId={userId.toString()} />
+              {userId && (
+                <ReportComponent
+                  eventId={event._id}
+                  userId={userId.toString()}
+                />
+              )}
+
               <div className="absolute right-2 top-2 flex flex-col gap-0 items-center p-1 bg-white/30  backdrop-brightness-100 rounded-full backdrop-blur-3xl w-11 h-11   shadow-sm transition-all">
                 <span className="text-white text-xs  font-bold">
                   {formatDateTime(event.startDateTime).homeEvents.split(" ")[1]}
