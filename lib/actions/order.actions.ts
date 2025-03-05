@@ -168,3 +168,34 @@ export async function getOrdersByUser({
     handleError(error);
   }
 }
+export const getOrderByEventAndBuyer = async (
+  eventId: string,
+  userId: string
+) => {
+  try {
+    await connectToDatabase();
+
+    const order = await Order.findOne({
+      event: eventId,
+      buyer: userId,
+    })
+      .populate({
+        path: "event",
+        model: Event,
+        populate: {
+          path: "organizer",
+          model: User,
+          select: "_id firstName lastName",
+        },
+      })
+      .populate({
+        path: "buyer",
+        model: User,
+        select: "_id firstName lastName",
+      });
+
+    return JSON.parse(JSON.stringify(order));
+  } catch (error) {
+    handleError(error);
+  }
+};

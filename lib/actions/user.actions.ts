@@ -6,19 +6,21 @@ import { connectToDatabase } from "@/lib/database";
 import User from "@/lib/database/models/user.model";
 import Order from "@/lib/database/models/order.model";
 import Event from "@/lib/database/models/event.model";
+import Report from "@/lib/database/models/report.model";
 import { handleError } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs";
 import { CreateUserParams, UpdateUserParams } from "@/types";
+import EventWork from "../database/models/work.model";
 export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
 
     //console.log("clerkId", clerkUser?.id);
-    // const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
+    ///const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
     const clerkId = clerkUser?.id;
     const user = await User.findOne({ clerkId: clerkId });
-    return user;
+    return JSON.parse(JSON.stringify(user)) || null;
   } catch (error) {
     handleError(error);
   }
@@ -110,6 +112,88 @@ export async function deleteUser(clerkId: string) {
     revalidatePath("/");
 
     return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function reportEvent(
+  eventId: string,
+  cause: string,
+  userId: string
+) {
+  try {
+    await connectToDatabase();
+
+    const event = await Event.findById(eventId);
+
+    if (!event) throw new Error("Event not found");
+
+    const report = new Report({
+      userId: userId,
+      eventId: eventId,
+      cause: cause,
+    });
+    await report.save();
+
+    return JSON.parse(JSON.stringify(report));
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function uploadWork({
+  fileUrl,
+  eventId,
+  userId,
+  note,
+}: {
+  fileUrl: string;
+  eventId: string;
+  userId: string;
+  note: string;
+}) {
+  try {
+    await connectToDatabase();
+    const event = await Event.findById(eventId);
+
+    if (!event) throw new Error("Event not found");
+    const user = await User.findById(userId);
+
+    if (!user) throw new Error("User not found");
+    const work = await EventWork.findOne({ eventId: eventId, userId: userId });
+    if (work) {
+      if (fileUrl && fileUrl.length > 0) {
+        work.fileUrls.push(fileUrl);
+      }
+      if (note && note.length > 0) {
+        work.note = note;
+      }
+
+      await work.save();
+    } else {
+      const newWork = new EventWork({
+        eventId: eventId,
+        userId: userId,
+        fileUrls: [fileUrl],
+        note: note,
+      });
+      await newWork.save();
+    }
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function getUserWorkByEvent({
+  eventId,
+  userId,
+}: {
+  eventId: string;
+  userId: string;
+}) {
+  try {
+    await connectToDatabase();
+    const works = await EventWork.findOne({ eventId: eventId, userId: userId });
+    return JSON.parse(JSON.stringify(works));
   } catch (error) {
     handleError(error);
   }

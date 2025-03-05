@@ -20,7 +20,7 @@ import { FaHandshake } from "react-icons/fa";
 import SponsorComponent from "../SopnsorComponent";
 import ContributorSelection from "../HostContrebuer";
 import QRCode from "react-qr-code";
-import { CogIcon, MapPin, QrCode, Radio } from "lucide-react";
+import { CogIcon, Flag, MapPin, QrCode, Radio } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { classNames } from "uploadthing/client";
 import { Badge } from "../ui/badge";
@@ -34,6 +34,9 @@ import {
 import { Button } from "../ui/button";
 import { EventControls } from "./EventsControls";
 import { Separator } from "../ui/separator";
+import { FaEllipsis, FaEllipsisVertical } from "react-icons/fa6";
+import ReportComponent from "./ReportComponent";
+import TicketControleDropdown from "./TicketControleDropdown";
 
 type CardProps = {
   event: IEvent;
@@ -55,16 +58,15 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const sponsored = event.Sponsors && event.Sponsors.length > 0;
 
   return (
-    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm glass shadow-md transition-all hover:shadow-lg md:min-h-[380px]">
-      <Link
-        href={`/events/${event._id}`}
-        className={`flex-center flex-grow glass bg-cover bg-center text-grey-500 w-full h-full`}
+    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm  shadow-md transition-all hover:shadow-lg md:min-h-[380px]">
+      <div
+        // href={hidePrice ? {} : `/events/${event._id}`}
+        className={`flex-center flex-grow  bg-cover bg-center text-grey-500 w-full h-full`}
       >
         {/* IS EVENT CREATOR ... */}
         <div
-          className={`${
-            sponsored &&
-            " border-2 flex items-center border-yellow-500 rounded-xl w-full h-full"
+          className={`rounded-xl w-full h-full flex items-center flex-col ${
+            sponsored && " border-2  border-yellow-500 "
           }`}
         >
           {!hasOrderLink && sponsored && (
@@ -74,6 +76,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
           )}
           {!hidePrice && !hasOrderLink && (
             <>
+              <ReportComponent eventId={event._id} userId={userId.toString()} />
               <div className="absolute right-2 top-2 flex flex-col gap-0 items-center p-1 bg-white/30  backdrop-brightness-100 rounded-full backdrop-blur-3xl w-11 h-11   shadow-sm transition-all">
                 <span className="text-white text-xs  font-bold">
                   {formatDateTime(event.startDateTime).homeEvents.split(" ")[1]}
@@ -83,42 +86,70 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
                   {formatDateTime(event.startDateTime).homeEvents.split(" ")[0]}
                 </span>
               </div>
-              <div className="absolute bottom-0 flex flex-col gap-0 items-center justify-evenly p-1  bg-white/10 backdrop-brightness-100 rounded-b-xl backdrop-blur-sm w-full h-1/5  shadow-sm transition-all">
+              <div className="absolute bottom-0 left-0 flex flex-col gap-0 items-center justify-evenly p-1  bg-white/10 backdrop-brightness-100 rounded-b-lg backdrop-blur-sm w-full h-1/5  shadow-sm transition-all">
                 <span className="text-white text-xs  line-clamp-2 max-w-full max-h-1/2  font-semibold">
                   {event.title}
                 </span>
                 <Separator className="m-0 p-0" />
-                <span className="text-white flex flex-row text-sm font-semibold">
-                  {event.isOnline ? (
-                    <Radio stroke="red-500" />
-                  ) : (
-                    <div className="flex flex-row items-center justify-evenly">
-                      <MapPin size={16} />
-                      {getLastTwoWords(event.location?.name!)}-
+
+                {event.isOnline ? (
+                  <Radio stroke="red-500" />
+                ) : (
+                  <div className="flex flex-row w-full items-center justify-evenly p-1">
+                    <MapPin size={16} stroke="white" />
+                    <span className="text-white flex flex-row text-sm font-semibold sm:text-xs sm:font-extralight">
+                      {" "}
+                      {getLastTwoWords(event.location?.name!)}
+                    </span>
+                    <span className="text-white flex flex-row text-sm font-semibold">
+                      -
+                    </span>
+                    <span className="text-white flex flex-row text-sm font-semibold">
                       {formatDateTime(event.startDateTime).timeOnly}
-                    </div>
-                  )}
-                </span>
+                    </span>
+                  </div>
+                )}
               </div>
             </>
           )}
           <HomePostContainer
             src={event.imageUrl}
-            className="rounded-xl w-full min-h-full"
+            className={`rounded-xl flex w-full h-full ${hidePrice && "h-1/3"}`}
           />
+          {hidePrice && (
+            <div className=" invisible group-hover:visible flex w-full h-2/3 glass animate-accordion-up flex-col absolute bottom-0 rounded-t-xl items-center gap-2 justify-start p-2 text-xs dark:text-white">
+              <span>{event.title}</span>
+              <div className="w-full border-b border-dashed border-muted my-2" />
+              <div className="flex w-full flex-row items-center justify-between">
+                <div className="flex flex-col items-center justify-center">
+                  <span>Date</span>
+                  <span>{formatDateTime(event.startDateTime).dateOnly}</span>
+                </div>
+                <div className="flex flex-col items-center justify-center">
+                  <span>Time</span>
+                  <span>{formatDateTime(event.startDateTime).timeOnly}</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         {hidePrice && (
-          <AlertDialog>
-            <AlertDialogTrigger className="absolute top-2 left-2 glass p-3 rounded-lg text-white flex flex-row gap-2">
-              <p>details</p> <QrCode />
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <QRCode value={event._id} />
-              <AlertDialogCancel>Return</AlertDialogCancel>
-            </AlertDialogContent>
-          </AlertDialog>
+          <TicketControleDropdown
+            eventId={event._id.toString()}
+            userId={userId.toString()}
+          />
+
+          // <AlertDialog>
+          //   <AlertDialogTrigger className="absolute top-2 left-2 glass p-3 rounded-lg text-white flex flex-row gap-2">
+          //     <p>details</p> <QrCode />
+          //   </AlertDialogTrigger>
+          //   <AlertDialogContent>
+          //     <QRCode value={event._id} />
+          //     <AlertDialogCancel>Return</AlertDialogCancel>
+          //   </AlertDialogContent>
+          // </AlertDialog>
         )}
-      </Link>
+      </div>
       {/* <div className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4">
         {!hidePrice && (
           <div className="flex gap-2">

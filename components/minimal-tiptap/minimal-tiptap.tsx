@@ -76,27 +76,34 @@ export const MinimalTiptapEditor = React.forwardRef<
     ...props,
   });
 
-  if (!editor) {
-    return null;
-  }
+  // if (!editor) {
+  //   return null;
+  // }
+  React.useEffect(() => {
+    if (value && editor) {
+      editor.commands.setContent(value);
+    }
+  }, [value, editor]);
 
   return (
-    <MeasuredContainer
-      as="div"
-      name="editor"
-      ref={ref}
-      className={cn(
-        "flex h-auto min-h-72 w-full flex-col max-w-1/2 bg-indigo-700  rounded-3xl border border-input shadow-sm focus-within:border-primary",
-        className
-      )}
-    >
-      <Toolbar editor={editor} />
-      <EditorContent
-        editor={editor}
-        className={cn("minimal-tiptap-editor", editorContentClassName)}
-      />
-      <LinkBubbleMenu editor={editor} />
-    </MeasuredContainer>
+    editor && (
+      <MeasuredContainer
+        as="div"
+        name="editor"
+        ref={ref}
+        className={cn(
+          "flex h-auto min-h-72 w-full flex-col max-w-1/2 bg-indigo-700  rounded-3xl border border-input shadow-sm focus-within:border-primary",
+          className
+        )}
+      >
+        <Toolbar editor={editor} />
+        <EditorContent
+          editor={editor}
+          className={cn("minimal-tiptap-editor", editorContentClassName)}
+        />
+        <LinkBubbleMenu editor={editor} />
+      </MeasuredContainer>
+    )
   );
 });
 

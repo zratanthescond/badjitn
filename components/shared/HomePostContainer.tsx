@@ -1,9 +1,10 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HLSPlayer from "./phone/HlsPlayer";
 import { vi } from "date-fns/locale";
 import Image from "next/image";
 import { useSinglePreview } from "@/hooks/useSinglePreview";
+import { Skeleton } from "../ui/skeleton";
 export default function HomePostContainer({
   src,
   className,
@@ -15,33 +16,40 @@ export default function HomePostContainer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hovred, setHovered] = useState<boolean>(false);
   const poster = useSinglePreview(src, 2);
-  console.log(poster);
+
   return (
     <div
-      className="flex w-full h-full"
+      className=" w-full h-full rounded-lg"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {hovred ? (
-        <HLSPlayer
-          manifest={src}
-          ref={videoRef}
-          muted
-          autoPlay
-          className={className}
-          {...props}
-        />
-      ) : poster ? (
-        <Image
-          alt={""}
-          style={{ objectFit: "fill" }}
-          layout="responsive"
-          width={296}
-          height={81 / 16 / 9}
-          src={poster}
-        />
+      {hovred && poster ? (
+        <>
+          <HLSPlayer
+            manifest={src}
+            ref={videoRef}
+            muted
+            autoPlay
+            className={className}
+            poster={poster}
+          />
+        </>
       ) : (
-        <p>loading image</p>
+        <>
+          {poster && (
+            <Image
+              alt={""}
+              style={{ objectFit: "fill" }}
+              layout="responsive"
+              width={296}
+              height={81 / 16 / 9}
+              src={poster!}
+              className="rounded-lg w-full h-full object-cover"
+            />
+          )}
+
+          <Skeleton className="min-h-full w-full" />
+        </>
       )}
     </div>
   );

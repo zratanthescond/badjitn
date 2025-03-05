@@ -74,6 +74,7 @@
 }
 
 body {
+  pointer-events: auto !important;
   font-family: var(--font-poppins)
 }
 
@@ -394,4 +395,8 @@ body {
   border-style: solid;
   border-color: rgb(32, 213, 236) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
   border-image: initial;
+}
+
+.pg-viewer-wrapper .document-container {
+  @apply dark:bg-slate-900 !important;
 }
