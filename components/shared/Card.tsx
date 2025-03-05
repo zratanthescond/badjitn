@@ -48,13 +48,8 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const user = await useUser();
   const userId = user?._id!;
   //const userId = "676c87bddaac23a02d164642";
-  const isEventCreator = userId.toString() === event.organizer._id.toString();
-  console.log(
-    "userId:",
-    user?._id,
-    "organizerId:",
-    event.organizer._id.toString()
-  );
+  // const isEventCreator = userId.toString() === event.organizer._id.toString();
+
   const sponsored = event.Sponsors && event.Sponsors.length > 0;
 
   return (
