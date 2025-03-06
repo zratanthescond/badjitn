@@ -1,5 +1,15 @@
+import SponsorForm from "@/components/shared/AddSponsorComponenet";
 import Collection from "@/components/shared/Collection";
+import HexGridSponsor from "@/components/shared/HexSponsor";
+import HexGrid from "@/components/shared/HexSponsor";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { getEventsByUser } from "@/lib/actions/event.actions";
 import { getOrdersByUser } from "@/lib/actions/order.actions";
 import { useUser } from "@/lib/actions/user.actions";
@@ -24,10 +34,15 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   return (
     <>
       {/* My Tickets */}
-      <section className="backdrop-blur backdrop-brightness-90 glass bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
+      <section className="backdrop-blur backdrop-brightness-90  bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
         <div className="wrapper flex items-center justify-center sm:justify-between">
           <h3 className="h3-bold text-center sm:text-left">My Tickets</h3>
-          <Button asChild size="lg" className="button hidden sm:flex">
+          <Button
+            asChild
+            variant={"outline"}
+            size="lg"
+            className="button hidden sm:flex"
+          >
             <Link href="/#events">Explore More Events</Link>
           </Button>
         </div>
@@ -47,10 +62,15 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
       </section>
 
       {/* Events Organized */}
-      <section className="glass backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
+      <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
         <div className="wrapper flex items-center justify-center sm:justify-between">
           <h3 className="h3-bold text-center sm:text-left">Events Organized</h3>
-          <Button asChild size="lg" className="button hidden sm:flex">
+          <Button
+            asChild
+            size="lg"
+            variant={"outline"}
+            className="button hidden sm:flex"
+          >
             <Link href="/events/create">Create New Event</Link>
           </Button>
         </div>
@@ -67,6 +87,24 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
           urlParamName="eventsPage"
           totalPages={organizedEvents?.totalPages}
         />
+      </section>
+      <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
+        <div className="wrapper flex items-center justify-center sm:justify-between">
+          <h3 className="h3-bold text-center sm:text-left">My Sponsors</h3>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="lg" variant={"outline"} className="button">
+                Add Sponsor
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <SponsorForm />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </section>
+      <section className="wrapper my-8">
+        <HexGridSponsor />
       </section>
     </>
   );
