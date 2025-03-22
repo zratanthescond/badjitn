@@ -54,8 +54,8 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
   return (
     <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm  shadow-md transition-all hover:shadow-lg md:min-h-[380px]">
-      <div
-        // href={hidePrice ? {} : `/events/${event._id}`}
+      <Link
+        href={hidePrice ? {} : `/events/${event._id}`}
         className={`flex-center flex-grow  bg-cover bg-center text-grey-500 w-full h-full`}
       >
         {/* IS EVENT CREATOR ... */}
@@ -150,7 +150,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
           //   </AlertDialogContent>
           // </AlertDialog>
         )}
-      </div>
+      </Link>
       {/* <div className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4">
         {!hidePrice && (
           <div className="flex gap-2">

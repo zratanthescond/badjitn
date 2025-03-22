@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, model, models } from "mongoose";
 
 // Define the interface for the UserSponsor document
-interface IUserSponsor extends Document {
+export interface IUserSponsor extends Document {
   name: string;
   tier: "gold" | "platinum" | "silver" | "bronze";
   logo: string;

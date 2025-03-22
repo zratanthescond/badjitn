@@ -44,6 +44,14 @@ export type CreateEventParams = {
     isFree: boolean;
     isOnline?: boolean;
     url: string;
+    sponsors: string[];
+    requiredInfo: string[];
+    country: string;
+    discount: {
+      field: string;
+      value: string;
+      discount: number;
+    };
   };
   path: string;
 };
@@ -68,6 +76,14 @@ export type UpdateEventParams = {
     isFree: boolean;
     isOnline?: boolean;
     url: string;
+    sponsors: string[];
+    requiredInfo: string[];
+    country: string;
+    discount: {
+      field: string;
+      value: string;
+      discount: number;
+    };
   };
   path: string;
 };
@@ -117,6 +133,11 @@ export type Event = {
     firstName: string;
     lastName: string;
     username: string;
+    photo: string;
+    organisationName: string;
+    publisher: "none" | "pending" | "approved" | "rejected";
+    organisationWebsite: string;
+    organisationDescription: string;
   };
   pricePlan: [pricePlan];
   isOnline: boolean;

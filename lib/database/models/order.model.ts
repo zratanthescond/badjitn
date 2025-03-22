@@ -3,6 +3,7 @@ import { Schema, model, models, Document } from "mongoose";
 enum OrderType {
   PAID = "paid",
   HOSTED = "hosted",
+  DOORPAY = "doorpay",
 }
 
 export type Detail = {
@@ -10,10 +11,25 @@ export type Detail = {
   price: string;
 };
 
+export type DiscountType = {
+  label: string;
+  field: string;
+  type: string;
+  value: string | number;
+  fieldValue: string;
+};
+
+export type RequiredUserInfoType = {
+  label: string;
+  field: string;
+  type: string;
+  value: string;
+};
+
 export interface IOrder extends Document {
   createdAt: Date;
   stripeId: string;
-  totalAmount: string;
+  totalAmount: number;
   event: {
     _id: string;
     title: string;
@@ -25,23 +41,31 @@ export interface IOrder extends Document {
   };
   type: OrderType;
   details: Detail[];
+  discountInfo?: DiscountType;
+  requiredUserInfo: RequiredUserInfoType[];
 }
-
-export type IOrderItem = {
-  _id: string;
-  totalAmount: string;
-  createdAt: Date;
-  eventTitle: string;
-  eventId: string;
-  buyer: string;
-  type: OrderType;
-  details: Detail[];
-};
 
 // Subdocument schema for `Detail`
 const DetailSchema = new Schema<Detail>({
   name: { type: String, required: true },
   price: { type: String, required: true },
+});
+
+// Subdocument schema for `DiscountInfo`
+const DiscountSchema = new Schema<DiscountType>({
+  label: { type: String, required: true },
+  field: { type: String, required: true },
+  type: { type: String, required: true },
+  value: { type: Schema.Types.Mixed, required: true }, // Can be string or number
+  fieldValue: { type: String, required: true },
+});
+
+// Subdocument schema for `RequiredUserInfo`
+const RequiredUserInfoSchema = new Schema<RequiredUserInfoType>({
+  label: { type: String, required: true },
+  field: { type: String, required: true },
+  type: { type: String, required: true },
+  value: { type: String, required: true },
 });
 
 // Main schema for `Order`
@@ -56,7 +80,8 @@ const OrderSchema = new Schema<IOrder>({
     unique: true,
   },
   totalAmount: {
-    type: String,
+    type: Number, // Changed to Number instead of String
+    required: true,
   },
   event: {
     type: Schema.Types.ObjectId,
@@ -77,6 +102,15 @@ const OrderSchema = new Schema<IOrder>({
   details: {
     type: [DetailSchema],
     required: true,
+    default: [],
+  },
+  discountInfo: {
+    type: DiscountSchema,
+    required: false, // Not all orders might have discounts
+  },
+  requiredUserInfo: {
+    type: [RequiredUserInfoSchema],
+    required: false,
     default: [],
   },
 });

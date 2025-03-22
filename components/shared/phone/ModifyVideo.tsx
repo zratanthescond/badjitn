@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import Video from "next-video";
 import { useEffect, useRef, useState } from "react";
 import AudioPlayer, { AudioPlayerList } from "./AudoPlayer";
-import { ListIcon, ListMusic, Music2Icon } from "lucide-react";
+import { ListIcon, ListMusic, Music2Icon, VideoIcon } from "lucide-react";
 import MusicUploader from "./MusicUploader";
 import { useMusic } from "@/hooks/useMusic";
 import Image from "next/image";
@@ -70,10 +70,10 @@ export function ModifyVideo({ video, setVideo, userId }: any) {
     reelMutate();
   };
   return (
-    <div className="absolute top-4 left-4 z-50 w-1/2 max-w-full ">
+    <div className="absolute top-4 left-4 z-10 w-1/2 max-w-full ">
       <AlertDialog>
-        <AlertDialogTrigger className="flex-1 glass backdrop:blur p-2 rounded-sm text-primary-50">
-          Modify Video
+        <AlertDialogTrigger className="flex flex-row items-center gap-2 glass backdrop:blur p-2 rounded-full text-primary-50">
+          <VideoIcon /> Modify Video
         </AlertDialogTrigger>
         <AlertDialogContent className="glass backdrop:blur backdrop-brightness-90 max-h-screen wrapper  px-4">
           <ScrollArea className="w-full h-screen pb-10">

@@ -2,6 +2,19 @@
 import React, { useCallback, useState, forwardRef, useEffect } from "react";
 
 // shadcn
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // utils
 import { cn } from "@/lib/utils";
@@ -12,15 +25,7 @@ import { CircleFlag } from "react-circle-flags";
 
 // data
 import { countries } from "country-data-list";
-import { Popover, PopoverTrigger, PopoverContent } from "./popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "./command";
+
 // Country interface
 export interface Country {
   alpha2: string;
@@ -79,7 +84,7 @@ const CountryDropdownComponent = (
       // Reset selected country if defaultValue is undefined or null
       setSelectedCountry(undefined);
     }
-  }, []);
+  }, [defaultValue, options]);
 
   const handleSelect = useCallback(
     (country: Country) => {
@@ -92,8 +97,8 @@ const CountryDropdownComponent = (
   );
 
   const triggerClasses = cn(
-    "flex h-9 w-9 items-center justify-center whitespace-nowrap rounded-full border border-input bg-transparent  text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-    slim === true && "w-9"
+    "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+    slim === true && "w-20"
   );
 
   return (
@@ -105,11 +110,11 @@ const CountryDropdownComponent = (
         {...props}
       >
         {selectedCountry ? (
-          <div className="flex items-center flex-grow  glass rounded-full overflow-hidden">
-            <div className="inline-flex items-center justify-center w-9 h-9 shrink-0 overflow-hidden rounded-full">
+          <div className="flex justify-start  items-center flex-grow w-0 gap-2 overflow-hidden">
+            <div className="inline-flex items-center justify-start self-start w-[40px] h-full shrink-0 overflow-hidden rounded-full">
               <CircleFlag
                 countryCode={selectedCountry.alpha2.toLowerCase()}
-                className="w-9 h-9 rounded-full"
+                height={20}
               />
             </div>
             {slim === false && (
@@ -123,10 +128,11 @@ const CountryDropdownComponent = (
             {slim === false ? (
               placeholder || setSelectedCountry.name
             ) : (
-              <Globe size={20} />
+              <Globe size={40} />
             )}
           </span>
         )}
+        {slim === false && <ChevronDown size={16} />}
       </PopoverTrigger>
       <PopoverContent
         collisionPadding={10}

@@ -75,7 +75,7 @@
 
 body {
   pointer-events: auto !important;
-  font-family: var(--font-poppins)
+  /*font-family: var(--font-poppins)*/
 }
 
 .filter-grey {
@@ -210,7 +210,7 @@ body {
   }
 
   .input-field {
-    @apply glass h-[54px] focus-visible:ring-offset-0 dark:placeholder:text-white placeholder:text-grey-500 rounded-full p-regular-16 px-4 py-3 border-none focus-visible:ring-transparent !important;
+    @apply h-[54px] focus-visible:ring-offset-0 dark:placeholder:text-white placeholder:text-grey-500 rounded-full p-regular-16 px-4 py-3 border-none focus-visible:ring-transparent !important;
   }
 
   .textarea {
@@ -399,4 +399,105 @@ body {
 
 .pg-viewer-wrapper .document-container {
   @apply dark:bg-slate-900 !important;
+}
+
+.hex-grid {
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  place-items: center;
+}
+
+.hexagon-border {
+  position: relative;
+  width: 128px;
+  height: 146px;
+  background: var(--border-color);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.hexagon {
+  width: 120px;
+  height: 138px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform 0.2s, background 0.3s;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.hexagon:hover {
+  transform: scale(1.1);
+}
+
+.hexagon-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  transition: all 0.5s cubic-bezier(0.21, 0.45, 0.15, 1.2);
+}
+
+.hexagon-inner {
+  position: absolute;
+  inset: 3px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  transition: all 0.5s cubic-bezier(0.21, 0.45, 0.15, 1.2);
+}
+
+.shine-effect {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  right: -100%;
+  bottom: -100%;
+  background: linear-gradient(45deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+
+  20%,
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+.perspective-effect {
+  perspective: 65ch;
+  transform-style: preserve-3d;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+@media (max-width: 768px) {
+  .hexagon-container {
+    width: 70px;
+    height: 70px;
+  }
 }

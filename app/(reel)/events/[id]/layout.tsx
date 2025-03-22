@@ -1,3 +1,4 @@
+import ReactQueryProvider from "@/components/contexts/ReactQueryProvider";
 import { SessionProvider } from "next-auth/react";
 
 export default function EventLayout({
@@ -8,7 +9,9 @@ export default function EventLayout({
   return (
     <div className=" max-w-screen h-screen">
       <main className="">
-        <SessionProvider>{children}</SessionProvider>
+        <ReactQueryProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </ReactQueryProvider>
       </main>
     </div>
   );

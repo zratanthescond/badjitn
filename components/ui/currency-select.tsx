@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 import { X } from "lucide-react";
+import { Separator } from "./separator";
 
 interface DataItem {
-  id?: string;
+  id: string;
   value?: string;
   name: string;
 }
@@ -42,7 +43,7 @@ export const SelectPills: React.FC<SelectPillsProps> = ({
   const filteredItems = data.filter(
     (item) =>
       item.name.toLowerCase().includes(inputValue.toLowerCase()) &&
-      !selectedPills.includes(item.name)
+      !selectedPills.includes(item.id)
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +55,7 @@ export const SelectPills: React.FC<SelectPillsProps> = ({
     const hasUnselectedMatches = data.some(
       (item) =>
         item.name.toLowerCase().includes(newValue.toLowerCase()) &&
-        !(value || selectedPills).includes(item.name)
+        !(value || selectedPills).includes(item.id)
     );
 
     setIsOpen(hasUnselectedMatches);
@@ -135,7 +136,7 @@ export const SelectPills: React.FC<SelectPillsProps> = ({
   };
 
   const handleItemSelect = (item: DataItem) => {
-    const newSelectedPills = [...selectedPills, item.name];
+    const newSelectedPills = [...selectedPills, item.id];
     setSelectedPills(newSelectedPills);
     setInputValue("");
     setIsOpen(false);
@@ -167,15 +168,15 @@ export const SelectPills: React.FC<SelectPillsProps> = ({
 
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
-      <div className="flex flex-wrap gap-2 min-h-12">
+      <div className="flex w-full flex-wrap gap-2 min-h-12 backdrop-blur-lg bg-white/30 p-5 rounded-3xl">
         {(value || selectedPills).map((pill) => (
           <Badge
             key={pill}
-            variant="secondary"
+            variant="outline"
             onClick={() => handlePillRemove(pill)}
-            className="hover:cursor-pointer gap-1 group"
+            className="hover:cursor-pointer gap-1 group p-2 "
           >
-            {pill}
+            {data.find((item) => item.id === pill)?.name || pill}
             <button
               onClick={() => handlePillRemove(pill)}
               className="appearance-none text-muted-foreground group-hover:text-foreground transition-colors"
@@ -184,6 +185,7 @@ export const SelectPills: React.FC<SelectPillsProps> = ({
             </button>
           </Badge>
         ))}
+        <Separator className="my-2" />
         <PopoverTrigger asChild>
           <Input
             ref={inputRef}
@@ -192,7 +194,7 @@ export const SelectPills: React.FC<SelectPillsProps> = ({
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="input-field dark:text-white"
+            className="input-field dark:text-white glass "
           />
         </PopoverTrigger>
       </div>
@@ -210,20 +212,20 @@ export const SelectPills: React.FC<SelectPillsProps> = ({
             e.preventDefault();
           }
         }}
-        className=""
+        className="w-[--radix-popover-trigger-width] backdrop-blur-lg bg-white/30 rounded-3xl"
       >
         <div
           ref={radioGroupRef}
           role="radiogroup"
           aria-label="Pill options"
           onKeyDown={(e) => handleRadioKeyDown(e, highlightedIndex)}
-          className="max-h-[200px] overflow-y-auto w-full"
+          className=" overflow-y-auto w-full"
         >
           {filteredItems.map((item, index) => (
             <div
               key={item.id || item.value || item.name}
               className={cn(
-                "relative flex cursor-default select-none  items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent/70 focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0",
+                "relative flex w-full cursor-default select-none  items-center gap-2 rounded-3xl px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent/70 focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0",
                 highlightedIndex === index && "bg-accent"
               )}
             >
@@ -238,7 +240,7 @@ export const SelectPills: React.FC<SelectPillsProps> = ({
               />
               <label
                 htmlFor={`pill-${item.name}`}
-                className="flex items-center w-full cursor-pointer"
+                className="flex items-center min-w-full cursor-pointer rounded-3xl"
               >
                 {item.name}
               </label>

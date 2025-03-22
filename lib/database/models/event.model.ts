@@ -22,8 +22,12 @@ export interface IEvent extends Document {
   isFree: boolean;
   url?: string;
   isOnline?: boolean;
+  sponsors?: string[];
+  country?: string;
+  requiredInfo?: string[];
   category: { _id: string; name: string };
   organizer: { _id: string; firstName: string; lastName: string };
+  discount: { field: string; value: string; discount: number };
 }
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
@@ -44,6 +48,8 @@ const EventSchema = new Schema({
       type: Number,
     },
   },
+  requiredInfo: { type: [String], default: [] },
+  sponsors: { type: [String], default: [] },
   pricePlan: { type: [pricePlanSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },
@@ -52,9 +58,15 @@ const EventSchema = new Schema({
   price: { type: String },
   isFree: { type: Boolean, default: false },
   url: { type: String },
+  country: { type: String },
   isOnline: { type: Boolean },
   category: { type: Schema.Types.ObjectId, ref: "Category" },
   organizer: { type: Schema.Types.ObjectId, ref: "User" },
+  discount: {
+    field: { type: String },
+    value: { type: String },
+    discount: { type: Number },
+  },
 });
 EventSchema.virtual("Sponsors", {
   ref: "Sponsor",

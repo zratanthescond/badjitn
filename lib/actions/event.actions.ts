@@ -29,7 +29,8 @@ const populateEvent = (query: any) => {
     .populate({
       path: "organizer",
       model: User,
-      select: "_id firstName lastName username photo",
+      select:
+        "_id firstName lastName username photo organisationName publisher organisationWebsite organisationDescription",
     })
     .populate({ path: "category", model: Category, select: "_id name" })
     .populate({ path: "Sponsors", model: Sponsor, select: "_id" });
@@ -42,7 +43,7 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
 
     const organizer = await User.findById(userId);
     if (!organizer) throw new Error("Organizer not found");
-    console.log(event.pricePlan);
+
     const newEvent = await Event.create({
       ...event,
       pricePlan: event.pricePlan,
@@ -89,6 +90,7 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
       {
         ...event,
         category: event.categoryId,
+        sponsors: event.sponsors,
       },
       { new: true }
     );

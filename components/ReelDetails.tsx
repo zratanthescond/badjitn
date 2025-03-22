@@ -10,6 +10,8 @@ import Image from "next/image";
 import {
   Calendar,
   CalendarDays,
+  CalendarIcon,
+  DoorOpen,
   Link,
   MapPin,
   Menu,
@@ -20,68 +22,71 @@ import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { MinimalTiptapEditor } from "./minimal-tiptap";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
+import FeedBackComponenet from "./shared/FeedBackComponent";
+import { differenceInDays, format } from "date-fns";
 
 export default function ReelDetails({ event }: { event: Event }) {
   const [section, setSection] = useState<string>("details");
-  const FeedBackComponenet = () => {
-    return (
-      <div className="flex w-full h-full">
-        <MinimalTiptapEditor
-          // value={field.value}
-          // onChange={(e) => field.onChange(e)}
-          className="w-full min-h-max"
-          editorContentClassName="p-1 h-52"
-          output="html"
-          placeholder="Type your Feedback here..."
-          autofocus={true}
-          editable={true}
-          editorClassName="focus:outline-none"
-        />
-      </div>
-    );
-  };
+
   const DetailComponent = () => {
     return (
-      <div className="w-full gap-2 glass p-2 rounded-2xl items-start flex flex-col">
-        <div className="flex w-full flex-row items-center justify-around">
-          <Badge variant={"destructive"} className="p-2  text-whit bg-pink-500">
-            {event.category.name}
-          </Badge>
-          <Badge className="mr-2 p-3">
-            <Link size={15} color="white" />
-            <a href={event.url} className="text-white">
-              {event.url}
-            </a>
-          </Badge>
-        </div>
+      <div className="p-1 rounded-lg mt-4 w-full ">
+        <h1 className="text-3xl font-bold text-center">{event.title}</h1>
         <div
-          className="border-2  p-1 rounded-lg mt-4 w-full bg-indigo-600"
+          className="  p-1 rounded-lg mt-4 w-full"
           dangerouslySetInnerHTML={{ __html: event.description }}
         ></div>
       </div>
     );
   };
   const DateComponenet = () => {
+    const formatDate = (date: Date) => {
+      return format(date, "EEE, MMM d, h:mm a");
+    };
+    const daysDifference = differenceInDays(
+      event.endDateTime,
+      event.startDateTime
+    );
+    const hasDaysDifference = daysDifference > 0;
     return (
-      <div className=" flex gap-4 glass rounded-2xl p-2 flex-1 flex-col min-w-full items-start justify-start">
-        <div className=" flex flex-row w-full items-center justify-between">
-          <label className="flex flex-row  p-2 text-pink-600 font-semibold rounded-lg gap-2 items-start glass">
-            <Calendar /> Start date:{" "}
-          </label>
-
-          <p className="font-semibold glass p-2 rounded-lg text-indigo-500">
-            {formatDateTime(event.startDateTime).dateTime}
-          </p>
+      <div className="flex flex-col gap-2 p-4 rounded-lg bg-card/80 w-full ">
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center gap-2">
+            <DoorOpen className="h-5 w-5 " />
+            <span className=" font-medium">Doors open at:</span>
+          </div>
+          <div className="px-4 py-2 rounded-full bg-card/30 shadow-md ">
+            {format(event.startDateTime, "h:mm a")}
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-5 w-5 " />
+            <span className=" font-medium">Start date:</span>
+          </div>
+          <div className="px-4 py-2 rounded-md ">
+            {formatDate(event.startDateTime)}
+          </div>
         </div>
 
-        <div className=" flex flex-row w-full items-center justify-between">
-          <label className="flex flex-row  p-2 text-pink-600 font-semibold rounded-lg gap-2 items-start glass">
-            <Calendar /> End date:{" "}
-          </label>
-          <p className="font-semibold glass p-2 rounded-lg text-indigo-500">
-            {formatDateTime(event.endDateTime).dateTime}
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-5 w-5 " />
+            <span className=" font-medium">End date:</span>
+          </div>
+          <div className="px-4 py-2 rounded-md ">
+            {formatDate(event.endDateTime)}
+          </div>
         </div>
+
+        {hasDaysDifference && (
+          <div className="mt-2 text-center">
+            <span className="px-3 py-1 rounded-full shadow-md bg-card/30  text-sm font-medium">
+              {daysDifference} {daysDifference === 1 ? "day" : "days"} event
+            </span>
+          </div>
+        )}
       </div>
     );
   };
@@ -97,7 +102,7 @@ export default function ReelDetails({ event }: { event: Event }) {
       case "price":
         return <EventPriceComponent event={event} />;
       case "feedback":
-        return <FeedBackComponenet />;
+        return <FeedBackComponenet eventId={event._id.toString()} />;
       default:
         break;
     }
@@ -106,57 +111,51 @@ export default function ReelDetails({ event }: { event: Event }) {
     RenderComponent();
   }, [event, section]);
   return (
-    <div className=" flex max-w-prose h-full flex-col">
-      <ScrollArea className="w-96 md:w-full">
-        <div className="flex max-w-full glass p-2 rounded-md flex-row items-start w-full  justify-between gap-2">
-          <Button
-            onClick={() => setSection("details")}
-            variant={"default"}
-            size={"sm"}
-            className="glass text-slate-500"
-          >
-            <Menu />
-            Details
-          </Button>
-          <Button
-            onClick={() => setSection("date")}
-            variant={"default"}
-            size={"sm"}
-            className="glass text-slate-500"
-          >
-            <CalendarDays />
-            Date
-          </Button>
-          <Button
-            onClick={() => setSection("location")}
-            variant={"default"}
-            size={"sm"}
-            className="glass text-slate-500"
-          >
-            <MapPin />
-            Location
-          </Button>
-          <Button
-            onClick={() => setSection("price")}
-            variant={"default"}
-            size={"sm"}
-            className="glass text-slate-500"
-          >
-            <Wallet />
-            Price
-          </Button>
-          <Button
-            onClick={() => setSection("feedback")}
-            variant={"default"}
-            size={"sm"}
-            className="glass text-slate-500"
-          >
-            <MessageSquareIcon />
-            Feedback
-          </Button>
-        </div>{" "}
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+    <div className=" flex md:max-w-prose md:w-[65ch] h-full bg-card  items-center flex-col md:dark:bg-card rounded-2xl  md:bg-card-foreground/10">
+      <Tabs
+        defaultValue={section}
+        onValueChange={setSection}
+        className="w-full  rounded-t-2xl items-center  sticky top-0 z-50 "
+      >
+        <TabsList className="w-full max-w-[97vw] rounded-b-none  flex gap-1 items-center dark:bg-card  justify-between rounded-t-2xl ">
+          <ScrollArea className="rounded-2xl w-full">
+            <div className="flex w-full flex-row my-2 items-center justify-between gap-2 ">
+              <TabsTrigger value="details" asChild>
+                <Button variant="outline" size="sm" className="rounded-full ">
+                  <Menu className="h-3.5 w-3.5 mr-1" />
+                  Details
+                </Button>
+              </TabsTrigger>
+              <TabsTrigger value="date" asChild>
+                <Button variant="outline" size="sm" className="rounded-full ">
+                  <CalendarDays className="h-3.5 w-3.5 mr-1" />
+                  Date
+                </Button>
+              </TabsTrigger>
+              <TabsTrigger value="location" asChild>
+                <Button variant="outline" size="sm" className="rounded-full ">
+                  <MapPin className="h-3.5 w-3.5 mr-1" />
+                  Location
+                </Button>
+              </TabsTrigger>
+              <TabsTrigger value="price" asChild>
+                <Button variant="outline" size="sm" className="rounded-full ">
+                  <Wallet className="h-3.5 w-3.5 mr-1" />
+                  Price
+                </Button>
+              </TabsTrigger>
+              <TabsTrigger value="feedback" asChild>
+                <Button variant="outline" size="sm" className="rounded-full ">
+                  <MessageSquareIcon className="h-3.5 w-3.5 mr-1" />
+                  Feedback
+                </Button>
+              </TabsTrigger>
+            </div>
+            <ScrollBar orientation="horizontal" className="bg-zinc-700/50" />
+          </ScrollArea>
+        </TabsList>
+      </Tabs>
+
       <div className="flex w-full  p-4">
         <RenderComponent />
       </div>

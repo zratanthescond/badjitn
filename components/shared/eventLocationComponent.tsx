@@ -1,5 +1,6 @@
 import { Event } from "@/types";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { MapPin } from "lucide-react";
 import { useState } from "react";
 
 export default function EventLocationComponent({ event }: { event: Event }) {
@@ -164,10 +165,16 @@ export default function EventLocationComponent({ event }: { event: Event }) {
       </a>
     </span>
   ) : (
-    <div className="w-full glass flex rounded-2xl p-1 flex-col ">
-      <span className="glass text-center p-2 rounded-2xl m-1 text-gray-500">
-        This event is organized on {event.location.name}
-      </span>
+    <div className="w-full glass flex rounded-2xl p-1 gap-2 flex-col ">
+      <div className="flex flex-row w-full p-2 items-center justify-between  rounded-2xl bg-card">
+        <label className="flex flex-row  p-2  font-semibold rounded-lg gap-2 items-start ">
+          <MapPin />
+        </label>
+        <span className="bg-card text-center p-2 rounded-2xl m-1 w-full">
+          This event is organized on {event.location.name}
+        </span>
+      </div>
+
       <LoadScript
         googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
       >

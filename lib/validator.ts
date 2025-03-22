@@ -4,7 +4,16 @@ const locationSchema = z.object({
   lon: z.number().min(-180).max(180, "Longitude must be between -180 and 180"),
   lat: z.number().min(-90).max(90, "Latitude must be between -90 and 90"),
 });
-
+const discountSchema = z.object({
+  field: z.string(),
+  value: z.string(),
+  discount: z
+    .string()
+    .refine((val) => !isNaN(Number(val)), {
+      message: "Must be a valid number",
+    })
+    .transform((val) => Number(val)),
+});
 export const eventFormSchema = z
   .object({
     title: z.string().min(3, "Title must be at least 3 characters"),
@@ -18,6 +27,10 @@ export const eventFormSchema = z
     isFree: z.boolean(),
     isOnline: z.boolean().optional(),
     url: z.string().url(),
+    sponsors: z.array(z.string()).optional(),
+    requiredInfo: z.array(z.string()).optional(),
+    country: z.string().optional(),
+    discount: z.union([discountSchema, z.null()]).optional(),
   })
   .refine((data) => data.isOnline || data.location !== null, {
     path: ["location"],

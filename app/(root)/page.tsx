@@ -28,7 +28,11 @@ export default async function Home({ searchParams }: SearchParamProps) {
         className="wrapper  my-2 flex flex-col gap-8 md:gap-12 rounded-xl  p-2 md:p-3"
       >
         <div className="flex w-full flex-col  gap-5 md:flex-row">
-          <CountryDropdown slim defaultValue="TUN" />
+          <CountryDropdown
+            slim
+            defaultValue="TUN"
+            className="rounded-full glass p-2 w-full max-w-[60px]  flex items-center "
+          />
           <Search />
           <DatePickerWithPresets />
           <CategoryFilter />

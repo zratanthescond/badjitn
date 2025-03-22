@@ -39,11 +39,35 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import GoogleMapComponent from "./GoogleMap";
-import { ListChecks } from "lucide-react";
+import { CalendarIcon, Disc, LinkIcon, ListChecks, MapPin } from "lucide-react";
 import PricePlanComponent from "./PricePlanComponent";
 import { pricePlan } from "@/types";
 import FormBuilder from "./FormBuilder";
 import { SelectPills } from "../ui/currency-select";
+import { useGetSponsors } from "@/hooks/useGetSponsors";
+import { useGetFields } from "@/hooks/useGetFields";
+import {
+  Dialog,
+  DialogClose,
+  DialogFooter,
+  DialogHeader,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Separator } from "../ui/separator";
+import { Card, CardContent } from "../ui/card";
+import { CountryDropdown } from "../ui/country-dropdown";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Value } from "@radix-ui/react-select";
+import DiscountDialog from "./DiscountDialogComponenet";
 
 type EventFormProps = {
   userId: string;
@@ -84,10 +108,10 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    alert("form submitted");
+    //alert("form submitted");
 
-    alert(JSON.stringify(values));
-
+    // alert(JSON.stringify(values));
+    console.log(values);
     if (type === "Create") {
       try {
         const newEvent = await createEvent({
@@ -117,7 +141,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       }
 
       try {
-        alert(JSON.stringify(pricePlan));
+        // alert(JSON.stringify(pricePlan));
         const updatedEvent = await updateEvent({
           userId,
           event: {
@@ -141,7 +165,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   }
   useEffect(() => {
     if (address.length > 0) {
-      alert("setting field value");
+      // alert("setting field value");
       form.setValue("location", {
         name: address,
         lon: longitude,
@@ -149,14 +173,37 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       });
     }
   }, [address, event, latitude, longitude]);
-
+  const { data: sponsors, isLoading } = useGetSponsors(null, null);
+  const { data: fields, isLoading: isLoadingFields } = useGetFields(userId);
+  useEffect(() => {
+    console.log(sponsors, fields);
+  }, [sponsors, fields]);
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-5"
+        className="flex flex-col gap-5 backdrop-filter backdrop-blur-3xl bg-white/10 rounded-3xl p-5"
       >
         <div className="flex flex-col gap-5 md:flex-row">
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <CountryDropdown
+                    placeholder="Country"
+                    defaultValue={field.value || "TUN"}
+                    onChange={(country) => {
+                      field.onChange(country.alpha3);
+                    }}
+                    className="input-field glass w-full flex items-center "
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="title"
@@ -166,7 +213,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                   <Input
                     placeholder="Event title"
                     {...field}
-                    className="input-field"
+                    className="input-field glass"
                   />
                 </FormControl>
                 <FormMessage />
@@ -201,7 +248,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                     <MinimalTiptapEditor
                       value={field.value}
                       onChange={(e) => field.onChange(e)}
-                      className="w-full"
+                      className="w-full  backdrop-blur-lg bg-white/10 backdrop-brightness-200"
                       editorContentClassName="p-5"
                       output="html"
                       placeholder="Type your description here..."
@@ -220,29 +267,24 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <div className="flex-center h-[54px] w-full overflow-hidden rounded-full  px-4 py-2">
+                    <div className="flex-center h-[54px] w-full overflow-hidden rounded-full glass  px-4 py-2">
                       <AlertDialog>
                         <AlertDialogTrigger className="w-full flex flex-row items-center">
-                          <Image
-                            src="/assets/icons/location-grey.svg"
-                            alt="calendar"
-                            width={24}
-                            height={24}
-                          />
+                          <MapPin className="mr-2" />
                           <Input
                             placeholder="Event location or Online"
                             {...field}
                             className="input-field w-full hidden"
                             value={JSON.stringify(field.value)}
                           />
-                          <span className="text-grey-600 text-center w-full text-sm">
+                          <span className=" text-center w-full text-sm">
                             {address.length > 0 || field.name.length > 0
                               ? address || field.value?.name
                               : "Event location or Online"}
                           </span>
                         </AlertDialogTrigger>
 
-                        <AlertDialogContent className="bg-indigo-500  wrapper">
+                        <AlertDialogContent className="bg-card wrapper">
                           <GoogleMapComponent
                             radius={500}
                             latitude={latitude}
@@ -301,17 +343,9 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <div className="flex-center h-[54px] w-full overflow-hidden rounded-full  px-4 py-2">
-                      <Image
-                        src="/assets/icons/calendar.svg"
-                        alt="calendar"
-                        width={24}
-                        height={24}
-                        className="filter-grey"
-                      />
-                      <p className="ml-3 whitespace-nowrap text-grey-600">
-                        Start Date:
-                      </p>
+                    <div className="flex-center glass !backdrop-filter-none  h-[54px] w-full overflow-hidden rounded-full  px-4 py-2">
+                      <CalendarIcon />
+                      <p className="ml-3 whitespace-nowrap ">Start Date:</p>
                       <DatePicker
                         selected={field.value}
                         onChange={(date: Date) => field.onChange(date)}
@@ -333,17 +367,9 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <div className="flex-center h-[54px] w-full overflow-hidden rounded-full  px-4 py-2">
-                      <Image
-                        src="/assets/icons/calendar.svg"
-                        alt="calendar"
-                        width={24}
-                        height={24}
-                        className="filter-grey"
-                      />
-                      <p className="ml-3 whitespace-nowrap text-grey-600">
-                        End Date:
-                      </p>
+                    <div className="flex-center h-[54px]  glass !backdrop-filter-none w-full overflow-hidden rounded-full  px-4 py-2">
+                      <CalendarIcon />
+                      <p className="ml-3 whitespace-nowrap ">End Date:</p>
                       <DatePicker
                         selected={field.value}
                         onChange={(date: Date) => field.onChange(date)}
@@ -383,13 +409,13 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                           type="number"
                           placeholder="Price"
                           {...field}
-                          className="p-regular-16 border-0  outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="p-regular-16 border-0 glass rounded-full  outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
                         <Button
                           onClick={() => setIsPricePlan(true)}
                           type="button"
                           variant={"outline"}
-                          className="border-2 p-1 gap-1 border-primary-500 text-primary-500 mx-1"
+                          className="border-2  gap-1 rounded-full mx-1 bg-pink-500"
                         >
                           <ListChecks />
                           Plans
@@ -432,18 +458,13 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <div className="flex-center h-[54px] w-full overflow-hidden rounded-full  px-4 py-2">
-                      <Image
-                        src="/assets/icons/link.svg"
-                        alt="link"
-                        width={24}
-                        height={24}
-                      />
+                    <div className="flex-center h-[54px] w-full overflow-hidden rounded-full glass  px-4 py-2">
+                      <LinkIcon />
 
                       <Input
                         placeholder="URL"
                         {...field}
-                        className="input-field"
+                        className="input-field !bg-transparent"
                       />
                     </div>
                   </FormControl>
@@ -473,65 +494,73 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                 )}
               />
             </div>
-            <div className="w-full">
-              <FormField
-                control={form.control}
-                name="requiredInfo"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Required info</FormLabel>
-                    <FormControl>
-                      <SelectPills
-                        data={[
-                          { id: "1", name: "name" },
-                          { id: "2", name: "mail" },
-                          { id: "3", name: "location" },
-                          { id: "4", name: "phone" },
-                          { id: "5", name: "activity" },
-                          { id: "6", name: "speciality" },
-                        ]}
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        placeholder="Search for required info"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Select one or more required info
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="w-full flex flex-col items-center justify-center">
+              {fields && (
+                <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">
+                  <CardContent className="bg-transparent w-full">
+                    <FormField
+                      control={form.control}
+                      name="requiredInfo"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Required info</FormLabel>
+                          <FormDescription>
+                            Select one or more required info
+                          </FormDescription>
+                          <Separator className="my-4" />
+                          <FormControl>
+                            <SelectPills
+                              data={fields}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Search for required info"
+                            />
+                          </FormControl>
+
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Separator className="my-4" />
+
+                    <DiscountDialog form={form} fields={fields} />
+                  </CardContent>
+                </Card>
+              )}
             </div>
             <div className="w-full">
-              <FormField
-                control={form.control}
-                name="sponsors"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Select your sponsors</FormLabel>
-                    <FormControl>
-                      <SelectPills
-                        data={[
-                          { id: "1", name: "Medis" },
-                          { id: "2", name: "Adwya" },
-                          { id: "3", name: "Taha Pharma" },
-                          { id: "4", name: "Unimed" },
-                          { id: "5", name: "Philadelphia" },
-                          { id: "6", name: "pfizer" },
-                        ]}
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        placeholder="Search for Sponsors"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Select one or more Sponsors
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {sponsors && (
+                <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">
+                  <CardContent className="bg-transparent w-full">
+                    <FormField
+                      control={form.control}
+                      name="sponsors"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Select your sponsors</FormLabel>{" "}
+                          <FormDescription>
+                            Select one or more Sponsors
+                          </FormDescription>
+                          <Separator className="my-4" />
+                          <FormControl>
+                            <SelectPills
+                              data={sponsors}
+                              value={field.value}
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                console.log(value);
+                              }}
+                              placeholder="Search for Sponsors"
+                              onChange={(value) => console.log(value)}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </div>
@@ -541,6 +570,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
           size="lg"
           disabled={form.formState.isSubmitting}
           className="button col-span-2 w-full"
+          variant={"outline"}
         >
           {form.formState.isSubmitting ? "Submitting..." : `${type} Event `}
         </Button>

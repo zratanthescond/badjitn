@@ -5,7 +5,8 @@ import { IEvent } from "@/lib/database/models/event.model";
 import { Button } from "../ui/button";
 import { checkoutOrder } from "@/lib/actions/order.actions";
 import { Detail } from "@/lib/database/models/order.model";
-
+import { motion } from "framer-motion";
+import { Ticket } from "lucide-react";
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 const Checkout = ({
@@ -15,7 +16,7 @@ const Checkout = ({
 }: {
   event: IEvent;
   userId?: string;
-  chekedPlans?: number[];
+  chekedPlans?: string[];
 }) => {
   const [price, setPrice] = useState<number>(0);
   const [details, setDetails] = useState<Detail[]>([]);
@@ -37,11 +38,11 @@ const Checkout = ({
       console.log("price bigger than 0");
       setPrice(parseFloat(event.price));
     }
-    if (chekedPlans && chekedPlans.length > 0) {
+    if (chekedPlans && chekedPlans.length >= 0) {
       let p = 0;
       let detail: Detail[] = [];
       event.pricePlan?.map((plan, index) => {
-        if (chekedPlans.indexOf(index) !== -1) {
+        if (chekedPlans.indexOf(plan._id) !== -1) {
           p += plan.price;
           detail.push({ name: plan.name, price: plan.price.toString() });
         }
@@ -64,15 +65,28 @@ const Checkout = ({
   };
 
   return (
-    <form action={onCheckout} method="post">
-      <Button
-        type="submit"
-        role="link"
-        size="sm"
-        className=" sm:w-fit h-10 m-4"
+    <form action={onCheckout} method="post" className="w-full">
+      <motion.div
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
-        {event.isFree ? "Get Ticket" : "Pay now"}
-      </Button>
+        <Button
+          disabled={price == 0}
+          type="submit"
+          role="link"
+          className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full py-7 font-medium shadow-lg shadow-pink-200/50 transition-all duration-300 "
+        >
+          <div className="flex w-full items-center justify-center gap-3">
+            <div className="bg-black/10 p-1.5 rounded-full">
+              <Ticket size={16} className="text-black" />
+            </div>
+            <span>
+              {event.isFree ? "Get Ticket" : "Pay now"} {price} TND
+            </span>
+          </div>
+        </Button>
+      </motion.div>
     </form>
   );
 };

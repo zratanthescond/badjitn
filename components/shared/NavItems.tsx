@@ -31,8 +31,8 @@ const NavItems = () => {
           <li
             key={link.route}
             className={`${
-              isActive && "text-primary-500"
-            } flex-center bg-none p-medium-16 whitespace-nowrap  outline-2 p-2 outline-offset-2 rounded-full hover:bg-indigo-500`}
+              isActive && "text-secondary-foreground"
+            } flex-center bg-none p-medium-16 whitespace-nowrap  outline-2 p-2 outline-offset-2 rounded-full  hover:text-muted-foreground focus-visible:outline focus-visible:outline-primary`}
           >
             <Link href={link.route} className="flex flex-row gap-2 ">
               {getIcon(link.route)} {link.label}

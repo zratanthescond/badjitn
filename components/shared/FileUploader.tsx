@@ -64,7 +64,7 @@ export function FileUploader({
     <div className="flex w-full h-full items-center justify-center">
       <div className="mockup-phone border-indigo-600 w-full h-full max-w-[400px] max-h-[930px]">
         <div className="camera"></div>
-        <div className="display bg-indigo-900 min-h-full w-full  ">
+        <div className="display bg-card/30 min-h-full w-full  ">
           {/* <Image
                 //  width={"100%"}
                 blurDataURL={imageUrl}
@@ -80,13 +80,14 @@ export function FileUploader({
             <div className="absolute right-0  top-0  h-full p-4">
               <div className="flex w-full justify-end">
                 <Button
-                  className="glass rounded-full h-12 w-12  "
+                  className="glass rounded-full  "
+                  size={"icon"}
                   onClick={() => {
                     onFieldChange("");
                     setFiles([]);
                   }}
                 >
-                  <X color="white" size={40} />
+                  <X color="white" />
                 </Button>
               </div>
               <PhoneIcons />
@@ -105,7 +106,7 @@ export function FileUploader({
         <AspectRatio ratio={7.5 / 15} className=" h-full">
           {" "}
           <div className="camera"></div>
-          <div className="display bg-indigo-700 min-h-full ">
+          <div className="display bg-card/95 min-h-full ">
             <Image
               blurDataURL={"/assets/icons/upload.svg"}
               placeholder="blur"

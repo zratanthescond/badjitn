@@ -40,7 +40,12 @@ const Header = async () => {
             <MobileNav />
           </SignedIn>
           <SignedOut>
-            <Button asChild className="rounded-full" size="lg">
+            <Button
+              asChild
+              className="rounded-full"
+              size="lg"
+              variant={"outline"}
+            >
               <Link href="/sign-in">Login</Link>
             </Button>
           </SignedOut>

@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Badge } from "../ui/badge";
 import { v4 as uuidv4 } from "uuid";
+import { Button } from "../ui/button";
 const CategoryFilter = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const router = useRouter();
@@ -50,24 +51,26 @@ const CategoryFilter = () => {
   };
 
   return (
-    <ScrollArea className="w-full rounded-full whitespace-nowrap glass  ">
-      <Badge
-        variant={"outline"}
+    <ScrollArea className="w-full glass rounded-full whitespace-nowrap p-1  ">
+      <Button
+        variant={"secondary"}
         key={uuidv4()}
-        className="select-item p-regular-14 m-1 glass text-bold font-size-14"
+        size={"lg"}
+        className="select-item p-regular-14 m-1  text-semibold rounded-full "
         onClick={() => onSelectCategory("For you")}
       >
         <span className="capitalize font-bold "> For you</span>
-      </Badge>
+      </Button>
       {categories.map((category) => (
-        <Badge
-          variant={"outline"}
+        <Button
+          variant={"secondary"}
           key={category._id}
-          className="select-item p-regular-14 m-1 glass text-bold font-size-14"
+          size={"lg"}
+          className="select-item p-regular-14 m-1  text-semibold rounded-full "
           onClick={() => onSelectCategory(category.name)}
         >
           <span className="capitalize font-bold "> {category.name}</span>
-        </Badge>
+        </Button>
       ))}
 
       <ScrollBar orientation="horizontal" />

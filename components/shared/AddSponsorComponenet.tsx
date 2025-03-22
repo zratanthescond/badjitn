@@ -32,42 +32,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { createSponsor } from "@/lib/actions/sponsor.action";
+import { toast } from "@/hooks/use-toast";
 
 const sponsorFormSchema = z.object({
   name: z
     .string()
     .min(2, { message: "Sponsor name must be at least 2 characters." }),
-  logo: z.string().optional(), // This will store the data URL of the uploaded image
+  logo: z
+    .instanceof(File, { message: "A valid file is required" })
+    .refine((file) => file.size <= 1000000, "File size must be less than 1MB")
+    .optional(), // This will store the data URL of the uploaded image
   website: z.string().url({ message: "Please enter a valid URL." }),
   tier: z.string({
     required_error: "Please select a sponsorship tier.",
   }),
-  contactName: z
-    .string()
-    .min(2, { message: "Contact name must be at least 2 characters." })
-    .optional(),
-  contactEmail: z
-    .string()
-    .email({ message: "Please enter a valid email address." })
-    .optional(),
-  startDate: z
-    .date({
-      required_error: "Please select a start date.",
-    })
-    .optional(),
-  description: z.string().optional(),
 });
 
 type SponsorFormValues = z.infer<typeof sponsorFormSchema>;
 
 const defaultValues: Partial<SponsorFormValues> = {
   logo: "",
-  description: "",
 };
 
 // Mock data for sponsors
 
-export default function SponsorForm() {
+export default function SponsorForm({ userId }: { userId: string }) {
   const [sponsors, setSponsors] = useState([]);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -76,12 +66,27 @@ export default function SponsorForm() {
     defaultValues,
   });
 
-  function onSubmit(data: SponsorFormValues) {
+  async function onSubmit(data: SponsorFormValues) {
     // Add the new sponsor to the list
-    const newSponsor = {
-      id: sponsors.length + 1,
-      ...data,
-    };
+    alert("form submitted");
+    console.log(data);
+    const formdata = new FormData();
+    formdata.append("name", data.name);
+    formdata.append("tier", data.tier);
+    formdata.append("website", data.website);
+    formdata.append("creator", userId);
+    if (data.logo !== undefined) {
+      formdata.append("logo", data.logo);
+    }
+    const result = await createSponsor(formdata);
+
+    if (result && result.success) {
+      toast({
+        title: "Success",
+        description: "Sponsor added successfully",
+        variant: "success",
+      });
+    }
 
     // Reset the form
     form.reset();
@@ -128,7 +133,7 @@ export default function SponsorForm() {
                         reader.onloadend = () => {
                           const result = reader.result as string;
                           setPreview(result);
-                          onChange(result); // Store the data URL in form state
+                          onChange(file); // Store the data URL in form state
                         };
                         reader.readAsDataURL(file);
                       }

@@ -11,14 +11,16 @@ import { handleError } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs";
 import { CreateUserParams, UpdateUserParams } from "@/types";
 import EventWork from "../database/models/work.model";
+import { redirect } from "next/navigation";
+import Stripe from "stripe";
 export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
 
     //console.log("clerkId", clerkUser?.id);
-    const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
-    // const clerkId = clerkUser?.id;
+    //const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
+    const clerkId = clerkUser?.id;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
   } catch (error) {
@@ -196,5 +198,66 @@ export async function getUserWorkByEvent({
     return JSON.parse(JSON.stringify(works));
   } catch (error) {
     handleError(error);
+  }
+}
+
+export async function requestPublisherBadge(data: {
+  userId: string;
+  organisationName: string;
+  organisationWebsite: string;
+  organisationDescription: string;
+}) {
+  try {
+    await connectToDatabase();
+    const user = await User.findById(data.userId);
+    if (!user) throw new Error("User not found");
+    user.publisher = "pending";
+    user.organisationName = data.organisationName;
+    user.organisationWebsite = data.organisationWebsite;
+    user.organisationDescription = data.organisationDescription;
+    await user.save();
+    revalidatePath("events/create");
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    handleError(error);
+    return { error: (error as Error).message };
+  }
+}
+
+export async function checkoutPublisherRequest(data: {
+  userId: string;
+  organisationName: string;
+  organisationWebsite: string;
+  organisationDescription: string;
+}) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price_data: {
+            currency: "eur",
+            unit_amount: 1000,
+            product_data: {
+              name: "publisher badge",
+              metadata: { name: "dfdfdfdfdf", price: 200 },
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        userId: data.userId,
+        details: JSON.stringify(data),
+      },
+      mode: "payment",
+      success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/events/create`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/events/create`,
+    });
+
+    redirect(session.url!);
+  } catch (error) {
+    throw error;
   }
 }

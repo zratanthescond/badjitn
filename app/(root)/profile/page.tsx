@@ -1,5 +1,7 @@
 import SponsorForm from "@/components/shared/AddSponsorComponenet";
 import Collection from "@/components/shared/Collection";
+import FieldViewer from "@/components/shared/FieldViewer";
+import FormBuilder from "@/components/shared/FormBuilder";
 import HexGridSponsor from "@/components/shared/HexSponsor";
 import HexGrid from "@/components/shared/HexSponsor";
 import { Button } from "@/components/ui/button";
@@ -10,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { getEventsByUser } from "@/lib/actions/event.actions";
 import { getOrdersByUser } from "@/lib/actions/order.actions";
 import { useUser } from "@/lib/actions/user.actions";
@@ -98,13 +101,34 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
               </Button>
             </DialogTrigger>
             <DialogContent>
-              <SponsorForm />
+              <SponsorForm userId={userId.toString()} />
             </DialogContent>
           </Dialog>
         </div>
       </section>
       <section className="wrapper my-8">
-        <HexGridSponsor />
+        <HexGridSponsor userId={userId.toString()} />
+      </section>
+      <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
+        <div className="wrapper flex items-center justify-center sm:justify-between">
+          <h3 className="h3-bold text-center sm:text-left">
+            Custom required info
+          </h3>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="lg" variant={"outline"} className="button">
+                Add new input
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className="min-w-full bg-card ">
+              <FormBuilder userId={userId.toString()} />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </section>
+      <section className="wrapper my-8">
+        <FieldViewer userId={userId.toString()} />
       </section>
     </>
   );

@@ -12,6 +12,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import React from "react";
+import localFont from "next/font/local";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -25,7 +26,32 @@ export const metadata: Metadata = {
     icon: "/assets/images/logo.png",
   },
 };
-
+const inter = localFont({
+  src: [
+    {
+      path: "../public/fonts/youtube-sans/YouTubeSansRegular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/youtube-sans/YouTubeSansMedium.otf",
+      weight: "500",
+      style: "medium",
+    },
+    {
+      path: "../public/fonts/youtube-sans/YouTubeSansBold.otf",
+      weight: "700",
+      style: "bold",
+    },
+    {
+      path: "../public/fonts/youtube-sans/YouTubeSansBlack.otf",
+      weight: "900",
+      style: "normal",
+    },
+  ],
+  variable: "--font-youtube-sans",
+  display: "swap",
+});
 export default function RootLayout({
   children,
 }: {
@@ -36,7 +62,7 @@ export default function RootLayout({
       <html lang="en">
         <body
           className={
-            (poppins.variable,
+            (inter.className,
             " flex flex-1 min-h-screen flex-col items-center justify-center  antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900")
           }
         >

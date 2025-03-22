@@ -23,6 +23,7 @@ import {
   ArrowBigLeft,
   ArrowLeft,
   Facebook,
+  Globe,
   Heart,
   Instagram,
   List,
@@ -44,15 +45,23 @@ import {
 import { Input } from "../ui/input";
 import { FaWhatsapp } from "react-icons/fa6";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { XProfileCard } from "./Xprofile";
+import { Badge } from "../ui/badge";
+import { Skeleton } from "../ui/skeleton";
+import { useGetEventSponsors } from "@/hooks/useGetEventSponsors";
+import { Card } from "../ui/card";
+import { borderColors } from "@/constants";
+import SponsorsSection from "./SponsorSection";
 type Props = {
-  data: any;
+  data: Event[];
   totalPages: number;
 };
 const ShortsScroll = ({ videos }: { videos?: Props }) => {
   const parentRef = useRef<HTMLDivElement>(null);
   if (!videos) {
-    return <div>Loading...</div>; // Fallback UI
+    return <Skeleton className="h-[100vh] w-full " />; // Fallback UI
   }
+
   const [show, setShow] = useState<boolean>(false);
   console.log(videos.data[0].organizer);
   const { height: containerHeight } =
@@ -118,12 +127,12 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
       <div className="relative w-full ">
         {rowVirtualizer.getVirtualItems().map((virtualItem) => {
           const video = videos?.data[virtualItem.index];
+
           return (
             <div
               key={video._id}
-              className="h-screen glass snap-start flex items-center justify-center gap-2 md:p-4 md:m-4 "
+              className="h-screen  snap-start flex items-center justify-end gap-2 md:p-4 md:m-4 "
             >
-              {console.log(video)}
               <div className="flex h-full w-full md:w-1/4 lg:w-1/4">
                 <HLSPlayer
                   manifest={video.imageUrl}
@@ -134,7 +143,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                   controls
                   className="md:rounded-xl object-fill w-full h-full   "
                 />
-                <div className="flex h-full pointer-events-none justify-between w-full absolute flex-col p-2 md:w-1/4">
+                <div className="flex h-screen pointer-events-none justify-between w-full absolute flex-col p-2 md:w-1/4">
                   <Button
                     size={"icon"}
                     className="glass rounded-full  pointer-events-auto"
@@ -144,7 +153,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                   >
                     <ArrowLeft color="white" />
                   </Button>
-                  <div className="  pr-1 max-h-fit max-w-fit self-end justify-self-end items-center pointer-events-auto justify-evenly gap-3 flex flex-col">
+                  <div className="pr-3 max-h-fit max-w-fit self-end justify-self-end items-center pointer-events-auto justify-evenly gap-3 flex flex-col">
                     <Button
                       size={"icon"}
                       className="glass rounded-full "
@@ -195,45 +204,104 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                   </div>
                   <h4 className="text-white pb-10">{video.title}</h4>
                 </div>
-              </div>
+              </div>{" "}
               <div
                 className={`${
-                  show ? "flex" : "hidden md:flex"
-                } flex-col absolute bottom-0  md:relative glass rounded-lg w-full h-5/6 md:h-full items-center justify-start gap-2 p-2 md:w-1/2 animate-accordion-down repeat-1`}
+                  show
+                    ? "flex top-[30vh] bg-card/5 md:top-auto max-h-[70vh] md:max-h-full"
+                    : "hidden  md:flex"
+                } flex-col glass  fixed bottom-0  md:max-w-prose md:relative  rounded-2xl w-full  md:h-full items-center justify-start gap-2   animate-accordion-down repeat-1`}
               >
-                <ScrollArea>
-                  <div className="flex flex-row items-start justify-between max-w-5/6">
-                    <div className="flex flex-col items-start ">
-                      <Image
-                        src={video.organizer.photo}
-                        alt="avatar"
-                        width={40}
-                        height={40}
-                        className="rounded-full ml-3"
-                      />
-                      <div className="flex flex-col items-start justify-start">
-                        <h3 className="font-bold">
-                          {video.organizer.firstName}
-                        </h3>
-                        <Button variant={"link"} size={"sm"}>
-                          <p className="w-full">@{video.organizer.username}</p>
-                        </Button>
-                      </div>
-                      <Button variant={"link"} size={"sm"}>
-                        Follow
-                      </Button>
-                    </div>
-                    <Button
-                      size={"icon"}
-                      className="glass rounded-full h-10 w-10"
-                      onClick={() => {
-                        setShow(!show);
-                      }}
-                    >
-                      <IoClose size={25} strokeWidth={25} color="white" />
-                    </Button>
+                <Button
+                  size={"icon"}
+                  variant={"ghost"}
+                  className=" absolute top-0 right-0 rounded-full z-10 md:hidden"
+                  onClick={() => {
+                    setShow(!show);
+                  }}
+                >
+                  <IoClose size={25} strokeWidth={25} color="white" />
+                </Button>
+                <ScrollArea className="w-full h-full">
+                  <div className="flex flex-row items-start justify-between  w-full p-2 ">
+                    <XProfileCard
+                      username={
+                        video.organizer.firstName +
+                        " " +
+                        video.organizer.lastName
+                      }
+                      avatarUrl={video.organizer.photo}
+                      isVerified={
+                        video.organizer.publisher &&
+                        video.organizer.publisher === "approved"
+                      }
+                      handle={video.organizer.username}
+                      organization={video.organizer.organisationName}
+                      bio={video.organizer.organisationDescription}
+                    />
                   </div>
-                  <h1>{video.title}</h1>
+                  <div className="flex flex-row items-center justify-between p-2">
+                    {/* {sponsors && !isPending && sponsors.data && (
+                          // sponsors.data.map((card, index) => (
+                          //   <div
+                          //     key={index}
+                          //     className="hexagon-border !w-[15vh] !h-[15vh] !rounded-md"
+                          //     style={{
+                          //       "--border-color":
+                          //         borderColors[index % borderColors.length],
+                          //     }}
+                          //   >
+                          //     <a
+                          //       href={card.website}
+                          //       target="_blank"
+                          //       rel="noopener noreferrer"
+                          //     >
+                          //       <Card
+                          //         className="hexagon !w-[14vh] !h-[14vh] "
+                          //         style={{
+                          //           backgroundImage: `url(${card.logo})`,
+                          //           backgroundSize: "contain",
+                          //           backgroundPosition: "center",
+                          //           backgroundRepeat: "no-repeat",
+                          //           backgroundOrigin: "border-box",
+                          //         }}
+                          //       ></Card>
+                          //     </a>
+                          //   </div>
+                          // ))}
+                        
+                        )} /*/}{" "}
+                    {video.sponsors && video.sponsors.length > 0 && (
+                      <SponsorsSection sponsorsIds={video.sponsors} />
+                    )}
+                  </div>
+                  <h1 className="font-semibold text-center w-full text-3xl py-4">
+                    {video.title}
+                  </h1>
+                  <div className="flex flex-row items-center justify-between p-2">
+                    <div className="flex gap-2 mb-4">
+                      <Badge className="bg-pink-500 hover:bg-pink-600">
+                        {video.category.name}
+                      </Badge>
+                    </div>
+                    <div className="flex gap-2 mb-4">
+                      <a
+                        href={video.url || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-link mt-0.5"
+                      >
+                        <Button
+                          variant={"outline"}
+                          size={"sm"}
+                          className=" text-sm flex flex-row rounded-full items-center"
+                        >
+                          <Globe className="mr-1 h-4 w-4" />
+                          Check website
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
                   <ReelDetails event={video} />
                   <ScrollBar orientation="vertical" />
                 </ScrollArea>

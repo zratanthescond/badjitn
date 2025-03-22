@@ -12,7 +12,7 @@ import NavItems from "./NavItems";
 
 const MobileNav = () => {
   return (
-    <nav className="md:hidden ">
+    <nav className="md:hidden  ">
       <Sheet>
         <SheetTrigger className="align-middle">
           <Image
@@ -23,7 +23,7 @@ const MobileNav = () => {
             className="cursor-pointer"
           />
         </SheetTrigger>
-        <SheetContent className="flex   flex-col gap-6 md:hidden">
+        <SheetContent className="flex bg-card/30  flex-col gap-6 md:hidden">
           <div className="flex flex-row justify-center">
             <Image
               src="/assets/images/logo.png"
