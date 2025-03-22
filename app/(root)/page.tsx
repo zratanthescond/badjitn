@@ -1,6 +1,7 @@
 import CategoryFilter from "@/components/shared/CategoryFilter";
 import Collection from "@/components/shared/Collection";
 import { DatePickerWithPresets } from "@/components/shared/DateFilter";
+import { HomeEventCardSkeleton } from "@/components/shared/HomeEventSkeleton";
 import Search from "@/components/shared/Search";
 import { Button } from "@/components/ui/button";
 import { CountryDropdown } from "@/components/ui/country-dropdown";
@@ -8,6 +9,7 @@ import { getAllEvents } from "@/lib/actions/event.actions";
 import { SearchParamProps } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function Home({ searchParams }: SearchParamProps) {
   const page = Number(searchParams?.page) || 1;
@@ -37,16 +39,17 @@ export default async function Home({ searchParams }: SearchParamProps) {
           <DatePickerWithPresets />
           <CategoryFilter />
         </div>
-
-        <Collection
-          data={events?.data}
-          emptyTitle="No Events Found"
-          emptyStateSubtext="Come back later"
-          collectionType="All_Events"
-          limit={30}
-          page={page}
-          totalPages={events?.totalPages}
-        />
+        <Suspense fallback={<HomeEventCardSkeleton />}>
+          <Collection
+            data={events?.data}
+            emptyTitle="No Events Found"
+            emptyStateSubtext="Come back later"
+            collectionType="All_Events"
+            limit={30}
+            page={page}
+            totalPages={events?.totalPages}
+          />
+        </Suspense>
       </section>
     </>
   );
