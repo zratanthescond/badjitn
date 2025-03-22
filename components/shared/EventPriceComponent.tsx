@@ -141,7 +141,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   };
 
   const calculatePrice = (price: number) => {
-    let finalPrice = price;
+    let finalPrice = parseFloat(String(price)) || 0;
     if (discountInfo && parseFloat(String(discountInfo.value)) > 0) {
       let discountValue = parseFloat(String(discountInfo.value));
       finalPrice = price - (price * discountValue) / 100;
