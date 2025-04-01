@@ -8,34 +8,36 @@ import Hls from "hls.js";
 
 interface Props extends React.HTMLProps<HTMLVideoElement> {
   manifest: string;
+  isActive: boolean; // 🔥 Controls if this video should play
 }
 
 const HLSPlayer = forwardRef<HTMLVideoElement, Props>(
-  ({ manifest, ...props }, ref) => {
+  ({ manifest, isActive = true, ...props }, ref) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const hlsRef = useRef<Hls | null>(null);
 
     useImperativeHandle(ref, () => videoRef.current!);
 
     useEffect(() => {
-      const video = videoRef.current;
-      if (!video || !manifest) return;
+      if (!isActive || !manifest) return; // Only initialize if active
 
-      // Ensure previous HLS instance is destroyed
+      const video = videoRef.current;
+      if (!video) return;
+
+      // Destroy existing HLS instance if any
       if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
       }
 
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        // Safari (native HLS)
+        // Safari native HLS support
         video.src = manifest;
-        video.addEventListener("loadedmetadata", () => video.play());
+        video.play().catch(() => console.log("Autoplay blocked"));
       } else if (Hls.isSupported()) {
+        // Use HLS.js for Chrome and other browsers
         const hls = new Hls({
-          lowLatencyMode: true,
-          maxBufferLength: 10,
-          liveSyncDurationCount: 2,
+          autoStartLoad: true,
         });
 
         hlsRef.current = hls;
@@ -43,39 +45,26 @@ const HLSPlayer = forwardRef<HTMLVideoElement, Props>(
         hls.attachMedia(video);
 
         hls.on(Hls.Events.MANIFEST_LOADED, () => {
-          console.log("HLS manifest loaded successfully");
+          video.play().catch(() => console.log("Autoplay blocked"));
         });
-
-        hls.on(Hls.Events.ERROR, (event, data) => {
-          console.error("HLS Error:", data);
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                console.warn("Network error occurred, retrying...");
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                console.warn("Media error, attempting recovery...");
-                hls.recoverMediaError();
-                break;
-              default:
-                console.error("Unrecoverable error, destroying HLS instance.");
-                hls.destroy();
-                hlsRef.current = null;
-            }
-          }
-        });
-      } else {
-        console.error("HLS is not supported on this device.");
       }
 
       return () => {
         hlsRef.current?.destroy();
         hlsRef.current = null;
       };
-    }, [manifest]);
+    }, [isActive, manifest]); // Ensure re-init on active change
 
-    return <video {...props} ref={videoRef} autoPlay muted playsInline />;
+    return (
+      <video
+        {...props}
+        ref={videoRef}
+        autoPlay
+        muted // 🔥 Required for autoplay to work on mobile!
+        playsInline // 🔥 Required for iOS
+        //controls={false} // Hide controls to mimic TikTok
+      />
+    );
   }
 );
 
