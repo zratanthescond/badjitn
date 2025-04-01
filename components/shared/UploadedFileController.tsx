@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function UploadedFileController({
   fileUrl,
@@ -26,8 +27,8 @@ export default function UploadedFileController({
   refetch,
 }: {
   fileUrl: string;
-  setPreviewUrl: React.Dispatch<React.SetStateAction<string>>;
-  setFileType: React.Dispatch<React.SetStateAction<string>>;
+  setPreviewUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  setFileType: React.Dispatch<React.SetStateAction<string | null>>;
   workId: string;
   refetch: () => void;
 }) {
@@ -44,14 +45,14 @@ export default function UploadedFileController({
     }
   }, [isSuccess]);
   return (
-    <div className="p-2 h-10 flex w-full flex-row items-center justify-between glass rounded-lg">
+    <div className="p-2 h-12 flex  flex-row items-center justify-between border-current border-2 rounded-full mx-2">
       <div className="flex items-center gap-2 justify-start">
         {extension === "docx" || extension === "doc" ? (
           <FaFileWord />
         ) : (
           <FaFilePdf />
         )}
-        {name}.{extension}
+        <span className="text-sm text-ellipsis">{name}</span>
       </div>
 
       <div className="flex items-start justify-end">
@@ -60,6 +61,8 @@ export default function UploadedFileController({
           size={"icon"}
           className="ml-2"
           onClick={() => {
+            setPreviewUrl(null);
+            setFileType(null);
             setPreviewUrl(newFilePreviewUrl);
             setFileType(extension);
           }}
@@ -78,7 +81,7 @@ export default function UploadedFileController({
               <Trash />
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-card">
             <AlertDialogHeader>
               <AlertDialogTitle>
                 Are you sure you want to delete?
@@ -88,8 +91,11 @@ export default function UploadedFileController({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel className="rounded-full">
+                Cancel
+              </AlertDialogCancel>
               <AlertDialogAction
+                className="bg-red-600 hover:bg-red-700 rounded-full"
                 onClick={() => {
                   mutate();
                 }}
@@ -99,10 +105,19 @@ export default function UploadedFileController({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <Button variant={"ghost"} size={"icon"} className="ml-2" asChild>
-          <a href={newFilePreviewUrl} target="_blank" rel="noopener noreferrer">
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          className="ml-2 rounded-full"
+          asChild
+        >
+          <Link
+            href={newFilePreviewUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             <FileDown />
-          </a>
+          </Link>
         </Button>
       </div>
     </div>

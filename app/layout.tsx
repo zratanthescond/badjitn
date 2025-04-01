@@ -13,6 +13,9 @@ import {
 } from "@tanstack/react-query";
 import React from "react";
 import localFont from "next/font/local";
+import { useUser } from "@/lib/actions/user.actions";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -52,7 +55,7 @@ const inter = localFont({
   variable: "--font-youtube-sans",
   display: "swap",
 });
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;

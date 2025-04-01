@@ -111,6 +111,10 @@ export async function getOrdersByEvent({
           buyer: {
             $concat: ["$buyer.firstName", " ", "$buyer.lastName"],
           },
+          type: 1,
+          details: 1,
+          discountInfo: 1,
+          requiredUserInfo: 1,
         },
       },
       {

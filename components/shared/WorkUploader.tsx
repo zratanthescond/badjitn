@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Loader, UploadCloud } from "lucide-react";
+import { Loader, UploadCloud, UploadCloudIcon } from "lucide-react";
 import FileViewer from "react-file-viewer";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
@@ -21,6 +21,8 @@ import { toast } from "@/hooks/use-toast";
 import { useGetWork } from "@/hooks/useGetWork";
 import UploadedFileController from "./UploadedFileController";
 import { extractFileDetails } from "@/lib/utils";
+import { generateClientDropzoneAccept } from "uploadthing/client";
+import { useDropzone } from "react-dropzone";
 
 export default function WorkUploader({
   eventId,
@@ -35,12 +37,21 @@ export default function WorkUploader({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [note, setNote] = useState<Content>(data?.works.note);
   const [fileType, setFileType] = useState<string | null>(null);
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setFile(acceptedFiles[0]);
+    setPreviewUrl(URL.createObjectURL(acceptedFiles[0]));
+    const { name, extension } = extractFileDetails(acceptedFiles[0].name);
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl); // Cleanup
-    };
-  }, [previewUrl]);
+    setFileType(extension);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "application/pdf": [".pdf"],
+      "application/msword": [".doc", ".docx"],
+    },
+  });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -138,39 +149,46 @@ export default function WorkUploader({
           </Button>
         </CardContent>
       </Card>
-      <Card className=" bg-transparent flex  text-center max-h-full   h-full w-full ">
+      <Card className=" bg-transparent flex  text-center max-h-full md:w-1/2   h-full w-full ">
         <CardContent className="max-h-[90vh] flex flex-col glass gap-2 rounded-lg p-2 w-full  ">
           {" "}
           <CardHeader className="h-2 text-sm">
             Upload a Word or a PDF file
           </CardHeader>
           <Separator />
-          <Input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleFileChange}
-            className="glass border-dashed border-2 rounded-lg border-white w-full"
-            placeholder="Upload a file"
-          />
+          <div
+            {...getRootProps()}
+            className="bg-card border-dashed h-14 cursor-pointer border-2 items-center justify-center rounded-full text-center  border-white w-full"
+          >
+            <input
+              {...getInputProps()}
+              type="file"
+              className="cursor-pointer "
+            />
+            <div className="flex items-center self-center justify-center gap-2">
+              <p className="text-sm"> Select a file to upload pdf or word </p>
+              <UploadCloudIcon className="self-center" size={20} />
+            </div>
+          </div>
           <Separator />
-          {data && data.works && data.works.fileUrls && (
-            <div className="flex flex-col w-full gap-2 h-14">
+          {data?.works?.fileUrls && (
+            <div className="flex w-full">
               {data.works.fileUrls.length === 0 && <p>Uploaded files:</p>}
-              <ScrollArea className="max-h-14 p-0.5 h-14 rounded-lg backdrop-blur-lg backdrop-brightness-100">
-                <div className="flex flex-col w-full gap-2 h-14">
+              <ScrollArea className="bg-card rounded-full w-full overflow-x-auto">
+                <div className="flex items-center justify-start gap-2 h-14 min-w-max">
                   {data.works.fileUrls.map((fileUrl: string, index: number) => (
                     <UploadedFileController
                       key={index}
                       fileUrl={fileUrl}
-                      setPreviewUrl={setPreviewUrl}
-                      setFileType={setFileType}
+                      setPreviewUrl={(value) => setPreviewUrl(value)}
+                      setFileType={(value) => setFileType(value)}
                       workId={data.works._id}
                       refetch={refetch}
                     />
                   ))}
                 </div>
                 <ScrollBar orientation="horizontal" />
-              </ScrollArea>{" "}
+              </ScrollArea>
             </div>
           )}
           <Separator />

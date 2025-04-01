@@ -27,7 +27,6 @@ export default function HomePostContainer({
         <>
           <HLSPlayer
             manifest={src}
-            ref={videoRef}
             muted
             autoPlay
             className={className}

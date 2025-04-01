@@ -75,7 +75,6 @@ export default function TicketControleDropdown({
                   <ScrollArea className=" w-full">
                     <WorkUploader eventId={eventId} userId={userId} />
                     <ScrollBar orientation="vertical" />
-                    <ScrollBar orientation="horizontal" />
                   </ScrollArea>
                 </CardContent>
               </Card>

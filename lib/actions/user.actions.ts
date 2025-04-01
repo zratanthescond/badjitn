@@ -13,6 +13,9 @@ import { CreateUserParams, UpdateUserParams } from "@/types";
 import EventWork from "../database/models/work.model";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
+import { ObjectId } from "mongodb";
+import { clerkClient } from "@clerk/nextjs/server";
+
 export async function useUser() {
   try {
     await connectToDatabase();
@@ -200,7 +203,70 @@ export async function getUserWorkByEvent({
     handleError(error);
   }
 }
+export async function getUserWorkByEventId({
+  eventId,
+  searchString,
+}: {
+  eventId: string;
+  searchString: string;
+}) {
+  try {
+    await connectToDatabase();
+    const eventObjectId = new ObjectId(eventId);
+    if (!eventId) throw new Error("Event ID is required");
+    const orders = await EventWork.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "buyer",
+        },
+      },
+      {
+        $unwind: "$buyer",
+      },
+      {
+        $lookup: {
+          from: "events",
+          localField: "eventId",
+          foreignField: "_id",
+          as: "event",
+        },
+      },
+      {
+        $unwind: "$event",
+      },
+      {
+        $project: {
+          _id: 1,
 
+          createdAt: 1,
+          eventTitle: "$event.title",
+          eventId: "$event._id",
+          buyer: {
+            $concat: ["$buyer.firstName", " ", "$buyer.lastName"],
+          },
+
+          fileUrls: 1,
+          note: 1,
+        },
+      },
+      {
+        $match: {
+          $and: [
+            { eventId: eventObjectId },
+            { buyer: { $regex: RegExp(searchString, "i") } },
+          ],
+        },
+      },
+    ]);
+    console.log(orders);
+    return JSON.parse(JSON.stringify(orders));
+  } catch (error) {
+    handleError(error);
+  }
+}
 export async function requestPublisherBadge(data: {
   userId: string;
   organisationName: string;
@@ -259,5 +325,80 @@ export async function checkoutPublisherRequest(data: {
     redirect(session.url!);
   } catch (error) {
     throw error;
+  }
+}
+export async function admingetUsers() {
+  try {
+    await connectToDatabase();
+    const users = await User.find({});
+    return JSON.parse(JSON.stringify(users));
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function approvePublisher(userId: string) {
+  try {
+    await connectToDatabase();
+    const user = await User.findById(userId);
+    if (!user) throw new Error("User not found");
+    user.publisher = "approved";
+    await user.save();
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function rejectPublisher(userId: string) {
+  try {
+    await connectToDatabase();
+    const user = await User.findById(userId);
+    if (!user) throw new Error("User not found");
+    user.publisher = "rejected";
+    await user.save();
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function banUser(userId: string) {
+  try {
+    await connectToDatabase();
+
+    const user = await User.findById(userId);
+    user.isBanned = true;
+    await user.save();
+    revalidatePath("/cockpit");
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function unbanUser(userId: string) {
+  try {
+    await connectToDatabase();
+    const user = await User.findById(userId);
+    user.isBanned = false;
+    await user.save();
+    revalidatePath("/cockpit");
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function admingetReports() {
+  try {
+    await connectToDatabase();
+    const reports = await Report.find({})
+      .populate({
+        path: "userId",
+        model: User,
+        select: "_id firstName lastName",
+      })
+      .populate({ path: "eventId", model: Event, select: "_id title" });
+    return JSON.parse(JSON.stringify(reports));
+  } catch (error) {
+    handleError(error);
   }
 }

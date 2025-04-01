@@ -17,6 +17,7 @@ export interface IUser extends Document {
   role: "user" | "admin";
   organisationWebsite: string;
   organisationDescription: string;
+  isBanned: boolean;
 }
 const UserSchema = new Schema({
   clerkId: {
@@ -46,6 +47,7 @@ const UserSchema = new Schema({
   organisationDescription: { type: String },
   organisationWebsite: { type: String },
   role: { type: String, default: "user" },
+  isBanned: { type: Boolean, default: false },
 });
 
 const User = models.User || model("User", UserSchema);

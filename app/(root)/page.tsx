@@ -6,9 +6,11 @@ import Search from "@/components/shared/Search";
 import { Button } from "@/components/ui/button";
 import { CountryDropdown } from "@/components/ui/country-dropdown";
 import { getAllEvents } from "@/lib/actions/event.actions";
+import { useUser } from "@/lib/actions/user.actions";
 import { SearchParamProps } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export default async function Home({ searchParams }: SearchParamProps) {

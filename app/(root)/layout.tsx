@@ -1,5 +1,6 @@
 import AuthContext from "@/components/contexts/AuthContext";
 import ReactQueryProvider from "@/components/contexts/ReactQueryProvider";
+import RedirectComponent from "@/components/RedirectComponent";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 
