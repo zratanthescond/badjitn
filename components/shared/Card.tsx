@@ -98,14 +98,14 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
                 ) : (
                   <div className="flex flex-row w-full items-center justify-evenly p-1">
                     <MapPin size={16} stroke="white" />
-                    <span className="text-white flex flex-row text-sm font-semibold sm:text-xs sm:font-extralight">
+                    <span className="text-white flex flex-row text-xs font-semibold sm:text-xs sm:font-extralight">
                       {" "}
                       {getLastTwoWords(event.location?.name!)}
                     </span>
-                    <span className="text-white flex flex-row text-sm font-semibold">
+                    <span className="text-white flex flex-row text-xs font-extralight">
                       -
                     </span>
-                    <span className="text-white flex flex-row text-sm font-semibold">
+                    <span className="text-white flex flex-row text-xs font-extralight">
                       {formatDateTime(event.startDateTime).timeOnly}
                     </span>
                   </div>
