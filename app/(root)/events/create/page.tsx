@@ -32,7 +32,7 @@ const CreateEvent = async () => {
           </Card>
         </div>
       )}
-      {user.publisher && user.publisher === "approved" && (
+      {user && user.publisher && user.publisher === "approved" && (
         <div className="wrapper glass rounded-xl  p-4  my-8">
           <EventForm userId={user._id} type="Create" />
         </div>

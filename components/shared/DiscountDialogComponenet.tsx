@@ -68,7 +68,7 @@ const DiscountDialog: React.FC<DiscountDialogProps> = ({ form, fields }) => {
               <FormItem>
                 <FormDescription>choose a field and a value</FormDescription>
                 <FormControl>
-                  {form.getValues("requiredInfo")!.length > 0 ? (
+                  {form.getValues("requiredInfo")?.length > 0 ? (
                     <div className="flex flex-col items-center justify-between gap-4 px-4 py-2">
                       <div className="flex flex-row items-center justify-between gap-4">
                         <Select
