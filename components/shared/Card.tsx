@@ -53,7 +53,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const sponsored = event.Sponsors && event.Sponsors.length > 0;
 
   return (
-    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm  shadow-md transition-all hover:shadow-lg md:min-h-[380px]">
+    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-xl backdrop-blur-sm  shadow-md transition-all hover:shadow-lg aspect-[9/16] md:min-h-[380px]">
       <Link
         href={hidePrice ? {} : `/events/${event._id}`}
         className={`flex-center flex-grow  bg-cover bg-center text-grey-500 w-full h-full`}
