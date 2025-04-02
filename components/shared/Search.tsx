@@ -15,8 +15,10 @@ import { Search as SearchIcon } from "lucide-react";
 
 const Search = ({
   placeholder = "Search title...",
+  slim = false,
 }: {
   placeholder?: string;
+  slim?: boolean;
 }) => {
   const [query, setQuery] = useState("");
   const router = useRouter();
@@ -50,19 +52,19 @@ const Search = ({
       <DropdownMenuTrigger asChild>
         <Button
           variant={"ghost"}
-          className="sm:w-52 min-h-[54px] glass rounded-full w-full"
+          className=" min-h-[54px] glass rounded-full md:w-full md:mx-2"
         >
-          <SearchIcon className="h-4 w-4 mr-2" />
+          <SearchIcon className="  " />
           Search
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full p-2 rounded-full">
-        <div className="flex-center  w-full overflow-hidden rounded-full glass bg-muted ">
+        <div className="flex-center  w-full overflow-hidden rounded-full glass bg-card ">
           <Input
             type="text"
             placeholder={placeholder}
             onChange={(e) => setQuery(e.target.value)}
-            className="p-regular-16 border-0 bg-transparent outline-offset-0 placeholder:text-grey-500 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="p-regular-16 border-0 w-full  outline-offset-0  focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
       </DropdownMenuContent>
