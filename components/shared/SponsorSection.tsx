@@ -329,14 +329,14 @@ export default function SponsorsSection({
               }}
             >
               <div className="inline-block w-full mb-3">
-                <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase bg-white/10 text-white/70 px-3 py-1 rounded-full mb-1">
+                <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase bg-white/10 text-foreground/70 px-3 py-1 rounded-full mb-1">
                   <Sparkles size={14} className="text-amber-400" />
                   <span>Our Valued Partners</span>
                 </span>
               </div>
 
               <h2 className="text-lg md:text-lg font-bold mb-2 relative inline-block">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-white">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-card-foreground/10 via-gray-400 to-card-foreground/10">
                   Trusted by Industry Leaders
                 </span>
                 <motion.div

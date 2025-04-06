@@ -13,15 +13,24 @@ import { useQuery } from "@tanstack/react-query";
 
 import { CardSkeleton } from "./CardSkeleton";
 import {
+  adminDiscardReport,
   admingetReports,
   approvePublisher,
   rejectPublisher,
 } from "@/lib/actions/user.actions";
 import UserAlertDialog from "./admin-alert-dialog";
+import { ReportAlertDialog } from "./report-alert-dialog";
+import { tr } from "date-fns/locale";
+import {
+  adminBanEventCreator,
+  restrictEvent,
+} from "@/lib/actions/event.actions";
+import { on } from "events";
+import { useEffect } from "react";
 
 export default function ReportsAdminstration() {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { isPending, data, error } = useQuery({
+  const { isLoading, data, error, refetch } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       const orders = await admingetReports();
@@ -29,25 +38,60 @@ export default function ReportsAdminstration() {
       return orders;
     },
   });
+
+  const onDiscardReport = async (reportId: string) => {
+    try {
+      await adminDiscardReport(reportId);
+    } catch (error) {
+      console.error("Failed to discard report:", error);
+    }
+  };
+  const onHideEvent = async (eventId: string) => {
+    try {
+      await restrictEvent(eventId);
+    } catch (error) {
+      console.error("Failed to hide event:", error);
+    }
+  };
+  const onBanCreator = async (eventId: string) => {
+    try {
+      await adminBanEventCreator(eventId);
+    } catch (error) {
+      console.error("Failed to hide event:", error);
+    }
+  };
   const renderMobileCard = (item: any) => (
     <MobileCard
       key={item.id}
-      title={item.name}
+      title={item?.eventId?.title}
       subtitle={`ID: ${item._id}`}
-      badge={item.role}
+      badge={item.status}
       details={[
-        { label: "", value: item.username },
-        { label: "Publisher", value: item.publisher, align: "right" },
+        {
+          label: "Reporter",
+          value: item?.userId?.firstName + " " + item?.userId?.lastName,
+        },
+        {
+          label: "Creator",
+          value:
+            item?.eventId?.organizer?.firstName +
+            " " +
+            item?.eventId?.organizer?.lastName,
+          align: "right",
+        },
+        { label: "Cause", value: item?.cause, align: "right" },
       ]}
       footer={
         <div className="flex justify-between items-center w-full">
           <span className="text-xs ">
-            {formatDateTime(item.createdAt).dateTime}
+            {formatDateTime(item?.createdAt).dateTime}
           </span>
-          <UserAlertDialog
-            user={item}
-            onApprovePublisherRequest={approvePublisher}
-            onRejectPublisherRequest={rejectPublisher}
+          <ReportAlertDialog
+            onDiscardReport={onDiscardReport}
+            refetch={refetch}
+            event={item}
+            onHideEvent={onHideEvent}
+            onBanCreator={onBanCreator}
           />
         </div>
       }
@@ -101,7 +145,7 @@ export default function ReportsAdminstration() {
           className={`${
             value === "pending"
               ? "bg-yellow-400"
-              : value === "approved"
+              : value === "resolved"
               ? "bg-green-400"
               : "bg-red-400"
           }`}
@@ -111,23 +155,31 @@ export default function ReportsAdminstration() {
       ),
     },
     {
-      header: "Details",
+      header: "Actions",
       accessor: "root",
       align: "right",
-      cell: (value: any) => <div></div>,
+      cell: (value: any) => (
+        <ReportAlertDialog
+          onDiscardReport={onDiscardReport}
+          refetch={refetch}
+          event={value}
+          onHideEvent={onHideEvent}
+          onBanCreator={onBanCreator}
+        />
+      ),
     },
   ];
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold">
-          Order Administration
+          Reports Administration
         </h2>
-        <Search placeholder="Search orders..." />
+        <Search placeholder="Search reports..." />
       </div>
 
       {isMobile ? (
-        isPending ? (
+        isLoading ? (
           <div className="flex flex-col space-y-4">
             {Array.from({ length: 3 }).map((_, index) => (
               <CardSkeleton key={index} />
@@ -136,7 +188,7 @@ export default function ReportsAdminstration() {
         ) : (
           <div className="space-y-4">{data.map(renderMobileCard)}</div>
         )
-      ) : isPending ? (
+      ) : isLoading ? (
         <TableSkeleton />
       ) : (
         <DataTable columns={columns} data={data} />

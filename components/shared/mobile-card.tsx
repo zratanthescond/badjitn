@@ -43,7 +43,11 @@ export default function MobileCard({
         </Badge>
       </div>
 
-      <div className="flex justify-between items-center text-sm">
+      <div
+        className={`flex justify-between text-sm ${
+          details.length > 1 ? "flex-col items-start" : "flex-row items-center "
+        }`}
+      >
         {details.map((detail, index) => (
           <span
             key={index}

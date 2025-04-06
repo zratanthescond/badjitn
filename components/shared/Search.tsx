@@ -52,13 +52,13 @@ const Search = ({
       <DropdownMenuTrigger asChild>
         <Button
           variant={"ghost"}
-          className=" min-h-[54px] glass rounded-full md:w-full md:mx-2"
+          className=" min-h-[54px] glass rounded-full md:p-4 md:mx-2"
         >
-          <SearchIcon className="  " />
+          <SearchIcon className="md:w-4 md:h-4  " />
           Search
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full p-2 rounded-full">
+      <DropdownMenuContent className="w-full p-1 rounded-full">
         <div className="flex-center  w-full overflow-hidden rounded-full glass bg-card ">
           <Input
             type="text"

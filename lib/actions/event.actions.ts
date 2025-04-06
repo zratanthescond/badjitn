@@ -19,6 +19,7 @@ import {
 import { differenceInDays, isValid, parseISO } from "date-fns";
 import Sponsor from "../database/models/sponor.model";
 import { model } from "mongoose";
+import Report from "../database/models/report.model";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: "i" } });
@@ -273,3 +274,34 @@ export const createSponsorAction = async ({
     };
   }
 };
+export async function restrictEvent(eventId: string) {
+  try {
+    await connectToDatabase();
+    const event = await Event.findById(eventId);
+    console.log(event);
+    if (!event) throw new Error("Event not found");
+
+    event.restricted = true;
+    await event.save();
+    await Report.updateMany({ eventId }, { status: "resolved" });
+    return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function adminBanEventCreator(eventId: string) {
+  try {
+    await connectToDatabase();
+    const event = await Event.findById(eventId);
+    console.log(event);
+    if (!event) throw new Error("Event not found");
+    const creator = await User.findById(event.organizer);
+    if (!creator) throw new Error("Creator not found");
+    creator.banned = true;
+    await creator.save();
+    await Report.updateMany({ eventId }, { status: "resolved" });
+    return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}

@@ -33,13 +33,6 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [newCategory, setNewCategory] = useState("");
   const [open, setOpen] = useState(false);
-  const handleAddCategory = () => {
-    createCategory({
-      categoryName: newCategory.trim(),
-    }).then((category) => {
-      setCategories((prevState) => [...prevState, category]);
-    });
-  };
 
   useEffect(() => {
     const getCategories = async () => {
@@ -67,35 +60,6 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
               {category.name}
             </SelectItem>
           ))}
-
-        {/* <AlertDialog open={open} onOpenChange={setOpen}>
-          <AlertDialogTrigger className="p-medium-14 flex w-full rounded-sm py-3 pl-8 text-primary-500 hover:bg-primary-50 focus:text-primary-500">
-            Add new category
-          </AlertDialogTrigger>
-          <AlertDialogContent className="glass backdrop-blur-lg w-96 self-center rounded-2xl">
-            <AlertDialogHeader>
-              <AlertDialogTitle>New Category</AlertDialogTitle>
-              <AlertDialogDescription>
-                <Input
-                  type="text"
-                  placeholder="Category name"
-                  className="input-field mt-3"
-                  onChange={(e) => setNewCategory(e.target.value)}
-                />
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="bg-pink-500">
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => startTransition(handleAddCategory)}
-              >
-                Add
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog> */}
       </SelectContent>
     </Select>
   );

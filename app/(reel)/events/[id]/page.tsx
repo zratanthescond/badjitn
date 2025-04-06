@@ -17,7 +17,7 @@ const EventDetails = async ({
   const event = await getEventById(id);
 
   const relatedEvents = await getRelatedEventsByCategory({
-    categoryId: event.category._id,
+    categoryId: event?.category?._id,
     eventId: event._id,
     page: searchParams.page as string,
   });

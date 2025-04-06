@@ -23,7 +23,7 @@ import UserAlertDialog from "./admin-alert-dialog";
 
 export default function UsersAdministration() {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { isPending, data, error } = useQuery({
+  const { isLoading, data, error } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       const orders = await admingetUsers();
@@ -122,7 +122,7 @@ export default function UsersAdministration() {
       </div>
       <pre></pre>
       {isMobile ? (
-        isPending ? (
+        isLoading ? (
           <div className="flex flex-col space-y-4">
             {Array.from({ length: 3 }).map((_, index) => (
               <CardSkeleton key={index} />
@@ -131,7 +131,7 @@ export default function UsersAdministration() {
         ) : (
           <div className="space-y-4">{data.map(renderMobileCard)}</div>
         )
-      ) : isPending ? (
+      ) : isLoading ? (
         <TableSkeleton />
       ) : (
         <DataTable columns={columns} data={data} />

@@ -54,6 +54,7 @@ import { useGetEventSponsors } from "@/hooks/useGetEventSponsors";
 import { Card } from "../ui/card";
 import { borderColors } from "@/constants";
 import SponsorsSection from "./SponsorSection";
+import { vi } from "date-fns/locale";
 type Props = {
   data: Event[];
   totalPages: number;
@@ -301,7 +302,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                     <div className="flex flex-row items-center justify-between p-2">
                       <div className="flex gap-2 mb-4">
                         <Badge className="bg-pink-500 hover:bg-pink-600">
-                          {video.category.name}
+                          {video?.category ? video.category.name : "All"}
                         </Badge>
                       </div>
                       <div className="flex gap-2 mb-4">

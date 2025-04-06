@@ -22,8 +22,8 @@ export async function useUser() {
     const clerkUser = await currentUser();
 
     //console.log("clerkId", clerkUser?.id);
-    //const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
-    const clerkId = clerkUser?.id;
+    const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
+    ///const clerkId = clerkUser?.id;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
   } catch (error) {
@@ -396,8 +396,28 @@ export async function admingetReports() {
         model: User,
         select: "_id firstName lastName",
       })
-      .populate({ path: "eventId", model: Event, select: "_id title" });
+      .populate({
+        path: "eventId",
+        model: Event,
+        select: "_id title ",
+        populate: {
+          path: "organizer",
+          model: User,
+          select: "_id firstName lastName",
+        },
+      });
     return JSON.parse(JSON.stringify(reports));
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function adminDiscardReport(reportId: string) {
+  try {
+    await connectToDatabase();
+    const report = await Report.findByIdAndUpdate(reportId, {
+      status: "reviewed",
+    });
+    return JSON.parse(JSON.stringify(report));
   } catch (error) {
     handleError(error);
   }

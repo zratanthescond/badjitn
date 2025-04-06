@@ -1,28 +1,32 @@
-import Search from "@/components/shared/Search";
-import { getOrdersByEvent } from "@/lib/actions/order.actions";
-import { formatDateTime, formatPrice } from "@/lib/utils";
+"use client";
+
 import { SearchParamProps } from "@/types";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Award,
-  Briefcase,
-  FileText,
-  Flag,
-  Shapes,
-  Ticket,
-  User2Icon,
-  Users,
-} from "lucide-react";
-import CertificationAdministration from "@/components/admin/certification-administration";
-import OrderAdministration from "@/components/admin/order-administration";
-import WorkAdministration from "@/components/admin/work-administration";
+import { Flag, Shapes, Users } from "lucide-react";
+
 import UsersAdministration from "@/components/admin/UsersAdministration";
 import ReportsAdminstration from "@/components/admin/ReportsAdminstration";
+import React from "react";
+import CategoryFilter from "@/components/shared/CategoryFilter";
+import CategorieAdministration from "@/components/admin/CategorieAdministration";
 
-const Orders = async ({ searchParams }: SearchParamProps) => {
+const Orders = ({ searchParams }: SearchParamProps) => {
   const eventId = (searchParams?.eventId as string) || "";
   const searchText = (searchParams?.query as string) || "";
+  const [value, setValue] = React.useState("users");
+  const RenderComponent = () => {
+    switch (value) {
+      case "users":
+        return <UsersAdministration />;
+      case "reports":
+        return <ReportsAdminstration />;
+      case "categories":
+        return <CategorieAdministration />;
+      default:
+        return <UsersAdministration />;
+    }
+  };
 
   return (
     <div className="container mx-auto p-4 sm:p-6 max-w-7xl rounded-2xl min-h-screen">
@@ -30,7 +34,11 @@ const Orders = async ({ searchParams }: SearchParamProps) => {
         Owner Dashboard
       </h1>
 
-      <Tabs defaultValue="users" className="w-full !rounded-full">
+      <Tabs
+        defaultValue="users"
+        className="w-full !rounded-full"
+        onValueChange={(value) => setValue(value)}
+      >
         <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6  rounded-full">
           <TabsTrigger
             value="users"
@@ -57,17 +65,10 @@ const Orders = async ({ searchParams }: SearchParamProps) => {
             <span className="sm:hidden">Categories</span>
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="users" className="rounded-3xl">
-          <UsersAdministration />
-        </TabsContent>
-
-        <TabsContent value="reports">
-          <ReportsAdminstration />
-        </TabsContent>
-
-        <TabsContent value="categories"></TabsContent>
       </Tabs>
+      <div className="flex1 w-full mt-4">
+        <RenderComponent />
+      </div>
     </div>
   );
 };

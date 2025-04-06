@@ -28,6 +28,7 @@ export interface IEvent extends Document {
   category: { _id: string; name: string };
   organizer: { _id: string; firstName: string; lastName: string };
   discount: { field: string; value: string; discount: number };
+  restricted: boolean;
 }
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
@@ -67,6 +68,7 @@ const EventSchema = new Schema({
     value: { type: String },
     discount: { type: Number },
   },
+  restricted: { type: Boolean, default: false },
 });
 EventSchema.virtual("Sponsors", {
   ref: "Sponsor",
