@@ -1,31 +1,30 @@
 "use client";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { getAllCategories } from "@/lib/actions/category.actions";
-import { ICategory } from "@/lib/database/models/category.model";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { Badge } from "../ui/badge";
+import { ICategory } from "@/lib/database/models/category.model";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
+import clsx from "clsx";
+
 const CategoryFilter = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("category");
 
   useEffect(() => {
     const getCategories = async () => {
       const categoryList = await getAllCategories();
-
-      categoryList && setCategories(categoryList as ICategory[]);
+      if (categoryList) setCategories(categoryList);
+      setLoading(false);
     };
 
     getCategories();
@@ -34,7 +33,7 @@ const CategoryFilter = () => {
   const onSelectCategory = (category: string) => {
     let newUrl = "";
 
-    if (category && category !== "All") {
+    if (category && category !== "all") {
       newUrl = formUrlQuery({
         params: searchParams.toString(),
         key: "category",
@@ -50,31 +49,73 @@ const CategoryFilter = () => {
     router.push(newUrl, { scroll: false });
   };
 
-  return (
-    <ScrollArea className="w-full glass rounded-full whitespace-nowrap p-1  ">
-      <Button
-        variant={"secondary"}
-        key={uuidv4()}
-        size={"lg"}
-        className="select-item p-regular-14 m-1  text-semibold rounded-full "
-        onClick={() => onSelectCategory("For you")}
-      >
-        <span className="capitalize font-bold "> For you</span>
-      </Button>
-      {categories.map((category) => (
-        <Button
-          variant={"secondary"}
-          key={category._id}
-          size={"lg"}
-          className="select-item p-regular-14 m-1  text-semibold rounded-full "
-          onClick={() => onSelectCategory(category.name)}
-        >
-          <span className="capitalize font-bold "> {category.name}</span>
-        </Button>
-      ))}
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollByAmount = (amount: number) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: amount,
+        behavior: "smooth",
+      });
+    }
+  };
 
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+  return (
+    <div className="relative flex flex-row px-2 w-full glass md:w-4/6 group rounded-full">
+      {/* Scroll Buttons */}
+      <Button
+        onClick={() => scrollByAmount(-200)}
+        className="absolute glass left-0 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-background shadow transition group-hover:flex"
+        variant="ghost"
+        size="icon"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+
+      <Button
+        onClick={() => scrollByAmount(200)}
+        className="absolute glass right-0 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-background shadow transition group-hover:flex"
+        variant="ghost"
+        size="icon"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+
+      {/* Scrollable Category Row */}
+      <div
+        ref={scrollRef}
+        className="flex gap-2 overflow-x-auto scroll-smooth px-4 py-2 no-scrollbar"
+      >
+        {loading ? (
+          [...Array(7)].map((_, i) => (
+            <Skeleton key={i} className="h-8 w-24 rounded-full bg-muted/50" />
+          ))
+        ) : (
+          <>
+            <Button
+              variant="secondary"
+              key={uuidv4()}
+              size="sm"
+              className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
+              onClick={() => onSelectCategory("For you")}
+            >
+              {t("forYou")}
+            </Button>
+
+            {categories.map((category) => (
+              <Button
+                variant="secondary"
+                key={category._id}
+                size="sm"
+                className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
+                onClick={() => onSelectCategory(category.name)}
+              >
+                {t(category.name)}
+              </Button>
+            ))}
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 

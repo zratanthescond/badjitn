@@ -1,0 +1,75 @@
+{
+    "LocaleSwitcher": {
+    "fr": "Français",
+    "ar": "العربية",
+    "en": "English",
+    "label": "اللغة"
+    },
+    "Navbar": {
+    "home": "الرئيسية",
+    "myProfile": "الملف الشخصي",
+    "createEvent": "إنشاء حدث"
+    },
+    "homePage": {
+    "search": "بحث",
+    "searchPlaceholder": "ابحث عن أحداث",
+    "noEvents": "لا توجد أحداث",
+    "noEventsDescription": "حاول تعديل معايير البحث الخاصة بك أو إضافة حدث."
+    },
+    "datePicker":{
+        "pickadate": "اختر تاريخ",
+        "select": "اختر",
+        "today": "اليوم",
+        "tomorrow": "غدا",
+        "in3days": "بعد 3 أيام",
+        "inAWeek": "بعد أسبوع",
+        "inAMonth": "بعد شهر",
+        "clear": "مسح",
+        "ok": "حسنا",
+        "cancel": "إلغاء"
+    },
+    "category":{
+        
+  "all": "الكل",
+  "forYou": "لك",
+  "pulmonology": "أمراض الرئة",
+  "cardiology": "أمراض القلب",
+  "dermatology": "الأمراض الجلدية",
+  "gastroenterology": "أمراض الجهاز الهضمي",
+  "neurosurgery": "جراحة الأعصاب",
+  "surgery": "الجراحة",
+  "orthopedics": "جراحة العظام",
+  "psychiatry": "الطب النفسي",
+  "internalMedicine": "الطب الباطني",
+  "generalMedicine": "الطب العام",
+  "sportsMedicine": "الطب الرياضي",
+  "aestheticMedicine": "الطب التجميلي",
+  "emergencyMedicine": "الطب الطارئ",
+  "pediatricMedicine": "طب الأطفال",
+  "geriatricMedicine": "طب الشيخوخة",
+  "preventiveMedicine": "الطب الوقائي",
+  "occupationalMedicine": "طب العمل",
+  "familyMedicine": "طب الأسرة",
+  "surgicalMedicine": "الطب الجراحي",
+  "reproductiveMedicine": "طب الإنجاب",
+  "neurology": "علم الأعصاب",
+  "oncology": "طب الأورام",
+  "radiology": "الأشعة",
+  "urology": "المسالك البولية",
+  "endocrinology": "أمراض الغدد الصماء",
+  "rheumatology": "أمراض الروماتيزم",
+  "nephrology": "أمراض الكلى",
+  "ophthalmology": "طب العيون",
+  "otolaryngology": "طب الأنف والأذن والحنجرة",
+  "allergology": "أمراض الحساسية",
+  "anesthesiology": "التخدير",
+  "pathology": "علم الأمراض",
+  "genetics": "علم الوراثة",
+  "infectiousDiseases": "الأمراض المعدية",
+  "nuclearMedicine": "الطب النووي",
+  "hematology": "أمراض الدم",
+  "painManagement": "علاج الألم"
+}
+
+    
+}

@@ -31,12 +31,32 @@ export default function ReelDetails({ event }: { event: Event }) {
 
   const DetailComponent = () => {
     return (
-      <div className="p-1 rounded-lg mt-4 w-full ">
+      <div className="p-1 rounded-lg mt-4 w-full flex flex-col gap-4 items-center justify-center ">
         <h1 className="text-3xl font-bold text-center">{event.title}</h1>
+        <Button
+          onClick={() => {
+            setSection("price");
+          }}
+          variant="outline"
+          size={"lg"}
+          className="rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold "
+        >
+          I'm in
+        </Button>
         <div
           className="  p-1 rounded-lg mt-4 w-full"
           dangerouslySetInnerHTML={{ __html: event.description }}
         ></div>
+        <Button
+          onClick={() => {
+            setSection("price");
+          }}
+          variant="outline"
+          size={"lg"}
+          className="rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold "
+        >
+          I'm in
+        </Button>
       </div>
     );
   };

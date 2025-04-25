@@ -1,13 +1,21 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import * as React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DayPicker } from "react-day-picker";
+import { ar, fr, enUS } from "date-fns/locale";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { getUserLocale } from "@/services/locale";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+const localeMap: Record<string, Locale> = {
+  ar,
+  fr,
+  en: enUS,
+};
 
 function Calendar({
   className,
@@ -15,8 +23,22 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  const [locale, setLocale] = React.useState<Locale | undefined>(undefined);
+
+  React.useEffect(() => {
+    async function fetchLocale() {
+      const userLocale = await getUserLocale(); // should return "ar", "fr", or "en"
+      setLocale(localeMap[userLocale] ?? enUS);
+    }
+
+    fetchLocale();
+  }, []);
+
+  if (!locale) return null; // or a loading spinner if needed
+
   return (
     <DayPicker
+      locale={locale}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
@@ -54,13 +76,13 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+        IconRight: () => <ChevronRight className="h-4 w-4" />,
       }}
       {...props}
     />
-  )
+  );
 }
-Calendar.displayName = "Calendar"
+Calendar.displayName = "Calendar";
 
-export { Calendar }
+export { Calendar };

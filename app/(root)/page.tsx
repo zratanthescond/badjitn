@@ -1,5 +1,7 @@
 import CategoryFilter from "@/components/shared/CategoryFilter";
 import Collection from "@/components/shared/Collection";
+import CollectionWrapper from "@/components/shared/Collectionwrapper";
+import CountryFilter from "@/components/shared/CountryFilter";
 import { DatePickerWithPresets } from "@/components/shared/DateFilter";
 import { HomeEventCardSkeleton } from "@/components/shared/HomeEventSkeleton";
 import Search from "@/components/shared/Search";
@@ -17,13 +19,15 @@ export default async function Home({ searchParams }: SearchParamProps) {
   const page = Number(searchParams?.page) || 1;
   const searchText = (searchParams?.query as string) || "";
   const category = (searchParams?.category as string) || "";
+  const country = (searchParams?.country as string) || "";
 
-  const events = await getAllEvents({
-    query: searchText,
-    category,
-    page,
-    limit: 30,
-  });
+  // const events = await getAllEvents({
+  //   country,
+  //   query: searchText,
+  //   category,
+  //   page,
+  //   limit: 30,
+  // });
 
   return (
     <>
@@ -33,27 +37,14 @@ export default async function Home({ searchParams }: SearchParamProps) {
       >
         <div className="flex w-full flex-col  gap-5 md:flex-row">
           <div className="flex w-full items-center justify-between   flex-row">
-            <CountryDropdown
-              slim
-              defaultValue="TUN"
-              className="rounded-full glass p-2 w-full max-w-[60px]  flex items-center "
-            />
+            <CountryFilter />
             <Search slim placeholder="Search events..." />
-            <DatePickerWithPresets slim />
+            <DatePickerWithPresets />
           </div>
           <CategoryFilter />
         </div>
-        <Suspense fallback={<HomeEventCardSkeleton />}>
-          <Collection
-            data={events?.data}
-            emptyTitle="No Events Found"
-            emptyStateSubtext="Come back later"
-            collectionType="All_Events"
-            limit={30}
-            page={page}
-            totalPages={events?.totalPages}
-          />
-        </Suspense>
+
+        <CollectionWrapper />
       </section>
     </>
   );

@@ -94,10 +94,12 @@ export type DeleteEventParams = {
 };
 
 export type GetAllEventsParams = {
+  country: string;
   query: string;
   category: string;
   limit: number;
   page: number;
+  date: string;
 };
 
 export type GetEventsByUserParams = {

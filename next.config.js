@@ -1,3 +1,7 @@
+const createNextIntlPlugin = require("next-intl/plugin");
+
+const withNextIntl = createNextIntlPlugin();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   headers: async function headers() {
@@ -17,6 +21,7 @@ const nextConfig = {
       },
     ];
   },
+  trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true, // Skip TypeScript checks during the build
   },
@@ -59,4 +64,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);

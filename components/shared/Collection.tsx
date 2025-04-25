@@ -1,3 +1,4 @@
+"use client";
 import { IEvent } from "@/lib/database/models/event.model";
 import React from "react";
 import Card from "./Card";
@@ -25,7 +26,7 @@ const Collection = ({
 }: CollectionProps) => {
   return (
     <>
-      {data.length > 0 ? (
+      {data && data.length > 0 ? (
         <div className="flex flex-col items-center gap-10">
           <ul className="grid w-full grid-cols-2 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:gap-10">
             {data.map((event) => {

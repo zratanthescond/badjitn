@@ -5,8 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { CalendarDays, CalendarPlus, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const NavItems = () => {
+  const t = useTranslations("Navbar");
   const pathname = usePathname();
   const getIcon = (link: string) => {
     if (link === "/") {
@@ -35,7 +37,7 @@ const NavItems = () => {
             } flex-center bg-none p-medium-16 whitespace-nowrap  outline-2 p-2 outline-offset-2 rounded-full  hover:text-muted-foreground focus-visible:outline focus-visible:outline-primary`}
           >
             <Link href={link.route} className="flex flex-row gap-2 ">
-              {getIcon(link.route)} {link.label}
+              {getIcon(link.route)} {t(link.label)}
             </Link>
           </li>
         );

@@ -1,14 +1,14 @@
 export const headerLinks = [
   {
-    label: "Home",
+    label: "home",
     route: "/",
   },
   {
-    label: "Create Event",
+    label: "createEvent",
     route: "/events/create",
   },
   {
-    label: "My Profile",
+    label: "myProfile",
     route: "/profile",
   },
 ];

@@ -20,6 +20,9 @@ import { differenceInDays, isValid, parseISO } from "date-fns";
 import Sponsor from "../database/models/sponor.model";
 import { model } from "mongoose";
 import Report from "../database/models/report.model";
+import { json } from "stream/consumers";
+import { date } from "zod";
+import { start } from "repl";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: "i" } });
@@ -117,13 +120,19 @@ export async function deleteEvent({ eventId, path }: DeleteEventParams) {
 
 // GET ALL EVENTS
 export async function getAllEvents({
+  country,
   query,
   limit = 6,
   page,
   category,
+  date,
 }: GetAllEventsParams) {
   try {
     await connectToDatabase();
+    const dateFilter = date ? { startDateTime: { $gte: new Date(date) } } : {};
+    const countryCondition = country
+      ? { country: { $regex: country, $options: "i" } }
+      : {};
 
     const titleCondition = query
       ? { title: { $regex: query, $options: "i" } }
@@ -133,11 +142,13 @@ export async function getAllEvents({
       : null;
     const conditions = {
       $and: [
+        dateFilter,
+        countryCondition,
         titleCondition,
         categoryCondition ? { category: categoryCondition._id } : {},
       ],
     };
-
+    console.log(JSON.stringify(conditions));
     const skipAmount = (Number(page) - 1) * limit;
     const eventsQuery = Event.find(conditions)
       .sort({ createdAt: "desc" })
@@ -146,7 +157,7 @@ export async function getAllEvents({
 
     const events = await populateEvent(eventsQuery);
     const eventsCount = await Event.countDocuments(conditions);
-
+    // console.log("events", JSON.stringify(events));
     return {
       data: JSON.parse(JSON.stringify(events)),
       totalPages: Math.ceil(eventsCount / limit),

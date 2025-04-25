@@ -1,0 +1,79 @@
+{
+  
+  "LocaleSwitcher": {
+    "fr": "Français",
+    "ar": "العربية",
+    "en": "English",
+    "label": "Language"
+  },
+  "homePage": {
+    
+    "search": "Search",
+    "searchPlaceholder": "Search for events",
+    "noEvents": "No events found",
+    "noEventsDescription": "Try modifying your search criteria or adding an event."
+  },
+  "Navbar": {
+    "home": "Home",
+    "myProfile": "My Profile",
+    "createEvent": "Create Event"
+  },
+  "datePicker": {
+    "pickadate": "Pick a date",
+    "select": "Select",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "in3days": "In 3 days",
+    "inAWeek": "In a week",
+    "inAMonth": "In a month",
+    "clear": "Clear",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time"
+  },
+  "category": {
+  "all": "All",
+  "forYou": "For you",
+  "pulmonology": "Pulmonology",
+  "cardiology": "Cardiology",
+  "dermatology": "Dermatology",
+  "gastroenterology": "Gastroenterology",
+  "neurosurgery": "Neurosurgery",
+  "surgery": "Surgery",
+  "orthopedics": "Orthopedics",
+  "psychiatry": "Psychiatry",
+  "internalMedicine": "Internal Medicine",
+  "generalMedicine": "General Medicine",
+  "sportsMedicine": "Sports Medicine",
+  "aestheticMedicine": "Aesthetic Medicine",
+  "emergencyMedicine": "Emergency Medicine",
+  "pediatricMedicine": "Pediatric Medicine",
+  "geriatricMedicine": "Geriatric Medicine",
+  "preventiveMedicine": "Preventive Medicine",
+  "occupationalMedicine": "Occupational Medicine",
+  "familyMedicine": "Family Medicine",
+  "surgicalMedicine": "Surgical Medicine",
+  "reproductiveMedicine": "Reproductive Medicine",
+
+  "neurology": "Neurology",
+  "oncology": "Oncology",
+  "radiology": "Radiology",
+  "urology": "Urology",
+  "endocrinology": "Endocrinology",
+  "rheumatology": "Rheumatology",
+  "nephrology": "Nephrology",
+  "ophthalmology": "Ophthalmology",
+  "otolaryngology": "Otolaryngology (ENT)",
+  "allergology": "Allergology",
+  "anesthesiology": "Anesthesiology",
+  "pathology": "Pathology",
+  "genetics": "Genetics",
+  "infectiousDiseases": "Infectious Diseases",
+  "nuclearMedicine": "Nuclear Medicine",
+  "hematology": "Hematology",
+  "painManagement": "Pain Management"
+}
+
+
+}

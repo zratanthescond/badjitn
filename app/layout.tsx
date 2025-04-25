@@ -13,9 +13,8 @@ import {
 } from "@tanstack/react-query";
 import React from "react";
 import localFont from "next/font/local";
-import { useUser } from "@/lib/actions/user.actions";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -60,56 +59,57 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const loccale = await getLocale();
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body
-          className={
-            (inter.className,
-            " flex flex-1 min-h-screen flex-col items-center justify-center  antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900")
-          }
-        >
-          <div className="absolute z-20 top-0 inset-x-0 flex justify-center overflow-hidden pointer-events-none">
-            <div className="w-full flex-none flex justify-end">
-              <picture>
-                <source
-                  srcSet="/assets/images//docs@30.8b9a76a2.avif"
-                  type="image/avif"
-                />
-                <img
-                  src="/assets/images/docs@tinypng.d9e4dcdc.png"
-                  alt=""
-                  className="w-[71.75rem] flex-none max-w-none dark:hidden"
-                  decoding="async"
-                />
-              </picture>
-              <picture>
-                <source
-                  srcSet="/assets/images//docs-dark@30.1a9f8cbf.avif"
-                  type="image/avif"
-                />
-                <img
-                  src="/assets/images//docs-dark@tinypng.1bbe175e.png"
-                  alt=""
-                  className="w-[90rem] flex-none max-w-none hidden dark:block"
-                  decoding="async"
-                />
-              </picture>
-            </div>
+    <html lang={loccale}>
+      <body
+        className={
+          (inter.className,
+          " flex flex-1 min-h-screen flex-col items-center justify-center  antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900")
+        }
+      >
+        <div className="absolute z-20 top-0 inset-x-0 flex justify-center overflow-hidden pointer-events-none">
+          <div className="w-full flex-none flex justify-end">
+            <picture>
+              <source
+                srcSet="/assets/images//docs@30.8b9a76a2.avif"
+                type="image/avif"
+              />
+              <img
+                src="/assets/images/docs@tinypng.d9e4dcdc.png"
+                alt=""
+                className="w-[71.75rem] flex-none max-w-none dark:hidden"
+                decoding="async"
+              />
+            </picture>
+            <picture>
+              <source
+                srcSet="/assets/images//docs-dark@30.1a9f8cbf.avif"
+                type="image/avif"
+              />
+              <img
+                src="/assets/images//docs-dark@tinypng.1bbe175e.png"
+                alt=""
+                className="w-[90rem] flex-none max-w-none hidden dark:block"
+                decoding="async"
+              />
+            </picture>
           </div>
-
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            //disableTransitionOnChange
-          >
-            <TooltipProvider>{children}</TooltipProvider>
-          </ThemeProvider>
-
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+        </div>
+        <NextIntlClientProvider>
+          <ClerkProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              //disableTransitionOnChange
+            >
+              <TooltipProvider>{children}</TooltipProvider>
+            </ThemeProvider>
+            <Toaster />{" "}
+          </ClerkProvider>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }

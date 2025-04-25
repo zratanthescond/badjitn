@@ -1,0 +1,77 @@
+{
+ 
+  "LocaleSwitcher": {
+    "fr": "Français",
+    "ar": "العربية",
+    "en": "English",
+    "label": "Langue"
+  },
+
+  "Navbar": {
+    "home": "Accueil",
+    "myProfile": "Mon profil",
+    "createEvent": "Créer un événement"
+   
+  },
+  "homePage": {
+    "search": "Rechercher",
+    "searchPlaceholder": "Rechercher des événements",
+    "noEvents": "Aucun événement trouvé",
+    "noEventsDescription": "Essayez de modifier vos critères de recherche ou d'ajouter un événement."
+  },
+  "datePicker": {
+    "pickadate": "Choisir une date",
+    "select": "Sélectionner",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "in3days": "Dans 3 jours",
+    "inAWeek": "Dans une semaine",
+    "inAMonth": "Dans un mois",
+    "clear": "Effacer",
+    "ok": "OK",
+    "cancel": "Annuler"
+  },
+  "category":{
+  "all": "Tous",
+  "forYou": "Pour vous",
+  "pulmonology": "Pneumologie",
+  "cardiology": "Cardiologie",
+  "dermatology": "Dermatologie",
+  "gastroenterology": "Gastroentérologie",
+  "neurosurgery": "Neurochirurgie",
+  "surgery": "Chirurgie",
+  "orthopedics": "Orthopédie",
+  "psychiatry": "Psychiatrie",
+  "internalMedicine": "Médecine interne",
+  "generalMedicine": "Médecine générale",
+  "sportsMedicine": "Médecine sportive",
+  "aestheticMedicine": "Médecine esthétique",
+  "emergencyMedicine": "Médecine d'urgence",
+  "pediatricMedicine": "Médecine pédiatrique",
+  "geriatricMedicine": "Médecine gériatrique",
+  "preventiveMedicine": "Médecine préventive",
+  "occupationalMedicine": "Médecine du travail",
+  "familyMedicine": "Médecine familiale",
+  "surgicalMedicine": "Médecine chirurgicale",
+  "reproductiveMedicine": "Médecine reproductive",
+  "neurology": "Neurologie",
+  "oncology": "Oncologie",
+  "radiology": "Radiologie",
+  "urology": "Urologie",
+  "endocrinology": "Endocrinologie",
+  "rheumatology": "Rhumatologie",
+  "nephrology": "Néphrologie",
+  "ophthalmology": "Ophtalmologie",
+  "otolaryngology": "Oto-rhino-laryngologie (ORL)",
+  "allergology": "Allergologie",
+  "anesthesiology": "Anesthésiologie",
+  "pathology": "Pathologie",
+  "genetics": "Génétique",
+  "infectiousDiseases": "Maladies infectieuses",
+  "nuclearMedicine": "Médecine nucléaire",
+  "hematology": "Hématologie",
+  "painManagement": "Gestion de la douleur"
+}
+
+
+}

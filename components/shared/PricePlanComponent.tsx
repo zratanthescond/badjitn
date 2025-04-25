@@ -90,13 +90,22 @@ export default function PricePlanComponent({
 
         <div className="flex gap-3  flex-row w-full items-start justify-center">
           <div className="flex gap-3 flex-col w-full items-start justify-start">
-            <Input
-              type="number"
-              className="input-field glass"
-              placeholder="price"
-              onChange={(e) => setPlanPrice(Number(e.target.value))}
-              value={planPrice}
-            />
+            <div className="flex gap-3 flex-row w-full items-start justify-start">
+              <Input
+                type="number"
+                className="input-field glass"
+                placeholder="price"
+                onChange={(e) => setPlanPrice(Number(e.target.value))}
+                value={planPrice}
+              />
+              <Input
+                type="number"
+                className="input-field glass"
+                placeholder="Places"
+                onChange={(e) => setPlanPrice(Number(e.target.value))}
+                //value={planPrice}
+              />
+            </div>
             <p className="text-sm font-medium text-destructive">
               {error.price}
             </p>

@@ -1,3 +1,4 @@
+"use client";
 import { IEvent } from "@/lib/database/models/event.model";
 import { formatDateTime, getLastTwoWords } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
@@ -20,7 +21,16 @@ import { FaHandshake } from "react-icons/fa";
 import SponsorComponent from "../SopnsorComponent";
 import ContributorSelection from "../HostContrebuer";
 import QRCode from "react-qr-code";
-import { CogIcon, Flag, MapPin, QrCode, Radio } from "lucide-react";
+import {
+  Clock,
+  CogIcon,
+  Flag,
+  MapPin,
+  QrCode,
+  Radio,
+  Timer,
+  Watch,
+} from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { classNames } from "uploadthing/client";
 import { Badge } from "../ui/badge";
@@ -44,10 +54,10 @@ type CardProps = {
   hidePrice?: boolean;
 };
 
-const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
-  const user = await useUser();
-  const userId = user?._id!;
-  //const userId = "676c87bddaac23a02d164642";
+const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
+  // const user = await useUser();
+  // const userId = user?._id!;
+  const userId = "676c87bddaac23a02d164642";
   // const isEventCreator = userId.toString() === event.organizer._id.toString();
 
   const sponsored = event.Sponsors && event.Sponsors.length > 0;
@@ -105,6 +115,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
                     <span className="text-white flex flex-row text-xs font-extralight">
                       -
                     </span>
+                    <Clock size={16} stroke="white" />
                     <span className="text-white flex flex-row text-xs font-extralight">
                       {formatDateTime(event.startDateTime).timeOnly}
                     </span>
