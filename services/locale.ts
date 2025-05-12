@@ -6,9 +6,9 @@ import { Locale, defaultLocale } from "@/i18n/config";
 // In this example the locale is read from a cookie. You could alternatively
 // also read it from a database, backend service, or any other source.
 const COOKIE_NAME = "NEXT_LOCALE";
+//export const dynamic = "force-dynamic";
 
 export async function getUserLocale() {
-  console.log("getUserLocale", (await cookies()).get(COOKIE_NAME)?.value);
   // If the cookie is not set, return the default locale
   return (await cookies()).get(COOKIE_NAME)?.value || defaultLocale;
 }

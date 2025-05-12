@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useUser } from "@/lib/actions/user.actions";
+export const dynamic = "force-dynamic";
 
 const CreateEvent = async () => {
   const user = await useUser();

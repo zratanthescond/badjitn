@@ -21,6 +21,7 @@ import { SearchParamProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
+export const dynamic = "force-dynamic";
 
 const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   const user = await useUser();
