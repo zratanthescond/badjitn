@@ -68,6 +68,7 @@ import {
 } from "../ui/select";
 import { Value } from "@radix-ui/react-select";
 import DiscountDialog from "./DiscountDialogComponenet";
+import { useTranslations } from "next-intl";
 
 type EventFormProps = {
   userId: string;
@@ -178,11 +179,12 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   useEffect(() => {
     console.log(sponsors, fields);
   }, [sponsors, fields]);
+  const t = useTranslations("eventForm");
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-5 backdrop-filter backdrop-blur-3xl bg-white/10 rounded-3xl p-5"
+        className="flex flex-col gap-5 rounded-3xl p-5"
       >
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
@@ -211,7 +213,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               <FormItem className="w-full">
                 <FormControl>
                   <Input
-                    placeholder="Event title"
+                    placeholder={t("eventTitle")}
                     {...field}
                     className="input-field glass"
                   />
@@ -251,7 +253,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       className="w-full  backdrop-blur-lg bg-white/10 backdrop-brightness-200"
                       editorContentClassName="p-5"
                       output="html"
-                      placeholder="Type your description here..."
+                      placeholder={t("eventDescriptionPlaceholder")}
                       autofocus={true}
                       editable={true}
                       editorClassName="focus:outline-none"
@@ -278,8 +280,14 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                             value={JSON.stringify(field.value)}
                           />
                           <span className=" text-center w-full text-sm">
-                            {address.length > 0 || field.name.length > 0
-                              ? address || field.value?.name
+                            {address.length > 0 ||
+                            (field.value &&
+                              field.value.name &&
+                              field.value.name.length > 0)
+                              ? address!.length > 0 ||
+                                (field.value &&
+                                  field.value.name &&
+                                  field.value.name.length > 0)
                               : "Event location or Online"}
                           </span>
                         </AlertDialogTrigger>

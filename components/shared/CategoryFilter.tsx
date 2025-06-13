@@ -83,8 +83,20 @@ const CategoryFilter = () => {
       {/* Scrollable Category Row */}
       <div
         ref={scrollRef}
-        className="flex gap-2 overflow-x-auto scroll-smooth px-4 py-2 no-scrollbar"
+        className="flex gap-2 overflow-x-auto scroll-smooth  items-center  no-scrollbar rounded-full w-full"
       >
+        <div
+          className={`absolute top-0 rounded-l-full bottom-0 left-0 w-20 bg-gradient-to-r from-slate-50/90 via-slate-50/50  dark:from-gray-900/90 dark:via-gray-900/50 dark: to-transparent pointer-events-none z-10 transition-opacity duration-300 
+          
+          `}
+        />
+
+        {/* Right shadow */}
+        <div
+          className={`absolute top-0 rounded-r-full bottom-0 right-0 w-20 dark:bg-gradient-to-l bg-gradient-to-l from-slate-50/90 via-slate-50/50 dark:from-gray-900/90 dark:via-gray-900/50 dark:to-transparent  pointer-events-none z-10 transition-opacity duration-300 
+            opacity-100
+          `}
+        />
         {loading ? (
           [...Array(7)].map((_, i) => (
             <Skeleton key={i} className="h-8 w-24 rounded-full bg-muted/50" />

@@ -25,6 +25,7 @@ import { CircleFlag } from "react-circle-flags";
 
 // data
 import { countries } from "country-data-list";
+import { useTranslations } from "next-intl";
 
 // Country interface
 export interface Country {
@@ -88,7 +89,7 @@ const CountryDropdownComponent = (
 
   const handleSelect = useCallback(
     (country: Country) => {
-      console.log("🌍 CountryDropdown value: ", country);
+      // console.log("🌍 CountryDropdown value: ", country);
       setSelectedCountry(country);
       onChange?.(country);
       setOpen(false);
@@ -100,7 +101,7 @@ const CountryDropdownComponent = (
     "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
     slim === true && "w-20"
   );
-
+  const t = useTranslations("countries");
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
@@ -119,14 +120,16 @@ const CountryDropdownComponent = (
             </div>
             {slim === false && (
               <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                {selectedCountry.name}
+                {t(selectedCountry.alpha2) ||
+                  selectedCountry.name ||
+                  placeholder}
               </span>
             )}
           </div>
         ) : (
           <span>
             {slim === false ? (
-              placeholder || selectedCountry!.name
+              placeholder || t(selectedCountry!.name)
             ) : (
               <Globe size={40} />
             )}
@@ -142,9 +145,9 @@ const CountryDropdownComponent = (
         <Command className="w-full max-h-[200px] sm:max-h-[270px]">
           <CommandList>
             <div className="sticky top-0 z-10 bg-popover">
-              <CommandInput placeholder="Search country..." />
+              <CommandInput placeholder={t("searchPlaceholder")} />
             </div>
-            <CommandEmpty>No country found.</CommandEmpty>
+            <CommandEmpty>{t("noCountries")}</CommandEmpty>
             <CommandGroup>
               {options
                 .filter((x) => x.name)
@@ -162,7 +165,7 @@ const CountryDropdownComponent = (
                         />
                       </div>
                       <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                        {option.name}
+                        {t(option.alpha2) || option.name}
                       </span>
                     </div>
                     <CheckIcon

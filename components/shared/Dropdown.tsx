@@ -23,6 +23,7 @@ import {
   createCategory,
   getAllCategories,
 } from "@/lib/actions/category.actions";
+import { useTranslations } from "next-intl";
 
 type DropdownProps = {
   value?: string;
@@ -33,7 +34,7 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [newCategory, setNewCategory] = useState("");
   const [open, setOpen] = useState(false);
-
+  const t = useTranslations("category");
   useEffect(() => {
     const getCategories = async () => {
       const categoryList = await getAllCategories();
@@ -47,7 +48,7 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
   return (
     <Select onValueChange={onChangeHandler} defaultValue={value}>
       <SelectTrigger className="select-field">
-        <SelectValue placeholder="Category" />
+        <SelectValue placeholder={t("category")} />
       </SelectTrigger>
       <SelectContent>
         {categories.length > 0 &&
@@ -57,7 +58,7 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
               value={category._id}
               className="select-item p-regular-14"
             >
-              {category.name}
+              {t(category.name)}
             </SelectItem>
           ))}
       </SelectContent>

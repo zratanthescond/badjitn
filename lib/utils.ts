@@ -5,6 +5,7 @@ import qs from "query-string";
 
 import { UrlQueryParams, RemoveUrlQueryParams } from "@/types";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
+import { getUserLocale } from "@/services/locale";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -47,16 +48,11 @@ export const formatDateTime = (dateString: Date) => {
     "en-US",
     timeOptions
   );
-  const homeEvents: string = new Date(dateString).toLocaleString("en-US", {
-    month: "short",
-    day: "2-digit",
-  });
 
   return {
     dateTime: formattedDateTime,
     dateOnly: formattedDate,
     timeOnly: formattedTime,
-    homeEvents: homeEvents,
   };
 };
 

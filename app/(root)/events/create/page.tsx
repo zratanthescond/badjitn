@@ -16,7 +16,7 @@ const CreateEvent = async () => {
   console.log("userId", user);
   return (
     <>
-      {user.publisher && user.publisher === "pending" && (
+      {user && user.publisher && user.publisher === "pending" && (
         <div className="wrapper glass rounded-xl  p-4  my-8">
           <Card className="w-full bg-card/30">
             <CardHeader>
@@ -38,7 +38,7 @@ const CreateEvent = async () => {
           <EventForm userId={user._id} type="Create" />
         </div>
       )}
-      {user.publisher && user.publisher === "rejected" && (
+      {user && user.publisher && user.publisher === "rejected" && (
         <div className="wrapper glass rounded-xl p-4 my-8">
           <Card className="w-full bg-card/30">
             <CardHeader>
@@ -53,7 +53,8 @@ const CreateEvent = async () => {
           </Card>
         </div>
       )}
-      {!user.publisher ||
+      {!user ||
+        !user.publisher ||
         (user.publisher === "none" && (
           <div className="wrapper  rounded-xl  p-4  my-8">
             <PublisherCard userId={user._id} />

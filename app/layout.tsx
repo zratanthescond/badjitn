@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
+import { ClientProvider } from "@/components/contexts/ClerkClientProvider";
 import { ThemeProvider } from "@/components/themeProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,12 +16,14 @@ import React from "react";
 import localFont from "next/font/local";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
 });
-
+import { arSA, enUS, frFR } from "@clerk/localizations";
+import { dark } from "@clerk/themes";
 export const metadata: Metadata = {
   title: "Badgi.net",
   description: "Badgi.net is a platform for event management.",
@@ -59,9 +62,22 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const loccale = await getLocale();
+  const locale = await getLocale();
+  const clerkLocale = () => {
+    switch (locale) {
+      case "ar":
+        return arSA;
+      case "fr":
+        return frFR;
+      case "en":
+        return enUS;
+      default:
+        return enUS;
+    }
+  };
+
   return (
-    <html lang={loccale}>
+    <html lang={locale}>
       <body
         className={
           (inter.className,
@@ -97,17 +113,14 @@ export default async function RootLayout({
           </div>
         </div>
         <NextIntlClientProvider>
-          <ClerkProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              //disableTransitionOnChange
-            >
+          <ThemeProvider>
+            <ClientProvider clerkLocale={clerkLocale()}>
               <TooltipProvider>{children}</TooltipProvider>
-            </ThemeProvider>
-            <Toaster />{" "}
-          </ClerkProvider>
+
+              <Toaster />
+            </ClientProvider>
+          </ThemeProvider>
+          -
         </NextIntlClientProvider>
       </body>
     </html>
