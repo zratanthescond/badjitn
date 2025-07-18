@@ -31,7 +31,7 @@ import {
   Loader2,
   Globe,
 } from "lucide-react";
-import EventLocationComponent from "./shared/EventLocationComponent";
+import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
 import FeedBackComponent from "./shared/FeedBackComponent";
 
