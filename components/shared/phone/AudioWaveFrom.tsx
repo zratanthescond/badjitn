@@ -71,7 +71,7 @@ const Waveform = ({
   useEffect(() => {
     audioRef.current.currentTime = selectedTime;
   }, [selectedTime]);
-  const waveImage = process.env.NEXT_PUBLIC_FILE_SERVER_URL + "/" + data.wave;
+  const waveImage = process.env.NEXT_PUBLIC_FILE_SERVER_URL + data.wave;
   const scrollWidth = vDuration * 18 + 4.5;
   const insideWidth = scrollWidth * 5;
 
@@ -86,6 +86,7 @@ const Waveform = ({
         onScrollCapture={handleScroll}
         className=" h-12 z-0 rounded-lg"
       >
+        <div className="absolute  left-0 z-10 w-24 h-full bg-gradient-to-r from-pink-900 via-pink-800/10 to-transparent "></div>
         <div
           style={{ width: `${insideWidth}rem` }}
           className={`flex flex-row z-0 h-12 items-center bg-pink-500 rounded-lg p-1  `}
@@ -112,6 +113,7 @@ const Waveform = ({
             onLoadedData={() => setDuration(audioRef.current.duration)}
           />
         </div>
+        <div className="absolute  right-0 z-10 w-11 h-full bg-pink-500"></div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </div>

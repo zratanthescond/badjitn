@@ -40,6 +40,19 @@ export const POST = async (req: Request) => {
       });
     }
   } else {
+    try {
+      const work = await uploadWork({
+        fileUrl: "",
+        eventId: body.eventId as string,
+        userId: body.userId as string,
+        note: body.note as string,
+      });
+    } catch (err) {
+      return NextResponse.json({
+        success: false,
+        error: err,
+      });
+    }
     return NextResponse.json({
       success: false,
     });

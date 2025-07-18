@@ -52,6 +52,7 @@ export type CreateEventParams = {
       value: string;
       discount: number;
     };
+    places: number;
   };
   path: string;
 };
@@ -84,6 +85,7 @@ export type UpdateEventParams = {
       value: string;
       discount: number;
     };
+    places: number;
   };
   path: string;
 };

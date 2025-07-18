@@ -5,7 +5,7 @@ const uploadMusic = async (file: File, userId: string) => {
   formData.append("video", file);
   formData.append("userId", userId);
   const video = await axios.post(
-    `${process.env.NEXT_PUBLIC_FILE_SERVER_URL}/upload`,
+    `${process.env.NEXT_PUBLIC_FILE_SERVER_URL}upload`,
     formData,
     {
       headers: {

@@ -81,7 +81,9 @@
   "ViolentOrRepulsiveContent": "Contenu violent ou répugnant",
   "HatefulOrAbusiveContent": "Contenu haineux ou abusif",
   "HarmfulOrDangerousActs": "Actes nuisibles ou dangereux",
-  "SpamOrMisleading": "Spam ou trompeur"
+  "SpamOrMisleading": "Spam ou trompeur",
+  "cancel": "Annuler",
+  "reporting": "Signalement en cours..."
 }
 ,"countries":{
   "searchPlaceholder": "Rechercher un pays",
@@ -347,9 +349,2471 @@
   },
   "eventForm":{
     "eventTitle":"Titre de l'evenement",
-    "eventDescriptionPlaceholder": "Description de l'événement"
+    "eventDescriptionPlaceholder": "Description de l'événement",
+    "locationPlaceHolder": "Lieu de l'événement ou on ligne",
+    "online": "Événement en ligne",
+    "startDate":"Date de début",
+    "endDate":"Date de fin",
+    "price":"Prix",
+    "places":"N° palces",
+    "plans":"Plans",
+    "freeTicket":"Ticket Gratuit",
+    "url":"Lien de lévenement",
+    "create":"Créer",
+    "submitting": "Envoi en cours...",
+    "Update":"Mettre à jour",
+    "event":"événement",
+    "requiredInfo":"Informations requises",
+    "requiredInfoDescription":"Veuillez remplir toutes les informations requises.",
+    "searchInfoPlaceholder":"Rechercher des informations",
+    "applyDiscount":"Appliquer un code de réduction",
+    "selectYourSponsors":"Sélectionnez vos sponsors",
+    "selectSponsorsPlaceholder":"Rechercher vos sponsors...",
+    "chooseSponsors":"Choisissez vos sponsors",
+    "searchSponsorsPlaceholder":"Rechercher des sponsors par nom ou niveau..."
+
+  },
+  "pricePlan": {
+    "title": "Plans Tarifaires",
+    "subtitle": "Créez et gérez vos niveaux de tarification",
+    "buttons": {
+      "simplePrice": "Prix Simple",
+      "returnToSimplePrice": "Retour au Prix Simple",
+      "addPlan": "Ajouter un Plan"
+    },
+    "form": {
+      "labels": {
+        "planDescription": "Description du Plan",
+        "price": "Prix (TND)",
+        "availablePlaces": "Places Disponibles"
+      },
+      "placeholders": {
+        "planDescription": "ex: Abonnement mensuel premium avec accès illimité",
+        "price": "29,99",
+        "places": "100"
+      },
+      "errors": {
+        "descriptionRequired": "La description du plan doit contenir au moins 10 caractères",
+        "priceRequired": "Le prix doit être supérieur à 0",
+        "placesRequired": "Le nombre de places doit être supérieur à 0"
+      }
+    },
+    "list": {
+      "title": "Plans Créés",
+      "planNumber": "Plan n°",
+      "places": "places",
+      "currency": "TND"
+    },
+    "emptyState": {
+      "title": "Aucun plan créé pour le moment",
+      "description": "Créez votre premier plan tarifaire en remplissant le formulaire ci-dessus, ou revenez à la tarification simple.",
+      "action": "Retour au Prix Simple"
+    },
+    "actions": {
+      "delete": "Supprimer le plan",
+      "add": "Ajouter un nouveau plan"
+    }
+  }, "discount": {
+    "applyDiscount": "Appliquer la Remise",
+    "title": "Appliquer la Remise par Profil",
+    "description": "Ajoutez votre condition de remise par champs",
+    "chooseFieldAndValue": "Choisissez un champ et une valeur",
+    "selectField": "Sélectionner le Champ",
+    "selectFieldPlaceholder": "Choisir un champ...",
+    "fieldNotFound": "Champ introuvable",
+    "fieldValue": "Valeur du Champ",
+    "selectValue": "Sélectionner la valeur...",
+    "enterValue": "Entrer la valeur...",
+    "selectFieldFirst": "Sélectionnez d'abord un champ",
+    "selectDiscountPercentage": "Sélectionner le Pourcentage de Remise",
+    "selectDiscountPlaceholder": "Choisir la remise...",
+    "noRequiredInfoSelected": "Aucune information requise sélectionnée",
+    "saveChanges": "Sauvegarder les Modifications"
+  },
+  "fileUploader":{
+    "dragAndDrop": "Glisser et lacher votre fichier ici ou cliquer pour le choisir",
+    "selectFromYourComputer": "Choisir sur votre ordinateur",
+    "fileTypeError": "Type de fichier non valide. Veuillez uploader une image valide.",
+    "fileSizeError": "Taille du fichier excède la limite de 5Mo.",
+    "uploading": "En cours d'upload...",
+    "uploadError":" Une erreur s'est produite lors de l'upload du fichier. Veuillez réessayer.",
+    "retry": "Réessayer",
+    "cancel": "Annuler"
+  },
+  "videoEditor": {
+    "modifyVideo": "Modifier la vidéo",
+    "addYourMusic": "Ajouter votre musique",
+    "createReels": "Créer des Reels",
+    "cancel": "Annuler",
+    "use": "Utiliser",
+    "upload": "Télécharger",
+    "searchMusic": "Rechercher de la musique"
+
+  },
+  "profile":{
+    "myTickets": "Mes Tickets",
+    "exploreMoreEvents": "Explorer plus d'events",
+    "eventsOrganized":"Events Organized",
+    "createNewEvent": "Créer un nouvel event",
+    "mySponsors": "Mes Sponsors",
+    "addSponsor": "Ajouter un Sponsor",
+    "allSponsors": "Tous les Sponsors",
+    "customRequiredInfo": "Informations requises personnalisées",
+    "addCustomRequiredInfo": "Ajouter des Informations requises personnalisées"
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "of": "de"
+  },
+  "SponsorForm": {
+    "title": "Ajouter un Nouveau Sponsor",
+    "description": "Saisissez les détails du nouveau sponsor pour l'ajouter à votre plateforme.",
+    "fields": {
+      "sponsorName": {
+        "label": "Nom du Sponsor",
+        "placeholder": "Acme Inc.",
+        "description": "Entrez le nom officiel du sponsor"
+      },
+      "logo": {
+        "label": "Logo",
+        "placeholder": "Télécharger le logo",
+        "description": "Téléchargez le logo de votre sponsor (Max 1MB, PNG/JPG)",
+        "dragDrop": "Glissez-déposez une image ici, ou cliquez pour sélectionner",
+        "chooseFile": "Choisir un Fichier",
+        "removeImage": "Supprimer l'image",
+        "uploading": "Téléchargement en cours..."
+      },
+      "website": {
+        "label": "Site Web",
+        "placeholder": "https://exemple.com",
+        "description": "URL du site web officiel"
+      },
+      "tier": {
+        "label": "Niveau de Sponsoring",
+        "placeholder": "Sélectionner un niveau",
+        "description": "Choisissez le niveau de sponsoring approprié",
+        "options": {
+          "platinum": "Platine",
+          "gold": "Or",
+          "silver": "Argent",
+          "bronze": "Bronze"
+        }
+      }
+    },
+    "actions": {
+      "addSponsor": "Ajouter un Sponsor",
+      "submitting": "Ajout du sponsor en cours...",
+      "cancel": "Annuler",
+      "reset": "Réinitialiser le Formulaire"
+    },
+    "messages": {
+      "success": "Succès",
+      "successDescription": "Sponsor ajouté avec succès ! Il apparaîtra dans votre liste de sponsors.",
+      "error": "Erreur",
+      "errorDescription": "Échec de l'ajout du sponsor. Veuillez vérifier vos informations et réessayer.",
+      "uploading": "Téléchargement des fichiers...",
+      "processing": "Traitement de votre demande..."
+    },
+    "validation": {
+      "nameRequired": "Le nom du sponsor est requis",
+      "nameMin": "Le nom du sponsor doit contenir au moins 2 caractères",
+      "nameMax": "Le nom du sponsor doit contenir moins de 100 caractères",
+      "fileRequired": "Veuillez télécharger un fichier de logo",
+      "fileSize": "La taille du fichier doit être inférieure à 1MB",
+      "fileType": "Seuls les fichiers PNG, JPG et JPEG sont autorisés",
+      "urlRequired": "L'URL du site web est requise",
+      "urlInvalid": "Veuillez entrer une URL valide (ex: https://exemple.com)",
+      "tierRequired": "Veuillez sélectionner un niveau de sponsoring"
+    }
+  },
+  "HexGridSponsor": {
+    "actions": {
+      "mySponsors": "Mes Sponsors",
+      "allSponsors": "Tous les Sponsors",
+      "refresh": "Actualiser",
+      "delete": "Supprimer",
+      "visit": "Visiter le Site"
+    },
+    "messages": {
+      "deleteSuccess": "Succès",
+      "deleteSuccessDescription": "Sponsor supprimé avec succès",
+      "deleteError": "Erreur",
+      "deleteErrorDescription": "Échec de la suppression du sponsor. Veuillez réessayer.",
+      "fetchError": "Échec du chargement des sponsors",
+      "loading": "Chargement des sponsors...",
+      "deleting": "Suppression...",
+      "noSponsors": "Aucun sponsor trouvé",
+      "noMySponsors": "Vous n'avez pas encore ajouté de sponsors"
+    },
+    "filters": {
+      "showMine": "Afficher seulement mes sponsors",
+      "showAll": "Afficher tous les sponsors"
+    },
+    "tiers": {
+      "platinum": "Platine",
+      "gold": "Or",
+      "silver": "Argent",
+      "bronze": "Bronze"
+    },
+    "accessibility": {
+      "deleteButton": "Supprimer le sponsor {name}",
+      "visitWebsite": "Visiter le site de {name}",
+      "sponsorCard": "Carte de sponsor pour {name}"
+    }
+  },"FormBuilder": {
+    "title": "Constructeur de Formulaires Personnalisé",
+    "fieldTypes": {
+      "text": "Champ Texte",
+      "number": "Champ Numérique",
+      "dropdown": "Liste Déroulante",
+      "radio": "Boutons Radio"
+    },
+    "fields": {
+      "fieldLabel": "Libellé du Champ",
+      "labelPlaceholder": "Entrez le libellé du champ",
+      "dropdownOptions": "Options de la Liste Déroulante",
+      "radioOptions": "Options des Boutons Radio",
+      "optionsPlaceholder": "Options séparées par des virgules (ex: Option 1, Option 2)",
+      "placeholder": "Texte d'Aide",
+      "placeholderText": "Entrez le texte d'aide",
+      "id": "ID",
+      "defaultOptions": {
+        "option1": "Option 1",
+        "option2": "Option 2"
+      }
+    },
+    "actions": {
+      "removeField": "Supprimer le Champ",
+      "finishEditing": "Terminer l'Édition",
+      "updateForm": "Mettre à Jour le Formulaire"
+    },
+    "preview": {
+      "title": "Aperçu du Formulaire",
+      "selectOption": "Sélectionner une option",
+      "noFields": "aucun champ ajouté pour le moment"
+    },
+    "footer": {
+      "description": "ce formulaire est utilisé lorsque vous voulez des données personnalisées de l'utilisateur"
+    },
+    "messages": {
+      "saveSuccess": "Formulaire sauvegardé avec succès !",
+      "saveError": "Erreur : "
+    },
+    "validation": {
+      "emptyLabels": "Veuillez remplir tous les libellés des champs",
+      "fillAllLabels": "Veuillez remplir tous les libellés des champs"
+    }
+  },"TicketControle": {
+    "actions": {
+      "uploadWork": "Télécharger le Travail",
+      "getCertificate": "Obtenir le Certificat",
+      "getTicket": "Obtenir le Billet"
+    },
+    "dialogs": {
+      "uploadWork": {
+        "title": "Télécharger le Travail",
+        "description": "Téléchargez vos fichiers de travail pour cet événement"
+      },
+      "certificate": {
+        "title": "Obtenir le Certificat",
+        "description": "Générer et télécharger votre certificat d'événement"
+      },
+      "ticket": {
+        "title": "Obtenir le Billet",
+        "description": "Voir et télécharger votre billet d'événement"
+      }
+    },
+    "accessibility": {
+      "settingsButton": "Ouvrir le menu de contrôle de l'événement"
+    }
+  }, "WorkUploader": {
+    "title": "Portail de Soumission de Travaux",
+    "description": "Téléchargez vos fichiers et ajoutez des notes pour révision",
+    "notes": {
+      "title": "Ajoutez Vos Notes",
+      "description": "Rédigez un contexte ou des descriptions supplémentaires",
+      "placeholder": "Partagez vos réflexions, méthodologie, ou tout contexte supplémentaire..."
+    },
+    "upload": {
+      "title": "Télécharger des Fichiers",
+      "description": "Documents PDF et Word pris en charge",
+      "dragDrop": "Glissez-déposez les fichiers ici",
+      "dropHere": "Déposez vos fichiers ici !",
+      "orClick": "ou cliquez pour parcourir",
+      "processing": "Traitement...",
+      "previousFiles": "Fichiers Précédemment Téléchargés :",
+      "preview": "Aperçu du Fichier :",
+      "noPreview": "Aucun fichier sélectionné pour l'aperçu"
+    },
+    "actions": {
+      "saveNotes": "Sauvegarder les Notes",
+      "savingNotes": "Sauvegarde des Notes...",
+      "uploadFile": "Télécharger le Fichier",
+      "uploadingFile": "Téléchargement du Fichier..."
+    },
+    "messages": {
+      "uploadSuccess": "Succès ! 🎉",
+      "uploadSuccessDescription": "Votre travail a été téléchargé avec succès."
+    }
+  },
+  "UploadedFileController": {
+    "actions": {
+      "preview": "Aperçu",
+      "download": "Télécharger",
+      "delete": "Supprimer"
+    },
+    "messages": {
+      "deleteSuccess": "Fichier Supprimé",
+      "deleteSuccessDescription": "Le fichier a été supprimé avec succès de votre travail.",
+      "deleteError": "Échec de la Suppression",
+      "deleteErrorDescription": "Impossible de supprimer le fichier. Veuillez réessayer.",
+      "previewLoaded": "Aperçu Prêt",
+      "previewLoadedDescription": "Le fichier '{fileName}' est maintenant prêt pour l'aperçu.",
+      "downloadStarted": "Téléchargement Commencé",
+      "downloadStartedDescription": "Le téléchargement de '{fileName}' a commencé."
+    },
+    "tooltips": {
+      "preview": "Prévisualiser ce fichier",
+      "download": "Télécharger le fichier",
+      "delete": "Supprimer le fichier définitivement"
+    },
+    "deleteDialog": {
+      "title": "Supprimer le Fichier",
+      "description": "Êtes-vous sûr de vouloir supprimer '{fileName}' ?",
+      "warning": "Cette action ne peut pas être annulée. Le fichier sera supprimé définitivement.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer le Fichier"
+    }
+  },"certification": {
+    "title": "Certificat de Réussite",
+    "description": {
+      "part1": "En reconnaissance de votre contribution exceptionnelle et de votre dévouement au programme de l'événement",
+      "part2": "."
+    },
+    "awardedOn": "Décerné le:",
+    "organizer": "Organisateur",
+    "sampleNote": "Ceci est un exemple de demande de certification, demandez-en une vraie à l'organisateur de l'événement",
+    "status": {
+      "processing": "Traitement de la demande",
+      "approved": "Certification Approuvée",
+      "rejected": "Certification Rejetée"
+    },
+    "actions": {
+      "orderCertification": "Commander une Certification",
+      "print": "Imprimer le Certificat",
+      "download": "Télécharger le Certificat"
+    },
+    "toast": {
+      "success": "Succès",
+      "certificationRequested": "Certification Demandée avec Succès"
+    }
+  }, "ticket": {
+    "admission": {
+      "general": "ADMISSION GÉNÉRALE"
+    },
+    "conference": {
+      "dayPass": "-Pass de Conférence d'une Journée"
+    },
+    "doors": {
+      "openAt": "Les portes ouvrent à"
+    },
+    "checkIn": {
+      "idRequired": "Pièce d'identité requise à l'enregistrement"
+    },
+    "included": {
+      "title": "Ce qui est inclus :"
+    },
+    "price": {
+      "free": "Gratuit"
+    },
+    "order": {
+      "label": "Commande"
+    },
+    "seating": {
+      "row": "RANGÉE",
+      "seat": "SIÈGE"
+    }
+  },"eventControls": {
+    "settings": "Paramètres de l'Événement",
+    "orderDetails": "Détails de la Commande",
+    "hostContributor": "Héberger un Contributeur",
+    "sponsor": "promouvoir votre publication",
+    "modify": "Modifier",
+    "delete": "Supprimer",
+    "return": "Retour"
+  },
+  "contributorSelection": {
+    "title": "Héberger un Contributeur",
+    "choosePlan": "Choisir un Plan",
+    "searchAndSelectLabel": "Rechercher et Sélectionner un Contributeur",
+    "searchAndSelectPlaceholder": "Rechercher des contributeurs par nom ou email...",
+    "searchMinLength": "Tapez au moins 2 caractères pour rechercher",
+    "selectedContributor": "Contributeur Sélectionné",
+    "noContributorsFound": "Aucun contributeur trouvé",
+    "searching": "Recherche...",
+    "hostButton": "Héberger le Contributeur",
+    "hosting": "Hébergement...",
+    "messages": {
+      "success": "Contributeur hébergé gratuitement avec succès !",
+      "error": "Une erreur s'est produite lors de l'hébergement du contributeur.",
+      "selectContributor": "Veuillez sélectionner un contributeur.",
+      "fetchError": "Échec de la récupération des contributeurs. Veuillez réessayer."
+    }
+  },"eventPromotion": {
+    "title": "Promouvoir Votre Événement",
+    "subtitle": "Augmentez la visibilité de votre événement et atteignez plus de participants",
+    "choosePlan": "Choisissez Votre Plan de Promotion",
+    "popular": "Le Plus Populaire",
+    "startDate": "Date de Début de Promotion",
+    "endDate": "Date de Fin de Promotion",
+    "selectStartDate": "Sélectionner la date de début",
+    "selectEndDate": "Sélectionner la date de fin",
+    "promotionSummary": "Résumé de la Promotion",
+    "plan": "Plan",
+    "totalCost": "Coût Total",
+    "promoteEvent": "Promouvoir l'Événement",
+    "promoting": "Promotion en cours...",
+    "eventStatus": {
+      "active": "Actif"
+    },
+    "duration": {
+      "label": "Durée",
+      "days": "{count, plural, =1 {jour} other {jours}}"
+    },
+    "plans": {
+      "basic": {
+        "name": "Boost Basique",
+        "features": {
+          "0": "Mis en avant dans les résultats de recherche",
+          "1": "Inclusion dans la newsletter",
+          "2": "Tableau de bord analytique de base"
+        }
+      },
+      "premium": {
+        "name": "Promotion Premium",
+        "features": {
+          "0": "Placement en haut des recherches",
+          "1": "Promotion sur les réseaux sociaux",
+          "2": "Analyses avancées",
+          "3": "Support client prioritaire"
+        }
+      },
+      "ultimate": {
+        "name": "Campagne Ultime",
+        "features": {
+          "0": "Placement en vedette sur la page d'accueil",
+          "1": "Campagne d'influence",
+          "2": "Matériel marketing personnalisé",
+          "3": "Gestionnaire de compte dédié"
+        }
+      }
+    },
+    "messages": {
+      "success": "Promotion de l'événement lancée avec succès !",
+      "error": "Échec du lancement de la promotion. Veuillez réessayer.",
+      "fillAllFields": "Veuillez remplir tous les champs requis.",
+      "invalidDateRange": "La date de fin doit être postérieure à la date de début."
+    }
+  },
+  "orders": {
+    "title": "Administration d'Événement",
+    "subtitle": "Gérer les commandes, certifications et affectations de travail",
+    "stats": {
+      "totalOrders": "Total des Commandes",
+      "certifications": "Certifications",
+      "works": "Éléments de Travail"
+    },
+    "tabs": {
+      "orderAdministration": "Administration des Commandes",
+      "orders": "Commandes",
+      "certificationAdministration": "Administration des Certifications",
+      "certifications": "Certifications",
+      "workAdministration": "Administration du Travail",
+      "works": "Travaux"
+    },
+    "sections": {
+      "orderManagement": "Gestion des Commandes",
+      "certificationManagement": "Gestion des Certifications",
+      "workManagement": "Gestion du Travail"
+    }
+  },
+   "orderAdministration": {
+    "title": "Gestion des Commandes",
+    "subtitle": "Suivre et gérer toutes les commandes d'événements",
+    "searchPlaceholder": "Rechercher par ID, acheteur ou événement...",
+    "orderIdLabel": "ID de Commande",
+    "buyer": "Acheteur",
+    "table": {
+      "headers": {
+        "orderId": "ID Commande",
+        "eventTitle": "Titre de l'Événement",
+        "buyer": "Acheteur",
+        "ticketType": "Type de Billet",
+        "created": "Créé",
+        "amount": "Montant",
+        "details": "Détails"
+      }
+    },
+    "ticketTypes": { "paid": "Billet Payant", "free": "Billet Gratuit", "hosted": "Billet Hébergé", "doorpay": "Billet de Porte" },
+    "stats": {
+      "totalOrders": "Total des Commandes",
+      "totalRevenue": "Chiffre d'Affaires Total",
+      "uniqueBuyers": "Acheteurs Uniques"
+    },
+    "actions": {
+      "filter": "Filtrer les Commandes",
+      "export": "Exporter les Données",
+      "viewDetails": "Voir les Détails"
+    },
+    "emptyState": {
+      "title": "Aucune Commande Trouvée",
+      "description": "Il n'y a pas encore de commandes pour cet événement. Les commandes apparaîtront ici une fois que les clients commenceront à acheter des billets."
+    }
+  }, "orderDetailsDialog": {
+    "title": "Détails de la Commande",
+    "description": "Informations complètes sur cette commande",
+    "viewButton": "Voir",
+    "returnButton": "Retour",
+    "orderPlans": {
+      "title": "Plans de Commande",
+      "description": "Plans disponibles inclus dans cette commande",
+      "allPlansAvailable": "Tous les plans d'événement sont disponibles"
+    },
+    "payment": {
+      "totalAmount": "Montant Total",
+      "cashPaid": "Espèces Payées",
+      "toPay": "À Payer",
+      "hostedByAdmin": "Cette commande est hébergée par l'administrateur"
+    },
+    "discount": {
+      "label": "Remise",
+      "eligible": "Éligible à la Remise"
+    },
+    "buyerInfo": {
+      "title": "Informations de l'Acheteur",
+      "description": "Données requises de l'acheteur par l'administrateur"
+    }
+  },"certificationAdministration": {
+    "title": "Gestion des Certifications",
+    "subtitle": "Examiner et gérer les demandes de certification",
+    "searchPlaceholder": "Rechercher par ID, demandeur ou événement...",
+    "certificationIdLabel": "ID de Certification",
+    "applicant": "Demandeur",
+    "table": {
+      "headers": {
+        "id": "ID",
+        "eventTitle": "Titre de l'Événement",
+        "applicant": "Demandeur",
+        "status": "Statut",
+        "submitted": "Soumis",
+        "actions": "Actions"
+      }
+    },
+    "status": {
+      "pending": "En Attente",
+      "approved": "Approuvé",
+      "rejected": "Rejeté"
+    },
+    "stats": {
+      "total": "Total",
+      "pending": "En Attente",
+      "approved": "Approuvés",
+      "rejected": "Rejetés"
+    },
+    "actions": {
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "filter": "Filtrer les Certifications",
+      "export": "Exporter les Données"
+    },
+    "toast": {
+      "success": "Succès",
+      "error": "Erreur",
+      "approved": "Certification approuvée avec succès",
+      "rejected": "Certification rejetée avec succès",
+      "approveError": "Échec de l'approbation de la certification",
+      "rejectError": "Échec du rejet de la certification"
+    },
+    "emptyState": {
+      "title": "Aucune Certification Trouvée",
+      "description": "Il n'y a pas encore de demandes de certification pour cet événement. Les demandes apparaîtront ici lorsque les participants demanderont des certifications."
+    }
+  },
+  "workAdministration": {
+    "title": "Gestion des Travaux",
+    "subtitle": "Examiner et gérer les soumissions de travaux",
+    "searchPlaceholder": "Rechercher des travaux par ID, soumissionnaire ou événement...",
+    "workIdLabel": "ID de Travail",
+    "submitter": "Soumissionnaire",
+    "table": {
+      "headers": {
+        "id": "ID",
+        "eventTitle": "Titre de l'Événement",
+        "submitter": "Soumissionnaire",
+        "status": "Statut",
+        "submitted": "Soumis",
+        "actions": "Actions"
+      }
+    },
+    "status": {
+      "submitted": "Soumis",
+      "reviewed": "Examiné",
+      "pending": "En Attente d'Examen"
+    },
+    "stats": {
+      "total": "Total des Travaux",
+      "submitted": "Soumis",
+      "reviewed": "Examinés",
+      "pending": "En Attente"
+    },
+    "actions": {
+      "filter": "Filtrer les Travaux",
+      "export": "Exporter les Données",
+      "viewDetails": "Voir les Détails"
+    },
+    "emptyState": {
+      "title": "Aucune Soumission de Travail Trouvée",
+      "description": "Il n'y a pas encore de soumissions de travail pour cet événement. Les soumissions apparaîtront ici lorsque les participants soumettront leur travail."
+    }
+  },
+  "workDetailsDialog": {
+    "title": "Détails de Soumission de Travail",
+    "description": "Examiner la soumission complète du travail incluant les notes et fichiers téléchargés",
+    "viewButton": "Voir les Détails",
+    "markAsSeen": "Marquer comme Vu",
+    "submittedOn": "Soumis le",
+    "status": {
+      "submitted": "Soumis",
+      "reviewed": "Examiné",
+      "pending": "En Attente d'Examen"
+    },
+    "writtenNote": {
+      "title": "Soumission Écrite",
+      "description": "Contenu textuel fourni par le participant"
+    },
+    "uploadedFiles": {
+      "title": "Fichiers Téléchargés",
+      "description": "{count, plural, =1 {# fichier téléchargé} other {# fichiers téléchargés}}"
+    },
+    "filePreview": {
+      "error": "Impossible de prévisualiser ce type de fichier. Veuillez télécharger pour voir."
+    },
+    "downloadButton": "Télécharger",
+    "emptyState": {
+      "title": "Aucun Contenu Disponible",
+      "description": "Cette soumission de travail ne contient aucune note écrite ni fichier téléchargé."
+    }
+  },"bannedPage": {
+    "title": "Votre Compte a Été Suspendu",
+    "description": "Nous avons déterminé que votre compte a violé nos directives communautaires ou nos conditions de service.",
+    "dateUnknown": "Inconnu",
+    "status": {
+      "suspended": "Compte Suspendu"
+    },
+    "accountInfo": {
+      "title": "Informations du Compte",
+      "name": "Nom",
+      "email": "Email",
+      "banDate": "Suspendu Le"
+    },
+    "banReason": {
+      "title": "Raison de la Suspension",
+      "default": "Violations multiples de nos directives communautaires concernant le partage de contenu et les interactions utilisateur."
+    },
+    "consequences": {
+      "title": "Qu'est-ce que cela signifie ?",
+      "noAccess": "Vous ne pouvez pas accéder à votre compte ou à son contenu",
+      "noNewAccounts": "Vous ne pouvez pas créer de nouveaux comptes sur notre plateforme",
+      "permanentDecision": "Cette décision peut être permanente selon la violation"
+    },
+    "actions": {
+      "appeal": "Faire Appel de Cette Décision",
+      "returnHome": "Retourner à l'Accueil"
+    },
+    "support": {
+      "description": "Si vous pensez que c'est une erreur, veuillez contacter notre équipe de support à"
+    },
+    "additionalHelp": {
+      "text": "Besoin d'aide supplémentaire ?",
+      "helpCenter": "Visitez notre Centre d'Aide"
+    }
+  },"createEventPage": {
+    "title": "Créer un Nouvel Événement",
+    "subtitle": "Partagez votre événement incroyable avec le monde",
+    "status": {
+      "label": "Statut Éditeur",
+      "approved": "Approuvé",
+      "pending": "En Attente de Révision",
+      "rejected": "Rejeté",
+      "notApplied": "Non Appliqué"
+    },
+    "pending": {
+      "title": "Demande d'Éditeur en Révision",
+      "subtitle": "Votre candidature est en cours de traitement",
+      "description": "Merci d'avoir postulé pour devenir éditeur ! Notre équipe examine actuellement votre demande. Vous aurez besoin d'une approbation avant de pouvoir créer et publier des événements sur notre plateforme.",
+      "whatHappensNext": {
+        "title": "Que se passe-t-il ensuite ?",
+        "step1": "Notre équipe examine votre candidature d'éditeur dans les 2-3 jours ouvrables",
+        "step2": "Vous recevrez une notification par email avec la décision",
+        "step3": "Une fois approuvé, vous pouvez immédiatement commencer à créer des événements"
+      },
+      "actions": {
+        "contactSupport": "Contacter le Support",
+        "learnMore": "En Savoir Plus"
+      }
+    },
+    "approved": {
+      "title": "Bienvenue, Éditeur !",
+      "subtitle": "Vous êtes prêt à créer des événements incroyables",
+      "welcomeMessage": "Félicitations ! Votre statut d'éditeur a été approuvé.",
+      "description": "Vous avez maintenant un accès complet pour créer, gérer et publier des événements. Remplissez le formulaire ci-dessous pour créer votre premier événement et commencer à vous connecter avec votre audience.",
+      "formTitle": "Formulaire de Création d'Événement"
+    },
+    "rejected": {
+      "title": "Demande d'Éditeur Rejetée",
+      "subtitle": "Votre candidature nécessite une attention",
+      "description": "Malheureusement, votre demande d'éditeur a été rejetée. Cela pourrait être dû à des informations incomplètes, des violations de politique ou d'autres exigences non satisfaites.",
+      "nextSteps": {
+        "title": "Ce que vous pouvez faire ensuite :",
+        "step1": "Contactez notre équipe de support pour comprendre les raisons spécifiques du rejet",
+        "step2": "Adressez tous les problèmes ou fournissez des informations supplémentaires requises",
+        "step3": "Soumettez une nouvelle candidature une fois que vous avez résolu les préoccupations"
+      },
+      "actions": {
+        "contactSupport": "Contacter le Support",
+        "reapply": "Postuler à Nouveau"
+      }
+    },
+    "notApplied": {
+      "title": "Devenez Éditeur",
+      "subtitle": "Commencez à créer et partager des événements",
+      "description": "Pour créer des événements sur notre plateforme, vous devez postuler pour le statut d'éditeur. Cela nous aide à maintenir la qualité et à nous assurer que tous les événements respectent nos standards communautaires."
+    },
+    "help": {
+      "title": "Besoin d'Aide ?",
+      "description": "Notre équipe de support est là pour vous aider avec toutes questions concernant le processus de candidature d'éditeur ou la création d'événements.",
+      "actions": {
+        "helpCenter": "Centre d'Aide",
+        "contactUs": "Nous Contacter"
+      }
+    }
+  }, "supportPage": {
+    "title": "Contacter le Support",
+    "subtitle": "Obtenez l'aide dont vous avez besoin de notre équipe de support dédiée",
+    "channels": {
+      "title": "Choisissez Votre Canal de Support",
+      "available": "Disponible",
+      "unavailable": "Indisponible",
+      "responseTime": {
+        "immediate": "Réponse immédiate",
+        "24h": "Dans les 24 heures",
+        "business-hours": "Heures d'ouverture uniquement"
+      },
+      "items": {
+        "live-chat": {
+          "title": "Chat en Direct",
+          "description": "Obtenez une aide instantanée de notre équipe de support",
+          "action": "Démarrer le Chat"
+        },
+        "email": {
+          "title": "Support par Email",
+          "description": "Envoyez-nous un message détaillé sur votre problème",
+          "action": "Envoyer un Email"
+        },
+        "phone": {
+          "title": "Support Téléphonique",
+          "description": "Parlez directement avec un représentant du support",
+          "action": "Appeler Maintenant"
+        }
+      }
+    },
+    "form": {
+      "title": "Soumettre une Demande de Support",
+      "description": "Remplissez le formulaire ci-dessous et nous vous répondrons dès que possible",
+      "fields": {
+        "name": {
+          "label": "Nom Complet",
+          "placeholder": "Entrez votre nom complet"
+        },
+        "email": {
+          "label": "Adresse Email",
+          "placeholder": "Entrez votre adresse email"
+        },
+        "subject": {
+          "label": "Sujet",
+          "placeholder": "Description brève de votre problème"
+        },
+        "category": {
+          "label": "Catégorie",
+          "placeholder": "Sélectionnez une catégorie",
+          "options": {
+            "account": "Problèmes de Compte",
+            "events": "Gestion d'Événements",
+            "payments": "Paiements et Facturation",
+            "technical": "Support Technique",
+            "security": "Sécurité et Confidentialité",
+            "other": "Autre"
+          }
+        },
+        "priority": {
+          "label": "Niveau de Priorité",
+          "placeholder": "Sélectionnez la priorité",
+          "options": {
+            "low": "Faible - Demande générale",
+            "medium": "Moyen - Problème non urgent",
+            "high": "Élevé - Problème urgent",
+            "urgent": "Urgent - Problème critique"
+          }
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Veuillez décrire votre problème en détail..."
+        },
+        "attachment": {
+          "label": "Pièces Jointes (Optionnel)",
+          "description": "Téléchargez des captures d'écran ou des fichiers pour nous aider à comprendre votre problème",
+          "button": "Choisir des Fichiers"
+        }
+      }
+    },
+    "submit": "Soumettre la Demande",
+    "submitting": "Soumission..."
+  },
+  "supportHours": {
+    "title": "Heures de Support",
+    "weekdays": "Lundi - Vendredi",
+    "weekends": "Samedi - Dimanche",
+    "timezone": "Fuseau Horaire",
+    "currentStatus": "Nous sommes actuellement en ligne et prêts à vous aider !"
+  },
+  "emergency": {
+    "title": "Contact d'Urgence",
+    "description": "Pour les problèmes de sécurité urgents ou les problèmes système critiques, contactez-nous immédiatement :"
+  },
+  "quickResources": {
+    "title": "Ressources Rapides",
+    "items": {
+      "help-center": "Centre d'Aide",
+      "video-tutorials": "Tutoriels Vidéo",
+      "community-forum": "Forum Communautaire",
+      "status-page": "État du Système"
+    }
+  },
+  "success": {
+    "title": "Demande Soumise avec Succès !",
+    "description": "Merci de nous avoir contactés. Nous avons reçu votre demande de support et répondrons dès que possible.",
+    "ticketNumber": "Numéro de Ticket",
+    "actions": {
+      "browseHelp": "Parcourir le Centre d'Aide",
+      "newTicket": "Soumettre un Nouveau Ticket"
+    }
+  },
+  "helpPage": {
+    "title": "Centre d'Aide",
+    "subtitle": "Trouvez des réponses à vos questions et obtenez le support dont vous avez besoin",
+    "search": {
+      "placeholder": "Rechercher des articles d'aide, guides et FAQ...",
+      "popularSearches": "Recherches Populaires",
+      "terms": {
+        "events": "Événements",
+        "payments": "Paiements",
+        "account": "Compte",
+        "publisher": "Éditeur"
+      }
+    },
+    "quickLinks": {
+      "title": "Accès Rapide",
+      "items": {
+        "contact-support": {
+          "title": "Contacter le Support",
+          "description": "Obtenez une aide personnalisée de notre équipe"
+        },
+        "video-tutorials": {
+          "title": "Tutoriels Vidéo",
+          "description": "Guides visuels étape par étape"
+        },
+        "download-guides": {
+          "title": "Télécharger les Guides",
+          "description": "Guides PDF et documentation"
+        },
+        "community-forum": {
+          "title": "Forum Communautaire",
+          "description": "Connectez-vous avec d'autres utilisateurs"
+        }
+      }
+    },
+    "categories": {
+      "title": "Parcourir par Catégorie",
+      "viewAll": "Voir tous les articles",
+      "getting-started": {
+        "title": "Premiers Pas",
+        "description": "Apprenez les bases et configurez votre compte",
+        "articles": {
+          "0": "Comment créer votre premier compte",
+          "1": "Configuration de votre profil",
+          "2": "Comprendre le tableau de bord"
+        }
+      },
+      "events": {
+        "title": "Événements et Publication",
+        "description": "Créez, gérez et promouvez vos événements",
+        "articles": {
+          "0": "Comment créer votre premier événement",
+          "1": "Stratégies de promotion d'événements",
+          "2": "Gestion des inscriptions aux événements"
+        }
+      },
+      "payments": {
+        "title": "Paiements et Facturation",
+        "description": "Méthodes de paiement, remboursements et facturation",
+        "articles": {
+          "0": "Méthodes de paiement acceptées",
+          "1": "Comprendre notre politique de remboursement",
+          "2": "Gérer vos informations de facturation"
+        }
+      },
+      "account": {
+        "title": "Gestion de Compte",
+        "description": "Paramètres de profil et sécurité du compte",
+        "articles": {
+          "0": "Mettre à jour vos informations de profil",
+          "1": "Changer votre mot de passe",
+          "2": "Gérer les préférences de notification"
+        }
+      },
+      "security": {
+        "title": "Sécurité et Confidentialité",
+        "description": "Gardez votre compte sûr et sécurisé",
+        "articles": {
+          "0": "Configuration de l'authentification à deux facteurs",
+          "1": "Comprendre notre politique de confidentialité",
+          "2": "Signaler des problèmes de sécurité"
+        }
+      },
+      "technical": {
+        "title": "Support Technique",
+        "description": "Dépannage et problèmes techniques",
+        "articles": {
+          "0": "Problèmes de navigateur courants",
+          "1": "Dépannage de l'application mobile",
+          "2": "Documentation API"
+        }
+      }
+    },
+    "popularArticles": {
+      "title": "Articles Populaires",
+      "readTime": "{minutes} min de lecture",
+      "items": {
+        "create-event": {
+          "title": "Comment créer votre premier événement"
+        },
+        "publisher-approval": {
+          "title": "Processus d'approbation d'éditeur"
+        },
+        "payment-methods": {
+          "title": "Méthodes de paiement acceptées"
+        },
+        "account-security": {
+          "title": "Meilleures pratiques de sécurité de compte"
+        },
+        "event-promotion": {
+          "title": "Stratégies de promotion d'événements"
+        },
+        "refund-policy": {
+          "title": "Politique de remboursement expliquée"
+        }
+      }
+    },
+    "contactSupport": {
+      "title": "Besoin d'aide supplémentaire ?",
+      "description": "Vous ne trouvez pas ce que vous cherchez ? Notre équipe de support est là pour vous aider.",
+      "button": "Contacter le Support"
+    },
+    "faq": {
+      "title": "Questions Fréquemment Posées",
+      "viewAll": "Voir toutes les FAQ",
+      "items": {
+        "0": {
+          "question": "Comment devenir éditeur ?",
+          "answer": "Pour devenir éditeur, vous devez postuler via les paramètres de votre compte. Notre équipe examinera votre candidature dans les 2-3 jours ouvrables."
+        },
+        "1": {
+          "question": "Quelles méthodes de paiement acceptez-vous ?",
+          "answer": "Nous acceptons toutes les principales cartes de crédit, PayPal et les virements bancaires. Le traitement des paiements est sécurisé et crypté."
+        },
+        "2": {
+          "question": "Comment obtenir un remboursement ?",
+          "answer": "Les remboursements peuvent être demandés via le tableau de bord de votre compte. Veuillez consulter notre politique de remboursement pour les conditions d'éligibilité."
+        }
+      }
+    },
+    "bottomCta": {
+      "title": "Vous avez encore besoin d'aide ?",
+      "description": "Notre équipe de support est prête à vous aider avec toutes questions ou problèmes que vous pourriez avoir.",
+      "contactSupport": "Contacter le Support",
+      "joinCommunity": "Rejoindre la Communauté"
+    }
+  },  "helpCategoryPage": {
+    "backToHelp": "Retour au Centre d'aide",
+    "search": {
+      "placeholder": "Rechercher des articles...",
+      "noResults": {
+        "title": "Aucun article trouvé",
+        "description": "Essayez d'ajuster vos termes de recherche ou parcourez nos catégories.",
+        "clearSearch": "Effacer la recherche"
+      }
+    },
+    "article": {
+      "backToCategory": "Retour à la catégorie",
+      "readTime": "{minutes} min de lecture",
+      "lastUpdated": "Mis à jour le {date}",
+      "difficulty": {
+        "beginner": "Débutant",
+        "intermediate": "Intermédiaire",
+        "advanced": "Avancé"
+      },
+      "feedback": {
+        "title": "Cet article vous a-t-il été utile ?",
+        "description": "Dites-nous comment nous pouvons améliorer notre documentation.",
+        "helpful": "Oui, utile",
+        "notHelpful": "Pas utile"
+      },
+      "relatedArticles": "Articles connexes"
+    },
+    "contactSupport": {
+      "title": "Besoin d'aide supplémentaire ?",
+      "description": "Vous ne trouvez pas ce que vous cherchez ? Notre équipe de support est là pour vous aider.",
+      "button": "Contacter le Support"
+    },
+    "categories": {
+      "getting-started": {
+        "title": "Premiers Pas",
+        "description": "Tout ce que vous devez savoir pour commencer rapidement",
+        "articles": {
+          "0": {
+            "title": "Bienvenue sur Notre Plateforme",
+            "description": "Une introduction complète à notre plateforme et ses fonctionnalités clés",
+            "content": "<h2>Bienvenue sur Notre Plateforme</h2><p>Merci d'avoir choisi notre plateforme ! Ce guide vous aidera à commencer et à tirer le meilleur parti de nos fonctionnalités.</p><h3>Ce que Vous Apprendrez</h3><ul><li>Comment configurer votre compte</li><li>Aperçu des fonctionnalités clés</li><li>Meilleures pratiques pour commencer</li></ul><h3>Commencer</h3><p>Notre plateforme est conçue pour être intuitive et conviviale. Que vous soyez débutant ou utilisateur expérimenté, vous trouverez tout ce dont vous avez besoin pour réussir.</p><h3>Fonctionnalités Clés</h3><p>Explorez nos principales fonctionnalités incluant la gestion d'événements, le traitement des paiements, les comptes utilisateurs et les paramètres de sécurité. Chaque fonctionnalité est conçue pour fonctionner parfaitement ensemble.</p><h3>Prochaines Étapes</h3><p>Une fois que vous avez terminé cette introduction, nous recommandons d'explorer nos autres guides de démarrage pour approfondir des fonctionnalités spécifiques.</p>"
+          },
+          "1": {
+            "title": "Créer Votre Premier Compte",
+            "description": "Guide étape par étape pour configurer votre compte et profil",
+            "content": "<h2>Créer Votre Premier Compte</h2><p>Configurer votre compte est rapide et facile. Suivez ces étapes pour commencer.</p><h3>Étape 1 : S'inscrire</h3><p>Visitez notre page d'inscription et fournissez votre adresse e-mail et créez un mot de passe sécurisé.</p><h3>Étape 2 : Vérifier Votre E-mail</h3><p>Vérifiez votre e-mail pour un lien de vérification et cliquez dessus pour activer votre compte.</p><h3>Étape 3 : Compléter Votre Profil</h3><p>Ajoutez vos informations personnelles, photo de profil et préférences pour personnaliser votre expérience.</p><h3>Conseils de Sécurité</h3><ul><li>Utilisez un mot de passe fort et unique</li><li>Activez l'authentification à deux facteurs</li><li>Gardez vos informations de contact à jour</li></ul>"
+          },
+          "2": {
+            "title": "Guide de Navigation de la Plateforme",
+            "description": "Apprenez à naviguer efficacement dans notre plateforme",
+            "content": "<h2>Guide de Navigation de la Plateforme</h2><p>Comprendre comment naviguer dans notre plateforme vous aidera à travailler plus efficacement.</p><h3>Navigation Principale</h3><p>La barre de navigation principale donne accès à toutes les sections principales de la plateforme.</p><h3>Aperçu du Tableau de Bord</h3><p>Votre tableau de bord est votre hub central pour gérer toutes les activités et accéder aux informations clés.</p><h3>Actions Rapides</h3><p>Utilisez les boutons d'action rapide pour effectuer des tâches courantes sans naviguer à travers plusieurs pages.</p><h3>Fonctionnalité de Recherche</h3><p>Notre puissante fonction de recherche vous aide à trouver rapidement ce dont vous avez besoin dans toutes les sections.</p>"
+          },
+          "3": {
+            "title": "Configuration des Paramètres de Base",
+            "description": "Configurez vos paramètres de base pour une expérience optimale",
+            "content": "<h2>Configuration des Paramètres de Base</h2><p>Une configuration appropriée garantit que vous tirez le meilleur parti de notre plateforme.</p><h3>Paramètres de Profil</h3><p>Mettez à jour vos informations personnelles, coordonnées et préférences.</p><h3>Préférences de Notification</h3><p>Choisissez comment et quand vous voulez recevoir des notifications.</p><h3>Paramètres de Confidentialité</h3><p>Contrôlez qui peut voir vos informations et activités.</p><h3>Langue et Région</h3><p>Définissez votre langue préférée et paramètres régionaux pour du contenu localisé.</p>"
+          },
+          "4": {
+            "title": "Comprendre les Rôles Utilisateur",
+            "description": "Apprenez les différents rôles utilisateur et permissions",
+            "content": "<h2>Comprendre les Rôles Utilisateur</h2><p>Notre plateforme prend en charge différents rôles utilisateur avec des niveaux d'accès et permissions variables.</p><h3>Rôle Administrateur</h3><p>Les administrateurs ont un accès complet à toutes les fonctionnalités et peuvent gérer d'autres utilisateurs.</p><h3>Rôle Gestionnaire</h3><p>Les gestionnaires peuvent superviser des domaines spécifiques et ont des permissions élevées.</p><h3>Rôle Utilisateur</h3><p>Les utilisateurs standard ont accès aux fonctionnalités principales pour leurs tâches quotidiennes.</p><h3>Rôle Invité</h3><p>Les invités ont un accès limité pour la visualisation et les interactions de base.</p>"
+          },
+          "5": {
+            "title": "Configuration de l'Application Mobile",
+            "description": "Commencez avec notre application mobile",
+            "content": "<h2>Configuration de l'Application Mobile</h2><p>Accédez à notre plateforme en déplacement avec notre application mobile.</p><h3>Téléchargement et Installation</h3><p>Téléchargez notre application depuis l'App Store ou Google Play Store.</p><h3>Connexion et Synchronisation</h3><p>Utilisez vos identifiants existants pour vous connecter et synchroniser vos données.</p><h3>Fonctionnalités Spécifiques au Mobile</h3><p>Découvrez les fonctionnalités conçues spécifiquement pour les utilisateurs mobiles.</p><h3>Capacités Hors Ligne</h3><p>Apprenez ce que vous pouvez faire même lorsque vous êtes hors ligne.</p>"
+          },
+          "6": {
+            "title": "Liste de Contrôle des Premières Étapes",
+            "description": "Une liste de contrôle complète pour les nouveaux utilisateurs",
+            "content": "<h2>Liste de Contrôle des Premières Étapes</h2><p>Complétez ces tâches essentielles pour tirer le meilleur parti de notre plateforme.</p><h3>Configuration du Compte</h3><ul><li>✓ Créer votre compte</li><li>✓ Vérifier votre e-mail</li><li>✓ Compléter votre profil</li><li>✓ Configurer l'authentification à deux facteurs</li></ul><h3>Familiarisation avec la Plateforme</h3><ul><li>✓ Faire le tour de la plateforme</li><li>✓ Explorer le tableau de bord</li><li>✓ Essayer les fonctionnalités de base</li><li>✓ Consulter la documentation d'aide</li></ul><h3>Personnalisation</h3><ul><li>✓ Configurer les paramètres de notification</li><li>✓ Définir les préférences de confidentialité</li><li>✓ Personnaliser votre espace de travail</li></ul>"
+          },
+          "7": {
+            "title": "Erreurs Courantes des Débutants",
+            "description": "Évitez ces pièges courants lors du démarrage",
+            "content": "<h2>Erreurs Courantes des Débutants</h2><p>Apprenez des expériences des autres et évitez ces erreurs courantes.</p><h3>Négligences de Sécurité</h3><p>Ne sautez pas la configuration de sécurité - activez l'authentification à deux facteurs et utilisez des mots de passe forts.</p><h3>Profil Incomplet</h3><p>Un profil complet aide les autres à se connecter avec vous et améliore votre expérience.</p><h3>Ignorer les Notifications</h3><p>Configurez correctement les notifications pour rester informé sans être submergé.</p><h3>Ne Pas Explorer les Fonctionnalités</h3><p>Prenez le temps d'explorer toutes les fonctionnalités disponibles - vous pourriez découvrir quelque chose d'utile.</p>"
+          }
+        }
+      },
+      "events": {
+        "title": "Gestion d'Événements",
+        "description": "Créez, gérez et optimisez vos événements efficacement",
+        "articles": {
+          "0": {
+            "title": "Créer Votre Premier Événement",
+            "description": "Guide étape par étape pour créer et publier votre premier événement",
+            "content": "<h2>Créer Votre Premier Événement</h2><p>Apprenez à créer des événements engageants qui attirent les participants.</p><h3>Bases de la Planification d'Événements</h3><p>Commencez avec des objectifs clairs et l'identification du public cible.</p><h3>Détails de l'Événement</h3><p>Fournissez des informations complètes incluant la date, l'heure, le lieu et la description.</p><h3>Configuration des Billets</h3><p>Configurez différents types de billets et options de tarification.</p><h3>Publication de Votre Événement</h3><p>Révisez tous les détails avant de rendre votre événement en ligne.</p>"
+          },
+          "1": {
+            "title": "Configuration de l'Inscription aux Événements",
+            "description": "Configurez les formulaires d'inscription et la gestion des participants",
+            "content": "<h2>Configuration de l'Inscription aux Événements</h2><p>Rationalisez votre processus d'inscription pour une meilleure expérience des participants.</p><h3>Formulaires d'Inscription</h3><p>Créez des formulaires personnalisés pour collecter les informations nécessaires des participants.</p><h3>Processus d'Approbation</h3><p>Configurez des flux de travail d'approbation automatique ou manuelle.</p><h3>E-mails de Confirmation</h3><p>Configurez des e-mails de confirmation et de rappel automatisés.</p><h3>Gestion de Liste d'Attente</h3><p>Gérez les inscriptions excédentaires avec la fonctionnalité de liste d'attente.</p>"
+          },
+          "2": {
+            "title": "Gestion des Participants aux Événements",
+            "description": "Outils et stratégies pour une gestion efficace des participants",
+            "content": "<h2>Gestion des Participants aux Événements</h2><p>Suivez vos participants et améliorez leur expérience.</p><h3>Tableau de Bord des Participants</h3><p>Surveillez les inscriptions, les enregistrements et l'engagement des participants.</p><h3>Outils de Communication</h3><p>Envoyez des mises à jour, annonces et rappels aux participants.</p><h3>Processus d'Enregistrement</h3><p>Rationalisez les enregistrements du jour de l'événement avec des outils numériques.</p><h3>Collecte de Commentaires</h3><p>Recueillez des commentaires précieux pour améliorer les futurs événements.</p>"
+          },
+          "3": {
+            "title": "Stratégies de Promotion d'Événements",
+            "description": "Moyens efficaces de promouvoir vos événements et augmenter la participation",
+            "content": "<h2>Stratégies de Promotion d'Événements</h2><p>Maximisez la portée et la participation de votre événement avec des tactiques de promotion éprouvées.</p><h3>Marketing sur les Réseaux Sociaux</h3><p>Exploitez les plateformes sociales pour créer du buzz autour de votre événement.</p><h3>Campagnes E-mail</h3><p>Concevez des campagnes e-mail convaincantes pour stimuler les inscriptions.</p><h3>Collaborations avec des Partenaires</h3><p>Travaillez avec des partenaires et sponsors pour étendre votre portée.</p><h3>Marketing de Contenu</h3><p>Créez du contenu précieux qui attire votre public cible.</p>"
+          },
+          "4": {
+            "title": "Meilleures Pratiques pour Événements Virtuels",
+            "description": "Directives pour organiser des événements virtuels réussis",
+            "content": "<h2>Meilleures Pratiques pour Événements Virtuels</h2><p>Créez des expériences virtuelles engageantes qui rivalisent avec les événements en personne.</p><h3>Sélection de Plateforme</h3><p>Choisissez la bonne plateforme d'événement virtuel pour vos besoins.</p><h3>Configuration Technique</h3><p>Assurez-vous d'une connexion internet, audio et vidéo fiables.</p><h3>Stratégies d'Engagement</h3><p>Gardez les participants virtuels engagés avec des éléments interactifs.</p><h3>Actions de Suivi</h3><p>Maintenez les connexions et l'élan après l'événement virtuel.</p>"
+          },
+          "5": {
+            "title": "Analyses et Rapports d'Événements",
+            "description": "Suivez les performances et mesurez le succès des événements",
+            "content": "<h2>Analyses et Rapports d'Événements</h2><p>Utilisez les données pour comprendre les performances de votre événement et améliorer les futurs événements.</p><h3>Métriques Clés</h3><p>Suivez les taux d'inscription, la participation, l'engagement et la satisfaction.</p><h3>Surveillance en Temps Réel</h3><p>Surveillez les performances de l'événement en temps réel.</p><h3>Analyse Post-Événement</h3><p>Analysez des rapports complets pour identifier les succès et les domaines d'amélioration.</p><h3>Calcul du ROI</h3><p>Mesurez le retour sur investissement de vos événements.</p>"
+          },
+          "6": {
+            "title": "Gestion d'Événements Récurrents",
+            "description": "Configurez et gérez efficacement les événements récurrents",
+            "content": "<h2>Gestion d'Événements Récurrents</h2><p>Rationalisez la gestion d'événements réguliers et de séries.</p><h3>Configuration de Série</h3><p>Créez des séries d'événements avec une image de marque et un message cohérents.</p><h3>Planification Automatisée</h3><p>Configurez la planification automatique pour les événements réguliers.</p><h3>Rétention des Participants</h3><p>Stratégies pour faire revenir les participants à vos événements.</p><h3>Planification de Contenu</h3><p>Planifiez les thèmes de contenu et les intervenants dans votre série d'événements.</p>"
+          },
+          "7": {
+            "title": "Guide de Dépannage d'Événements",
+            "description": "Problèmes courants et solutions pour la gestion d'événements",
+            "content": "<h2>Guide de Dépannage d'Événements</h2><p>Solutions rapides aux défis courants de gestion d'événements.</p><h3>Problèmes d'Inscription</h3><p>Résolvez les problèmes d'inscription aux événements et de traitement des paiements.</p><h3>Difficultés Techniques</h3><p>Gérez les problèmes techniques audio, vidéo et de plateforme.</p><h3>Communication avec les Participants</h3><p>Adressez les pannes de communication et les lacunes d'information.</p><h3>Changements de Dernière Minute</h3><p>Gérez les changements inattendus et les situations d'urgence.</p>"
+          }
+        }
+      },
+      "payments": {
+        "title": "Paiements et Facturation",
+        "description": "Gérez les paiements, la facturation et les transactions financières en toute sécurité",
+        "articles": {
+          "0": {
+            "title": "Configuration des Méthodes de Paiement",
+            "description": "Configurez et gérez vos méthodes de paiement",
+            "content": "<h2>Configuration des Méthodes de Paiement</h2><p>Configurez des méthodes de paiement sécurisées pour des transactions fluides.</p><h3>Méthodes de Paiement Supportées</h3><p>Nous acceptons les cartes de crédit, cartes de débit, PayPal et virements bancaires.</p><h3>Ajout de Méthodes de Paiement</h3><p>Guide étape par étape pour ajouter et vérifier les méthodes de paiement.</p><h3>Mesures de Sécurité</h3><p>Apprenez nos protocoles de sécurité et la conformité PCI.</p><h3>Méthode de Paiement par Défaut</h3><p>Définissez votre méthode de paiement par défaut préférée pour plus de commodité.</p>"
+          },
+          "1": {
+            "title": "Comprendre les Cycles de Facturation",
+            "description": "Apprenez les périodes de facturation et les calendriers de paiement",
+            "content": "<h2>Comprendre les Cycles de Facturation</h2><p>Familiarisez-vous avec le fonctionnement de la facturation sur notre plateforme.</p><h3>Périodes de Facturation</h3><p>Comprenez les options de facturation mensuelle, trimestrielle et annuelle.</p><h3>Dates d'Échéance des Paiements</h3><p>Apprenez quand les paiements sont traités et les dates d'échéance.</p><h3>Frais Proratés</h3><p>Comment nous gérons les changements et mises à niveau en milieu de cycle.</p><h3>Notifications de Facturation</h3><p>Configurez des alertes pour les paiements à venir et les problèmes de facturation.</p>"
+          },
+          "2": {
+            "title": "Gestion des Factures",
+            "description": "Accédez, téléchargez et gérez vos factures",
+            "content": "<h2>Gestion des Factures</h2><p>Gardez une trace de toutes vos transactions financières et factures.</p><h3>Accès aux Factures</h3><p>Trouvez et téléchargez vos factures depuis la section facturation.</p><h3>Détails des Factures</h3><p>Comprenez ce qui est inclus dans vos factures et relevés de facturation.</p><h3>Historique des Paiements</h3><p>Consultez votre historique complet des paiements et enregistrements de transactions.</p><h3>Informations Fiscales</h3><p>Comment les taxes sont calculées et affichées sur vos factures.</p>"
+          },
+          "3": {
+            "title": "Politique de Remboursement et d'Annulation",
+            "description": "Comprenez notre processus de remboursement et conditions d'annulation",
+            "content": "<h2>Politique de Remboursement et d'Annulation</h2><p>Apprenez nos politiques de remboursement équitables et transparentes.</p><h3>Éligibilité au Remboursement</h3><p>Comprenez quand les remboursements sont disponibles et les critères d'éligibilité.</p><h3>Processus de Remboursement</h3><p>Guide étape par étape pour demander et traiter les remboursements.</p><h3>Conditions d'Annulation</h3><p>Comment annuler les abonnements et ce qui arrive à vos données.</p><h3>Délais de Traitement</h3><p>Délais attendus pour le traitement des remboursements et les changements de compte.</p>"
+          },
+          "4": {
+            "title": "Gestion des Abonnements",
+            "description": "Mettez à niveau, rétrogradez et gérez vos plans d'abonnement",
+            "content": "<h2>Gestion des Abonnements</h2><p>Gérez facilement votre abonnement pour correspondre à vos besoins changeants.</p><h3>Comparaison des Plans</h3><p>Comparez différents niveaux d'abonnement et fonctionnalités.</p><h3>Mise à Niveau de Votre Plan</h3><p>Comment mettre à niveau et ce qui arrive à votre cycle de facturation.</p><h3>Rétrogradation de Votre Plan</h3><p>Processus de rétrogradation et limitations de fonctionnalités.</p><h3>Pause et Reprise</h3><p>Suspendez temporairement votre abonnement quand nécessaire.</p>"
+          },
+          "5": {
+            "title": "Sécurité des Paiements",
+            "description": "Apprenez nos mesures de sécurité et meilleures pratiques",
+            "content": "<h2>Sécurité des Paiements</h2><p>Votre sécurité financière est notre priorité absolue.</p><h3>Chiffrement et Sécurité</h3><p>Comment nous protégeons vos informations de paiement avec un chiffrement standard de l'industrie.</p><h3>Conformité PCI</h3><p>Notre engagement envers les normes de sécurité de l'industrie des cartes de paiement.</p><h3>Protection contre la Fraude</h3><p>Mesures avancées de détection et prévention de la fraude.</p><h3>Meilleures Pratiques</h3><p>Conseils pour garder vos informations de paiement sécurisées.</p>"
+          },
+          "6": {
+            "title": "Paiements Internationaux",
+            "description": "Gérez les paiements dans différents pays et devises",
+            "content": "<h2>Paiements Internationaux</h2><p>Traitement de paiement fluide pour les utilisateurs mondiaux.</p><h3>Devises Supportées</h3><p>Liste des devises supportées et politiques de taux de change.</p><h3>Frais Internationaux</h3><p>Comprendre les frais supplémentaires pour les transactions internationales.</p><h3>Conformité Fiscale</h3><p>Comment nous gérons la TVA, TPS et autres taxes internationales.</p><h3>Restrictions Régionales</h3><p>Disponibilité des méthodes de paiement par région.</p>"
+          },
+          "7": {
+            "title": "Dépannage des Paiements",
+            "description": "Résolvez les problèmes de paiement courants et les erreurs",
+            "content": "<h2>Dépannage des Paiements</h2><p>Solutions rapides aux problèmes de paiement courants.</p><h3>Paiements Échoués</h3><p>Raisons courantes des échecs de paiement et comment les résoudre.</p><h3>Problèmes de Carte Refusée</h3><p>Que faire quand votre carte est refusée.</p><h3>Erreurs d'Adresse de Facturation</h3><p>Résoudre les problèmes de vérification d'adresse de facturation.</p><h3>Contacter le Support</h3><p>Quand et comment contacter notre équipe de support facturation.</p>"
+          }
+        }
+      },
+      "account": {
+        "title": "Gestion de Compte",
+        "description": "Gérez vos paramètres de compte, profil et préférences",
+        "articles": {
+          "0": {
+            "title": "Aperçu des Paramètres de Profil",
+            "description": "Guide complet pour gérer vos informations de profil",
+            "content": "<h2>Aperçu des Paramètres de Profil</h2><p>Gardez votre profil à jour et personnalisé.</p><h3>Informations de Base</h3><p>Mettez à jour votre nom, e-mail, numéro de téléphone et autres coordonnées.</p><h3>Photo de Profil</h3><p>Téléchargez et gérez votre photo de profil pour une meilleure reconnaissance.</p><h3>Bio et Description</h3><p>Ajoutez une bio professionnelle pour aider les autres à comprendre votre parcours.</p><h3>Liens Sociaux</h3><p>Connectez vos profils de réseaux sociaux et réseaux professionnels.</p>"
+          },
+          "1": {
+            "title": "Paramètres de Confidentialité et Visibilité",
+            "description": "Contrôlez qui peut voir vos informations et activités",
+            "content": "<h2>Paramètres de Confidentialité et Visibilité</h2><p>Prenez le contrôle de votre confidentialité avec des paramètres de visibilité granulaires.</p><h3>Visibilité du Profil</h3><p>Choisissez qui peut voir votre profil et informations de contact.</p><h3>Confidentialité des Activités</h3><p>Contrôlez la visibilité de vos activités et participation.</p><h3>Visibilité de Recherche</h3><p>Décidez si votre profil apparaît dans les résultats de recherche.</p><h3>Partage de Données</h3><p>Gérez comment vos données sont partagées avec des tiers.</p>"
+          },
+          "2": {
+            "title": "Préférences de Notification",
+            "description": "Personnalisez comment et quand vous recevez des notifications",
+            "content": "<h2>Préférences de Notification</h2><p>Restez informé sans être submergé en personnalisant vos notifications.</p><h3>Notifications E-mail</h3><p>Choisissez quels e-mails vous voulez recevoir et leur fréquence.</p><h3>Notifications Push</h3><p>Configurez les notifications push mobiles et navigateur.</p><h3>Alertes SMS</h3><p>Configurez les alertes par message texte pour les mises à jour urgentes.</p><h3>Horaire de Notification</h3><p>Définissez les heures de silence et les heures de notification préférées.</p>"
+          },
+          "3": {
+            "title": "Paramètres de Sécurité du Compte",
+            "description": "Renforcez la sécurité de votre compte avec des paramètres avancés",
+            "content": "<h2>Paramètres de Sécurité du Compte</h2><p>Protégez votre compte avec des mesures de sécurité robustes.</p><h3>Gestion des Mots de Passe</h3><p>Créez des mots de passe forts et mettez-les à jour régulièrement.</p><h3>Authentification à Deux Facteurs</h3><p>Ajoutez une couche de sécurité supplémentaire avec la configuration 2FA.</p><h3>Historique de Connexion</h3><p>Surveillez l'accès à votre compte et les activités de connexion.</p><h3>Gestion des Appareils</h3><p>Gérez et supprimez les appareils de confiance de votre compte.</p>"
+          },
+          "4": {
+            "title": "Exportation et Sauvegarde de Données",
+            "description": "Exportez vos données et créez des sauvegardes de vos informations",
+            "content": "<h2>Exportation et Sauvegarde de Données</h2><p>Gardez le contrôle de vos données avec les options d'exportation et de sauvegarde.</p><h3>Options d'Exportation de Données</h3><p>Exportez vos données dans divers formats pour sauvegarde ou migration.</p><h3>Planification de Sauvegarde</h3><p>Configurez des sauvegardes automatiques de vos informations importantes.</p><h3>Portabilité des Données</h3><p>Comprenez vos droits à la portabilité et au transfert des données.</p><h3>Options de Récupération</h3><p>Comment récupérer des données à partir de sauvegardes quand nécessaire.</p>"
+          },
+          "5": {
+            "title": "Désactivation de Compte",
+            "description": "Désactivez temporairement ou définitivement votre compte",
+            "content": "<h2>Désactivation de Compte</h2><p>Comprenez vos options pour la désactivation et suppression de compte.</p><h3>Désactivation Temporaire</h3><p>Désactivez temporairement votre compte tout en préservant vos données.</p><h3>Suppression Permanente</h3><p>Supprimez définitivement votre compte et toutes les données associées.</p><h3>Rétention de Données</h3><p>Ce qui arrive à vos données pendant et après la désactivation.</p><h3>Processus de Réactivation</h3><p>Comment réactiver un compte temporairement désactivé.</p>"
+          },
+          "6": {
+            "title": "Gestion de Comptes Multiples",
+            "description": "Gérez plusieurs comptes et basculez entre eux",
+            "content": "<h2>Gestion de Comptes Multiples</h2><p>Gérez efficacement plusieurs comptes depuis une interface unique.</p><h3>Basculement de Compte</h3><p>Basculez rapidement entre différents comptes que vous gérez.</p><h3>Accès Partagé</h3><p>Accordez l'accès aux membres de l'équipe pour la gestion collaborative de compte.</p><h3>Liaison de Comptes</h3><p>Liez des comptes connexes pour une gestion plus facile.</p><h3>Consolidation de Facturation</h3><p>Consolidez la facturation sur plusieurs comptes.</p>"
+          },
+          "7": {
+            "title": "Récupération de Compte",
+            "description": "Récupérez l'accès à votre compte si vous êtes bloqué",
+            "content": "<h2>Récupération de Compte</h2><p>Regagnez l'accès à votre compte avec nos options de récupération.</p><h3>Réinitialisation de Mot de Passe</h3><p>Réinitialisez votre mot de passe en utilisant la vérification par e-mail ou SMS.</p><h3>Récupération d'E-mail</h3><p>Récupérez l'accès quand vous n'avez plus accès à votre e-mail.</p><h3>Vérification d'Identité</h3><p>Vérifiez votre identité pour l'assistance de récupération de compte.</p><h3>Contact Support</h3><p>Quand contacter le support pour l'aide de récupération de compte.</p>"
+          }
+        }
+      },
+      "security": {
+        "title": "Sécurité et Confidentialité",
+        "description": "Protégez votre compte et vos données avec des fonctionnalités de sécurité avancées",
+        "articles": {
+          "0": {
+            "title": "Configuration de l'Authentification à Deux Facteurs",
+            "description": "Ajoutez une couche de sécurité supplémentaire à votre compte",
+            "content": "<h2>Configuration de l'Authentification à Deux Facteurs</h2><p>Sécurisez votre compte avec l'authentification à deux facteurs (2FA).</p><h3>Pourquoi Utiliser 2FA</h3><p>Comprenez l'importance de l'authentification à deux facteurs pour la sécurité du compte.</p><h3>Processus de Configuration</h3><p>Guide étape par étape pour activer 2FA sur votre compte.</p><h3>Méthodes d'Authentification</h3><p>Choisissez parmi SMS, applications d'authentification ou clés matérielles.</p><h3>Codes de Sauvegarde</h3><p>Générez et stockez en sécurité les codes de sauvegarde pour l'accès d'urgence.</p>"
+          },
+          "1": {
+            "title": "Meilleures Pratiques de Sécurité des Mots de Passe",
+            "description": "Créez et gérez des mots de passe forts et sécurisés",
+            "content": "<h2>Meilleures Pratiques de Sécurité des Mots de Passe</h2><p>Apprenez à créer et maintenir des mots de passe sécurisés.</p><h3>Création de Mots de Passe Forts</h3><p>Directives pour créer des mots de passe à la fois forts et mémorables.</p><h3>Gestionnaires de Mots de Passe</h3><p>Avantages d'utiliser des gestionnaires de mots de passe pour une meilleure sécurité.</p><h3>Mises à Jour Régulières</h3><p>À quelle fréquence changer les mots de passe et quand des changements immédiats sont nécessaires.</p><h3>Erreurs Courantes</h3><p>Évitez ces erreurs courantes de sécurité des mots de passe.</p>"
+          },
+          "2": {
+            "title": "Reconnaître les Tentatives de Phishing",
+            "description": "Identifiez et évitez les escroqueries de phishing et communications frauduleuses",
+            "content": "<h2>Reconnaître les Tentatives de Phishing</h2><p>Protégez-vous des attaques de phishing et communications frauduleuses.</p><h3>Tactiques de Phishing Courantes</h3><p>Apprenez à identifier les e-mails, messages et sites web suspects.</p><h3>Méthodes de Vérification</h3><p>Comment vérifier les communications légitimes de notre plateforme.</p><h3>Signaler une Activité Suspecte</h3><p>Comment signaler les tentatives de phishing potentielles et menaces de sécurité.</p><h3>Étapes de Récupération</h3><p>Que faire si vous avez été victime d'une attaque de phishing.</p>"
+          },
+          "3": {
+            "title": "Contrôles de Confidentialité des Données",
+            "description": "Comprenez et contrôlez comment vos données sont utilisées et partagées",
+            "content": "<h2>Contrôles de Confidentialité des Données</h2><p>Prenez le contrôle de vos données personnelles et paramètres de confidentialité.</p><h3>Collecte de Données</h3><p>Comprenez quelles données nous collectons et pourquoi.</p><h3>Paramètres de Confidentialité</h3><p>Configurez vos préférences de confidentialité et options de partage de données.</p><h3>Partage avec des Tiers</h3><p>Contrôlez comment vos données sont partagées avec des services tiers.</p><h3>Vos Droits</h3><p>Comprenez vos droits concernant vos données personnelles.</p>"
+          },
+          "4": {
+            "title": "Gestion Sécurisée des Appareils",
+            "description": "Gérez et sécurisez les appareils connectés à votre compte",
+            "content": "<h2>Gestion Sécurisée des Appareils</h2><p>Gardez une trace et sécurisez tous les appareils accédant à votre compte.</p><h3>Enregistrement d'Appareils</h3><p>Comment les appareils sont enregistrés et suivis dans votre compte.</p><h3>Sessions Actives</h3><p>Surveillez et gérez les sessions de connexion actives sur les appareils.</p><h3>Suppression d'Appareils</h3><p>Supprimez les appareils compromis ou inutilisés de votre compte.</p><h3>Alertes de Sécurité</h3><p>Recevez des alertes pour les nouvelles connexions d'appareils et activités suspectes.</p>"
+          },
+          "5": {
+            "title": "Sécurité API et Jetons d'Accès",
+            "description": "Sécurisez votre accès API et gérez les jetons d'accès",
+            "content": "<h2>Sécurité API et Jetons d'Accès</h2><p>Utilisez notre API en toute sécurité avec des mesures de sécurité appropriées.</p><h3>Gestion des Clés API</h3><p>Générez, faites tourner et révoquez les clés API en toute sécurité.</p><h3>Sécurité des Jetons d'Accès</h3><p>Meilleures pratiques pour stocker et utiliser les jetons d'accès.</p><h3>Limitation de Débit</h3><p>Comprenez les limites de débit API et mesures de sécurité.</p><h3>Surveillance de l'Utilisation API</h3><p>Suivez et surveillez votre utilisation API pour la sécurité.</p>"
+          },
+          "6": {
+            "title": "Réponse aux Incidents de Sécurité",
+            "description": "Que faire si vous soupçonnez une violation de sécurité",
+            "content": "<h2>Réponse aux Incidents de Sécurité</h2><p>Étapes d'action rapide si vous soupçonnez que votre compte a été compromis.</p><h3>Actions Immédiates</h3><p>Premières étapes à prendre si vous soupçonnez un accès non autorisé.</p><h3>Sécuriser Votre Compte</h3><p>Comment sécuriser rapidement votre compte et prévenir d'autres dommages.</p><h3>Signaler les Incidents</h3><p>Comment signaler les incidents de sécurité à notre équipe.</p><h3>Processus de Récupération</h3><p>Étapes pour récupérer et restaurer votre compte après un incident.</p>"
+          },
+          "7": {
+            "title": "Conformité et Certifications",
+            "description": "Apprenez nos certifications de sécurité et normes de conformité",
+            "content": "<h2>Conformité et Certifications</h2><p>Comprenez notre engagement envers les normes de sécurité et la conformité.</p><h3>Certifications de Sécurité</h3><p>Nos certifications de sécurité industrielles et ce qu'elles signifient.</p><h3>Normes de Conformité</h3><p>RGPD, CCPA et autres réglementations de confidentialité auxquelles nous nous conformons.</p><h3>Audits Réguliers</h3><p>Comment nous maintenons la sécurité grâce à des audits et évaluations réguliers.</p><h3>Rapports de Transparence</h3><p>Accédez à nos rapports de transparence et documentation de sécurité.</p>"
+          }
+        }
+      },
+      "technical": {
+        "title": "Support Technique",
+        "description": "Dépannez les problèmes techniques et optimisez les performances de la plateforme",
+        "articles": {
+          "0": {
+            "title": "Exigences Système",
+            "description": "Exigences système minimales pour des performances optimales de la plateforme",
+            "content": "<h2>Exigences Système</h2><p>Assurez-vous que votre système répond à nos exigences pour la meilleure expérience.</p><h3>Exigences de Navigateur</h3><p>Navigateurs supportés et versions minimales pour l'accès web.</p><h3>Exigences Mobiles</h3><p>Exigences de version iOS et Android pour les applications mobiles.</p><h3>Exigences Réseau</h3><p>Exigences de bande passante et connectivité pour des performances optimales.</p><h3>Recommandations Matérielles</h3><p>Spécifications matérielles recommandées pour différents cas d'usage.</p>"
+          },
+          "1": {
+            "title": "Problèmes de Compatibilité de Navigateur",
+            "description": "Résolvez les problèmes courants liés au navigateur",
+            "content": "<h2>Problèmes de Compatibilité de Navigateur</h2><p>Corrigez les problèmes courants liés à la compatibilité des navigateurs.</p><h3>Navigateurs Supportés</h3><p>Liste des navigateurs entièrement supportés et leurs versions.</p><h3>Problèmes Courants</h3><p>Problèmes typiques et leurs solutions pour différents navigateurs.</p><h3>Cache et Cookies</h3><p>Comment vider le cache et les cookies pour résoudre les problèmes.</p><h3>Mises à Jour de Navigateur</h3><p>Importance de garder votre navigateur à jour.</p>"
+          },
+          "2": {
+            "title": "Dépannage d'Application Mobile",
+            "description": "Corrigez les problèmes courants d'application mobile et de performance",
+            "content": "<h2>Dépannage d'Application Mobile</h2><p>Résolvez les problèmes courants avec nos applications mobiles.</p><h3>Problèmes d'Installation d'Application</h3><p>Dépannez les problèmes de téléchargement et d'installation de l'application.</p><h3>Problèmes de Connexion</h3><p>Résolvez les problèmes de connexion et d'authentification spécifiques au mobile.</p><h3>Problèmes de Performance</h3><p>Corrigez le chargement lent, les plantages et autres problèmes de performance.</p><h3>Problèmes de Synchronisation</h3><p>Résolvez les problèmes de synchronisation de données entre appareils.</p>"
+          },
+          "3": {
+            "title": "Guide d'Intégration API",
+            "description": "Guide technique pour l'intégration avec notre API",
+            "content": "<h2>Guide d'Intégration API</h2><p>Guide complet pour les développeurs intégrant avec notre API.</p><h3>Commencer</h3><p>Configuration initiale et authentification pour l'accès API.</p><h3>Documentation API</h3><p>Documentation complète des points de terminaison disponibles.</p><h3>Exemples de Code</h3><p>Code d'exemple dans les langages de programmation populaires.</p><h3>Test et Débogage</h3><p>Outils et techniques pour tester votre intégration API.</p>"
+          },
+          "4": {
+            "title": "Optimisation des Performances",
+            "description": "Conseils pour améliorer les performances de la plateforme et vitesses de chargement",
+            "content": "<h2>Optimisation des Performances</h2><p>Optimisez votre expérience avec les meilleures pratiques de performance.</p><h3>Optimisation de Connexion</h3><p>Conseils pour améliorer votre connexion internet et vitesse.</p><h3>Optimisation de Navigateur</h3><p>Configurez votre navigateur pour de meilleures performances.</p><h3>Gestion de Données</h3><p>Gérez vos données efficacement pour améliorer les temps de chargement.</p><h3>Utilisation des Ressources</h3><p>Surveillez et optimisez l'utilisation des ressources sur votre appareil.</p>"
+          },
+          "5": {
+            "title": "Référence des Codes d'Erreur",
+            "description": "Comprenez et résolvez les codes d'erreur courants",
+            "content": "<h2>Référence des Codes d'Erreur</h2><p>Guide de référence rapide pour les codes d'erreur courants et leurs solutions.</p><h3>Erreurs d'Authentification</h3><p>Codes d'erreur liés aux problèmes de connexion et d'authentification.</p><h3>Erreurs Réseau</h3><p>Codes d'erreur liés à la connexion et au réseau.</p><h3>Erreurs Serveur</h3><p>Codes d'erreur côté serveur et ce qu'ils signifient.</p><h3>Erreurs Client</h3><p>Codes d'erreur de navigateur et côté client et corrections.</p>"
+          },
+          "6": {
+            "title": "Sauvegarde et Récupération de Données",
+            "description": "Aspects techniques des procédures de sauvegarde et récupération de données",
+            "content": "<h2>Sauvegarde et Récupération de Données</h2><p>Détails techniques sur nos systèmes de sauvegarde et procédures de récupération.</p><h3>Systèmes de Sauvegarde</h3><p>Comment nos systèmes de sauvegarde automatisés protègent vos données.</p><h3>Procédures de Récupération</h3><p>Processus de récupération de données étape par étape.</p><h3>Intégrité des Données</h3><p>Comment nous assurons l'intégrité des données et prévenons la corruption.</p><h3>Récupération après Sinistre</h3><p>Nos plans et procédures de récupération après sinistre.</p>"
+          },
+          "7": {
+            "title": "Dépannage Avancé",
+            "description": "Techniques de dépannage technique avancées pour les problèmes complexes",
+            "content": "<h2>Dépannage Avancé</h2><p>Techniques avancées pour résoudre les problèmes techniques complexes.</p><h3>Outils de Diagnostic</h3><p>Outils de diagnostic intégrés et comment les utiliser.</p><h3>Analyse de Journaux</h3><p>Comment lire et analyser les journaux système pour le dépannage.</p><h3>Diagnostics Réseau</h3><p>Techniques avancées de dépannage réseau.</p><h3>Processus d'Escalade</h3><p>Quand et comment escalader les problèmes techniques à notre équipe de support.</p>"
+          }
+        }
+      }
+    }
+  }, "footer": {
+    "description": "La plateforme leader pour la gestion d'événements et le développement de communautés. Créez, gérez et faites la promotion de vos événements facilement.",
+    "location": "Tunis, Tunisie",
+    "sections": {
+      "company": "Entreprise",
+      "support": "Support",
+      "product": "Produit",
+      "legal": "Légal"
+    },
+    "links": {
+      "about": "À propos",
+      "careers": "Carrières",
+      "contact": "Nous contacter",
+      "blog": "Blog",
+      "helpCenter": "Centre d'aide",
+      "documentation": "Documentation",
+      "community": "Communauté",
+      "status": "Statut",
+      "events": "Événements",
+      "pricing": "Tarification",
+      "features": "Fonctionnalités",
+      "integrations": "Intégrations",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "cookies": "Politique de cookies",
+      "gdpr": "RGPD"
+    },
+    "social": {
+      "facebook": "Suivez-nous sur Facebook",
+      "twitter": "Suivez-nous sur Twitter",
+      "instagram": "Suivez-nous sur Instagram",
+      "linkedin": "Suivez-nous sur LinkedIn",
+      "youtube": "Abonnez-vous à notre chaîne YouTube"
+    },
+    "gdpr": {
+      "message": "Nous utilisons des cookies pour améliorer votre expérience. En continuant à visiter ce site, vous acceptez notre utilisation des cookies.",
+      "learnMore": "En savoir plus",
+      "accept": "Accepter"
+    },
+    "copyright": "© {year} Badji.net. Tous droits réservés.",
+    "followUs": "Suivez-nous",
+    "language": "Langue"
+  },
+    "blog": {
+      "hero": {
+        "title": "Blog & Perspectives",
+        "description": "Restez informé des dernières actualités, tutoriels et analyses de l'équipe Badji.net et de la communauté."
+      },
+      "search": {
+        "placeholder": "Rechercher des articles..."
+      },
+      "categories": {
+        "all": "Tous",
+        "product": "Produit",
+        "engineering": "Ingénierie",
+        "events": "Événements",
+        "tutorials": "Tutoriels",
+        "company": "Entreprise"
+      },
+      "featured": "À la une",
+      "readTime": "{minutes} min de lecture",
+      "readMore": "Lire la suite",
+      "noResults": {
+        "title": "Aucun article trouvé",
+        "description": "Modifiez votre recherche ou vos critères de filtrage."
+      }
+    },
+    "pricing": {
+      "hero": {
+        "title": "Tarification Simple et Transparente",
+        "description": "Choisissez le plan adapté à vos besoins de gestion d'événements. Commencez gratuitement et évoluez avec nous."
+      },
+      "billing": {
+        "monthly": "Mensuel",
+        "annual": "Annuel",
+        "year": "an",
+        "month": "mois",
+        "save20": "Économisez 20%",
+        "was": "était"
+      },
+      "plans": {
+        "popular": "Plus Populaire",
+        "starter": {
+          "name": "Débutant"
+        },
+        "professional": {
+          "name": "Professionnel"
+        },
+        "enterprise": {
+          "name": "Entreprise"
+        },
+        "getStarted": "Commencer",
+        "startTrial": "Essai Gratuit"
+      },
+      "features": {
+        "up_to_3_events": "Jusqu'à 3 événements",
+        "basic_analytics": "Analyses de base",
+        "email_support": "Support par email",
+        "standard_templates": "Modèles standards",
+        "basic_registration": "Inscription basique",
+        "unlimited_events": "Événements illimités",
+        "advanced_analytics": "Analyses avancées",
+        "priority_support": "Support prioritaire",
+        "custom_branding": "Personnalisation de marque",
+        "payment_processing": "Traitement des paiements",
+        "marketing_tools": "Outils marketing",
+        "api_access": "Accès API",
+        "everything_in_pro": "Tout inclus dans Pro",
+        "dedicated_support": "Support dédié",
+        "custom_integrations": "Intégrations personnalisées",
+        "advanced_security": "Sécurité avancée",
+        "team_management": "Gestion d'équipe",
+        "white_label": "Solution white-label",
+        "sla_guarantee": "Garantie SLA"
+      },
+      "comparison": {
+        "title": "Comparatif des Fonctionnalités",
+        "description": "Comparez toutes les fonctionnalités pour trouver le plan idéal.",
+        "feature": "Fonctionnalité",
+        "features": {
+          "events": "Événements par mois",
+          "attendees": "Participants par événement",
+          "analytics": "Analyses",
+          "support": "Support",
+          "branding": "Personnalisation",
+          "api": "Accès API",
+          "integrations": "Intégrations"
+        }
+      },
+      "faq": {
+        "title": "Questions Fréquentes",
+        "description": "Réponses aux questions courantes sur nos tarifs."
+      },
+      "cta": {
+        "title": "Besoin d'une Solution Sur Mesure ?",
+        "description": "Contactez nos commerciaux pour discuter des tarifs entreprise et des fonctionnalités personnalisées.",
+        "contact": "Contacter les Ventes",
+        "help": "Centre d'Aide"
+      }
+    },
+    "features": {
+      "hero": {
+        "badge": "Fonctionnalités Puissantes",
+        "title": "Tout pour des Événements Réussis",
+        "description": "Découvrez nos outils complets pour une gestion d'événements simple et efficace.",
+        "cta": {
+          "start": "Commencer Gratuitement",
+          "demo": "Demander une Démo"
+        }
+      },
+      "main": {
+        "title": "Fonctionnalités Clés",
+        "description": "Outils puissants pour créer, gérer et analyser vos événements.",
+        "features": {
+          "event_management": {
+            "title": "Gestion d'Événements",
+            "description": "Créez et gérez des événements avec notre interface intuitive.",
+            "point1": "Création par glisser-déposer",
+            "point2": "Modèles personnalisables",
+            "point3": "Collaboration en temps réel"
+          },
+          "attendee_management": {
+            "title": "Gestion des Participants",
+            "description": "Gérez inscriptions, check-ins et communications.",
+            "point1": "Gestion des inscriptions",
+            "point2": "Check-in par QR code",
+            "point3": "Outils de communication"
+          },
+          "payment_processing": {
+            "title": "Paiements Sécurisés",
+            "description": "Traitement sécurisé avec multiples méthodes de paiement.",
+            "point1": "Plusieurs passerelles",
+            "point2": "Devises internationales",
+            "point3": "Facturation automatisée"
+          },
+          "analytics": {
+            "title": "Analyses & Rapports",
+            "description": "Obtenez des insights sur vos événements.",
+            "point1": "Tableau de bord temps réel",
+            "point2": "Rapports personnalisés",
+            "point3": "Suivi ROI"
+          },
+          "security": {
+            "title": "Sécurité & Conformité",
+            "description": "Sécurité entreprise et conformité RGPD.",
+            "point1": "Chiffrement de bout en bout",
+            "point2": "Conformité RGPD",
+            "point3": "Audits réguliers"
+          },
+          "mobile_app": {
+            "title": "Application Mobile",
+            "description": "Apps natives iOS/Android avec mode hors-ligne.",
+            "point1": "Applications natives",
+            "point2": "Fonctionnement hors-ligne",
+            "point3": "Notifications push"
+          }
+        }
+      },
+      "showcase": {
+        "event": {
+          "badge": "Création d'Événement",
+          "title": "Créez des Événements Éblouissants en Minutes",
+          "description": "Notre créateur d'événements intuitif facilite la création d'événements professionnels engageants.",
+          "features": {
+            "drag_drop": "Interface glisser-déposer",
+            "templates": "Modèles professionnels",
+            "customization": "Options de personnalisation complètes",
+            "publishing": "Publication en un clic"
+          },
+          "cta": "Commencer à Créer"
+        },
+        "analytics": {
+          "badge": "Analyses",
+          "title": "Insights Basés sur les Données",
+          "description": "Prenez des décisions éclairées avec nos outils d'analyse complets.",
+          "features": {
+            "real_time": "Suivi de données en temps réel",
+            "insights": "Insights actionnables",
+            "reports": "Générateur de rapports personnalisés",
+            "export": "Capacités d'export de données"
+          },
+          "cta": "Voir la Démo d'Analyse"
+        }
+      },
+      "additional": {
+        "title": "Fonctionnalités Supplémentaires",
+        "description": "Découvrez plus d'outils et d'intégrations pour améliorer vos événements.",
+        "features": {
+          "multi_language": {
+            "title": "Multilingue",
+            "description": "Support de 20+ langues avec texte RTL."
+          },
+          "real_time": {
+            "title": "Mises à Jour en Temps Réel",
+            "description": "Mises à jour et notifications en direct pour tous les changements."
+          },
+          "email_marketing": {
+            "title": "Email Marketing",
+            "description": "Outils intégrés d'email marketing pour engager les participants."
+          },
+          "qr_codes": {
+            "title": "Intégration QR Code",
+            "description": "Générez des QR codes pour les billets et check-ins."
+          },
+          "live_streaming": {
+            "title": "Diffusion en Direct",
+            "description": "Streaming intégré pour événements virtuels et hybrides."
+          },
+          "chat_support": {
+            "title": "Support Chat 24/7",
+            "description": "Support permanent pour toutes vos questions."
+          }
+        }
+      },
+      "benefits": {
+        "title": "Pourquoi Choisir Badji.net?",
+        "description": "Découvrez les avantages qui font de nous le choix préféré des organisateurs mondiaux.",
+        "items": {
+          "save_time": {
+            "title": "Gagnez du Temps",
+            "description": "Automatisez les tâches répétitives et concentrez-vous sur l'essentiel."
+          },
+          "increase_engagement": {
+            "title": "Augmentez l'Engagement",
+            "description": "Maintenez l'intérêt des participants avec des fonctionnalités interactives."
+          },
+          "boost_revenue": {
+            "title": "Augmentez les Revenus",
+            "description": "Maximisez les ventes de billets avec nos outils marketing."
+          },
+          "reduce_costs": {
+            "title": "Réduisez les Coûts",
+            "description": "Diminuez les coûts opérationnels avec des flux de travail efficaces."
+          },
+          "improve_experience": {
+            "title": "Améliorez l'Expérience",
+            "description": "Offrez des expériences exceptionnelles à tous les participants."
+          },
+          "scale_easily": {
+            "title": "Évoluez Facilement",
+            "description": "Développez vos événements sans limitations techniques."
+          }
+        }
+      },
+      "cta": {
+        "title": "Prêt à Transformer Vos Événements?",
+        "description": "Rejoignez des milliers d'organisateurs qui nous font confiance.",
+        "start": "Essai Gratuit",
+        "pricing": "Voir les Tarifs"
+      }
+    },
+    "privacy": {
+      "hero": {
+        "title": "Politique de Confidentialité",
+        "description": "Nous protégeons vos données. Découvrez comment nous collectons et utilisons vos informations.",
+        "lastUpdated": "Dernière mise à jour: 1 janvier 2024",
+        "effectiveDate": "Effective: 1 janvier 2024"
+      },
+      "introduction": "Chez Badji.net, nous protégeons votre vie privée et sécurisons vos données personnelles. Cette politique explique comment nous collectons, utilisons et protégeons vos informations.",
+      "sections": {
+        "information_collection": {
+          "title": "Informations Collectées",
+          "content": "Nous collectons les informations que vous nous fournissez directement, automatiquement lors de l'utilisation de nos services, et via des sources tierces.",
+          "points": "Informations personnelles (nom, email, téléphone) | Préférences de compte | Données d'événements et participants | Informations de paiement | Données d'utilisation | Informations sur l'appareil"
+        },
+        "information_use": {
+          "title": "Utilisation des Informations",
+          "content": "Nous utilisons vos informations pour fournir, maintenir et améliorer nos services, traiter les transactions et communiquer avec vous.",
+          "points": "Fournir nos services | Traiter les paiements | Envoyer des notifications | Améliorer nos services | Respecter les obligations légales | Prévenir la fraude"
+        },
+        "information_sharing": {
+          "title": "Partage des Informations",
+          "content": "Nous ne vendons ni n'échangeons vos informations sans votre consentement, sauf comme décrit ici.",
+          "points": "Prestataires de services | Exigences légales | Transferts d'entreprise | Avec votre consentement | Données agrégées"
+        },
+        "data_security": {
+          "title": "Sécurité des Données",
+          "content": "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos informations.",
+          "points": "Chiffrement | Évaluations de sécurité | Contrôles d'accès | Formation des employés | Procédures d'incident"
+        },
+        "cookies": {
+          "title": "Cookies et Technologies Similaires",
+          "content": "Nous utilisons des cookies pour améliorer votre expérience, analyser les modèles d'utilisation et fournir un contenu personnalisé.",
+          "points": "Cookies essentiels | Cookies analytiques | Cookies marketing | Cookies tiers | Gestion des cookies"
+        },
+        "user_rights": {
+          "title": "Vos Droits",
+          "content": "Vous avez des droits concernant vos informations personnelles, y compris l'accès, la mise à jour et la suppression.",
+          "points": "Accéder à vos informations | Corriger les inexactitudes | Supprimer vos données | Restreindre le traitement | Portabilité des données | Retirer votre consentement"
+        },
+        "children_privacy": {
+          "title": "Protection des Enfants",
+          "content": "Nos services ne s'adressent pas aux moins de 13 ans. Nous ne collectons pas sciemment leurs informations.",
+          "points": "Vérification d'âge | Consentement parental | Suppression des données | Protections éducatives"
+        },
+        "changes": {
+          "title": "Modifications",
+          "content": "Nous pouvons mettre à jour cette politique. Nous vous informerons des changements importants.",
+          "points": "Notification des changements | Date d'effet | Acceptation par utilisation continue | Droit de résiliation"
+        },
+        "contact": {
+          "title": "Coordonnées",
+          "content": "Pour toute question sur cette politique, contactez-nous."
+        }
+      },
+      "contact": {
+        "title": "Contactez-Nous",
+        "description": "Pour toute question sur notre politique de confidentialité.",
+        "email": "Email",
+        "address": "Adresse",
+        "addressValue": "123 Rue de la Confidentialité, Data City, DC 12345",
+        "button": "Contacter l'Équipe"
+      }
+    },
+    "terms": {
+      "hero": {
+        "title": "Conditions d'Utilisation",
+        "description": "Lisez attentivement ces conditions avant d'utiliser nos services.",
+        "lastUpdated": "Dernière mise à jour: 1 janvier 2024",
+        "effectiveDate": "Effective: 1 janvier 2024"
+      },
+      "introduction": "Ces conditions régissent votre utilisation des services Badji.net. En accédant à nos services, vous acceptez ces conditions et notre Politique de Confidentialité.",
+      "sections": {
+        "acceptance": {
+          "title": "Acceptation des Conditions",
+          "content": "En utilisant Badji.net, vous acceptez d'être lié par les termes de cet accord.",
+          "points": "Acceptation des conditions | Capacité légale | Conformité aux lois | Mises à jour des conditions"
+        },
+        "description": {
+          "title": "Description du Service",
+          "content": "Badji.net fournit des services de gestion d'événements et de billetterie via notre plateforme web et applications mobiles.",
+          "points": "Outils de création d'événements | Services de billetterie | Capacités de paiement | Fonctionnalités d'analyse | Services de support"
+        },
+        "user_accounts": {
+          "title": "Comptes Utilisateur",
+          "content": "Vous devez créer un compte pour utiliser certaines fonctionnalités. Vous êtes responsable de la sécurité de votre compte.",
+          "points": "Exigences d'inscription | Responsabilités de mot de passe | Exactitude des informations | Notification d'accès non autorisé | Procédures de fermeture"
+        },
+        "acceptable_use": {
+          "title": "Politique d'Utilisation",
+          "content": "Vous acceptez d'utiliser nos services uniquement à des fins légales et conformément à ces conditions.",
+          "points": "Activités illégales interdites | Pas de harcèlement | Respect de la propriété intellectuelle | Pas de spam | Conformité aux réglementations"
+        },
+        "content": {
+          "title": "Contenu Utilisateur",
+          "content": "Vous conservez la propriété de votre contenu, mais nous accordez certains droits d'utilisation.",
+          "points": "Droits de propriété | Licence d'utilisation | Modération du contenu | Suppression de contenu inapproprié | Sauvegarde des données"
+        },
+        "payment_terms": {
+          "title": "Conditions de Paiement",
+          "content": "Conditions de paiement pour nos services, y compris les frais d'abonnement et les politiques de remboursement.",
+          "points": "Cycles de facturation | Structure des frais | Méthodes de paiement | Politiques de remboursement | Responsabilités fiscales"
+        },
+        "privacy": {
+          "title": "Confidentialité",
+          "content": "Votre vie privée est importante. Consultez notre Politique de Confidentialité.",
+          "points": "Pratiques de collecte | Utilisation des informations | Partage avec tiers | Mesures de sécurité | Droits des utilisateurs"
+        },
+        "intellectual_property": {
+          "title": "Propriété Intellectuelle",
+          "content": "Nos services et contenu sont protégés par le droit d'auteur, les marques et autres lois sur la propriété intellectuelle.",
+          "points": "Droits de marque | Protection du droit d'auteur | Licence de contenu | Propriété intellectuelle tierce | Conformité DMCA"
+        },
+        "disclaimers": {
+          "title": "Avertissements",
+          "content": "Nos services sont fournis 'tels quels' sans garantie d'aucune sorte.",
+          "points": "Disponibilité du service | Performance et fiabilité | Dépendances tierces | Responsabilité de l'utilisateur | Limites du support"
+        },
+        "limitation_liability": {
+          "title": "Limitation de Responsabilité",
+          "content": "Notre responsabilité pour dommages découlant de votre utilisation est limitée comme décrit.",
+          "points": "Limitation des dommages directs | Exclusion des dommages indirects | Montant maximum | Événements de force majeure | Indemnisation de l'utilisateur"
+        },
+        "indemnification": {
+          "title": "Indemnisation",
+          "content": "Vous acceptez de nous indemniser contre les réclamations découlant de votre utilisation.",
+          "points": "Obligations d'indemnisation | Défense des réclamations | Autorité de règlement | Exigences de notification | Coopération"
+        },
+        "termination": {
+          "title": "Résiliation",
+          "content": "Chaque partie peut résilier cet accord dans certaines circonstances.",
+          "points": "Résiliation par l'utilisateur | Résiliation par Badji.net | Effets de la résiliation | Conservation des données | Survie des termes"
+        },
+        "governing_law": {
+          "title": "Droit Applicable",
+          "content": "Ces conditions sont régies par les lois du lieu d'incorporation de Badji.net.",
+          "points": "Loi et juridiction applicables | Procédures de règlement des litiges | Exigences d'arbitrage | Renonciation aux actions collectives | Lieu juridique"
+        },
+        "changes": {
+          "title": "Modifications des Conditions",
+          "content": "Nous pouvons modifier ces conditions. Nous vous informerons des changements importants.",
+          "points": "Notification des changements | Date d'effet | Acceptation par utilisation continue | Droit de résiliation"
+        },
+        "contact": {
+          "title": "Coordonnées",
+          "content": "Les questions sur ces conditions doivent être adressées à notre équipe juridique."
+        }
+      },
+      "contact": {
+        "title": "Contactez-Nous",
+        "description": "Pour toute question sur ces conditions, contactez notre équipe juridique.",
+        "email": "Email",
+        "address": "Adresse",
+        "addressValue": "123 Rue Juridique, Ville des Conditions, TC 12345",
+        "button": "Contacter l'Équipe Juridique"
+      }
+    },
+    "cookies": {
+      "hero": {
+        "title": "Politique des Cookies",
+        "description": "Découvrez comment nous utilisons les cookies pour améliorer votre expérience sur Badji.net."
+      },
+      "preferences": {
+        "title": "Préférences des Cookies",
+        "description": "Gérez vos préférences concernant les cookies.",
+        "acceptAll": "Accepter Tous",
+        "acceptNecessary": "Nécessaires Seulement"
+      },
+      "required": "Requis",
+      "types": {
+        "necessary": {
+          "title": "Cookies Nécessaires",
+          "description": "Essentiels au bon fonctionnement du site, ne peuvent être désactivés."
+        },
+        "analytics": {
+          "title": "Cookies Analytiques",
+          "description": "Nous aident à comprendre comment les visiteurs interagissent avec notre site."
+        },
+        "marketing": {
+          "title": "Cookies Marketing",
+          "description": "Utilisés pour diffuser des publicités personnalisées."
+        },
+        "functional": {
+          "title": "Cookies Fonctionnels",
+          "description": "Activent des fonctionnalités avancées et la personnalisation."
+        }
+      },
+      "info": {
+        "whatAreCookies": {
+          "title": "Que sont les Cookies?",
+          "content": "Petits fichiers texte stockés sur votre appareil pour améliorer votre expérience de navigation."
+        },
+        "howWeUse": {
+          "title": "Comment Nous Utilisons les Cookies",
+          "content": "Nous utilisons des cookies à diverses fins:",
+          "point1": "Mémoriser vos préférences",
+          "point2": "Analyser le trafic et le comportement",
+          "point3": "Fournir du contenu personnalisé",
+          "point4": "Améliorer les fonctionnalités"
+        },
+        "thirdParty": {
+          "title": "Cookies Tiers",
+          "content": "Certains cookies sont définis par des services tiers comme Google Analytics et des réseaux sociaux."
+        },
+        "control": {
+          "title": "Comment Contrôler les Cookies",
+          "content": "Vous pouvez gérer les cookies via les paramètres de votre navigateur ou notre centre de préférences."
+        }
+      }
+    },
+    "gdpr": {
+      "hero": {
+        "badge": "Conforme RGPD",
+        "title": "Conformité RGPD",
+        "description": "Nous protégeons vos données personnelles et respectons le Règlement Général sur la Protection des Données."
+      },
+      "rights": {
+        "title": "Vos Droits",
+        "description": "En vertu du RGPD, vous disposez de plusieurs droits concernant vos données personnelles.",
+        "items": {
+          "access": {
+            "title": "Droit d'Accès",
+            "description": "Demander une copie de vos données personnelles."
+          },
+          "rectification": {
+            "title": "Droit de Rectification",
+            "description": "Demander la correction de données inexactes."
+          },
+          "erasure": {
+            "title": "Droit à l'Effacement",
+            "description": "Demander la suppression de vos données dans certaines circonstances."
+          },
+          "portability": {
+            "title": "Droit à la Portabilité",
+            "description": "Demander le transfert de vos données à un autre organisme."
+          },
+          "restriction": {
+            "title": "Droit à la Limitation",
+            "description": "Demander la limitation du traitement de vos données."
+          },
+          "objection": {
+            "title": "Droit d'Opposition",
+            "description": "S'opposer au traitement de vos données à certaines fins."
+          }
+        }
+      },
+      "data": {
+        "title": "Données Collectées",
+        "description": "Nous collectons et traitons divers types de données personnelles.",
+        "includes": "Inclut",
+        "types": {
+          "personal_information": {
+            "title": "Informations Personnelles",
+            "description": "Informations d'identification de base lors de la création de compte.",
+            "examples": "Nom et prénom | Adresse email | Numéro de téléphone | Photo de profil"
+          },
+          "account_data": {
+            "title": "Données de Compte",
+            "description": "Informations liées à votre compte et à l'utilisation du service.",
+            "examples": "Préférences | Historique de connexion | Modèles d'utilisation | Détails d'abonnement"
+          },
+          "event_data": {
+            "title": "Données d'Événement",
+            "description": "Informations sur les événements que vous créez ou auxquels vous participez.",
+            "examples": "Détails d'événements | Listes de participants | Analyses | Informations d'inscription"
+          },
+          "payment_information": {
+            "title": "Informations de Paiement",
+            "description": "Données financières nécessaires au traitement des transactions.",
+            "examples": "Adresse de facturation | Méthodes de paiement | Historique des transactions | Factures"
+          },
+          "usage_analytics": {
+            "title": "Analytiques d'Utilisation",
+            "description": "Données sur votre interaction avec nos services.",
+            "examples": "Pages vues | Statistiques d'utilisation | Métriques de performance | Journaux d'erreur"
+          },
+          "communication_data": {
+            "title": "Données de Communication",
+            "description": "Historique de vos communications avec nous.",
+            "examples": "Tickets de support | Correspondance email | Messages de chat | Retours d'expérience"
+          }
+        }
+      },
+      "legal": {
+        "title": "Base Juridique du Traitement",
+        "description": "Nous traitons vos données sur les bases juridiques suivantes prévues par le RGPD.",
+        "basis": {
+          "consent": {
+            "title": "Consentement",
+            "description": "Vous avez donné votre consentement explicite pour des finalités spécifiques."
+          },
+          "contract": {
+            "title": "Exécution d'un Contrat",
+            "description": "Nécessaire à l'exécution d'un contrat avec vous."
+          },
+          "legitimate_interest": {
+            "title": "Intérêt Légitime",
+            "description": "Nécessaire à nos intérêts légitimes, dans le respect de vos droits."
+          }
+        }
+      },
+      "exercise": {
+        "title": "Exercer Vos Droits",
+        "description": "Pour exercer vos droits RGPD, contactez-nous via les informations ci-dessous. Nous répondrons dans les 30 jours.",
+        "email": "Email",
+        "response": "Délai de Réponse",
+        "responseTime": "Sous 30 jours",
+        "verification": "Vérification d'Identité",
+        "verificationNote": "Peut être nécessaire pour des raisons de sécurité",
+        "contact": "Contacter l'Équipe",
+        "privacy": "Voir Politique de Confidentialité"
+      }
+    },
+    "documentation": {
+      "hero": {
+        "title": "Documentation",
+        "description": "Tout pour commencer avec Badji.net. Des guides rapides aux références API détaillées.",
+        "search": "Rechercher dans la doc..."
+      },
+      "quickLinks": {
+        "title": "Liens Rapides",
+        "api_docs": "Documentation API",
+        "sdk": "Téléchargements SDK",
+        "examples": "Exemples de Code",
+        "changelog": "Journal des Changements"
+      },
+      "sections": {
+        "getting_started": {
+          "title": "Pour Commencer",
+          "description": "Nouveau sur Badji.net? Commencez ici pour apprendre les bases.",
+          "viewAll": "Voir Tous les Guides",
+          "articles": {
+            "quick_start": {
+              "title": "Guide de Démarrage Rapide",
+              "description": "Mettez en place Badji.net en 5 minutes."
+            },
+            "installation": {
+              "title": "Installation",
+              "description": "Installez et configurez Badji.net."
+            },
+            "first_event": {
+              "title": "Créez Votre Premier Événement",
+              "description": "Guide étape par étape pour créer votre premier événement."
+            },
+            "basic_concepts": {
+              "title": "Concepts de Base",
+              "description": "Comprenez les concepts fondamentaux de la gestion d'événements."
+            }
+          }
+        },
+        "api_reference": {
+          "title": "Référence API",
+          "description": "Référence complète pour notre API REST et webhooks.",
+          "viewAll": "Voir Docs API",
+          "articles": {
+            "authentication": {
+              "title": "Authentification",
+              "description": "Apprenez à vous authentifier à notre API."
+            },
+            "events_api": {
+              "title": "API Événements",
+              "description": "Créez et gérez des événements programmatiquement."
+            },
+            "users_api": {
+              "title": "API Utilisateurs",
+              "description": "Gérez les comptes et permissions utilisateur."
+            },
+            "webhooks": {
+              "title": "Webhooks",
+              "description": "Recevez des notifications en temps réel sur les événements."
+            }
+          }
+        },
+        "guides": {
+          "title": "Guides & Tutoriels",
+          "description": "Guides approfondis pour fonctionnalités avancées et cas d'utilisation.",
+          "viewAll": "Voir Tous les Tutoriels",
+          "articles": {
+            "event_management": {
+              "title": "Gestion Avancée d'Événements",
+              "description": "Maîtrisez les techniques avancées de gestion d'événements."
+            },
+            "payment_setup": {
+              "title": "Configuration des Paiements",
+              "description": "Configurez le traitement des paiements pour vos événements."
+            },
+            "analytics": {
+              "title": "Analytiques & Rapports",
+              "description": "Tirez des insights de vos données d'événements."
+            },
+            "integrations": {
+              "title": "Intégrations Tierces",
+              "description": "Connectez Badji.net à d'autres outils et services."
+            }
+          }
+        },
+        "community": {
+          "title": "Ressources Communautaires",
+          "description": "Contenu et contributions de la communauté.",
+          "viewAll": "Rejoindre la Communauté",
+          "articles": {
+            "contributing": {
+              "title": "Guide de Contribution",
+              "description": "Apprenez à contribuer à Badji.net."
+            },
+            "support": {
+              "title": "Support Communautaire",
+              "description": "Obtenez de l'aide de la communauté."
+            },
+            "examples": {
+              "title": "Exemples Communautaires",
+              "description": "Exemples concrets de nos utilisateurs."
+            },
+            "best_practices": {
+              "title": "Meilleures Pratiques",
+              "description": "Astuces et conseils d'utilisateurs expérimentés."
+            }
+          }
+        }
+      },
+      "cta": {
+        "title": "Prêt à Commencer?",
+        "description": "Rejoignez des milliers d'organisateurs qui utilisent Badji.net pour créer des expériences exceptionnelles.",
+        "getStarted": "Commencer Gratuitement",
+        "contact": "Contacter le Support"
+      }
+    },
+    "community": {
+      "hero": {
+        "badge": "Rejoignez la Communauté",
+        "title": "Communauté de Créateurs d'Événements",
+        "description": "Rejoignez notre communauté mondiale d'organisateurs, développeurs et passionnés.",
+        "cta": {
+          "join": "Rejoindre Discord",
+          "contribute": "Commencez à Contribuer"
+        }
+      },
+      "platforms": {
+        "title": "Plateformes Communautaires",
+        "description": "Connectez-vous sur différentes plateformes et trouvez celle qui vous convient.",
+        "members": "membres",
+        "join": "Rejoindre",
+        "items": {
+          "discord": {
+            "title": "Communauté Discord",
+            "description": "Chat en temps réel avec d'autres utilisateurs et notre équipe."
+          },
+          "github": {
+            "title": "GitHub",
+            "description": "Contribuez à nos projets open-source."
+          },
+          "twitter": {
+            "title": "Twitter",
+            "description": "Suivez-nous pour des mises à jour et annonces."
+          },
+          "forum": {
+            "title": "Forum Communautaire",
+            "description": "Posez des questions et partagez vos connaissances."
+          }
+        }
+      },
+      "events": {
+        "title": "Événements à Venir",
+        "description": "Rejoignez nos événements communautaires, rencontres et ateliers.",
+        "types": {
+          "virtual": "Virtuel",
+          "in-person": "En Personne"
+        },
+        "attendees": "participants",
+        "register": "S'inscrire"
+      },
+      "contributors": {
+        "title": "Top Contributeurs",
+        "description": "Découvrez les personnes formidables qui aident à améliorer Badji.net.",
+        "contributions": "contributions"
+      },
+      "cta": {
+        "title": "Prêt à Contribuer?",
+        "description": "Que vous soyez développeur, designer ou expert en événements, il y a une place pour vous dans notre communauté.",
+        "contribute": "Commencez à Contribuer",
+        "help": "Obtenir de l'Aide"
+      }
+    },
+    "status": {
+      "hero": {
+        "title": "État du Système",
+        "description": "Statut en temps réel de tous les services et composants d'infrastructure Badji.net.",
+        "allSystemsOperational": "Tous Systèmes Opérationnels"
+      },
+      "services": {
+        "title": "État des Services",
+        "uptime": "Disponibilité",
+        "responseTime": "Temps de Réponse",
+        "status": {
+          "operational": "Opérationnel",
+          "degraded": "Performance Dégradée",
+          "outage": "Interruption de Service"
+        }
+      },
+      "incidents": {
+        "title": "Incidents Récents",
+        "started": "Début",
+        "resolved": "Résolu",
+        "status": {
+          "investigating": "Enquête en Cours",
+          "identified": "Identifié",
+          "monitoring": "Surveillance",
+          "resolved": "Résolu",
+          "completed": "Terminé"
+        },
+        "severity": {
+          "critical": "Critique",
+          "major": "Majeur",
+          "minor": "Mineur",
+          "maintenance": "Maintenance"
+        }
+      },
+      "subscribe": {
+        "title": "Restez Informé",
+        "description": "Abonnez-vous aux mises à jour d'état pour être informé des interruptions et maintenances.",
+        "email": "Mises à Jour par Email",
+        "rss": "Flux RSS",
+        "webhook": "Notifications Webhook",
+        "webhookDescription": "Disponible pour les clients entreprise"
+      }
+    },
+    "about": {
+      "hero": {
+        "title": "À Propos de Badji.net",
+        "description": "Notre mission : rendre la gestion d'événements simple, puissante et accessible à tous.",
+        "founded": "Fondé en 2020",
+        "headquarters": "Tunis, Tunisie"
+      },
+      "mission": {
+        "title": "Notre Mission",
+        "description": "Permettre aux organisateurs mondiaux de créer des expériences mémorables et des connexions significatives."
+      },
+      "story": {
+        "title": "Notre Histoire",
+        "content": "Badji.net est né de la frustration d'organiser des événements avec des outils obsolètes. Nos fondateurs, organisateurs expérimentés, ont créé la plateforme qu'ils souhaitaient utiliser. Partis d'un petit bureau à Tunis, nous avons construit une solution moderne."
+      },
+      "values": {
+        "title": "Nos Valeurs",
+        "items": {
+          "innovation": {
+            "title": "Innovation",
+            "description": "Nous repoussons constamment les limites de la technologie événementielle."
+          },
+          "simplicity": {
+            "title": "Simplicité",
+            "description": "Des solutions simples et élégantes à des problèmes complexes."
+          },
+          "community": {
+            "title": "Communauté",
+            "description": "Nous croyons au pouvoir de rassembler les gens."
+          },
+          "reliability": {
+            "title": "Fiabilité",
+            "description": "Vos événements sont importants pour vous, donc pour nous aussi."
+          }
+        }
+      },
+      "team": {
+        "title": "Notre Équipe",
+        "description": "Nous sommes une équipe diversifiée de passionnés du monde entier."
+      },
+      "stats": {
+        "title": "En Chiffres",
+        "events": "Événements Créés",
+        "users": "Utilisateurs Actifs",
+        "countries": "Pays",
+        "uptime": "Disponibilité"
+      },
+      "cta": {
+        "title": "Rejoignez Notre Aventure",
+        "description": "Prêt à faire partie de l'avenir de la gestion d'événements?",
+        "careers": "Voir les Postes Ouverts",
+        "contact": "Nous Contacter"
+      }
+    },
+    "careers": {
+      "hero": {
+        "title": "Rejoignez Notre Équipe",
+        "description": "Aidez-nous à construire l'avenir de la gestion d'événements. Nous recherchons des passionnés.",
+        "openPositions": "Postes Ouverts"
+      },
+      "why": {
+        "title": "Pourquoi Travailler Chez Badji.net?",
+        "items": {
+          "impact": {
+            "title": "Ayez un Impact",
+            "description": "Votre travail affecte directement des millions d'organisateurs et participants."
+          },
+          "growth": {
+            "title": "Faites Évoluer Votre Carrière",
+            "description": "Nous investissons dans votre développement professionnel."
+          },
+          "culture": {
+            "title": "Culture Exceptionnelle",
+            "description": "Collaborez avec des talents passionnés dans un environnement inclusif."
+          },
+          "benefits": {
+            "title": "Avantages Compétitifs",
+            "description": "Salaire compétitif, assurance santé, horaires flexibles et plus encore."
+          }
+        }
+      },
+      "positions": {
+        "title": "Postes Ouverts",
+        "description": "Nous recherchons toujours des talents pour rejoindre notre équipe.",
+        "viewAll": "Voir Tous les Postes",
+        "apply": "Postuler",
+        "noPositions": {
+          "title": "Aucun Poste Ouvert",
+          "description": "Aucun poste ouvert actuellement, mais nous sommes toujours intéressés par des profils talentueux."
+        }
+      },
+      "benefits": {
+        "title": "Avantages & Perks",
+        "items": {
+          "health": "Assurance santé complète",
+          "vacation": "Politique de congés illimités",
+          "remote": "Culture de travail remote-first",
+          "equipment": "Équipement haut de gamme",
+          "learning": "Budget formation",
+          "events": "Billets gratuits pour des événements mondiaux"
+        }
+      },
+      "process": {
+        "title": "Processus de Recrutement",
+        "steps": {
+          "application": {
+            "title": "Candidature",
+            "description": "Soumettez votre candidature via notre page carrières."
+          },
+          "screening": {
+            "title": "Pré-sélection",
+            "description": "Entretien préliminaire pour discuter de votre profil."
+          },
+          "interview": {
+            "title": "Entretien Technique",
+            "description": "Discussion approfondie sur vos compétences."
+          },
+          "final": {
+            "title": "Entretien Final",
+            "description": "Rencontrez des membres de l'équipe et la direction."
+          },
+          "offer": {
+            "title": "Offre",
+            "description": "Nous vous faisons une offre et vous accueillons dans l'équipe !"
+          }
+        }
+      },
+      "cta": {
+        "title": "Pas le Bon Rôle?",
+        "description": "Nous sommes toujours intéressés par des talents, même sans poste ouvert spécifique.",
+        "contact": "Envoyez Votre CV",
+        "newsletter": "Rejoignez Notre Réseau de Talents"
+      }
+    },
+    "contact": {
+      "hero": {
+        "title": "Contactez-Nous",
+        "description": "Des questions? Nous serions ravis d'avoir de vos nouvelles. Envoyez-nous un message et nous répondrons au plus vite."
+      },
+      "form": {
+        "name": "Nom Complet",
+        "email": "Adresse Email",
+        "subject": "Sujet",
+        "message": "Message",
+        "send": "Envoyer",
+        "sending": "Envoi en Cours...",
+        "success": "Merci ! Nous vous répondrons bientôt.",
+        "error": "Erreur. Veuillez réessayer."
+      },
+      "info": {
+        "title": "Coordonnées",
+        "address": {
+          "title": "Adresse",
+          "value": "123 Rue des Événements\nTunis, Tunisie 1000"
+        },
+        "phone": {
+          "title": "Téléphone",
+          "value": "+216 12 345 678"
+        },
+        "email": {
+          "title": "Email",
+          "value": "hello@badji.net"
+        },
+        "hours": {
+          "title": "Heures d'Ouverture",
+          "value": "Lundi - Vendredi: 9h00 - 18h00 (GMT+1)"
+        }
+      },
+      "support": {
+        "title": "Besoin d'Aide?",
+        "description": "Pour le support technique et les problèmes de compte, visitez notre centre d'aide ou contactez directement notre équipe.",
+        "helpCenter": "Visiter le Centre d'Aide",
+        "supportEmail": "support@badji.net"
+      }
+    },
+    "help": {
+      "hero": {
+        "title": "Comment pouvons-nous vous aider?",
+        "description": "Trouvez des réponses aux questions courantes et obtenez le support dont vous avez besoin.",
+        "search": "Rechercher de l'aide..."
+      },
+      "categories": {
+        "getting_started": {
+          "title": "Pour Commencer",
+          "description": "Nouveau sur Badji.net? Commencez ici pour apprendre les bases."
+        },
+        "account_management": {
+          "title": "Gestion de Compte",
+          "description": "Gérez vos paramètres et préférences de compte."
+        },
+        "event_creation": {
+          "title": "Création d'Événement",
+          "description": "Apprenez à créer et personnaliser vos événements."
+        },
+        "ticketing": {
+          "title": "Billetterie & Inscription",
+          "description": "Configurez les billets et gérez les inscriptions."
+        },
+        "payments": {
+          "title": "Paiements & Facturation",
+          "description": "Gérez les paiements, remboursements et problèmes de facturation."
+        },
+        "analytics": {
+          "title": "Analytiques & Rapports",
+          "description": "Comprenez vos données d'événement et générez des rapports."
+        },
+        "integrations": {
+          "title": "Intégrations",
+          "description": "Connectez Badji.net à d'autres outils et services."
+        },
+        "troubleshooting": {
+          "title": "Dépannage",
+          "description": "Résolvez les problèmes courants et techniques."
+        }
+      },
+      "popular": {
+        "title": "Articles Populaires",
+        "readMore": "Lire la Suite"
+      },
+      "contact": {
+        "title": "Besoin d'Aide Supplémentaire?",
+        "description": "Vous ne trouvez pas ce que vous cherchez? Notre équipe support est là pour vous aider.",
+        "button": "Contacter le Support"
+      }
+    },"event": {
+    "title": "Détails de l'Événement",
+    "joinButton": "Je participe",
+    "joining": "Inscription...",
+    "viewPricing": "Voir les Tarifs",
+    "attendees": "{count, plural, =0 {Aucun participant} =1 {1 personne participe} other {# personnes participent}}",
+    "eventDate": "Date de l'Événement",
+    "schedule": "Programme de l'Événement",
+    "doorsOpen": "Ouverture des portes",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "duration": "{days, plural, =1 {Événement d'1 jour} other {Événement de # jours}}",
+    "tabs": {
+      "details": "Détails",
+      "date": "Date",
+      "location": "Lieu",
+      "price": "Prix",
+      "feedback": "Commentaires"
+    },
+    "stats": {
+      "attending": "participants",
+      "duration": "durée"
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "retry": "Réessayer"
+  }, "shorts": {
+    "loading": "Chargement des vidéos...",
+    "share": {
+      "title": "Partager l'Événement",
+      "copyLink": "Copier le Lien",
+      "linkCopied": "Lien copié dans le presse-papiers !",
+      "cancel": "Annuler",
+      "facebook": "Facebook",
+      "twitter": "X/Twitter",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp"
+    },
+    "controls": {
+      "back": "Retour",
+      "showDetails": "Afficher les détails",
+      "hideDetails": "Masquer les détails",
+      "like": "J'aime",
+      "share": "Partager",
+      "scrollUp": "Faire défiler vers le haut",
+      "scrollDown": "Faire défiler vers le bas"
+    },
+    "details": {
+      "close": "Fermer",
+      "visitWebsite": "Visiter le Site Web",
+      "category": "Catégorie",
+      "allCategories": "Toutes",
+      "organizer": "Organisateur",
+      "verified": "Vérifié",
+      "sponsors": "Sponsors"
+    },
+    "video": {
+      "playError": "Échec de la lecture vidéo",
+      "autoplayBlocked": "La lecture automatique a été bloquée par le navigateur"
+    }
+  },"follow":{
+    "follow": "Suivre",
+    "following": "Suivi",
+    "followed": "Suivi",
+    "unfollow": "Ne plus suivre",
+    "unfollowed": "Ne plus suivre"
+  }, "comments": {
+    "like": "J'aime",
+    "reply": "Répondre",
+    "send": "Envoyer",
+    "writeComment": "Écrivez un commentaire...",
+    "writeReply": "Écrivez une réponse...",
+    "loginToReply": "Vous devez être connecté pour répondre",
+    "noComments": "Aucun commentaire pour le moment. Soyez le premier à commenter !",
+    "errors": {
+      "title": "Erreur",
+      "updateLike": "Échec de la mise à jour du j'aime",
+      "loadComments": "Échec du chargement des commentaires",
+      "addComment": "Échec de l'ajout du commentaire",
+      "addReply": "Échec de l'ajout de la réponse"
+    }
+  },
+  "eventPrice": {
+    "buyTicket": "Acheter un billet ou obtenir une précommande",
+    "eventFree": "Cet événement est gratuit",
+    "free": "Gratuit",
+    "eventTotalPrice": "Prix total de l'événement",
+    "payInDoor": "Payer à la porte",
+    "secureCheckout": "Paiement sécurisé",
+    "instantConfirmation": "Confirmation instantanée",
+    "validate": "valider",
+    "success": "Succès",
+    "orderCreatedSuccess": "Commande créée avec succès",
+    "error": "Erreur",
+    "orderCreatedError": "Échec de la création de la commande"
+  }, "notFound": {
+    "title": "Page non trouvée",
+    "description": "Désolé, la page que vous recherchez n'existe pas ou a été déplacée. Vérifiez l'URL ou retournez à l'accueil pour continuer votre navigation.",
+    "backToHome": "Retour à l'accueil",
+    "previousPage": "Page précédente",
+    "usefulLinks": "Liens utiles :",
+    "contact": "Contact",
+    "support": "Support",
+    "privacy": "Confidentialité",
+    "helpText": "Besoin d'aide ? Notre équipe de support est là pour vous aider."
   }
+  
 
-
-
+ 
 }

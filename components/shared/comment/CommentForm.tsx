@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { SendHorizontal } from "lucide-react";
 import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { Content } from "@tiptap/react";
+import { useTranslations } from "next-intl";
 
 interface CommentFormProps {
   onSubmit: (content: Content) => void;
@@ -20,6 +21,7 @@ export function CommentForm({ onSubmit, isReply = false }: CommentFormProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef(null);
+  const t = useTranslations("comments");
   const handleSubmit = () => {
     if (!content.trim()) return;
 
@@ -86,7 +88,7 @@ export function CommentForm({ onSubmit, isReply = false }: CommentFormProps) {
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
-          placeholder={isReply ? "Write a reply..." : "Write a comment..."}
+          placeholder={isReply ? t("writeReply") : t("writeComment")}
           className="flex-1 bg-transparent border-none resize-none outline-none py-2 px-4 text-sm h-full rounded-full"
           rows={1}
         />
@@ -100,7 +102,7 @@ export function CommentForm({ onSubmit, isReply = false }: CommentFormProps) {
           }`}
         >
           <SendHorizontal className="h-4 w-4" />
-          <span className="sr-only">Send</span>
+          <span className="sr-only">{t("send")}</span>
         </Button>
       </div>
     </div>

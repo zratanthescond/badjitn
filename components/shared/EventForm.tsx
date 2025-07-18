@@ -46,29 +46,14 @@ import FormBuilder from "./FormBuilder";
 import { SelectPills } from "../ui/currency-select";
 import { useGetSponsors } from "@/hooks/useGetSponsors";
 import { useGetFields } from "@/hooks/useGetFields";
-import {
-  Dialog,
-  DialogClose,
-  DialogFooter,
-  DialogHeader,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+
 import { Separator } from "../ui/separator";
 import { Card, CardContent } from "../ui/card";
 import { CountryDropdown } from "../ui/country-dropdown";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Value } from "@radix-ui/react-select";
 import DiscountDialog from "./DiscountDialogComponenet";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useLoadScript } from "@react-google-maps/api";
 
 type EventFormProps = {
   userId: string;
@@ -127,8 +112,8 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
         });
 
         if (newEvent) {
-          //  form.reset();
-          // router.push(`/events/${newEvent._id}`);
+          form.reset();
+          router.push(`/events/${newEvent._id}`);
         }
       } catch (error) {
         console.log(error);
@@ -180,6 +165,8 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
     console.log(sponsors, fields);
   }, [sponsors, fields]);
   const t = useTranslations("eventForm");
+  const editorPlaceholder = t("eventDescriptionPlaceholder");
+  const locale = useLocale();
   return (
     <Form {...form}>
       <form
@@ -248,12 +235,13 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                 <FormItem className="w-full h-full">
                   <FormControl className="h-full">
                     <MinimalTiptapEditor
+                      key={`editor-${locale}`}
                       value={field.value}
                       onChange={(e) => field.onChange(e)}
                       className="w-full  backdrop-blur-lg bg-white/10 backdrop-brightness-200"
                       editorContentClassName="p-5"
                       output="html"
-                      placeholder={t("eventDescriptionPlaceholder")}
+                      placeholder={editorPlaceholder}
                       autofocus={true}
                       editable={true}
                       editorClassName="focus:outline-none"
@@ -274,7 +262,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                         <AlertDialogTrigger className="w-full flex flex-row items-center">
                           <MapPin className="mr-2" />
                           <Input
-                            placeholder="Event location or Online"
+                            placeholder={t("locationPlaceHolder")}
                             {...field}
                             className="input-field w-full hidden"
                             value={JSON.stringify(field.value)}
@@ -288,7 +276,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                                 (field.value &&
                                   field.value.name &&
                                   field.value.name.length > 0)
-                              : "Event location or Online"}
+                              : t("locationPlaceHolder")}
                           </span>
                         </AlertDialogTrigger>
 
@@ -324,7 +312,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                                     htmlFor="isOnline"
                                     className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                   >
-                                    Online
+                                    {t("online")}
                                   </label>
                                   <Checkbox
                                     onCheckedChange={field.onChange}
@@ -353,7 +341,9 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                   <FormControl>
                     <div className="flex-center glass !backdrop-filter-none  h-[54px] w-full overflow-hidden rounded-full  px-4 py-2">
                       <CalendarIcon />
-                      <p className="ml-3 whitespace-nowrap ">Start Date:</p>
+                      <p className="ml-3 whitespace-nowrap ">
+                        {t("startDate")}
+                      </p>
                       <DatePicker
                         selected={field.value}
                         onChange={(date: Date) => field.onChange(date)}
@@ -377,7 +367,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                   <FormControl>
                     <div className="flex-center h-[54px]  glass !backdrop-filter-none w-full overflow-hidden rounded-full  px-4 py-2">
                       <CalendarIcon />
-                      <p className="ml-3 whitespace-nowrap ">End Date:</p>
+                      <p className="ml-3 whitespace-nowrap ">{t("endDate")}</p>
                       <DatePicker
                         selected={field.value}
                         onChange={(date: Date) => field.onChange(date)}
@@ -405,7 +395,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <div className="flex-center h-[54px] w-full  glass overflow-hidden rounded-full gap-2  px-4 py-2">
+                      <div className="flex-center md:h-[54px] w-full flex flex-col md:flex-row  glass overflow-hidden md:rounded-full rounded-xl gap-2  px-4 py-2">
                         <Image
                           src="/assets/icons/dollar.svg"
                           alt="dollar"
@@ -415,24 +405,36 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                         />
                         <Input
                           type="number"
-                          placeholder="Price"
+                          disabled={form.getValues("isFree")}
+                          placeholder={t("price")}
                           {...field}
                           className="p-regular-16 border-0 glass rounded-full  outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
-                        <Input
-                          type="number"
-                          placeholder="Places"
-                          {...field}
-                          className="p-regular-16 border-0 glass rounded-full  outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        <FormField
+                          control={form.control}
+                          name="places"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <Input
+                                type="number"
+                                disabled={form.getValues("isFree")}
+                                min={0}
+                                placeholder={t("places")}
+                                {...field}
+                                className="p-regular-16 border-0 glass rounded-full  outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                              />
+                            </FormItem>
+                          )}
                         />
                         <Button
                           onClick={() => setIsPricePlan(true)}
                           type="button"
                           variant={"outline"}
                           className="border-2  gap-1 rounded-full mx-1 bg-pink-500"
+                          disabled={form.getValues("isFree")}
                         >
                           <ListChecks />
-                          Plans
+                          {t("plans")}
                         </Button>
                         <FormField
                           control={form.control}
@@ -445,7 +447,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                                     htmlFor="isFree"
                                     className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                   >
-                                    Free Ticket
+                                    {t("freeTicket")}
                                   </label>
                                   <Checkbox
                                     onCheckedChange={field.onChange}
@@ -476,7 +478,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       <LinkIcon />
 
                       <Input
-                        placeholder="URL"
+                        placeholder={t("url")}
                         {...field}
                         className="input-field !bg-transparent"
                       />
@@ -517,9 +519,9 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       name="requiredInfo"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Required info</FormLabel>
+                          <FormLabel>{t("requiredInfo")}</FormLabel>
                           <FormDescription>
-                            Select one or more required info
+                            {t("requiredInfoDescription")}
                           </FormDescription>
                           <Separator className="my-4" />
                           <FormControl>
@@ -527,7 +529,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                               data={fields}
                               value={field.value}
                               onValueChange={field.onChange}
-                              placeholder="Search for required info"
+                              placeholder={t("searchInfoPlaceholder")}
                             />
                           </FormControl>
 
@@ -551,9 +553,9 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       name="sponsors"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Select your sponsors</FormLabel>{" "}
+                          <FormLabel>{t("selectYourSponsors")}</FormLabel>{" "}
                           <FormDescription>
-                            Select one or more Sponsors
+                            {t("chooseSponsors")}
                           </FormDescription>
                           <Separator className="my-4" />
                           <FormControl>
@@ -564,7 +566,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                                 field.onChange(value);
                                 console.log(value);
                               }}
-                              placeholder="Search for Sponsors"
+                              placeholder={t("searchSponsorsPlaceholder")}
                               onChange={(value) => console.log(value)}
                             />
                           </FormControl>
@@ -586,7 +588,9 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
           className="button col-span-2 w-full"
           variant={"outline"}
         >
-          {form.formState.isSubmitting ? "Submitting..." : `${type} Event `}
+          {form.formState.isSubmitting
+            ? t("submitting")
+            : `${t(type)} ${t("event")}`}
         </Button>
       </form>
     </Form>

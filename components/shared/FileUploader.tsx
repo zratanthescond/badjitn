@@ -26,6 +26,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { FaComment } from "react-icons/fa";
 import PhoneIcons from "./phone/PhoneIcons";
 import VideoEditor from "./phone/VideoEditor";
+import { useTranslations } from "next-intl";
 
 type FileUploaderProps = {
   onFieldChange: (url: string) => void;
@@ -59,21 +60,13 @@ export function FileUploader({
       setFileToUpload(imageUrl);
     }
   }, []);
-  const { data: session } = useSession();
+  const t = useTranslations("fileUploader");
+
   return imageUrl ? (
     <div className="flex w-full h-full items-center justify-center">
       <div className="mockup-phone border-indigo-600 w-full h-full max-w-[400px] max-h-[930px]">
         <div className="camera"></div>
         <div className="display bg-card/30 min-h-full w-full  ">
-          {/* <Image
-                //  width={"100%"}
-                blurDataURL={imageUrl}
-                placeholder="blur"
-                style={{ objectFit: "contain" }}
-                fill
-                src={imageUrl}
-                alt="image"
-              /> */}
           <AspectRatio ratio={7.5 / 15}>
             <VideoEditor url={fileToUpload} setReel={setReel} userId={userId} />
 
@@ -117,10 +110,14 @@ export function FileUploader({
               alt="file upload"
             />
             <div className=" absolute bottom-10 w-full flex-col text-center items-center justify-center">
-              <h3 className="mb-2 mt-2">Drag photo here</h3>
-              <p className="p-medium-12 mb-4">SVG, PNG, JPG</p>
-              <Button type="button" className="rounded-full glass">
-                Select from computer
+              <h3 className="mb-2 mt-2">{t("dragAndDrop")}</h3>
+              <p className="p-medium-12 mb-4">SVG, PNG, JPG,MP4,AVI ...</p>
+              <Button
+                variant={"outline"}
+                type="button"
+                className="rounded-full glass"
+              >
+                {t("selectFromYourComputer")}
               </Button>
             </div>
           </div>

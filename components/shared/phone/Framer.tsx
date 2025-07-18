@@ -9,6 +9,34 @@ export const Framer = ({
   duration: number;
 }) => {
   const frames = usePreview(src);
+  const isLoading = frames.length === 0;
+  if (isLoading) {
+    return (
+      <div className="w-full flex rounded-lg flex-row my-1 ">
+        <div className="w-[4.5rem] h-[9.5rem] bg-card/30 animate-pulse rounded-l-lg "></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse border-s-2 "></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
+        <div className="w-[4.5rem]  bg-card/30 animate-pulse rounded-r-lg"></div>
+      </div>
+    );
+  }
   return (
     <div className="w-full flex rounded-lg flex-row my-1 ">
       {frames.map((frame, index) => (

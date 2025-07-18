@@ -19,6 +19,9 @@ import { useUser } from "@/lib/actions/user.actions";
 import { IOrder } from "@/lib/database/models/order.model";
 import { SearchParamProps } from "@/types";
 import { auth } from "@clerk/nextjs";
+import { get } from "http";
+import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import React from "react";
 export const dynamic = "force-dynamic";
@@ -34,20 +37,20 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
 
   const orderedEvents = orders?.data.map((order: IOrder) => order.event) || [];
   const organizedEvents = await getEventsByUser({ userId, page: eventsPage });
-
+  const t = await getTranslations("profile");
   return (
     <>
       {/* My Tickets */}
       <section className="backdrop-blur backdrop-brightness-90  bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
         <div className="wrapper flex items-center justify-center sm:justify-between">
-          <h3 className="h3-bold text-center sm:text-left">My Tickets</h3>
+          <h3 className="h3-bold text-center sm:text-left">{t("myTickets")}</h3>
           <Button
             asChild
             variant={"outline"}
             size="lg"
             className="button hidden sm:flex"
           >
-            <Link href="/#events">Explore More Events</Link>
+            <Link href="/#events">{t("exploreMoreEvents")}</Link>
           </Button>
         </div>
       </section>
@@ -68,14 +71,16 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
       {/* Events Organized */}
       <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
         <div className="wrapper flex items-center justify-center sm:justify-between">
-          <h3 className="h3-bold text-center sm:text-left">Events Organized</h3>
+          <h3 className="h3-bold text-center sm:text-left">
+            {t("eventsOrganized")}
+          </h3>
           <Button
             asChild
             size="lg"
             variant={"outline"}
             className="button hidden sm:flex"
           >
-            <Link href="/events/create">Create New Event</Link>
+            <Link href="/events/create">{t("createNewEvent")}</Link>
           </Button>
         </div>
       </section>
@@ -94,15 +99,20 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
       </section>
       <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
         <div className="wrapper flex items-center justify-center sm:justify-between">
-          <h3 className="h3-bold text-center sm:text-left">My Sponsors</h3>
+          <h3 className="h3-bold text-center sm:text-left">
+            {t("mySponsors")}
+          </h3>
           <Dialog>
             <DialogTrigger asChild>
               <Button size="lg" variant={"outline"} className="button">
-                Add Sponsor
+                {t("addSponsor")}
               </Button>
             </DialogTrigger>
-            <DialogContent>
-              <SponsorForm userId={userId.toString()} />
+            <DialogContent className="min-w-full bg-card ">
+              <ScrollArea className="h-[500px] w-full">
+                <SponsorForm userId={userId.toString()} />
+                <ScrollBar orientation="vertical" />
+              </ScrollArea>
             </DialogContent>
           </Dialog>
         </div>
@@ -113,12 +123,12 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
       <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
         <div className="wrapper flex items-center justify-center sm:justify-between">
           <h3 className="h3-bold text-center sm:text-left">
-            Custom required info
+            {t("customRequiredInfo")}
           </h3>
           <Dialog>
             <DialogTrigger asChild>
               <Button size="lg" variant={"outline"} className="button">
-                Add new input
+                {t("addCustomRequiredInfo")}
               </Button>
             </DialogTrigger>
 

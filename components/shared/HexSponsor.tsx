@@ -1,29 +1,36 @@
 "use client";
-import React, { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Card } from "@/components/ui/card";
-import { IUserSponsor } from "@/lib/database/models/userSponser.model";
+import type { IUserSponsor } from "@/lib/database/models/userSponser.model";
 import { deleteSponsor, getSponsors } from "@/lib/actions/sponsor.action";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
-import { Delete, RefreshCcw, User, X } from "lucide-react";
+import { RefreshCcw, User, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { borderColors } from "@/constants";
 
 export default function HexGridSponsor({ userId }: { userId: string }) {
-  const [mySponsor, setMySponsor] = useState<string | null>(null);
+  const t = useTranslations("HexGridSponsor");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
 
+  const [mySponsor, setMySponsor] = useState<string | null>(null);
   const [sponsors, setSponsors] = useState<IUserSponsor[]>([]);
   const [isPending, startTransition] = useTransition();
+
   const fetchSponsors = () =>
     startTransition(async () => {
       const res = await getSponsors(null, null);
-      if (res.success) {
+      if (res?.success) {
         setSponsors(res.data);
       }
     });
+
   useEffect(() => {
     fetchSponsors();
   }, [mySponsor]);
+
   const handleDelete = ({
     userId,
     sponsorId,
@@ -36,35 +43,37 @@ export default function HexGridSponsor({ userId }: { userId: string }) {
       if (res.success) {
         fetchSponsors();
         toast({
-          title: "Success",
-          description: "Sponsor deleted successfully",
+          title: t("messages.deleteSuccess"),
+          description: t("messages.deleteSuccessDescription"),
         });
       }
     });
+
   return (
-    <div className="flex justify-center items-center flex-col   p-2">
-      <div className=" flex items-center gap-2 justify-end self-end">
+    <div
+      className="flex justify-center items-center flex-col p-2"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      <div className="flex items-center gap-2 justify-end self-end">
         <Button
           onClick={() => {
             setMySponsor(userId.toString());
-            // fetchSponsors();
           }}
           size={"sm"}
           variant={"outline"}
         >
           <User />
-          My sponsors
+          {t("actions.mySponsors")}
         </Button>
         <Button
           onClick={() => {
             setMySponsor(null);
-            // fetchSponsors();
           }}
           size={"sm"}
           variant={"outline"}
         >
           <User />
-          All sponsors
+          {t("actions.allSponsors")}
         </Button>
         <Button onClick={fetchSponsors} size={"icon"} variant={"outline"}>
           <RefreshCcw />
@@ -99,7 +108,7 @@ export default function HexGridSponsor({ userId }: { userId: string }) {
                   }
                   variant={"ghost"}
                   size={"icon"}
-                  className="absolute top-0  z-10 rounded-full"
+                  className="absolute top-0 z-10 rounded-full"
                 >
                   <X />
                 </Button>

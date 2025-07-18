@@ -10,7 +10,7 @@ import {
 } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Star, Sparkles, Award, Shield } from "lucide-react";
-import { IUserSponsor } from "@/lib/database/models/userSponser.model";
+import { useTranslations, useLocale } from "next-intl";
 import { useGetEventSponsors } from "@/hooks/useGetEventSponsors";
 
 interface SponsorProps {
@@ -23,6 +23,10 @@ interface SponsorProps {
 }
 
 const TierBadge = ({ tier }: { tier: string }) => {
+  const t = useTranslations("sponsors.tiers");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+
   const badges = {
     platinum: {
       icon: Award,
@@ -48,7 +52,10 @@ const TierBadge = ({ tier }: { tier: string }) => {
 
   return (
     <div
-      className={`absolute -top-3 -right-3 z-20 ${badgeColor} p-1.5 rounded-full shadow-lg`}
+      className={`absolute ${
+        isRTL ? "-top-3 -left-3" : "-top-3 -right-3"
+      } z-20 ${badgeColor} p-1.5 rounded-full shadow-lg`}
+      title={t(tier as keyof typeof badges)}
     >
       <BadgeIcon size={12} className="text-white" />
     </div>
@@ -67,12 +74,16 @@ const Sponsor = ({
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.3 });
+  const t = useTranslations("sponsors");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
 
   useEffect(() => {
     if (isInView) {
       controls.start("visible");
     }
   }, [controls, isInView]);
+
   const colorsConfig = {
     platinum: {
       color: "bg-gradient-to-br from-indigo-600/90 to-indigo-800/90",
@@ -146,6 +157,7 @@ const Sponsor = ({
       className="relative group max-w-[100px] cursor-pointer max-h-[100px]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      dir={isRTL ? "rtl" : "ltr"}
     >
       {/* Outer glow effect */}
       <motion.div
@@ -180,15 +192,14 @@ const Sponsor = ({
                 className={`absolute inset-0 shine-effect ${
                   isHovered ? "opacity-40" : "opacity-0"
                 } transition-opacity duration-300`}
-              ></div>
+              />
 
               {/* Inner content */}
               <div className="hexagon-inner bg-gradient-to-br from-white/95 to-white/85 flex items-center justify-center p-5">
                 <Image
                   src={logo || "/placeholder.svg"}
-                  alt={name}
+                  alt={t("alt.logo", { name })}
                   fill
-                  objectFit="contain"
                   className="object-contain transition-all duration-500 drop-shadow-md"
                 />
               </div>
@@ -204,7 +215,14 @@ const Sponsor = ({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 5, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute bottom-1 left-1/4 transform -translate-x-1/4 bg-black/80 backdrop-blur-md text-white text-xs font-medium px-4 py-1.5 rounded-full whitespace-nowrap shadow-xl border border-white/10 z-20"
+              className={`absolute bottom-1 ${
+                isRTL
+                  ? "right-1/4 transform translate-x-1/4"
+                  : "left-1/4 transform -translate-x-1/4"
+              } bg-black/80 backdrop-blur-md text-white text-xs font-medium px-4 py-1.5 rounded-full whitespace-nowrap shadow-xl border border-white/10 z-20 ${
+                isRTL ? "font-arabic" : ""
+              }`}
+              dir={isRTL ? "rtl" : "ltr"}
             >
               {name}
               <TierBadge tier={tier} />
@@ -226,11 +244,16 @@ export default function SponsorsSection({
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
   const titleControls = useAnimation();
+  const t = useTranslations("sponsors");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+
   const {
     data: sponsors,
     isPending,
     refetch,
   } = useGetEventSponsors(sponsorsIds);
+
   useEffect(() => {
     setMounted(true);
     if (isInView) {
@@ -249,17 +272,22 @@ export default function SponsorsSection({
       },
     },
   };
-  //const sponsorsWithColor=sponsors.map((sponsor)=>{return{...sponsor,color:}})
+
   if (!mounted) return null;
 
   return (
     <>
       {isPending ? (
-        <div></div>
+        <div className="flex items-center justify-center p-8">
+          <div className="text-muted-foreground text-sm">{t("loading")}</div>
+        </div>
       ) : (
         <section
           ref={sectionRef}
-          className="relative p-2 rounded-xl w-full overflow-hidden  bg-gradient-to-b from-card/30 via-card/50 to-card/70"
+          className={`relative p-2 rounded-xl w-full overflow-hidden bg-gradient-to-b from-card/30 via-card/50 to-card/70 ${
+            isRTL ? "rtl" : "ltr"
+          }`}
+          dir={isRTL ? "rtl" : "ltr"}
         >
           {/* Animated background */}
           <div className="absolute inset-0 z-0">
@@ -307,9 +335,8 @@ export default function SponsorsSection({
                 />
               </div>
             </div>
-
             {/* Subtle grid overlay */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            <div className="absolute inset-0 bg-grid-pattern opacity-10" />
           </div>
 
           {/* Content container */}
@@ -318,7 +345,7 @@ export default function SponsorsSection({
               initial="hidden"
               animate={titleControls}
               variants={titleVariants}
-              className="text-center mb-2"
+              className={`text-center mb-2 ${isRTL ? "font-arabic" : ""}`}
               whileInView={{
                 opacity: 1,
                 y: 0,
@@ -329,21 +356,31 @@ export default function SponsorsSection({
               }}
             >
               <div className="inline-block w-full mb-3">
-                <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase bg-white/10 text-foreground/70 px-3 py-1 rounded-full mb-1">
+                <span
+                  className={`inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase bg-white/10 text-foreground/70 px-3 py-1 rounded-full mb-1 ${
+                    isRTL ? "flex-row-reverse" : ""
+                  }`}
+                >
                   <Sparkles size={14} className="text-amber-400" />
-                  <span>Our Valued Partners</span>
+                  <span>{t("badge")}</span>
                 </span>
               </div>
 
-              <h2 className="text-lg md:text-lg font-bold mb-2 relative inline-block">
+              <h2
+                className={`text-lg md:text-lg font-bold mb-2 relative inline-block ${
+                  isRTL ? "text-right" : "text-left"
+                }`}
+              >
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-card-foreground/10 via-gray-400 to-card-foreground/10">
-                  Trusted by Industry Leaders
+                  {t("title")}
                 </span>
                 <motion.div
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 1, delay: 0.5 }}
-                  className="absolute -bottom-3 left-0 h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-emerald-500 rounded-full"
+                  className={`absolute -bottom-3 ${
+                    isRTL ? "right-0" : "left-0"
+                  } h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-emerald-500 rounded-full`}
                 />
               </h2>
 
@@ -351,15 +388,20 @@ export default function SponsorsSection({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.7 }}
-                className="text-gray-400 mt-2 max-w-sm mx-auto text-sm"
+                className={`text-gray-400 mt-2 max-w-sm mx-auto text-sm ${
+                  isRTL ? "text-right" : "text-left"
+                }`}
               >
-                We collaborate with forward-thinking organizations to create
-                exceptional experiences
+                {t("subtitle")}
               </motion.p>
             </motion.div>
 
             {/* Sponsors grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16 items-center justify-items-center mb-4">
+            <div
+              className={`grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16 items-center justify-items-center mb-4 ${
+                isRTL ? "rtl" : ""
+              }`}
+            >
               {sponsors &&
                 sponsors?.data.map((sponsor, index) => (
                   <Sponsor key={index} {...sponsor} />

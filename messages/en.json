@@ -82,7 +82,11 @@
   "ViolentOrRepulsiveContent":"Violent or repulsive content",
   "HatefulOrAbusiveContent":"Hateful or abusive content",
   "HarmfulOrDangerousActs":" Harmful or dangerous acts",
-  "SpamOrMisleading": "Spam or misleading"
+  "SpamOrMisleading": "Spam or misleading",
+  "cancel": "Cancel",
+  "reporting": "Reporting..."
+
+
 },
 "countries":{
   "searchPlaceholder": "Search for countries",
@@ -347,8 +351,2435 @@
   },
   "eventForm":{
     "eventTitle": "Event Title",
-    "eventDescriptionPlaceholder": "Type your description here..."
+    "eventDescriptionPlaceholder": "Type your description here...",
+    "locationPlaceHolder": "Event Location or Online",
+    "online": "Online",
+    "startDate":"Start Date",
+    "endDate":"End Date",
+    "price":"Price",
+    "places":"Places",
+    "plans":"Plans",
+    "freeTicket":"Free Ticket",
+    "url":"URL",
+    "Create":"Create",
+    "submitting": "Submitting...",
+    "Update":"Update",
+    "event":"event",
+    "requiredInfo":"Required Information",
+    "requiredInfoDescription":"Please fill out your required condidate information.",
+    "searchInfoPlaceholder":"Search for required fields",
+    "applyDiscount":"Apply Discount",
+    "selectYourSponsors":"Select your sponsors",
+    "selectSponsorsPlaceholder":"Search your sponsors...",
+    "chooseSponsors":"Choose one or more Sponsors",
+    "searchSponsorsPlaceholder":"Search sponsors by name or tier..."
 
+
+  },
+  "pricePlan": {
+    "title": "Price Plans",
+    "subtitle": "Create and manage your pricing tiers",
+    "buttons": {
+      "simplePrice": "Simple Price",
+      "returnToSimplePrice": "Return to Simple Price",
+      "addPlan": "Add Plan"
+    },
+    "form": {
+      "labels": {
+        "planDescription": "Plan Description",
+        "price": "Price (TND)",
+        "availablePlaces": "Available Places"
+      },
+      "placeholders": {
+        "planDescription": "e.g., Premium monthly subscription with unlimited access",
+        "price": "29.99",
+        "places": "100"
+      },
+      "errors": {
+        "descriptionRequired": "Plan description must be at least 10 characters",
+        "priceRequired": "Price must be greater than 0",
+        "placesRequired": "Places must be greater than 0"
+      }
+    },
+    "list": {
+      "title": "Created Plans",
+      "planNumber": "Plan #",
+      "places": "places",
+      "currency": "TND"
+    },
+    "emptyState": {
+      "title": "No plans created yet",
+      "description": "Create your first pricing plan by filling out the form above, or switch back to simple pricing.",
+      "action": "Return to Simple Price"
+    },
+    "actions": {
+      "delete": "Delete plan",
+      "add": "Add new plan"
+    }
+  },
+  "discount": {
+    "applyDiscount": "Apply Discount",
+    "title": "Apply Discount by Profile",
+    "description": "Add your discount condition by fields",
+    "chooseFieldAndValue": "Choose a field and a value",
+    "selectField": "Select Field",
+    "selectFieldPlaceholder": "Choose a field...",
+    "fieldNotFound": "Field not found",
+    "fieldValue": "Field Value",
+    "selectValue": "Select value...",
+    "enterValue": "Enter value...",
+    "selectFieldFirst": "Select a field first",
+    "selectDiscountPercentage": "Select Discount Percentage",
+    "selectDiscountPlaceholder": "Choose discount...",
+    "noRequiredInfoSelected": "No required info selected",
+    "saveChanges": "Save Changes"
+  },
+  "fileUploader":{
+    "dragAndDrop": "Drag and drop your file here or click to select",
+     "selectFromYourComputer": "Select from your computer",
+    "fileTypeError": "Invalid file type. Please upload a valid image.",
+    "fileSizeError": "File size exceeds the limit of 5MB.",
+    "uploading": "Uploading...",
+    "uploadSuccess": "File uploaded successfully!",
+    "uploadError": "Error uploading file. Please try again.",
+    "retry": "Retry",
+    "cancel" :"Cancel"
+
+  },
+  "videoEditor":{
+    "modifyVideo": "Modify Video",
+    "addYourMusic": "Add your music",
+    "createReels": "Create Reels",
+    "cancel": "Cancel",
+    "use": "Use",
+    "upload": "Upload",
+     "searchMusic": "Search for music"
+    
+  },
+  "profile":{
+    "myTickets": "My Tickets",
+    "exploreMoreEvents": "Explore more events",
+    "eventsOrganized": "Events Organized",
+    "createNewEvent": "Create New Event",
+    "mySponsors": "My Sponsors",
+    "addSponsor": "Add Sponsor",
+    "allSponsors": "All Sponsors",
+    "customRequiredInfo": "Custom Required Information",
+    "addCustomRequiredInfo": "Add Custom Required Information"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of"
+  },
+  "SponsorForm": {
+    "title": "Add New Sponsor",
+    "description": "Enter the details of the new sponsor to add them to your platform.",
+    "fields": {
+      "sponsorName": {
+        "label": "Sponsor Name",
+        "placeholder": "Acme Inc.",
+        "description": "Enter the official name of the sponsor"
+      },
+      "logo": {
+        "label": "Logo",
+        "placeholder": "Upload logo",
+        "description": "Upload your sponsor's logo (Max 1MB, PNG/JPG)",
+        "dragDrop": "Drag & drop an image here, or click to select",
+        "chooseFile": "Choose File",
+        "removeImage": "Remove image",
+        "uploading": "Uploading..."
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "https://example.com",
+        "description": "Official website URL"
+      },
+      "tier": {
+        "label": "Sponsorship Tier",
+        "placeholder": "Select a tier",
+        "description": "Choose the appropriate sponsorship level",
+        "options": {
+          "platinum": "Platinum",
+          "gold": "Gold",
+          "silver": "Silver",
+          "bronze": "Bronze"
+        }
+      }
+    },
+    "actions": {
+      "addSponsor": "Add Sponsor",
+      "submitting": "Adding Sponsor...",
+      "cancel": "Cancel",
+      "reset": "Reset Form"
+    },
+    "messages": {
+      "success": "Success",
+      "successDescription": "Sponsor added successfully! They will appear in your sponsor list.",
+      "error": "Error",
+      "errorDescription": "Failed to add sponsor. Please check your information and try again.",
+      "uploading": "Uploading files...",
+      "processing": "Processing your request..."
+    },
+    "validation": {
+      "nameRequired": "Sponsor name is required",
+      "nameMin": "Sponsor name must be at least 2 characters",
+      "nameMax": "Sponsor name must be less than 100 characters",
+      "fileRequired": "Please upload a logo file",
+      "fileSize": "File size must be less than 1MB",
+      "fileType": "Only PNG, JPG, and JPEG files are allowed",
+      "urlRequired": "Website URL is required",
+      "urlInvalid": "Please enter a valid URL (e.g., https://example.com)",
+      "tierRequired": "Please select a sponsorship tier"
+    }
+  }, "HexGridSponsor": {
+    "actions": {
+      "mySponsors": "My sponsors",
+      "allSponsors": "All sponsors",
+      "refresh": "Refresh",
+      "delete": "Delete",
+      "visit": "Visit Website"
+    },
+    "messages": {
+      "deleteSuccess": "Success",
+      "deleteSuccessDescription": "Sponsor deleted successfully",
+      "deleteError": "Error",
+      "deleteErrorDescription": "Failed to delete sponsor. Please try again.",
+      "fetchError": "Failed to load sponsors",
+      "loading": "Loading sponsors...",
+      "deleting": "Deleting...",
+      "noSponsors": "No sponsors found",
+      "noMySponsors": "You haven't added any sponsors yet"
+    },
+    "filters": {
+      "showMine": "Show only my sponsors",
+      "showAll": "Show all sponsors"
+    },
+    "tiers": {
+      "platinum": "Platinum",
+      "gold": "Gold",
+      "silver": "Silver",
+      "bronze": "Bronze"
+    },
+    "accessibility": {
+      "deleteButton": "Delete sponsor {name}",
+      "visitWebsite": "Visit {name} website",
+      "sponsorCard": "Sponsor card for {name}"
+    }
+  },
+  "FormBuilder": {
+    "title": "Custom Form Builder",
+    "fieldTypes": {
+      "text": "Text Field",
+      "number": "Number Field",
+      "dropdown": "Dropdown",
+      "radio": "Radio Buttons"
+    },
+    "fields": {
+      "fieldLabel": "Field Label",
+      "labelPlaceholder": "Enter field label",
+      "dropdownOptions": "Dropdown Options",
+      "radioOptions": "Radio Options",
+      "optionsPlaceholder": "Comma-separated options (e.g., Option 1, Option 2)",
+      "placeholder": "Placeholder",
+      "placeholderText": "Enter placeholder text",
+      "id": "ID",
+      "defaultOptions": {
+        "option1": "Option 1",
+        "option2": "Option 2"
+      }
+    },
+    "actions": {
+      "removeField": "Remove Field",
+      "finishEditing": "Finish Editing",
+      "updateForm": "Update Form"
+    },
+    "preview": {
+      "title": "Form Preview",
+      "selectOption": "Select an option",
+      "noFields": "no fields added yet"
+    },
+    "footer": {
+      "description": "this form is used when you want a custom data from the user"
+    },
+    "messages": {
+      "saveSuccess": "Form saved successfully!",
+      "saveError": "Error: "
+    },
+    "validation": {
+      "emptyLabels": "Please fill in all the fields labels",
+      "fillAllLabels": "Please fill in all the fields labels"
+    }
+  },
+  "TicketControle": {
+    "actions": {
+      "uploadWork": "Upload Work",
+      "getCertificate": "Get Certificate",
+      "getTicket": "Get Ticket"
+    },
+    "dialogs": {
+      "uploadWork": {
+        "title": "Upload Work",
+        "description": "Upload your work files for this event"
+      },
+      "certificate": {
+        "title": "Get Certificate",
+        "description": "Generate and download your event certificate"
+      },
+      "ticket": {
+        "title": "Get Ticket",
+        "description": "View and download your event ticket"
+      }
+    },
+    "accessibility": {
+      "settingsButton": "Open event controls menu"
+    }
+  },
+  "WorkUploader": {
+    "title": "Work Submission Portal",
+    "description": "Upload your files and add notes for review",
+    "notes": {
+      "title": "Add Your Notes",
+      "description": "Write additional context or descriptions",
+      "placeholder": "Share your thoughts, methodology, or any additional context..."
+    },
+    "upload": {
+      "title": "Upload Files",
+      "description": "PDF and Word documents supported",
+      "dragDrop": "Drag & drop files here",
+      "dropHere": "Drop your files here!",
+      "orClick": "or click to browse",
+      "processing": "Processing...",
+      "previousFiles": "Previously Uploaded:",
+      "preview": "File Preview:",
+      "noPreview": "No file selected for preview"
+    },
+    "actions": {
+      "saveNotes": "Save Notes",
+      "savingNotes": "Saving Notes...",
+      "uploadFile": "Upload File",
+      "uploadingFile": "Uploading File..."
+    },
+    "messages": {
+      "uploadSuccess": "Success! 🎉",
+      "uploadSuccessDescription": "Your work has been uploaded successfully."
+    }
+  },
+  "UploadedFileController": {
+    "actions": {
+      "preview": "Preview",
+      "download": "Download",
+      "delete": "Delete"
+    },
+    "messages": {
+      "deleteSuccess": "File Deleted",
+      "deleteSuccessDescription": "The file has been successfully removed from your work.",
+      "deleteError": "Delete Failed",
+      "deleteErrorDescription": "Unable to delete the file. Please try again.",
+      "previewLoaded": "Preview Ready",
+      "previewLoadedDescription": "File '{fileName}' is now ready for preview.",
+      "downloadStarted": "Download Started",
+      "downloadStartedDescription": "'{fileName}' download has begun."
+    },
+    "tooltips": {
+      "preview": "Preview this file",
+      "download": "Download file",
+      "delete": "Delete file permanently"
+    },
+    "deleteDialog": {
+      "title": "Delete File",
+      "description": "Are you sure you want to delete '{fileName}'?",
+      "warning": "This action cannot be undone. The file will be permanently removed.",
+      "cancel": "Cancel",
+      "confirm": "Delete File"
+    }
+  },
+  "certification": {
+    "title": "Certificate of Achievement",
+    "description": {
+      "part1": "In recognition of your outstanding contribution and dedication to the",
+      "part2": "event program."
+    },
+    "awardedOn": "Awarded on:",
+    "organizer": "Organizer",
+    "sampleNote": "This is a sample certification request a real one from the event organizer",
+    "status": {
+      "processing": "Processing request",
+      "approved": "Certification Approved",
+      "rejected": "Certification Rejected"
+    },
+    "actions": {
+      "orderCertification": "Order a Certification",
+      "print": "Print Certificate",
+      "download": "Download Certificate"
+    },
+    "toast": {
+      "success": "Success",
+      "certificationRequested": "Certification Requested Successfully"
+    }
+  }
+  ,"ticket": {
+    "admission": {
+      "general": "GENERAL ADMISSION"
+    },
+    "conference": {
+      "dayPass": "-Day Conference Pass"
+    },
+    "doors": {
+      "openAt": "Doors open at"
+    },
+    "checkIn": {
+      "idRequired": "ID required at check-in"
+    },
+    "included": {
+      "title": "What's Included:"
+    },
+    "price": {
+      "free": "Free"
+    },
+    "order": {
+      "label": "Order"
+    },
+    "seating": {
+      "row": "ROW",
+      "seat": "SEAT"
+    }
+  },
+  "eventControls": {
+    "settings": "Event Settings",
+    "orderDetails": "Order Details",
+    "hostContributor": "Host a Contributor",
+    "sponsor": "promote",
+    "modify": "Modify",
+    "delete": "Delete",
+    "return": "Return"
+  },
+  "contributorSelection": {
+    "title": "Host a Contributor",
+    "choosePlan": "Choose a Plan",
+    "searchAndSelectLabel": "Search and Select Contributor",
+    "searchAndSelectPlaceholder": "Search contributors by name or email...",
+    "searchMinLength": "Type at least 2 characters to search",
+    "selectedContributor": "Selected Contributor",
+    "noContributorsFound": "No contributors found",
+    "searching": "Searching...",
+    "hostButton": "Host Contributor",
+    "hosting": "Hosting...",
+    "messages": {
+      "success": "Contributor successfully hosted for free!",
+      "error": "An error occurred while hosting the contributor.",
+      "selectContributor": "Please select a contributor.",
+      "fetchError": "Failed to fetch contributors. Please try again."
+    }
+  }, 
+  "eventPromotion": {
+    "title": "Promote Your Event",
+    "subtitle": "Boost your event's visibility and reach more attendees",
+    "choosePlan": "Choose Your Promotion Plan",
+    "popular": "Most Popular",
+    "startDate": "Promotion Start Date",
+    "endDate": "Promotion End Date",
+    "selectStartDate": "Select start date",
+    "selectEndDate": "Select end date",
+    "promotionSummary": "Promotion Summary",
+    "plan": "Plan",
+    "totalCost": "Total Cost",
+    "promoteEvent": "Promote Event",
+    "promoting": "Promoting...",
+    "eventStatus": {
+      "active": "Active"
+    },
+    "duration": {
+      "label": "Duration",
+      "days": "{count, plural, =1 {day} other {days}}"
+    },
+    "plans": {
+      "basic": {
+        "name": "Basic Boost",
+        "features": {
+          "0": "Featured in search results",
+          "1": "Email newsletter inclusion",
+          "2": "Basic analytics dashboard"
+        }
+      },
+      "premium": {
+        "name": "Premium Promotion",
+        "features": {
+          "0": "Top search placement",
+          "1": "Social media promotion",
+          "2": "Advanced analytics",
+          "3": "Priority customer support"
+        }
+      },
+      "ultimate": {
+        "name": "Ultimate Campaign",
+        "features": {
+          "0": "Homepage featured placement",
+          "1": "Influencer outreach campaign",
+          "2": "Custom marketing materials",
+          "3": "Dedicated account manager"
+        }
+      }
+    },
+    "messages": {
+      "success": "Event promotion started successfully!",
+      "error": "Failed to start event promotion. Please try again.",
+      "fillAllFields": "Please fill in all required fields.",
+      "invalidDateRange": "End date must be after start date."
+    }
+  },
+   "orders": {
+    "title": "Event Administration",
+    "subtitle": "Manage orders, certifications, and work assignments",
+    "stats": {
+      "totalOrders": "Total Orders",
+      "certifications": "Certifications",
+      "works": "Work Items"
+    },
+    "tabs": {
+      "orderAdministration": "Order Administration",
+      "orders": "Orders",
+      "certificationAdministration": "Certification Administration",
+      "certifications": "Certifications",
+      "workAdministration": "Work Administration",
+      "works": "Works"
+    },
+    "sections": {
+      "orderManagement": "Order Management",
+      "certificationManagement": "Certification Management",
+      "workManagement": "Work Management"
+    }
+  },
+  "orderAdministration": {
+    "title": "Order Management",
+    "subtitle": "Track and manage all event orders",
+    "searchPlaceholder": "Search orders by ID, buyer, or event...",
+    "orderIdLabel": "Order ID",
+    "buyer": "Buyer",
+    "table": {
+      "headers": {
+        "orderId": "Order ID",
+        "eventTitle": "Event Title",
+        "buyer": "Buyer",
+        "ticketType": "Ticket Type",
+        "created": "Created",
+        "amount": "Amount",
+        "details": "Details"
+      }
+    },
+    "ticketTypes": {
+      "paid": "Paid Ticket",
+      "free": "Free Ticket",
+      "hosted": "Hosted Ticket",
+      "doorpay": "Door Pay Ticket"
+    },
+    "stats": {
+      "totalOrders": "Total Orders",
+      "totalRevenue": "Total Revenue",
+      "uniqueBuyers": "Unique Buyers"
+    },
+    "actions": {
+      "filter": "Filter Orders",
+      "export": "Export Data",
+      "viewDetails": "View Details"
+    },
+    "emptyState": {
+      "title": "No Orders Found",
+      "description": "There are no orders for this event yet. Orders will appear here once customers start purchasing tickets."
+    }
+  },
+  "orderDetailsDialog": {
+    "title": "Order Details",
+    "description": "Complete information about this order",
+    "viewButton": "View",
+    "returnButton": "Return",
+    "orderPlans": {
+      "title": "Order Plans",
+      "description": "Available plans included in this order",
+      "allPlansAvailable": "All event plans are available"
+    },
+    "payment": {
+      "totalAmount": "Total Amount",
+      "cashPaid": "Cash Paid",
+      "toPay": "To Pay",
+      "hostedByAdmin": "This order is hosted by admin"
+    },
+    "discount": {
+      "label": "Discount",
+      "eligible": "Discount Eligible"
+    },
+    "buyerInfo": {
+      "title": "Buyer Information",
+      "description": "Required data from buyer by admin"
+    }
+  },
+  "certificationAdministration": {
+    "title": "Certification Management",
+    "subtitle": "Review and manage certification requests",
+    "searchPlaceholder": "Search certifications by ID, applicant, or event...",
+    "certificationIdLabel": "Certification ID",
+    "applicant": "Applicant",
+    "table": {
+      "headers": {
+        "id": "ID",
+        "eventTitle": "Event Title",
+        "applicant": "Applicant",
+        "status": "Status",
+        "submitted": "Submitted",
+        "actions": "Actions"
+      }
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "stats": {
+      "total": "Total",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "filter": "Filter Certifications",
+      "export": "Export Data"
+    },
+    "toast": {
+      "success": "Success",
+      "error": "Error",
+      "approved": "Certification approved successfully",
+      "rejected": "Certification rejected successfully",
+      "approveError": "Failed to approve certification",
+      "rejectError": "Failed to reject certification"
+    },
+    "emptyState": {
+      "title": "No Certifications Found",
+      "description": "There are no certification requests for this event yet. Requests will appear here when participants apply for certifications."
+    }
+  },
+  "workDetailsDialog": {
+    "title": "Work Submission Details",
+    "description": "Review the complete work submission including notes and uploaded files",
+    "viewButton": "View Details",
+    "markAsSeen": "Mark as Seen",
+    "submittedOn": "Submitted on",
+    "status": {
+      "submitted": "Submitted",
+      "reviewed": "Reviewed",
+      "pending": "Pending Review"
+    },
+    "writtenNote": {
+      "title": "Written Submission",
+      "description": "Text content provided by the participant"
+    },
+    "uploadedFiles": {
+      "title": "Uploaded Files",
+      "description": "{count, plural, =1 {# file uploaded} other {# files uploaded}}"
+    },
+    "filePreview": {
+      "error": "Unable to preview this file type. Please download to view."
+    },
+    "downloadButton": "Download",
+    "emptyState": {
+      "title": "No Content Available",
+      "description": "This work submission doesn't contain any written notes or uploaded files."
+    }
+  },
+  "bannedPage": {
+    "title": "Your Account Has Been Suspended",
+    "description": "We've determined that your account has violated our community guidelines or terms of service.",
+    "dateUnknown": "Unknown",
+    "status": {
+      "suspended": "Account Suspended"
+    },
+    "accountInfo": {
+      "title": "Account Information",
+      "name": "Name",
+      "email": "Email",
+      "banDate": "Suspended On"
+    },
+    "banReason": {
+      "title": "Reason for Suspension",
+      "default": "Multiple violations of our community guidelines regarding content sharing and user interactions."
+    },
+    "consequences": {
+      "title": "What does this mean?",
+      "noAccess": "You cannot access your account or its content",
+      "noNewAccounts": "You cannot create new accounts on our platform",
+      "permanentDecision": "This decision may be permanent depending on the violation"
+    },
+    "actions": {
+      "appeal": "Appeal This Decision",
+      "returnHome": "Return to Homepage"
+    },
+    "support": {
+      "description": "If you believe this is a mistake, please contact our support team at"
+    },
+    "additionalHelp": {
+      "text": "Need more help?",
+      "helpCenter": "Visit our Help Center"
+    }
+  },
+  "createEventPage": {
+    "title": "Create New Event",
+    "subtitle": "Share your amazing event with the world",
+    "status": {
+      "label": "Publisher Status",
+      "approved": "Approved",
+      "pending": "Pending Review",
+      "rejected": "Rejected",
+      "notApplied": "Not Applied"
+    },
+    "pending": {
+      "title": "Publisher Request Under Review",
+      "subtitle": "Your application is being processed",
+      "description": "Thank you for applying to become a publisher! Our team is currently reviewing your request. You'll need approval before you can create and publish events on our platform.",
+      "whatHappensNext": {
+        "title": "What happens next?",
+        "step1": "Our team reviews your publisher application within 2-3 business days",
+        "step2": "You'll receive an email notification with the decision",
+        "step3": "Once approved, you can immediately start creating events"
+      },
+      "actions": {
+        "contactSupport": "Contact Support",
+        "learnMore": "Learn More"
+      }
+    },
+    "approved": {
+      "title": "Welcome, Publisher!",
+      "subtitle": "You're ready to create amazing events",
+      "welcomeMessage": "Congratulations! Your publisher status has been approved.",
+      "description": "You now have full access to create, manage, and publish events. Fill out the form below to create your first event and start connecting with your audience.",
+      "formTitle": "Event Creation Form"
+    },
+    "rejected": {
+      "title": "Publisher Request Rejected",
+      "subtitle": "Your application needs attention",
+      "description": "Unfortunately, your publisher request has been rejected. This could be due to incomplete information, policy violations, or other requirements not being met.",
+      "nextSteps": {
+        "title": "What you can do next:",
+        "step1": "Contact our support team to understand the specific reasons for rejection",
+        "step2": "Address any issues or provide additional required information",
+        "step3": "Submit a new application once you've resolved the concerns"
+      },
+      "actions": {
+        "contactSupport": "Contact Support",
+        "reapply": "Reapply Now"
+      }
+    },
+    "notApplied": {
+      "title": "Become a Publisher",
+      "subtitle": "Start creating and sharing events",
+      "description": "To create events on our platform, you need to apply for publisher status. This helps us maintain quality and ensure all events meet our community standards."
+    },
+    "help": {
+      "title": "Need Help?",
+      "description": "Our support team is here to assist you with any questions about the publisher application process or event creation.",
+      "actions": {
+        "helpCenter": "Help Center",
+        "contactUs": "Contact Us"
+      }
+    }
+  },
+  "supportPage": {
+    "title": "Contact Support",
+    "subtitle": "Get the help you need from our dedicated support team",
+    "channels": {
+      "title": "Choose Your Support Channel",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "responseTime": {
+        "immediate": "Immediate response",
+        "24h": "Within 24 hours",
+        "business-hours": "Business hours only"
+      },
+      "items": {
+        "live-chat": {
+          "title": "Live Chat",
+          "description": "Get instant help from our support team",
+          "action": "Start Chat"
+        },
+        "email": {
+          "title": "Email Support",
+          "description": "Send us a detailed message about your issue",
+          "action": "Send Email"
+        },
+        "phone": {
+          "title": "Phone Support",
+          "description": "Speak directly with a support representative",
+          "action": "Call Now"
+        }
+      }
+    },
+    "form": {
+      "title": "Submit a Support Request",
+      "description": "Fill out the form below and we'll get back to you as soon as possible",
+      "fields": {
+        "name": {
+          "label": "Full Name",
+          "placeholder": "Enter your full name"
+        },
+        "email": {
+          "label": "Email Address",
+          "placeholder": "Enter your email address"
+        },
+        "subject": {
+          "label": "Subject",
+          "placeholder": "Brief description of your issue"
+        },
+        "category": {
+          "label": "Category",
+          "placeholder": "Select a category",
+          "options": {
+            "account": "Account Issues",
+            "events": "Event Management",
+            "payments": "Payments & Billing",
+            "technical": "Technical Support",
+            "security": "Security & Privacy",
+            "other": "Other"
+          }
+        },
+        "priority": {
+          "label": "Priority Level",
+          "placeholder": "Select priority",
+          "options": {
+            "low": "Low - General inquiry",
+            "medium": "Medium - Non-urgent issue",
+            "high": "High - Urgent issue",
+            "urgent": "Urgent - Critical issue"
+          }
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Please describe your issue in detail..."
+        },
+        "attachment": {
+          "label": "Attachments (Optional)",
+          "description": "Upload screenshots or files to help us understand your issue",
+          "button": "Choose Files"
+        }
+      },
+      "submit": "Submit Request",
+      "submitting": "Submitting..."
+    },
+    "supportHours": {
+      "title": "Support Hours",
+      "weekdays": "Monday - Friday",
+      "weekends": "Saturday - Sunday",
+      "timezone": "Timezone",
+      "currentStatus": "We're currently online and ready to help!"
+    },
+    "emergency": {
+      "title": "Emergency Contact",
+      "description": "For urgent security issues or critical system problems, contact us immediately:"
+    },
+    "quickResources": {
+      "title": "Quick Resources",
+      "items": {
+        "help-center": "Help Center",
+        "video-tutorials": "Video Tutorials",
+        "community-forum": "Community Forum",
+        "status-page": "System Status"
+      }
+    },
+    "success": {
+      "title": "Request Submitted Successfully!",
+      "description": "Thank you for contacting us. We've received your support request and will respond as soon as possible.",
+      "ticketNumber": "Ticket Number",
+      "actions": {
+        "browseHelp": "Browse Help Center",
+        "newTicket": "Submit New Ticket"
+      }
+    }
+  },
+ "helpCategoryPage": {
+    "backToHelp": "Back to Help Center",
+    "search": {
+      "placeholder": "Search articles...",
+      "noResults": {
+        "title": "No articles found",
+        "description": "Try adjusting your search terms or browse our categories.",
+        "clearSearch": "Clear search"
+      }
+    },
+    "article": {
+      "backToCategory": "Back to category",
+      "readTime": "{minutes} min read",
+      "lastUpdated": "Updated {date}",
+      "difficulty": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "feedback": {
+        "title": "Was this article helpful?",
+        "description": "Let us know how we can improve our documentation.",
+        "helpful": "Yes, helpful",
+        "notHelpful": "Not helpful"
+      },
+      "relatedArticles": "Related Articles"
+    },
+    "contactSupport": {
+      "title": "Still need help?",
+      "description": "Can't find what you're looking for? Our support team is here to help you.",
+      "button": "Contact Support"
+    },
+    "categories": {
+      "getting-started": {
+        "title": "Getting Started",
+        "description": "Everything you need to know to get up and running quickly",
+        "articles": {
+          "0": {
+            "title": "Welcome to Our Platform",
+            "description": "A comprehensive introduction to our platform and its key features",
+            "content": "<h2>Welcome to Our Platform</h2><p>Thank you for choosing our platform! This guide will help you get started and make the most of our features.</p><h3>What You'll Learn</h3><ul><li>How to set up your account</li><li>Key features overview</li><li>Best practices for getting started</li></ul><h3>Getting Started</h3><p>Our platform is designed to be intuitive and user-friendly. Whether you're a beginner or an experienced user, you'll find everything you need to succeed.</p><h3>Key Features</h3><p>Explore our main features including event management, payment processing, user accounts, and security settings. Each feature is designed to work seamlessly together.</p><h3>Next Steps</h3><p>Once you've completed this introduction, we recommend exploring our other getting started guides to dive deeper into specific features.</p>"
+          },
+          "1": {
+            "title": "Creating Your First Account",
+            "description": "Step-by-step guide to setting up your account and profile",
+            "content": "<h2>Creating Your First Account</h2><p>Setting up your account is quick and easy. Follow these steps to get started.</p><h3>Step 1: Sign Up</h3><p>Visit our sign-up page and provide your email address and create a secure password.</p><h3>Step 2: Verify Your Email</h3><p>Check your email for a verification link and click it to activate your account.</p><h3>Step 3: Complete Your Profile</h3><p>Add your personal information, profile picture, and preferences to personalize your experience.</p><h3>Security Tips</h3><ul><li>Use a strong, unique password</li><li>Enable two-factor authentication</li><li>Keep your contact information up to date</li></ul>"
+          },
+          "2": {
+            "title": "Platform Navigation Guide",
+            "description": "Learn how to navigate through our platform efficiently",
+            "content": "<h2>Platform Navigation Guide</h2><p>Understanding how to navigate our platform will help you work more efficiently.</p><h3>Main Navigation</h3><p>The main navigation bar provides access to all major sections of the platform.</p><h3>Dashboard Overview</h3><p>Your dashboard is your central hub for managing all activities and accessing key information.</p><h3>Quick Actions</h3><p>Use quick action buttons to perform common tasks without navigating through multiple pages.</p><h3>Search Functionality</h3><p>Our powerful search feature helps you find what you need quickly across all sections.</p>"
+          },
+          "3": {
+            "title": "Basic Settings Configuration",
+            "description": "Configure your basic settings for optimal experience",
+            "content": "<h2>Basic Settings Configuration</h2><p>Proper configuration ensures you get the most out of our platform.</p><h3>Profile Settings</h3><p>Update your personal information, contact details, and preferences.</p><h3>Notification Preferences</h3><p>Choose how and when you want to receive notifications.</p><h3>Privacy Settings</h3><p>Control who can see your information and activities.</p><h3>Language and Region</h3><p>Set your preferred language and regional settings for localized content.</p>"
+          },
+          "4": {
+            "title": "Understanding User Roles",
+            "description": "Learn about different user roles and permissions",
+            "content": "<h2>Understanding User Roles</h2><p>Our platform supports different user roles with varying levels of access and permissions.</p><h3>Admin Role</h3><p>Administrators have full access to all features and can manage other users.</p><h3>Manager Role</h3><p>Managers can oversee specific areas and have elevated permissions.</p><h3>User Role</h3><p>Standard users have access to core features for their daily tasks.</p><h3>Guest Role</h3><p>Guests have limited access for viewing and basic interactions.</p>"
+          },
+          "5": {
+            "title": "Mobile App Setup",
+            "description": "Get started with our mobile application",
+            "content": "<h2>Mobile App Setup</h2><p>Access our platform on the go with our mobile application.</p><h3>Download and Installation</h3><p>Download our app from the App Store or Google Play Store.</p><h3>Login and Sync</h3><p>Use your existing credentials to log in and sync your data.</p><h3>Mobile-Specific Features</h3><p>Discover features designed specifically for mobile users.</p><h3>Offline Capabilities</h3><p>Learn what you can do even when you're offline.</p>"
+          },
+          "6": {
+            "title": "First Steps Checklist",
+            "description": "A comprehensive checklist for new users",
+            "content": "<h2>First Steps Checklist</h2><p>Complete these essential tasks to get the most out of our platform.</p><h3>Account Setup</h3><ul><li>✓ Create your account</li><li>✓ Verify your email</li><li>✓ Complete your profile</li><li>✓ Set up two-factor authentication</li></ul><h3>Platform Familiarization</h3><ul><li>✓ Take the platform tour</li><li>✓ Explore the dashboard</li><li>✓ Try basic features</li><li>✓ Review help documentation</li></ul><h3>Customization</h3><ul><li>✓ Configure notification settings</li><li>✓ Set privacy preferences</li><li>✓ Customize your workspace</li></ul>"
+          },
+          "7": {
+            "title": "Common Beginner Mistakes",
+            "description": "Avoid these common pitfalls when starting out",
+            "content": "<h2>Common Beginner Mistakes</h2><p>Learn from others' experiences and avoid these common mistakes.</p><h3>Security Oversights</h3><p>Don't skip security setup - enable two-factor authentication and use strong passwords.</p><h3>Incomplete Profile</h3><p>A complete profile helps others connect with you and improves your experience.</p><h3>Ignoring Notifications</h3><p>Configure notifications properly to stay informed without being overwhelmed.</p><h3>Not Exploring Features</h3><p>Take time to explore all available features - you might discover something useful.</p>"
+          }
+        }
+      },
+      "events": {
+        "title": "Events Management",
+        "description": "Create, manage, and optimize your events effectively",
+        "articles": {
+          "0": {
+            "title": "Creating Your First Event",
+            "description": "Learn how to create engaging events that attract attendees.",
+            "content": "<h2>Creating Your First Event</h2><p>Learn how to create engaging events that attract attendees.</p><h3>Event Planning Basics</h3><p>Start with clear objectives and target audience identification.</p><h3>Event Details</h3><p>Provide comprehensive information including date, time, location, and description.</p><h3>Ticket Configuration</h3><p>Set up different ticket types and pricing options.</p><h3>Publishing Your Event</h3><p>Review all details before making your event live.</p>"
+          },
+          "1": {
+            "title": "Event Registration Setup",
+            "description": "Configure registration forms and attendee management",
+            "content": "<h2>Event Registration Setup</h2><p>Streamline your registration process for better attendee experience.</p><h3>Registration Forms</h3><p>Create custom forms to collect necessary attendee information.</p><h3>Approval Process</h3><p>Set up automatic or manual approval workflows.</p><h3>Confirmation Emails</h3><p>Configure automated confirmation and reminder emails.</p><h3>Waitlist Management</h3><p>Handle overflow registrations with waitlist functionality.</p>"
+          },
+          "2": {
+            "title": "Managing Event Attendees",
+            "description": "Tools and strategies for effective attendee management",
+            "content": "<h2>Managing Event Attendees</h2><p>Keep track of your attendees and enhance their experience.</p><h3>Attendee Dashboard</h3><p>Monitor registrations, check-ins, and attendee engagement.</p><h3>Communication Tools</h3><p>Send updates, announcements, and reminders to attendees.</p><h3>Check-in Process</h3><p>Streamline event day check-ins with digital tools.</p><h3>Feedback Collection</h3><p>Gather valuable feedback to improve future events.</p>"
+          },
+          "3": {
+            "title": "Event Promotion Strategies",
+            "description": "Effective ways to promote your events and increase attendance",
+            "content": "<h2>Event Promotion Strategies</h2><p>Maximize your event's reach and attendance with proven promotion tactics.</p><h3>Social Media Marketing</h3><p>Leverage social platforms to create buzz around your event.</p><h3>Email Campaigns</h3><p>Design compelling email campaigns to drive registrations.</p><h3>Partner Collaborations</h3><p>Work with partners and sponsors to expand your reach.</p><h3>Content Marketing</h3><p>Create valuable content that attracts your target audience.</p>"
+          },
+          "4": {
+            "title": "Virtual Event Best Practices",
+            "description": "Guidelines for hosting successful virtual events",
+            "content": "<h2>Virtual Event Best Practices</h2><p>Create engaging virtual experiences that rival in-person events.</p><h3>Platform Selection</h3><p>Choose the right virtual event platform for your needs.</p><h3>Technical Setup</h3><p>Ensure reliable internet, audio, and video quality.</p><h3>Engagement Strategies</h3><p>Keep virtual attendees engaged with interactive elements.</p><h3>Follow-up Actions</h3><p>Maintain connections and momentum after the virtual event.</p>"
+          },
+          "5": {
+            "title": "Event Analytics and Reporting",
+            "description": "Track performance and measure event success",
+            "content": "<h2>Event Analytics and Reporting</h2><p>Use data to understand your event's performance and improve future events.</p><h3>Key Metrics</h3><p>Track registration rates, attendance, engagement, and satisfaction.</p><h3>Real-time Monitoring</h3><p>Monitor event performance as it happens.</p><h3>Post-Event Analysis</h3><p>Analyze comprehensive reports to identify successes and areas for improvement.</p><h3>ROI Calculation</h3><p>Measure the return on investment for your events.</p>"
+          },
+          "6": {
+            "title": "Recurring Events Management",
+            "description": "Set up and manage recurring events efficiently",
+            "content": "<h2>Recurring Events Management</h2><p>Streamline the management of regular events and series.</p><h3>Series Setup</h3><p>Create event series with consistent branding and messaging.</p><h3>Automated Scheduling</h3><p>Set up automatic scheduling for regular events.</p><h3>Attendee Retention</h3><p>Strategies to keep attendees coming back to your events.</p><h3>Content Planning</h3><p>Plan content themes and speakers across your event series.</p>"
+          },
+          "7": {
+            "title": "Event Troubleshooting Guide",
+            "description": "Common issues and solutions for event management",
+            "content": "<h2>Event Troubleshooting Guide</h2><p>Quick solutions to common event management challenges.</p><h3>Registration Issues</h3><p>Resolve problems with event registration and payment processing.</p><h3>Technical Difficulties</h3><p>Handle audio, video, and platform technical issues.</p><h3>Attendee Communication</h3><p>Address communication breakdowns and information gaps.</p><h3>Last-Minute Changes</h3><p>Manage unexpected changes and emergency situations.</p>"
+          }
+        }
+      },
+      "payments": {
+        "title": "Payments & Billing",
+        "description": "Manage payments, billing, and financial transactions securely",
+        "articles": {
+          "0": {
+            "title": "Payment Methods Setup",
+            "description": "Configure and manage your payment methods",
+            "content": "<h2>Payment Methods Setup</h2><p>Set up secure payment methods for seamless transactions.</p><h3>Supported Payment Methods</h3><p>We accept credit cards, debit cards, PayPal, and bank transfers.</p><h3>Adding Payment Methods</h3><p>Step-by-step guide to adding and verifying payment methods.</p><h3>Security Measures</h3><p>Learn about our security protocols and PCI compliance.</p><h3>Default Payment Method</h3><p>Set your preferred default payment method for convenience.</p>"
+          },
+          "1": {
+            "title": "Understanding Billing Cycles",
+            "description": "Learn about billing periods and payment schedules",
+            "content": "<h2>Understanding Billing Cycles</h2><p>Get familiar with how billing works on our platform.</p><h3>Billing Periods</h3><p>Understand monthly, quarterly, and annual billing options.</p><h3>Payment Due Dates</h3><p>Learn when payments are processed and due dates.</p><h3>Prorated Charges</h3><p>How we handle mid-cycle changes and upgrades.</p><h3>Billing Notifications</h3><p>Configure alerts for upcoming payments and billing issues.</p>"
+          },
+          "2": {
+            "title": "Invoice Management",
+            "description": "Access, download, and manage your invoices",
+            "content": "<h2>Invoice Management</h2><p>Keep track of all your financial transactions and invoices.</p><h3>Accessing Invoices</h3><p>Find and download your invoices from the billing section.</p><h3>Invoice Details</h3><p>Understand what's included in your invoices and billing statements.</p><h3>Payment History</h3><p>Review your complete payment history and transaction records.</p><h3>Tax Information</h3><p>How taxes are calculated and displayed on your invoices.</p>"
+          },
+          "3": {
+            "title": "Refund and Cancellation Policy",
+            "description": "Understand our refund process and cancellation terms",
+            "content": "<h2>Refund and Cancellation Policy</h2><p>Learn about our fair and transparent refund policies.</p><h3>Refund Eligibility</h3><p>Understand when refunds are available and eligibility criteria.</p><h3>Refund Process</h3><p>Step-by-step guide to requesting and processing refunds.</p><h3>Cancellation Terms</h3><p>How to cancel subscriptions and what happens to your data.</p><h3>Processing Times</h3><p>Expected timeframes for refund processing and account changes.</p>"
+          },
+          "4": {
+            "title": "Subscription Management",
+            "description": "Upgrade, downgrade, and manage your subscription plans",
+            "content": "<h2>Subscription Management</h2><p>Easily manage your subscription to match your changing needs.</p><h3>Plan Comparison</h3><p>Compare different subscription tiers and features.</p><h3>Upgrading Your Plan</h3><p>How to upgrade and what happens to your billing cycle.</p><h3>Downgrading Your Plan</h3><p>Process for downgrading and feature limitations.</p><h3>Pause and Resume</h3><p>Temporarily pause your subscription when needed.</p>"
+          },
+          "5": {
+            "title": "Payment Security",
+            "description": "Learn about our security measures and best practices",
+            "content": "<h2>Payment Security</h2><p>Your financial security is our top priority.</p><h3>Encryption and Security</h3><p>How we protect your payment information with industry-standard encryption.</p><h3>PCI Compliance</h3><p>Our commitment to Payment Card Industry security standards.</p><h3>Fraud Protection</h3><p>Advanced fraud detection and prevention measures.</p><h3>Best Practices</h3><p>Tips to keep your payment information secure.</p>"
+          },
+          "6": {
+            "title": "International Payments",
+            "description": "Handle payments across different countries and currencies",
+            "content": "<h2>International Payments</h2><p>Seamless payment processing for global users.</p><h3>Supported Currencies</h3><p>List of supported currencies and exchange rate policies.</p><h3>International Fees</h3><p>Understanding additional fees for international transactions.</p><h3>Tax Compliance</h3><p>How we handle VAT, GST, and other international taxes.</p><h3>Regional Restrictions</h3><p>Payment method availability by region.</p>"
+          },
+          "7": {
+            "title": "Payment Troubleshooting",
+            "description": "Resolve common payment issues and errors",
+            "content": "<h2>Payment Troubleshooting</h2><p>Quick solutions to common payment problems.</p><h3>Failed Payments</h3><p>Common reasons for payment failures and how to resolve them.</p><h3>Card Declined Issues</h3><p>What to do when your card is declined.</p><h3>Billing Address Errors</h3><p>Resolving billing address verification issues.</p><h3>Contact Support</h3><p>When and how to contact our billing support team.</p>"
+          }
+        }
+      },
+      "account": {
+        "title": "Account Management",
+        "description": "Manage your account settings, profile, and preferences",
+        "articles": {
+          "0": {
+            "title": "Profile Settings Overview",
+            "description": "Complete guide to managing your profile information",
+            "content": "<h2>Profile Settings Overview</h2><p>Keep your profile up-to-date and personalized.</p><h3>Basic Information</h3><p>Update your name, email, phone number, and other contact details.</p><h3>Profile Picture</h3><p>Upload and manage your profile picture for better recognition.</p><h3>Bio and Description</h3><p>Add a professional bio to help others understand your background.</p><h3>Social Links</h3><p>Connect your social media profiles and professional networks.</p>"
+          },
+          "1": {
+            "title": "Privacy and Visibility Settings",
+            "description": "Control who can see your information and activities",
+            "content": "<h2>Privacy and Visibility Settings</h2><p>Take control of your privacy with granular visibility settings.</p><h3>Profile Visibility</h3><p>Choose who can view your profile and contact information.</p><h3>Activity Privacy</h3><p>Control visibility of your activities and participation.</p><h3>Search Visibility</h3><p>Decide if your profile appears in search results.</p><h3>Data Sharing</h3><p>Manage how your data is shared with third parties.</p>"
+          },
+          "2": {
+            "title": "Notification Preferences",
+            "description": "Customize how and when you receive notifications",
+            "content": "<h2>Notification Preferences</h2><p>Stay informed without being overwhelmed by customizing your notifications.</p><h3>Email Notifications</h3><p>Choose which emails you want to receive and their frequency.</p><h3>Push Notifications</h3><p>Configure mobile and browser push notifications.</p><h3>SMS Alerts</h3><p>Set up text message alerts for urgent updates.</p><h3>Notification Schedule</h3><p>Set quiet hours and preferred notification times.</p>"
+          },
+          "3": {
+            "title": "Account Security Settings",
+            "description": "Enhance your account security with advanced settings",
+            "content": "<h2>Account Security Settings</h2><p>Protect your account with robust security measures.</p><h3>Password Management</h3><p>Create strong passwords and update them regularly.</p><h3>Two-Factor Authentication</h3><p>Add an extra layer of security with 2FA setup.</p><h3>Login History</h3><p>Monitor your account access and login activities.</p><h3>Device Management</h3><p>Manage and remove trusted devices from your account.</p>"
+          },
+          "4": {
+            "title": "Data Export and Backup",
+            "description": "Export your data and create backups of your information",
+            "content": "<h2>Data Export and Backup</h2><p>Keep control of your data with export and backup options.</p><h3>Data Export Options</h3><p>Export your data in various formats for backup or migration.</p><h3>Backup Scheduling</h3><p>Set up automatic backups of your important information.</p><h3>Data Portability</h3><p>Understand your rights to data portability and transfer.</p><h3>Recovery Options</h3><p>How to recover data from backups when needed.</p>"
+          },
+          "5": {
+            "title": "Account Deactivation",
+            "description": "Temporarily or permanently deactivate your account",
+            "content": "<h2>Account Deactivation</h2><p>Understand your options for account deactivation and deletion.</p><h3>Temporary Deactivation</h3><p>Temporarily disable your account while preserving your data.</p><h3>Permanent Deletion</h3><p>Permanently delete your account and all associated data.</p><h3>Data Retention</h3><p>What happens to your data during and after deactivation.</p><h3>Reactivation Process</h3><p>How to reactivate a temporarily deactivated account.</p>"
+          },
+          "6": {
+            "title": "Multiple Account Management",
+            "description": "Manage multiple accounts and switch between them",
+            "content": "<h2>Multiple Account Management</h2><p>Efficiently manage multiple accounts from a single interface.</p><h3>Account Switching</h3><p>Quickly switch between different accounts you manage.</p><h3>Shared Access</h3><p>Grant access to team members for collaborative account management.</p><h3>Account Linking</h3><p>Link related accounts for easier management.</p><h3>Billing Consolidation</h3><p>Consolidate billing across multiple accounts.</p>"
+          },
+          "7": {
+            "title": "Account Recovery",
+            "description": "Recover access to your account if you're locked out",
+            "content": "<h2>Account Recovery</h2><p>Regain access to your account with our recovery options.</p><h3>Password Reset</h3><p>Reset your password using email or SMS verification.</p><h3>Email Recovery</h3><p>Recover access when you no longer have access to your email.</p><h3>Identity Verification</h3><p>Verify your identity for account recovery assistance.</p><h3>Support Contact</h3><p>When to contact support for account recovery help.</p>"
+          }
+        }
+      },
+      "security": {
+        "title": "Security & Privacy",
+        "description": "Protect your account and data with advanced security features",
+        "articles": {
+          "0": {
+            "title": "Two-Factor Authentication Setup",
+            "description": "Add an extra layer of security to your account",
+            "content": "<h2>Two-Factor Authentication Setup</h2><p>Secure your account with two-factor authentication (2FA).</p><h3>Why Use 2FA</h3><p>Understand the importance of two-factor authentication for account security.</p><h3>Setup Process</h3><p>Step-by-step guide to enabling 2FA on your account.</p><h3>Authentication Methods</h3><p>Choose from SMS, authenticator apps, or hardware keys.</p><h3>Backup Codes</h3><p>Generate and safely store backup codes for emergency access.</p>"
+          },
+          "1": {
+            "title": "Password Security Best Practices",
+            "description": "Create and manage strong, secure passwords",
+            "content": "<h2>Password Security Best Practices</h2><p>Learn how to create and maintain secure passwords.</p><h3>Strong Password Creation</h3><p>Guidelines for creating passwords that are both strong and memorable.</p><h3>Password Managers</h3><p>Benefits of using password managers for better security.</p><h3>Regular Updates</h3><p>How often to change passwords and when immediate changes are needed.</p><h3>Common Mistakes</h3><p>Avoid these common password security mistakes.</p>"
+          },
+          "2": {
+            "title": "Recognizing Phishing Attempts",
+            "description": "Identify and avoid phishing scams and fraudulent communications",
+            "content": "<h2>Recognizing Phishing Attempts</h2><p>Protect yourself from phishing attacks and fraudulent communications.</p><h3>Common Phishing Tactics</h3><p>Learn to identify suspicious emails, messages, and websites.</p><h3>Verification Methods</h3><p>How to verify legitimate communications from our platform.</p><h3>Reporting Suspicious Activity</h3><p>How to report potential phishing attempts and security threats.</p><h3>Recovery Steps</h3><p>What to do if you've fallen victim to a phishing attack.</p>"
+          },
+          "3": {
+            "title": "Data Privacy Controls",
+            "description": "Understand and control how your data is used and shared",
+            "content": "<h2>Data Privacy Controls</h2><p>Take control of your personal data and privacy settings.</p><h3>Data Collection</h3><p>Understand what data we collect and why.</p><h3>Privacy Settings</h3><p>Configure your privacy preferences and data sharing options.</p><h3>Third-Party Sharing</h3><p>Control how your data is shared with third-party services.</p><h3>Your Rights</h3><p>Understand your rights regarding your personal data.</p>"
+          },
+          "4": {
+            "title": "Secure Device Management",
+            "description": "Manage and secure devices connected to your account",
+            "content": "<h2>Secure Device Management</h2><p>Keep track of and secure all devices accessing your account.</p><h3>Device Registration</h3><p>How devices are registered and tracked in your account.</p><h3>Active Sessions</h3><p>Monitor and manage active login sessions across devices.</p><h3>Device Removal</h3><p>Remove compromised or unused devices from your account.</p><h3>Security Alerts</h3><p>Receive alerts for new device logins and suspicious activity.</p>"
+          },
+          "5": {
+            "title": "API Security and Access Tokens",
+            "description": "Secure your API access and manage access tokens",
+            "content": "<h2>API Security and Access Tokens</h2><p>Safely use our API with proper security measures.</p><h3>API Key Management</h3><p>Generate, rotate, and revoke API keys securely.</p><h3>Access Token Security</h3><p>Best practices for storing and using access tokens.</p><h3>Rate Limiting</h3><p>Understand API rate limits and security measures.</p><h3>Monitoring API Usage</h3><p>Track and monitor your API usage for security.</p>"
+          },
+          "6": {
+            "title": "Security Incident Response",
+            "description": "What to do if you suspect a security breach",
+            "content": "<h2>Security Incident Response</h2><p>Quick action steps if you suspect your account has been compromised.</p><h3>Immediate Actions</h3><p>First steps to take if you suspect unauthorized access.</p><h3>Securing Your Account</h3><p>How to quickly secure your account and prevent further damage.</p><h3>Reporting Incidents</h3><p>How to report security incidents to our team.</p><h3>Recovery Process</h3><p>Steps to recover and restore your account after an incident.</p>"
+          },
+          "7": {
+            "title": "Compliance and Certifications",
+            "description": "Learn about our security certifications and compliance standards",
+            "content": "<h2>Compliance and Certifications</h2><p>Understand our commitment to security standards and compliance.</p><h3>Security Certifications</h3><p>Our industry security certifications and what they mean.</p><h3>Compliance Standards</h3><p>GDPR, CCPA, and other privacy regulations we comply with.</p><h3>Regular Audits</h3><p>How we maintain security through regular audits and assessments.</p><h3>Transparency Reports</p>Access our transparency reports and security documentation.</p>"
+          }
+        }
+      },
+      "technical": {
+        "title": "Technical Support",
+        "description": "Troubleshoot technical issues and optimize platform performance",
+        "articles": {
+          "0": {
+            "title": "System Requirements",
+            "description": "Minimum system requirements for optimal platform performance",
+            "content": "<h2>System Requirements</h2><p>Ensure your system meets our requirements for the best experience.</p><h3>Browser Requirements</h3><p>Supported browsers and minimum versions for web access.</p><h3>Mobile Requirements</h3><p>iOS and Android version requirements for mobile apps.</p><h3>Network Requirements</h3><p>Bandwidth and connectivity requirements for optimal performance.</p><h3>Hardware Recommendations</h3><p>Recommended hardware specifications for different use cases.</p>"
+          },
+          "1": {
+            "title": "Browser Compatibility Issues",
+            "description": "Resolve common browser-related problems",
+            "content": "<h2>Browser Compatibility Issues</h2><p>Fix common issues related to browser compatibility.</p><h3>Supported Browsers</h3><p>List of fully supported browsers and their versions.</p><h3>Common Issues</h3><p>Typical problems and their solutions for different browsers.</p><h3>Cache and Cookies</h3><p>How to clear cache and cookies to resolve issues.</p><h3>Browser Updates</h3><p>Importance of keeping your browser updated.</p>"
+          },
+          "2": {
+            "title": "Mobile App Troubleshooting",
+            "description": "Fix common mobile app issues and performance problems",
+            "content": "<h2>Mobile App Troubleshooting</h2><p>Resolve common issues with our mobile applications.</p><h3>App Installation Issues</h3><p>Troubleshoot problems downloading and installing the app.</p><h3>Login Problems</h3><p>Resolve mobile-specific login and authentication issues.</p><h3>Performance Issues</h3><p>Fix slow loading, crashes, and other performance problems.</p><h3>Sync Problems</h3><p>Resolve data synchronization issues between devices.</p>"
+          },
+          "3": {
+            "title": "API Integration Guide",
+            "description": "Technical guide for integrating with our API",
+            "content": "<h2>API Integration Guide</h2><p>Complete guide for developers integrating with our API.</p><h3>Getting Started</h3><p>Initial setup and authentication for API access.</p><h3>API Documentation</h3><p>Comprehensive documentation of available endpoints.</p><h3>Code Examples</h3><p>Sample code in popular programming languages.</p><h3>Testing and Debugging</h3><p>Tools and techniques for testing your API integration.</p>"
+          },
+          "4": {
+            "title": "Performance Optimization",
+            "description": "Tips to improve platform performance and loading speeds",
+            "content": "<h2>Performance Optimization</h2><p>Optimize your experience with performance best practices.</p><h3>Connection Optimization</h3><p>Tips for improving your internet connection and speed.</p><h3>Browser Optimization</h3><p>Configure your browser for better performance.</p><h3>Data Management</h3><p>Manage your data efficiently to improve loading times.</p><h3>Resource Usage</h3><p>Monitor and optimize resource usage on your device.</p>"
+          },
+          "5": {
+            "title": "Error Code Reference",
+            "description": "Understand and resolve common error codes",
+            "content": "<h2>Error Code Reference</h2><p>Quick reference guide for common error codes and their solutions.</p><h3>Authentication Errors</h3><p>Error codes related to login and authentication issues.</p><h3>Network Errors</h3><p>Connection and network-related error codes.</p><h3>Server Errors</h3><p>Server-side error codes and what they mean.</p><h3>Client Errors</h3><p>Browser and client-side error codes and fixes.</p>"
+          },
+          "6": {
+            "title": "Data Backup and Recovery",
+            "description": "Technical aspects of data backup and recovery procedures",
+            "content": "<h2>Data Backup and Recovery</h2><p>Technical details about our backup systems and recovery procedures.</p><h3>Backup Systems</h3><p>How our automated backup systems protect your data.</p><h3>Recovery Procedures</h3><p>Step-by-step data recovery processes.</p><h3>Data Integrity</h3><p>How we ensure data integrity and prevent corruption.</p><h3>Disaster Recovery</h3><p>Our disaster recovery plans and procedures.</p>"
+          },
+          "7": {
+            "title": "Advanced Troubleshooting",
+            "description": "Advanced technical troubleshooting for complex issues",
+            "content": "<h2>Advanced Troubleshooting</h2><p>Advanced techniques for resolving complex technical issues.</p><h3>Diagnostic Tools</h3><p>Built-in diagnostic tools and how to use them.</p><h3>Log Analysis</h3><p>How to read and analyze system logs for troubleshooting.</p><h3>Network Diagnostics</h3><p>Advanced network troubleshooting techniques.</p><h3>Escalation Process</h3><p>When and how to escalate technical issues to our support team.</p>"
+          }
+        }
+      }
+    }
+  },
+  "helpPage": {
+    "title": "Help Center",
+    "subtitle": "Find answers to your questions and get the support you need",
+    "search": {
+      "placeholder": "Search help articles, guides, and FAQs...",
+      "popularSearches": "Popular Searches",
+      "terms": {
+        "events": "Events",
+        "payments": "Payments",
+        "account": "Account",
+        "publisher": "Publisher"
+      }
+    },
+    "quickLinks": {
+      "title": "Quick Access",
+      "items": {
+        "contact-support": {
+          "title": "Contact Support",
+          "description": "Get personalized help from our team"
+        },
+        "video-tutorials": {
+          "title": "Video Tutorials",
+          "description": "Step-by-step visual guides"
+        },
+        "download-guides": {
+          "title": "Download Guides",
+          "description": "PDF guides and documentation"
+        },
+        "community-forum": {
+          "title": "Community Forum",
+          "description": "Connect with other users"
+        }
+      }
+    },
+    "categories": {
+      "title": "Browse by Category",
+      "viewAll": "View all articles",
+      "getting-started": {
+        "title": "Getting Started",
+        "description": "Learn the basics and set up your account",
+        "articles": {
+          "0": "How to create your first account",
+          "1": "Setting up your profile",
+          "2": "Understanding the dashboard"
+        }
+      },
+      "events": {
+        "title": "Events & Publishing",
+        "description": "Create, manage, and promote your events",
+        "articles": {
+          "0": "How to create your first event",
+          "1": "Event promotion strategies",
+          "2": "Managing event registrations"
+        }
+      },
+      "payments": {
+        "title": "Payments & Billing",
+        "description": "Payment methods, refunds, and billing",
+        "articles": {
+          "0": "Accepted payment methods",
+          "1": "Understanding our refund policy",
+          "2": "Managing your billing information"
+        }
+      },
+      "account": {
+        "title": "Account Management",
+        "description": "Profile settings and account security",
+        "articles": {
+          "0": "Updating your profile information",
+          "1": "Changing your password",
+          "2": "Managing notification preferences"
+        }
+      },
+      "security": {
+        "title": "Security & Privacy",
+        "description": "Keep your account safe and secure",
+        "articles": {
+          "0": "Setting up two-factor authentication",
+          "1": "Understanding our privacy policy",
+          "2": "Reporting security issues"
+        }
+      },
+      "technical": {
+        "title": "Technical Support",
+        "description": "Troubleshooting and technical issues",
+        "articles": {
+          "0": "Common browser issues",
+          "1": "Mobile app troubleshooting",
+          "2": "API documentation"
+        }
+      }
+    },
+    "popularArticles": {
+      "title": "Popular Articles",
+      "readTime": "{minutes} min read",
+      "items": {
+        "create-event": {
+          "title": "How to create your first event"
+        },
+        "publisher-approval": {
+          "title": "Publisher approval process"
+        },
+        "payment-methods": {
+          "title": "Accepted payment methods"
+        },
+        "account-security": {
+          "title": "Account security best practices"
+        },
+        "event-promotion": {
+          "title": "Event promotion strategies"
+        },
+        "refund-policy": {
+          "title": "Refund policy explained"
+        }
+      }
+    },
+    "contactSupport": {
+      "title": "Need more help?",
+      "description": "Can't find what you're looking for? Our support team is here to help.",
+      "button": "Contact Support"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "viewAll": "View all FAQs",
+      "items": {
+        "0": {
+          "question": "How do I become a publisher?",
+          "answer": "To become a publisher, you need to apply through your account settings. Our team will review your application within 2-3 business days."
+        },
+        "1": {
+          "question": "What payment methods do you accept?",
+          "answer": "We accept all major credit cards, PayPal, and bank transfers. Payment processing is secure and encrypted."
+        },
+        "2": {
+          "question": "How do I get a refund?",
+          "answer": "Refunds can be requested through your account dashboard. Please review our refund policy for eligibility requirements."
+        }
+      }
+    },
+    "bottomCta": {
+      "title": "Still need help?",
+      "description": "Our support team is ready to assist you with any questions or issues you may have.",
+      "contactSupport": "Contact Support",
+      "joinCommunity": "Join Community"
+    }
+  },
+ "footer": {
+    "description": "The leading platform for event management and community building. Create, manage, and promote your events with ease.",
+    "location": "Tunis, Tunisia",
+    "sections": {
+      "company": "Company",
+      "support": "Support",
+      "product": "Product",
+      "legal": "Legal"
+    },
+    "links": {
+      "about": "About Us",
+      "careers": "Careers",
+      "contact": "Contact Us",
+      "blog": "Blog",
+      "helpCenter": "Help Center",
+      "documentation": "Documentation",
+      "community": "Community",
+      "status": "Status",
+      "events": "Events",
+      "pricing": "Pricing",
+      "features": "Features",
+      "integrations": "Integrations",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "cookies": "Cookie Policy",
+      "gdpr": "GDPR"
+    },
+    "social": {
+      "facebook": "Follow us on Facebook",
+      "twitter": "Follow us on Twitter",
+      "instagram": "Follow us on Instagram",
+      "linkedin": "Follow us on LinkedIn",
+      "youtube": "Subscribe to our YouTube channel"
+    },
+    "gdpr": {
+      "message": "We use cookies to improve your experience. By continuing to visit this site, you agree to our use of cookies.",
+      "learnMore": "Learn More",
+      "accept": "Accept"
+    },
+    "copyright": "© {year} Badji.net. All rights reserved.",
+    "followUs": "Follow Us",
+    "language": "Language"
+  },
+  "blog": {
+    "hero": {
+      "title": "Blog & Insights",
+      "description": "Stay updated with the latest news, tutorials, and insights from the Badji.net team and community."
+    },
+    "search": {
+      "placeholder": "Search articles..."
+    },
+    "categories": {
+      "all": "All",
+      "product": "Product",
+      "engineering": "Engineering",
+      "events": "Events",
+      "tutorials": "Tutorials",
+      "company": "Company"
+    },
+    "featured": "Featured",
+    "readTime": "{minutes} min read",
+    "readMore": "Read More",
+    "noResults": {
+      "title": "No articles found",
+      "description": "Try adjusting your search or filter criteria."
+    }
+  },
+  "pricing": {
+    "hero": {
+      "title": "Simple, Transparent Pricing",
+      "description": "Choose the perfect plan for your event management needs. Start free and scale as you grow."
+    },
+    "billing": {
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "year": "year",
+      "month": "month",
+      "save20": "Save 20%",
+      "was": "was"
+    },
+    "plans": {
+      "popular": "Most Popular",
+      "starter": {
+        "name": "Starter"
+      },
+      "professional": {
+        "name": "Professional"
+      },
+      "enterprise": {
+        "name": "Enterprise"
+      },
+      "getStarted": "Get Started",
+      "startTrial": "Start Free Trial"
+    },
+    "features": {
+      "up_to_3_events": "Up to 3 events",
+      "basic_analytics": "Basic analytics",
+      "email_support": "Email support",
+      "standard_templates": "Standard templates",
+      "basic_registration": "Basic registration",
+      "unlimited_events": "Unlimited events",
+      "advanced_analytics": "Advanced analytics",
+      "priority_support": "Priority support",
+      "custom_branding": "Custom branding",
+      "payment_processing": "Payment processing",
+      "marketing_tools": "Marketing tools",
+      "api_access": "API access",
+      "everything_in_pro": "Everything in Professional",
+      "dedicated_support": "Dedicated support",
+      "custom_integrations": "Custom integrations",
+      "advanced_security": "Advanced security",
+      "team_management": "Team management",
+      "white_label": "White label solution",
+      "sla_guarantee": "SLA guarantee"
+    },
+    "comparison": {
+      "title": "Feature Comparison",
+      "description": "Compare all features across our plans to find the perfect fit.",
+      "feature": "Feature",
+      "features": {
+        "events": "Events per month",
+        "attendees": "Attendees per event",
+        "analytics": "Analytics",
+        "support": "Support",
+        "branding": "Custom branding",
+        "api": "API access",
+        "integrations": "Integrations"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "description": "Get answers to common questions about our pricing and plans."
+    },
+    "cta": {
+      "title": "Need a Custom Solution?",
+      "description": "Contact our sales team to discuss enterprise pricing and custom features tailored to your organization.",
+      "contact": "Contact Sales",
+      "help": "View Help Center"
+    }
+  },
+  "features": {
+    "hero": {
+      "badge": "Powerful Features",
+      "title": "Everything You Need for Successful Events",
+      "description": "Discover the comprehensive suite of tools designed to make your event management effortless and effective.",
+      "cta": {
+        "start": "Get Started Free",
+        "demo": "Request Demo"
+      }
+    },
+    "main": {
+      "title": "Core Features",
+      "description": "Powerful tools to create, manage, and analyze your events with ease.",
+      "features": {
+        "event_management": {
+          "title": "Event Management",
+          "description": "Create and manage events with our intuitive drag-and-drop interface.",
+          "point1": "Drag-and-drop event builder",
+          "point2": "Custom event templates",
+          "point3": "Real-time collaboration"
+        },
+        "attendee_management": {
+          "title": "Attendee Management",
+          "description": "Manage registrations, check-ins, and attendee communications seamlessly.",
+          "point1": "Registration management",
+          "point2": "QR code check-ins",
+          "point3": "Attendee communication tools"
+        },
+        "payment_processing": {
+          "title": "Payment Processing",
+          "description": "Secure payment processing with multiple payment methods and currencies.",
+          "point1": "Multiple payment gateways",
+          "point2": "Global currency support",
+          "point3": "Automated invoicing"
+        },
+        "analytics": {
+          "title": "Analytics & Reporting",
+          "description": "Get detailed insights into your event performance and attendee behavior.",
+          "point1": "Real-time analytics dashboard",
+          "point2": "Custom report generation",
+          "point3": "ROI tracking"
+        },
+        "security": {
+          "title": "Security & Compliance",
+          "description": "Enterprise-grade security with GDPR compliance and data protection.",
+          "point1": "End-to-end encryption",
+          "point2": "GDPR compliance",
+          "point3": "Regular security audits"
+        },
+        "mobile_app": {
+          "title": "Mobile App",
+          "description": "Native mobile apps for iOS and Android with offline capabilities.",
+          "point1": "Native mobile apps",
+          "point2": "Offline functionality",
+          "point3": "Push notifications"
+        }
+      }
+    },
+    "showcase": {
+      "event": {
+        "badge": "Event Creation",
+        "title": "Create Stunning Events in Minutes",
+        "description": "Our intuitive event builder makes it easy to create professional events that engage your audience.",
+        "features": {
+          "drag_drop": "Drag-and-drop interface",
+          "templates": "Professional templates",
+          "customization": "Full customization options",
+          "publishing": "One-click publishing"
+        },
+        "cta": "Start Creating Events"
+      },
+      "analytics": {
+        "badge": "Analytics",
+        "title": "Data-Driven Event Insights",
+        "description": "Make informed decisions with comprehensive analytics and reporting tools.",
+        "features": {
+          "real_time": "Real-time data tracking",
+          "insights": "Actionable insights",
+          "reports": "Custom report builder",
+          "export": "Data export capabilities"
+        },
+        "cta": "View Analytics Demo"
+      }
+    },
+    "additional": {
+      "title": "Additional Features",
+      "description": "Explore more tools and integrations to enhance your event experience.",
+      "features": {
+        "multi_language": {
+          "title": "Multi-Language Support",
+          "description": "Support for 20+ languages with RTL text support."
+        },
+        "real_time": {
+          "title": "Real-Time Updates",
+          "description": "Live updates and notifications for all event changes."
+        },
+        "email_marketing": {
+          "title": "Email Marketing",
+          "description": "Built-in email marketing tools for attendee engagement."
+        },
+        "qr_codes": {
+          "title": "QR Code Integration",
+          "description": "Generate QR codes for tickets and check-ins."
+        },
+        "live_streaming": {
+          "title": "Live Streaming",
+          "description": "Integrated live streaming for virtual and hybrid events."
+        },
+        "chat_support": {
+          "title": "24/7 Chat Support",
+          "description": "Round-the-clock support for all your questions."
+        }
+      }
+    },
+    "benefits": {
+      "title": "Why Choose Badji.net?",
+      "description": "Discover the benefits that make us the preferred choice for event organizers worldwide.",
+      "items": {
+        "save_time": {
+          "title": "Save Time",
+          "description": "Automate repetitive tasks and focus on what matters most."
+        },
+        "increase_engagement": {
+          "title": "Increase Engagement",
+          "description": "Keep attendees engaged with interactive features."
+        },
+        "boost_revenue": {
+          "title": "Boost Revenue",
+          "description": "Maximize ticket sales with our marketing tools."
+        },
+        "reduce_costs": {
+          "title": "Reduce Costs",
+          "description": "Lower operational costs with efficient workflows."
+        },
+        "improve_experience": {
+          "title": "Improve Experience",
+          "description": "Deliver exceptional experiences for all attendees."
+        },
+        "scale_easily": {
+          "title": "Scale Easily",
+          "description": "Grow your events without technical limitations."
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Events?",
+      "description": "Join thousands of event organizers who trust Badji.net for their event management needs.",
+      "start": "Start Free Trial",
+      "pricing": "View Pricing"
+    }
+  },
+  "privacy": {
+    "hero": {
+      "title": "Privacy Policy",
+      "description": "Your privacy is important to us. Learn how we collect, use, and protect your personal information.",
+      "lastUpdated": "Last updated: January 1, 2024",
+      "effectiveDate": "Effective: January 1, 2024"
+    },
+    "introduction": "At Badji.net, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our services.",
+    "sections": {
+      "information_collection": {
+        "title": "Information We Collect",
+        "content": "We collect information you provide directly to us, information we obtain automatically when you use our services, and information from third-party sources.",
+        "points": "Personal information (name, email, phone) | Account information and preferences | Event and attendee data | Payment and billing information | Usage data and analytics | Device and browser information"
+      },
+      "information_use": {
+        "title": "How We Use Your Information",
+        "content": "We use the information we collect to provide, maintain, and improve our services, process transactions, and communicate with you.",
+        "points": "Provide and maintain our services | Process payments and transactions | Send important notifications | Improve our services and user experience | Comply with legal obligations | Prevent fraud and abuse"
+      },
+      "information_sharing": {
+        "title": "Information Sharing and Disclosure",
+        "content": "We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.",
+        "points": "Service providers and business partners | Legal requirements and law enforcement | Business transfers and mergers | With your explicit consent | Aggregated and anonymized data"
+      },
+      "data_security": {
+        "title": "Data Security",
+        "content": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.",
+        "points": "Encryption in transit and at rest | Regular security assessments | Access controls and authentication | Employee training and background checks | Incident response procedures"
+      },
+      "cookies": {
+        "title": "Cookies and Tracking Technologies",
+        "content": "We use cookies and similar technologies to enhance your experience, analyze usage patterns, and provide personalized content.",
+        "points": "Essential cookies for functionality | Analytics cookies for usage insights | Marketing cookies for personalization | Third-party cookies from partners | Cookie management and preferences"
+      },
+      "user_rights": {
+        "title": "Your Rights and Choices",
+        "content": "You have certain rights regarding your personal information, including the right to access, update, delete, or restrict the processing of your data.",
+        "points": "Access your personal information | Correct inaccurate information | Delete your account and data | Restrict processing activities | Data portability rights | Withdraw consent"
+      },
+      "children_privacy": {
+        "title": "Children's Privacy",
+        "content": "Our services are not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.",
+        "points": "Age verification requirements | Parental consent procedures | Data deletion for underage users | Educational account protections"
+      },
+      "changes": {
+        "title": "Changes to This Policy",
+        "content": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on our website.",
+        "points": "Notification of policy changes | Effective date of updates | Your continued use constitutes acceptance | Right to discontinue service"
+      },
+      "contact": {
+        "title": "Contact Information",
+        "content": "If you have any questions about this Privacy Policy or our privacy practices, please contact us using the information below."
+      }
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "If you have any questions about this Privacy Policy, please don't hesitate to contact us.",
+      "email": "Email",
+      "address": "Address",
+      "addressValue": "123 Privacy Street, Data City, DC 12345",
+      "button": "Contact Privacy Team"
+    }
+  },
+  "terms": {
+    "hero": {
+      "title": "Terms of Service",
+      "description": "Please read these terms carefully before using our services. By using Badji.net, you agree to be bound by these terms.",
+      "lastUpdated": "Last updated: January 1, 2024",
+      "effectiveDate": "Effective: January 1, 2024"
+    },
+    "introduction": "These Terms of Service govern your use of Badji.net's services. By accessing or using our services, you agree to be bound by these terms and our Privacy Policy.",
+    "sections": {
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "content": "By accessing and using Badji.net, you accept and agree to be bound by the terms and provision of this agreement.",
+        "points": "Agreement to terms and conditions | Legal capacity to enter agreement | Compliance with applicable laws | Updates to terms and conditions"
+      },
+      "description": {
+        "title": "Description of Service",
+        "content": "Badji.net provides event management and ticketing services through our web platform and mobile applications.",
+        "points": "Event creation and management tools | Ticketing and registration services | Payment processing capabilities | Analytics and reporting features | Customer support services"
+      },
+      "user_accounts": {
+        "title": "User Accounts",
+        "content": "You must create an account to use certain features of our service. You are responsible for maintaining the security of your account.",
+        "points": "Account registration requirements | Password security responsibilities | Account information accuracy | Notification of unauthorized access | Account termination procedures"
+      },
+      "acceptable_use": {
+        "title": "Acceptable Use Policy",
+        "content": "You agree to use our services only for lawful purposes and in accordance with these terms.",
+        "points": "Prohibited illegal activities | No harassment or abuse | Respect intellectual property rights | No spam or unsolicited communications | Compliance with event regulations"
+      },
+      "content": {
+        "title": "User Content",
+        "content": "You retain ownership of content you create, but grant us certain rights to use, display, and distribute your content.",
+        "points": "Content ownership rights | License to use content | Content moderation policies | Removal of inappropriate content | Backup and data retention"
+      },
+      "payment_terms": {
+        "title": "Payment Terms",
+        "content": "Payment terms for our services, including subscription fees, transaction fees, and refund policies.",
+        "points": "Subscription billing cycles | Transaction fee structure | Payment method requirements | Refund and cancellation policies | Tax responsibilities"
+      },
+      "privacy": {
+        "title": "Privacy",
+        "content": "Your privacy is important to us. Please review our Privacy Policy to understand how we collect and use your information.",
+        "points": "Data collection practices | Information usage policies | Third-party data sharing | Security measures | User privacy rights"
+      },
+      "intellectual_property": {
+        "title": "Intellectual Property",
+        "content": "Our services and content are protected by copyright, trademark, and other intellectual property laws.",
+        "points": "Badji.net trademark rights | Copyright protection | User content licensing | Third-party intellectual property | DMCA compliance procedures"
+      },
+      "disclaimers": {
+        "title": "Disclaimers",
+        "content": "Our services are provided 'as is' without warranties of any kind, either express or implied.",
+        "points": "Service availability disclaimers | Performance and reliability | Third-party service dependencies | User responsibility for content | Technical support limitations"
+      },
+      "limitation_liability": {
+        "title": "Limitation of Liability",
+        "content": "Our liability for damages arising from your use of our services is limited as described in this section.",
+        "points": "Limitation of direct damages | Exclusion of indirect damages | Maximum liability amounts | Force majeure events | User indemnification"
+      },
+      "indemnification": {
+        "title": "Indemnification",
+        "content": "You agree to indemnify and hold us harmless from claims arising from your use of our services.",
+        "points": "User indemnification obligations | Defense of claims | Settlement authority | Notice requirements | Cooperation in defense"
+      },
+      "termination": {
+        "title": "Termination",
+        "content": "Either party may terminate this agreement under certain circumstances as described in this section.",
+        "points": "Termination by user | Termination by Badji.net | Effect of termination | Data retention after termination | Survival of terms"
+      },
+      "governing_law": {
+        "title": "Governing Law",
+        "content": "These terms are governed by the laws of the jurisdiction where Badji.net is incorporated.",
+        "points": "Applicable law and jurisdiction | Dispute resolution procedures | Arbitration requirements | Class action waivers | Legal venue"
+      },
+      "changes": {
+        "title": "Changes to Terms",
+        "content": "We may modify these terms from time to time. We will notify you of material changes.",
+        "points": "Notification of changes | Effective date of modifications | Continued use acceptance | Right to discontinue service"
+      },
+      "contact": {
+        "title": "Contact Information",
+        "content": "Questions about these terms should be directed to our legal team."
+      }
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "If you have any questions about these Terms of Service, please contact our legal team.",
+      "email": "Email",
+      "address": "Address",
+      "addressValue": "123 Legal Street, Terms City, TC 12345",
+      "button": "Contact Legal Team"
+    }
+  },
+  "cookies": {
+    "hero": {
+      "title": "Cookie Policy",
+      "description": "Learn about how we use cookies and similar technologies to improve your experience on Badji.net."
+    },
+    "preferences": {
+      "title": "Cookie Preferences",
+      "description": "Manage your cookie preferences below. You can enable or disable different types of cookies based on your preferences.",
+      "acceptAll": "Accept All Cookies",
+      "acceptNecessary": "Accept Necessary Only"
+    },
+    "required": "Required",
+    "types": {
+      "necessary": {
+        "title": "Necessary Cookies",
+        "description": "These cookies are essential for the website to function properly and cannot be disabled."
+      },
+      "analytics": {
+        "title": "Analytics Cookies",
+        "description": "These cookies help us understand how visitors interact with our website by collecting anonymous information."
+      },
+      "marketing": {
+        "title": "Marketing Cookies",
+        "description": "These cookies are used to deliver personalized advertisements and track marketing campaign effectiveness."
+      },
+      "functional": {
+        "title": "Functional Cookies",
+        "description": "These cookies enable enhanced functionality and personalization, such as remembering your preferences."
+      }
+    },
+    "info": {
+      "whatAreCookies": {
+        "title": "What Are Cookies?",
+        "content": "Cookies are small text files that are stored on your device when you visit a website. They help websites remember your preferences and improve your browsing experience."
+      },
+      "howWeUse": {
+        "title": "How We Use Cookies",
+        "content": "We use cookies for various purposes to enhance your experience on our website:",
+        "point1": "Remember your login status and preferences",
+        "point2": "Analyze website traffic and user behavior",
+        "point3": "Provide personalized content and advertisements",
+        "point4": "Improve website functionality and performance"
+      },
+      "thirdParty": {
+        "title": "Third-Party Cookies",
+        "content": "Some cookies on our website are set by third-party services such as Google Analytics, social media platforms, and advertising networks. These cookies are subject to the respective privacy policies of these third parties."
+      },
+      "control": {
+        "title": "How to Control Cookies",
+        "content": "You can control and manage cookies in various ways. Most web browsers automatically accept cookies, but you can modify your browser settings to decline cookies if you prefer. You can also use our cookie preference center above to manage your choices."
+      }
+    }
+  },
+  "gdpr": {
+    "hero": {
+      "badge": "GDPR Compliant",
+      "title": "GDPR Compliance",
+      "description": "We are committed to protecting your personal data and complying with the General Data Protection Regulation (GDPR)."
+    },
+    "rights": {
+      "title": "Your Data Protection Rights",
+      "description": "Under GDPR, you have several rights regarding your personal data. Learn about your rights and how to exercise them.",
+      "items": {
+        "access": {
+          "title": "Right of Access",
+          "description": "You have the right to request copies of your personal data that we hold."
+        },
+        "rectification": {
+          "title": "Right to Rectification",
+          "description": "You have the right to request correction of inaccurate or incomplete personal data."
+        },
+        "erasure": {
+          "title": "Right to Erasure",
+          "description": "You have the right to request deletion of your personal data under certain circumstances."
+        },
+        "portability": {
+          "title": "Right to Data Portability",
+          "description": "You have the right to request transfer of your data to another organization."
+        },
+        "restriction": {
+          "title": "Right to Restrict Processing",
+          "description": "You have the right to request restriction of processing of your personal data."
+        },
+        "objection": {
+          "title": "Right to Object",
+          "description": "You have the right to object to processing of your personal data for certain purposes."
+        }
+      }
+    },
+    "data": {
+      "title": "Data We Collect",
+      "description": "We collect and process various types of personal data to provide our services effectively.",
+      "includes": "Includes",
+      "types": {
+        "personal_information": {
+          "title": "Personal Information",
+          "description": "Basic identifying information you provide when creating an account.",
+          "examples": "Name and surname | Email address | Phone number | Profile picture"
+        },
+        "account_data": {
+          "title": "Account Data",
+          "description": "Information related to your account and service usage.",
+          "examples": "Account preferences | Login history | Service usage patterns | Subscription details"
+        },
+        "event_data": {
+          "title": "Event Data",
+          "description": "Information about events you create or attend.",
+          "examples": "Event details and descriptions | Attendee lists | Event analytics | Registration information"
+        },
+        "payment_information": {
+          "title": "Payment Information",
+          "description": "Financial data necessary for processing transactions.",
+          "examples": "Billing address | Payment method details | Transaction history | Invoice information"
+        },
+        "usage_analytics": {
+          "title": "Usage Analytics",
+          "description": "Data about how you interact with our services.",
+          "examples": "Page views and clicks | Feature usage statistics | Performance metrics | Error logs"
+        },
+        "communication_data": {
+          "title": "Communication Data",
+          "description": "Records of your communications with us.",
+          "examples": "Support tickets | Email correspondence | Chat messages | Feedback submissions"
+        }
+      }
+    },
+    "legal": {
+      "title": "Legal Basis for Processing",
+      "description": "We process your personal data based on the following legal grounds under GDPR.",
+      "basis": {
+        "consent": {
+          "title": "Consent",
+          "description": "You have given clear consent for us to process your personal data for specific purposes."
+        },
+        "contract": {
+          "title": "Contract Performance",
+          "description": "Processing is necessary for the performance of a contract with you or to take steps at your request."
+        },
+        "legitimate_interest": {
+          "title": "Legitimate Interest",
+          "description": "Processing is necessary for our legitimate interests, provided your rights are not overridden."
+        }
+      }
+    },
+    "exercise": {
+      "title": "Exercise Your Rights",
+      "description": "To exercise any of your GDPR rights, please contact us using the information below. We will respond to your request within 30 days.",
+      "email": "Email",
+      "response": "Response Time",
+      "responseTime": "Within 30 days",
+      "verification": "Identity Verification",
+      "verificationNote": "We may require identity verification for security purposes",
+      "contact": "Contact Privacy Team",
+      "privacy": "View Privacy Policy"
+    }
+  },
+  "documentation": {
+    "hero": {
+      "title": "Documentation",
+      "description": "Everything you need to get started with Badji.net. From quick start guides to detailed API references.",
+      "search": "Search documentation..."
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "api_docs": "API Documentation",
+      "sdk": "SDK Downloads",
+      "examples": "Code Examples",
+      "changelog": "Changelog"
+    },
+    "sections": {
+      "getting_started": {
+        "title": "Getting Started",
+        "description": "New to Badji.net? Start here to learn the basics.",
+        "viewAll": "View All Guides",
+        "articles": {
+          "quick_start": {
+            "title": "Quick Start Guide",
+            "description": "Get up and running with Badji.net in 5 minutes."
+          },
+          "installation": {
+            "title": "Installation",
+            "description": "Install and configure Badji.net for your needs."
+          },
+          "first_event": {
+            "title": "Create Your First Event",
+            "description": "Step-by-step guide to creating your first event."
+          },
+          "basic_concepts": {
+            "title": "Basic Concepts",
+            "description": "Understand the core concepts of event management."
+          }
+        }
+      },
+      "api_reference": {
+        "title": "API Reference",
+        "description": "Complete reference for our REST API and webhooks.",
+        "viewAll": "View API Docs",
+        "articles": {
+          "authentication": {
+            "title": "Authentication",
+            "description": "Learn how to authenticate with our API."
+          },
+          "events_api": {
+            "title": "Events API",
+            "description": "Create and manage events programmatically."
+          },
+          "users_api": {
+            "title": "Users API",
+            "description": "Manage user accounts and permissions."
+          },
+          "webhooks": {
+            "title": "Webhooks",
+            "description": "Receive real-time notifications about events."
+          }
+        }
+      },
+      "guides": {
+        "title": "Guides & Tutorials",
+        "description": "In-depth guides for advanced features and use cases.",
+        "viewAll": "View All Tutorials",
+        "articles": {
+          "event_management": {
+            "title": "Advanced Event Management",
+            "description": "Master advanced event management techniques."
+          },
+          "payment_setup": {
+            "title": "Payment Setup",
+            "description": "Configure payment processing for your events."
+          },
+          "analytics": {
+            "title": "Analytics & Reporting",
+            "description": "Get insights from your event data."
+          },
+          "integrations": {
+            "title": "Third-Party Integrations",
+            "description": "Connect Badji.net with other tools and services."
+          }
+        }
+      },
+      "community": {
+        "title": "Community Resources",
+        "description": "Community-driven content and contributions.",
+        "viewAll": "Join Community",
+        "articles": {
+          "contributing": {
+            "title": "Contributing Guide",
+            "description": "Learn how to contribute to Badji.net."
+          },
+          "support": {
+            "title": "Community Support",
+            "description": "Get help from the community."
+          },
+          "examples": {
+            "title": "Community Examples",
+            "description": "Real-world examples from our users."
+          },
+          "best_practices": {
+            "title": "Best Practices",
+            "description": "Tips and tricks from experienced users."
+          }
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "description": "Join thousands of event organizers who use Badji.net to create amazing experiences.",
+      "getStarted": "Get Started Free",
+      "contact": "Contact Support"
+    }
+  },
+  "community": {
+    "hero": {
+      "badge": "Join the Community",
+      "title": "Connect with Event Creators",
+      "description": "Join our vibrant community of event organizers, developers, and enthusiasts from around the world.",
+      "cta": {
+        "join": "Join Discord",
+        "contribute": "Start Contributing"
+      }
+    },
+    "platforms": {
+      "title": "Community Platforms",
+      "description": "Connect with us across different platforms and find the community that fits you best.",
+      "members": "members",
+      "join": "Join Now",
+      "items": {
+        "discord": {
+          "title": "Discord Community",
+          "description": "Real-time chat with other users and our team."
+        },
+        "github": {
+          "title": "GitHub",
+          "description": "Contribute to our open-source projects."
+        },
+        "twitter": {
+          "title": "Twitter",
+          "description": "Follow us for updates and announcements."
+        },
+        "forum": {
+          "title": "Community Forum",
+          "description": "Ask questions and share knowledge."
+        }
+      }
+    },
+    "events": {
+      "title": "Upcoming Events",
+      "description": "Join our community events, meetups, and workshops.",
+      "types": {
+        "virtual": "Virtual",
+        "in-person": "In-Person"
+      },
+      "attendees": "attendees",
+      "register": "Register"
+    },
+    "contributors": {
+      "title": "Top Contributors",
+      "description": "Meet the amazing people who help make Badji.net better every day.",
+      "contributions": "contributions"
+    },
+    "cta": {
+      "title": "Ready to Contribute?",
+      "description": "Whether you're a developer, designer, or event expert, there's a place for you in our community.",
+      "contribute": "Start Contributing",
+      "help": "Get Help"
+    }
+  },
+  "status": {
+    "hero": {
+      "title": "System Status",
+      "description": "Real-time status of all Badji.net services and infrastructure components.",
+      "allSystemsOperational": "All Systems Operational"
+    },
+    "services": {
+      "title": "Service Status",
+      "uptime": "Uptime",
+      "responseTime": "Response Time",
+      "status": {
+        "operational": "Operational",
+        "degraded": "Degraded Performance",
+        "outage": "Service Outage"
+      }
+    },
+    "incidents": {
+      "title": "Recent Incidents",
+      "started": "Started",
+      "resolved": "Resolved",
+      "status": {
+        "investigating": "Investigating",
+        "identified": "Identified",
+        "monitoring": "Monitoring",
+        "resolved": "Resolved",
+        "completed": "Completed"
+      },
+      "severity": {
+        "critical": "Critical",
+        "major": "Major",
+        "minor": "Minor",
+        "maintenance": "Maintenance"
+      }
+    },
+    "subscribe": {
+      "title": "Stay Informed",
+      "description": "Subscribe to status updates to stay informed about service disruptions and maintenance.",
+      "email": "Email Updates",
+      "rss": "RSS Feed",
+      "webhook": "Webhook Notifications",
+      "webhookDescription": "Available for enterprise customers"
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "About Badji.net",
+      "description": "We're on a mission to make event management simple, powerful, and accessible for everyone.",
+      "founded": "Founded in 2020",
+      "headquarters": "Tunis, Tunisia"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "To empower event organizers worldwide with the tools they need to create memorable experiences and build meaningful connections."
+    },
+    "story": {
+      "title": "Our Story",
+      "content": "Badji.net was born from the frustration of organizing events with outdated, complicated tools. Our founders, experienced event organizers themselves, knew there had to be a better way. Starting in a small office in Tunis, we set out to build the event management platform we wished existed."
+    },
+    "values": {
+      "title": "Our Values",
+      "items": {
+        "innovation": {
+          "title": "Innovation",
+          "description": "We constantly push the boundaries of what's possible in event technology."
+        },
+        "simplicity": {
+          "title": "Simplicity",
+          "description": "Complex problems deserve simple, elegant solutions."
+        },
+        "community": {
+          "title": "Community",
+          "description": "We believe in the power of bringing people together."
+        },
+        "reliability": {
+          "title": "Reliability",
+          "description": "Your events are important to you, and they're important to us too."
+        }
+      }
+    },
+    "team": {
+      "title": "Meet Our Team",
+      "description": "We're a diverse team of passionate individuals from around the world."
+    },
+    "stats": {
+      "title": "By the Numbers",
+      "events": "Events Created",
+      "users": "Active Users",
+      "countries": "Countries",
+      "uptime": "Uptime"
+    },
+    "cta": {
+      "title": "Join Our Journey",
+      "description": "Ready to be part of the future of event management?",
+      "careers": "View Open Positions",
+      "contact": "Get in Touch"
+    }
+  },
+  "careers": {
+    "hero": {
+      "title": "Join Our Team",
+      "description": "Help us build the future of event management. We're looking for passionate people to join our growing team.",
+      "openPositions": "Open Positions"
+    },
+    "why": {
+      "title": "Why Work at Badji.net?",
+      "items": {
+        "impact": {
+          "title": "Make an Impact",
+          "description": "Your work directly affects millions of event organizers and attendees worldwide."
+        },
+        "growth": {
+          "title": "Grow Your Career",
+          "description": "We invest in your professional development with learning opportunities and mentorship."
+        },
+        "culture": {
+          "title": "Amazing Culture",
+          "description": "Work with talented, passionate people in a collaborative and inclusive environment."
+        },
+        "benefits": {
+          "title": "Great Benefits",
+          "description": "Competitive salary, health insurance, flexible work arrangements, and more."
+        }
+      }
+    },
+    "positions": {
+      "title": "Open Positions",
+      "description": "We're always looking for talented individuals to join our team.",
+      "viewAll": "View All Positions",
+      "apply": "Apply Now",
+      "noPositions": {
+        "title": "No Open Positions",
+        "description": "We don't have any open positions at the moment, but we're always interested in hearing from talented individuals."
+      }
+    },
+    "benefits": {
+      "title": "Benefits & Perks",
+      "items": {
+        "health": "Comprehensive health insurance",
+        "vacation": "Unlimited vacation policy",
+        "remote": "Remote-first work culture",
+        "equipment": "Top-tier equipment and tools",
+        "learning": "Learning and development budget",
+        "events": "Free tickets to events worldwide"
+      }
+    },
+    "process": {
+      "title": "Our Hiring Process",
+      "steps": {
+        "application": {
+          "title": "Application",
+          "description": "Submit your application through our careers page."
+        },
+        "screening": {
+          "title": "Initial Screening",
+          "description": "Brief call to discuss your background and interests."
+        },
+        "interview": {
+          "title": "Technical Interview",
+          "description": "In-depth discussion about your skills and experience."
+        },
+        "final": {
+          "title": "Final Interview",
+          "description": "Meet with team members and leadership."
+        },
+        "offer": {
+          "title": "Offer",
+          "description": "We'll make you an offer and welcome you to the team!"
+        }
+      }
+    },
+    "cta": {
+      "title": "Don't See the Right Role?",
+      "description": "We're always interested in hearing from talented individuals, even if we don't have a specific opening.",
+      "contact": "Send Us Your Resume",
+      "newsletter": "Join Our Talent Network"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Get in Touch",
+      "description": "Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible."
+    },
+    "form": {
+      "name": "Full Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Thank you! We'll get back to you soon.",
+      "error": "Something went wrong. Please try again."
+    },
+    "info": {
+      "title": "Contact Information",
+      "address": {
+        "title": "Address",
+        "value": "123 Event Street\nTunis, Tunisia 1000"
+      },
+      "phone": {
+        "title": "Phone",
+        "value": "+216 12 345 678"
+      },
+      "email": {
+        "title": "Email",
+        "value": "hello@badji.net"
+      },
+      "hours": {
+        "title": "Business Hours",
+        "value": "Monday - Friday: 9:00 AM - 6:00 PM (GMT+1)"
+      }
+    },
+    "support": {
+      "title": "Need Support?",
+      "description": "For technical support and account issues, please visit our help center or contact our support team directly.",
+      "helpCenter": "Visit Help Center",
+      "supportEmail": "support@badji.net"
+    }
+  },
+  "help": {
+    "hero": {
+      "title": "How can we help you?",
+      "description": "Find answers to common questions and get the support you need.",
+      "search": "Search for help..."
+    },
+    "categories": {
+      "getting_started": {
+        "title": "Getting Started",
+        "description": "New to Badji.net? Start here to learn the basics."
+      },
+      "account_management": {
+        "title": "Account Management",
+        "description": "Manage your account settings and preferences."
+      },
+      "event_creation": {
+        "title": "Event Creation",
+        "description": "Learn how to create and customize your events."
+      },
+      "ticketing": {
+        "title": "Ticketing & Registration",
+        "description": "Set up tickets and manage registrations."
+      },
+      "payments": {
+        "title": "Payments & Billing",
+        "description": "Handle payments, refunds, and billing issues."
+      },
+      "analytics": {
+        "title": "Analytics & Reports",
+        "description": "Understand your event data and generate reports."
+      },
+      "integrations": {
+        "title": "Integrations",
+        "description": "Connect Badji.net with other tools and services."
+      },
+      "troubleshooting": {
+        "title": "Troubleshooting",
+        "description": "Solve common issues and technical problems."
+      }
+    },
+    "popular": {
+      "title": "Popular Articles",
+      "readMore": "Read More"
+    },
+    "contact": {
+      "title": "Still need help?",
+      "description": "Can't find what you're looking for? Our support team is here to help.",
+      "button": "Contact Support"
+    }
+  },"event": {
+    "title": "Event Details",
+    "joinButton": "I'm in",
+    "joining": "Joining...",
+    "viewPricing": "View Pricing",
+    "attendees": "{count, plural, =0 {No attendees} =1 {1 person attending} other {# people attending}}",
+    "eventDate": "Event Date",
+    "schedule": "Event Schedule",
+    "doorsOpen": "Doors open",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "duration": "{days, plural, =1 {1 day event} other {# days event}}",
+    "tabs": {
+      "details": "Details",
+      "date": "Date",
+      "location": "Location",
+      "price": "Price",
+      "feedback": "Feedback"
+    }
+  }, "shorts": {
+    "loading": "Loading videos...",
+    "share": {
+      "title": "Share Event",
+      "copyLink": "Copy Link",
+      "linkCopied": "Link copied to clipboard!",
+      "cancel": "Cancel",
+      "facebook": "Facebook",
+      "twitter": "X/Twitter",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp"
+    },
+    "controls": {
+      "back": "Go back",
+      "showDetails": "Show details",
+      "hideDetails": "Hide details",
+      "like": "Like",
+      "share": "Share",
+      "scrollUp": "Scroll up",
+      "scrollDown": "Scroll down"
+    },
+    "details": {
+      "close": "Close",
+      "visitWebsite": "Visit Website",
+      "category": "Category",
+      "allCategories": "All",
+      "organizer": "Organizer",
+      "verified": "Verified",
+      "sponsors": "Sponsors"
+    },
+    "video": {
+      "playError": "Failed to play video",
+      "autoplayBlocked": "Autoplay was blocked by browser"
+    }
+  },
+  "follow":{
+    "follow": "Follow",
+    "following": "Following",
+    "followed": "Followed",
+    "unfollow": "Unfollow",
+    "unfollowed": "Unfollowed"
+  },"comments": {
+    "like": "Like",
+    "reply": "Reply",
+    "send": "Send",
+    "writeComment": "Write a comment...",
+    "writeReply": "Write a reply...",
+    "loginToReply": "You must be logged in to reply",
+    "noComments": "No comments yet. Be the first to comment!",
+    "errors": {
+      "title": "Error",
+      "updateLike": "Failed to update like",
+      "loadComments": "Failed to load comments",
+      "addComment": "Failed to add comment",
+      "addReply": "Failed to add reply"
+    }
+  },"eventPrice": {
+    "buyTicket": "Buy a ticket or get a preorder",
+    "eventFree": "This event is free",
+    "free": "Free",
+    "eventTotalPrice": "Event total price",
+    "payInDoor": "Pay in door",
+    "secureCheckout": "Secure checkout",
+    "instantConfirmation": "Instant confirmation",
+    "validate": "validate",
+    "success": "Success",
+    "orderCreatedSuccess": "Order created successfully",
+    "error": "Error",
+    "orderCreatedError": "Failed to create order"
   }
 
 

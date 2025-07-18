@@ -129,7 +129,7 @@ export default function ReportComponent({
                 setCause("");
               }}
             >
-              Cancel
+              {t("cancel")}
             </Button>
 
             <Button
@@ -141,7 +141,7 @@ export default function ReportComponent({
                 mutate();
               }}
             >
-              Report
+              {isPending ? t("reporting") : t("report")}
             </Button>
           </div>
         </AlertDialogContent>

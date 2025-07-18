@@ -19,7 +19,7 @@ export const MusicWave = ({
           vDuration={vDuration}
           isPlaying={isPlaying}
           data={usedTrack}
-          src={process.env.NEXT_PUBLIC_FILE_SERVER_URL + "/" + usedTrack.path}
+          src={process.env.NEXT_PUBLIC_FILE_SERVER_URL + usedTrack.path}
         />
       ) : (
         <div className="w-full h-12 flex items-center justify-start px-5 bg-indigo-500 my-2 rounded-lg text-start font-semibold text-white ">

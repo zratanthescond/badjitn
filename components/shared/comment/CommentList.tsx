@@ -12,6 +12,7 @@ import { CommentType } from "@/lib/actions/comment.action";
 import { CommentForm } from "./CommentForm";
 import { Content } from "@tiptap/react";
 import { IUser } from "@/lib/database/models/user.model";
+import { useTranslations } from "next-intl";
 
 interface CommentListProps {
   comments: CommentType[];
@@ -36,7 +37,7 @@ export function CommentList({
     onAddReply(parentId, content);
     setReplyingTo(null);
   };
-
+  const t = useTranslations("comments");
   const handleToggleLike = async (commentId: string) => {
     try {
       // Find the comment to update
@@ -148,7 +149,7 @@ export function CommentList({
                   }`}
                   onClick={() => handleToggleLike(comment.id)}
                 >
-                  Like
+                  {t("like")}
                 </button>
                 <button
                   className="font-medium"
@@ -156,7 +157,7 @@ export function CommentList({
                     setReplyingTo(replyingTo === comment.id ? null : comment.id)
                   }
                 >
-                  Reply
+                  {t("reply")}
                 </button>
                 <span>
                   {formatDistanceToNow(new Date(comment.createdAt), {
@@ -195,7 +196,7 @@ export function CommentList({
                 ) : (
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">
-                      You must be logged in to reply
+                      {t("loginToReply")}
                     </span>
                   </div>
                 ))}

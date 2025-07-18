@@ -1,10 +1,12 @@
+"use client";
+
 import { useUser } from "@/lib/actions/user.actions";
 import { Separator } from "../ui/separator";
 import { useEffect, useState } from "react";
-import { IUser } from "@/lib/database/models/user.model";
+import type { IUser } from "@/lib/database/models/user.model";
 import { Skeleton } from "../ui/skeleton";
 import { getEventById } from "@/lib/actions/event.actions";
-import { IEvent } from "@/lib/database/models/event.model";
+import type { IEvent } from "@/lib/database/models/event.model";
 import { QRCode } from "react-qrcode-logo";
 import { Button } from "../ui/button";
 import { useTransition } from "react";
@@ -13,21 +15,24 @@ import {
   getCertificationByUseridAndEventId,
 } from "@/lib/actions/certification.actions";
 import { toast } from "@/hooks/use-toast";
-import { ICertificate } from "@/lib/database/models/certification.model";
+import type { ICertificate } from "@/lib/database/models/certification.model";
 import { Badge } from "../ui/badge";
-import { Download, Printer } from "lucide-react";
+import { Download, Printer, Award } from "lucide-react";
 import { useReactToPrint } from "react-to-print";
 import { useRef } from "react";
 import generatePDF from "react-to-pdf";
-import { pdfOptions } from "@/lib/utils";
-import { json } from "stream/consumers";
-export default function CertifcationComponent({
+import { useTranslations, useLocale } from "next-intl";
+
+export default function CertificationComponent({
   eventId,
   userId,
 }: {
   eventId: string;
   userId: string;
 }) {
+  const t = useTranslations("certification");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
   const [user, setUser] = useState<IUser | null>(null);
@@ -37,64 +42,86 @@ export default function CertifcationComponent({
     "sample"
   );
   const [certification, setCertification] = useState<ICertificate | null>(null);
-  const getUserCredencials = async () => {
-    const user = await useUser();
-    setUser(JSON.parse(JSON.stringify(user)));
-    const event = await getEventById(eventId);
-    //alert(JSON.stringify(event));
-    setEvent(JSON.parse(JSON.stringify(event)));
-  };
-  const getCertification = async () => {
-    const certification = await getCertificationByUseridAndEventId({
-      eventId,
-      userId,
+
+  const getCertification = () => {
+    startTransition(async () => {
+      const certificationHook = await getCertificationByUseridAndEventId({
+        eventId,
+        userId,
+      });
+      const userHook = await useUser();
+      const eventHook = await getEventById(eventId);
+      setUser(JSON.parse(JSON.stringify(userHook)));
+      setEvent(JSON.parse(JSON.stringify(eventHook)));
+      if (certificationHook) {
+        console.log("Certification found:", certificationHook);
+        // Ensure the certification is parsed correctly
+        setCertification(certificationHook);
+      } else {
+        setCertification(null);
+      }
     });
-    setCertification(certification);
   };
+
   useEffect(() => {
-    getUserCredencials();
     getCertification();
   }, []);
+
   useEffect(() => {
     if (certification && certification.status === "approved") {
-      alert(JSON.stringify(certification));
       setQrcodeContent(certification._id);
     }
   }, [certification]);
+
   const requestCertification = () => {
     startTransition(async () => {
       const certification = await createCertification({ eventId, userId });
       if (certification) {
         toast({
-          title: "Success",
-          description: "Certification Requested Successfully",
+          title: t("toast.success"),
+          description: t("toast.certificationRequested"),
         });
       }
     });
   };
+
   return (
-    <div className="flex flex-col items-center gap-2 justify-center h-full min-h-[80vh] bg-background px-4 py-12 sm:px-6 lg:px-8">
+    <div
+      className={`flex flex-col items-center gap-2 justify-center h-full min-h-[80vh] bg-background px-4 py-12 sm:px-6 lg:px-8 ${
+        isRTL ? "rtl" : "ltr"
+      }`}
+    >
       <div
         ref={contentRef}
-        className=" w-full flex flex-col items-center justify-between min-h-[80vh] bg-card  p-8 rounded-lg shadow-lg"
+        className="w-full flex flex-col items-center justify-between min-h-[80vh] bg-card p-8 rounded-lg shadow-lg"
       >
         <div className="flex flex-col items-center justify-between h-2/3">
-          <h1 className="text-3xl font-bold  dark:text-white mb-4">
-            Certificate of Achievement
+          <h1
+            className={`text-3xl font-bold dark:text-white mb-4 ${
+              isRTL ? "font-arabic" : ""
+            }`}
+          >
+            {t("title")}
           </h1>
           <Separator className="my-4" />
-
           {user ? (
-            <h2 className="text-5xl font-bold text-foreground mb-6 capitalize">
+            <h2
+              className={`text-5xl font-bold text-foreground mb-6 capitalize ${
+                isRTL ? "font-arabic" : ""
+              }`}
+            >
               {`${user?.firstName} ${user?.lastName}`}
             </h2>
           ) : (
             <Skeleton className="h-12 w-3/4 rounded-full" />
           )}
           {event ? (
-            <p className="text-muted-foreground text-lg max-w-[600px] text-center mb-8">
-              In recognition of your outstanding contribution and dedication to
-              the “ {event?.title} ” event program.
+            <p
+              className={`text-muted-foreground text-lg max-w-[600px] text-center mb-8 ${
+                isRTL ? "font-arabic" : ""
+              }`}
+            >
+              {t("description.part1")} "{event?.title}" {t("description.part2")}
             </p>
           ) : (
             <>
@@ -104,20 +131,37 @@ export default function CertifcationComponent({
             </>
           )}
         </div>
-        <div className="border-t w-full border-muted pt-6 flex justify-between items-center">
-          <p className="text-muted-foreground text-sm">
-            Awarded on :{" "}
-            {certification && certification.approvedAt
-              ? new Date(certification.approvedAt).toLocaleDateString()
-              : new Date().toLocaleDateString()}
+
+        <div
+          className={`border-t w-full border-muted pt-6 flex ${
+            isRTL ? "flex-row-reverse" : "flex-row"
+          } justify-between items-center`}
+        >
+          <p
+            className={`text-muted-foreground text-sm ${
+              isRTL ? "font-arabic" : ""
+            }`}
+          >
+            {t("awardedOn")}{" "}
+            {certification && certification.updatedAt
+              ? new Date(certification.updatedAt).toLocaleDateString(locale)
+              : new Date().toLocaleDateString(locale)}
           </p>
 
-          <div className="flex items-center justify-between gap-2">
-            <AwardIcon className="w-6 h-6 text-primary" />
+          <div
+            className={`flex items-center justify-between gap-2 ${
+              isRTL ? "flex-row-reverse" : "flex-row"
+            }`}
+          >
+            <Award className="w-6 h-6 text-primary" />
             {event ? (
               <>
-                <p className="text-muted-foreground text-sm">
-                  Organizer: {event?.organizer.firstName}{" "}
+                <p
+                  className={`text-muted-foreground text-sm ${
+                    isRTL ? "font-arabic" : ""
+                  }`}
+                >
+                  {t("organizer")}: {event?.organizer.firstName}{" "}
                   {event?.organizer.lastName}
                 </p>
                 <QRCode
@@ -126,7 +170,6 @@ export default function CertifcationComponent({
                   logoImage={`${process.env.NEXT_PUBLIC_SERVER_URL}/assets/images/qrcodeMotif.png`}
                   removeQrCodeBehindLogo={false}
                   logoPadding={3}
-                  //
                   logoPaddingStyle="square"
                   logoWidth={20}
                   qrStyle="fluid"
@@ -146,23 +189,41 @@ export default function CertifcationComponent({
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col md:flex-row items-center justify-between min-h-[15vh] bg-card  p-8 rounded-lg shadow-lg">
-        <p className="text-muted-foreground text-sm">
-          This is a sample certification request a real one from the event
-          organizer
-        </p>
+
+      <div
+        className={`w-full flex flex-col md:flex-row items-center justify-between min-h-[15vh] bg-card p-8 rounded-lg shadow-lg ${
+          isRTL ? "md:flex-row-reverse" : ""
+        }`}
+      >
+        {certification === null && (
+          <p
+            className={`text-muted-foreground text-sm ${
+              isRTL ? "font-arabic" : ""
+            }`}
+          >
+            {t("sampleNote")}
+          </p>
+        )}
+
         {certification ? (
           certification.status === "pending" ? (
-            <Badge className="h-8 p-2" title="Processing request">
-              Processing request
+            <Badge
+              className={`h-8 p-2 ${isRTL ? "font-arabic" : ""}`}
+              title={t("status.processing")}
+            >
+              {t("status.processing")}
             </Badge>
           ) : certification.status === "approved" ? (
-            <div className="flex flex-row items-center  justify-center gap-2">
+            <div
+              className={`flex items-center justify-center gap-2 ${
+                isRTL ? "flex-row-reverse" : "flex-row"
+              }`}
+            >
               <Badge
-                className="h-8 p-2 bg-green-500"
-                title="Certification Approved"
+                className={`h-8 p-2 bg-green-500 ${isRTL ? "font-arabic" : ""}`}
+                title={t("status.approved")}
               >
-                Certification Approved
+                {t("status.approved")}
               </Badge>
               <Button
                 variant={"ghost"}
@@ -170,6 +231,7 @@ export default function CertifcationComponent({
                 onClick={() => {
                   reactToPrintFn();
                 }}
+                title={t("actions.print")}
               >
                 <Printer />
               </Button>
@@ -190,6 +252,7 @@ export default function CertifcationComponent({
                     },
                   });
                 }}
+                title={t("actions.download")}
               >
                 <Download />
               </Button>
@@ -197,45 +260,27 @@ export default function CertifcationComponent({
           ) : (
             <Badge
               variant={"destructive"}
-              className="h-8 p-2"
-              title="Certification Rejected"
+              className={`h-8 p-2 ${isRTL ? "font-arabic" : ""}`}
+              title={t("status.rejected")}
             >
-              Certification Rejected
+              {t("status.rejected")}
             </Badge>
           )
         ) : (
           <Button
             variant={"ghost"}
-            className="glass flex flex-row items-center justify-between "
+            className={`glass flex items-center justify-between ${
+              isRTL ? "flex-row-reverse font-arabic" : "flex-row"
+            }`}
             size={"lg"}
             disabled={isPending}
             onClick={() => requestCertification()}
           >
-            <AwardIcon className="w-8 h-8 text-primary" />
-            Order a Certification
+            <Award className="w-8 h-8 text-primary" />
+            {t("actions.orderCertification")}
           </Button>
         )}
       </div>
     </div>
-  );
-}
-
-function AwardIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" />
-      <circle cx="12" cy="8" r="6" />
-    </svg>
   );
 }

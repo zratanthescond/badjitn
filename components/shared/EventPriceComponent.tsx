@@ -1,38 +1,18 @@
 "use client";
-import { Event } from "@/types";
-import Checkout from "./Checkout";
-import { useSession } from "next-auth/react";
 import CheckoutButton from "./CheckoutButton";
-import { IEvent } from "@/lib/database/models/event.model";
-import { Badge } from "../ui/badge";
+import type { IEvent } from "@/lib/database/models/event.model";
 import { Checkbox } from "../ui/checkbox";
 import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
-import {
-  AlertCircle,
-  ArrowRight,
-  CheckCircle,
-  ShoppingBag,
-  Ticket,
-} from "lucide-react";
+import { ArrowRight, CheckCircle, ShoppingBag, Ticket } from "lucide-react";
 import DiscountDialog from "./DiscountDialog";
-import { se } from "date-fns/locale";
-import { set } from "mongoose";
-import { validate } from "uuid";
-import { object } from "zod";
-import { OrderType } from "@/lib/database/models/order.model";
 import { toast } from "@/hooks/use-toast";
 import { useUser } from "@/lib/actions/user.actions";
 import { createOrder } from "@/lib/actions/order.actions";
 import { v4 as uuidv4 } from "uuid";
+import { useTranslations } from "next-intl";
 
 export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [checkPlan, setCheckedPlan] = useState<string[]>([]);
@@ -60,14 +40,18 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     fieldValue: "",
   });
   const [userId, setUserId] = useState<string>("");
-  const getUserId = async () => {
-    const session = await useUser();
-    setUserId(session._id);
-  };
+  const t = useTranslations("eventPrice");
+  const { data: session } = useUser();
+
   useEffect(() => {
-    getUserId();
-  }, []);
-  const validate = (objects: { [key: string]: string | number }[]): boolean => {
+    if (session) {
+      setUserId(session._id);
+    }
+  }, [session]);
+
+  const validateUserInfo = (
+    objects: { [key: string]: string | number }[]
+  ): boolean => {
     return (
       objects.every((obj) =>
         Object.values(obj).every(
@@ -88,22 +72,27 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       }
     });
   };
+
   const price =
     event.price ||
     event.pricePlan?.reduce((sum, item) => {
       return checkPlan?.includes(item._id!) ? sum + item.price : sum;
     }, 0) ||
     0;
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const isAvailable = () => new Date(event.endDateTime) > new Date();
+
   const calculatePriceAsNumber = (price: number) => {
     let finalPrice = price;
-    if (discountInfo && parseFloat(String(discountInfo.value)) > 0) {
-      let discountValue = parseFloat(String(discountInfo.value));
+    if (discountInfo && Number.parseFloat(String(discountInfo.value)) > 0) {
+      const discountValue = Number.parseFloat(String(discountInfo.value));
       finalPrice = price - (price * discountValue) / 100;
     }
     return finalPrice.toFixed(2);
   };
+
   const handleGetPreorder = async () => {
     try {
       const details = event.pricePlan?.map((item) => {
@@ -127,31 +116,33 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       });
       if (order) {
         toast({
-          title: "Success",
-          description: "Order created successfully",
+          title: t("success"),
+          description: t("orderCreatedSuccess"),
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to create order",
+        title: t("error"),
+        description: t("orderCreatedError"),
         variant: "destructive",
       });
     }
   };
 
   const calculatePrice = (price: number) => {
-    let finalPrice = parseFloat(String(price)) || 0;
-    if (discountInfo && parseFloat(String(discountInfo.value)) > 0) {
-      let discountValue = parseFloat(String(discountInfo.value));
+    let finalPrice = Number.parseFloat(String(price)) || 0;
+    if (discountInfo && Number.parseFloat(String(discountInfo.value)) > 0) {
+      const discountValue = Number.parseFloat(String(discountInfo.value));
       finalPrice = price - (price * discountValue) / 100;
       return `${finalPrice.toFixed(2)} Tnd ${discountInfo.value} % Off`;
     }
     return `${finalPrice.toFixed(2)} Tnd`;
   };
+
   useEffect(() => {
     calculatePrice(price);
   }, [discountInfo]);
+
   return (
     <div className="relative w-full max-w-full mx-auto">
       {/* Subtle glow effects */}
@@ -168,22 +159,20 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               {event.title}
             </span>
           </div>
-          <CardTitle className="text-2xl font-bold">
-            Buy a ticket or get a preorder
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold">{t("buyTicket")}</CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6 pb-8 px-8">
           {event.isFree == true ? (
             <div className="flex items-center justify-between bg-card/5 shadow-md p-4 rounded-full">
-              <p className=" font-medium pl-2">This event is free</p>
+              <p className=" font-medium pl-2">{t("eventFree")}</p>
               <p className="bg-card text-xl font-bold  py-2 px-4 rounded-full shadow-sm">
-                Free
+                {t("free")}
               </p>
             </div>
-          ) : parseFloat(event.price) > 0 ? (
+          ) : Number.parseFloat(event.price) > 0 ? (
             <div className="flex items-center justify-between bg-card/5 shadow-md p-4 rounded-full">
-              <p className=" font-medium pl-2">Event total price</p>
+              <p className=" font-medium pl-2">{t("eventTotalPrice")}</p>
               <p className="bg-card text-xl font-bold  py-2 px-4 rounded-full shadow-sm">
                 {event.price}{" "}
                 <span className="text-sm font-medium">{"TND"}</span>
@@ -220,7 +209,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 >
                   <Button
                     onClick={
-                      event.requiredInfo && !validate(requiredUserInfo)
+                      event.requiredInfo && !validateUserInfo(requiredUserInfo)
                         ? () => {
                             setIsDialogOpen(true);
                           }
@@ -240,7 +229,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           <div className="bg-black/10 p-1.5 rounded-full">
                             <ShoppingBag size={16} className="text-black" />
                           </div>
-                          <span>Pay in door {calculatePrice(price)} </span>
+                          <span>
+                            {t("payInDoor")} {calculatePrice(price)}{" "}
+                          </span>
                           <ArrowRight
                             size={16}
                             className={`transition-transform duration-300 ${
@@ -265,18 +256,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               </>
             )}
           </div>
-          <pre>
-            <code> validate:{validate(requiredUserInfo).toString()}</code>
-          </pre>
 
           <div className="pt-2 flex items-center justify-center gap-2 text-sm">
             <div className="flex items-center glass gap-1 bg-white/5 px-3 py-1.5 rounded-full">
               <CheckCircle size={14} className="text-green-400" />
-              <span>Secure checkout</span>
+              <span>{t("secureCheckout")}</span>
             </div>
             <div className="w-1.5 h-1.5 bg-white/20 rounded-full"></div>
             <div className="bg-white/5 px-3 py-1.5 glass rounded-full">
-              Instant confirmation
+              {t("instantConfirmation")}
             </div>
           </div>
         </CardContent>

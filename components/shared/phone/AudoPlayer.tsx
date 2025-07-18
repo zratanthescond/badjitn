@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ForwardIcon, PauseIcon, PlayIcon, RewindIcon } from "lucide-react";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { useTranslations } from "next-intl";
 const HLSAudioPlayer = ({
   data,
   id,
@@ -18,7 +19,7 @@ const HLSAudioPlayer = ({
   const audioRef = useRef(null);
   // State to manage the play/pause status
   const [duration, setDuration] = useState<number>(0); // State to manage the duration of the track
-  const audiSrc = process.env.NEXT_PUBLIC_FILE_SERVER_URL + "/" + data.path;
+  const audiSrc = process.env.NEXT_PUBLIC_FILE_SERVER_URL + data.path;
   useEffect(() => {
     if (Hls.isSupported()) {
       const hls = new Hls();
@@ -70,18 +71,19 @@ const HLSAudioPlayer = ({
       }
     }
   }, [isActive]);
+  const t = useTranslations("videoEditor");
   return (
     <Card className="card glass backdrop-blur-sm text-primary-content w-full  rounded-xl">
       <CardContent className="flex flex-row  items-center justify-center gap-4 p-1 rounded-xl ">
         <Image
-          src={`${process.env.NEXT_PUBLIC_FILE_SERVER_URL}/${data.image}`}
+          src={`${process.env.NEXT_PUBLIC_FILE_SERVER_URL}${data.image}`}
           alt="Album Cover"
           width={100}
           height={100}
           className="rounded-xl w-12 h-12 object-cover"
         />
         <div className="text-left w-full">
-          <h2 className="text-sm font-semibold">
+          <h2 className="text-sm text-card-foreground font-semibold">
             {data.title.substring(0, 20) + " ..." || "Audio Title"}
           </h2>
           <p className="text-muted-foreground">
@@ -91,7 +93,12 @@ const HLSAudioPlayer = ({
         </div>
 
         <div className="flex items-center gap-4 absolute  left-2">
-          <Button variant="ghost" size="icon" onClick={handlePlayPause}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handlePlayPause}
+            className="rounded-full hover:bg-pink-500/50 backdrop:blur-3xl active:bg-pink-500/30"
+          >
             {isActive ? (
               <PauseIcon className="w-6 h-6 stroke-pink-500 " />
             ) : (
@@ -101,10 +108,10 @@ const HLSAudioPlayer = ({
         </div>
         <Button
           variant={"ghost"}
-          className="glass  text-white"
+          className="  text-card-foreground hover:bg-pink-500/50 backdrop:blur-3xl active:bg-pink-500/30"
           onClick={() => setUsedTrack(data)}
         >
-          use
+          {t("use")}
         </Button>
         <audio ref={audioRef} onLoadedMetadata={handleLoadedMetadata} />
       </CardContent>
@@ -128,21 +135,22 @@ export const AudioPlayerList = ({ players, setUsedTrack }) => {
   };
 
   return (
-    <div>
-      {players.map((player) => (
-        <>
-          <HLSAudioPlayer
-            key={player._id}
-            id={player._id}
-            data={player}
-            setUsedTrack={setUsedTrack}
-            isActive={activePlayer === player._id}
-            onPlay={handlePlay}
-            onStop={handleStop}
-          />
-          <Separator className="my-2" />
-        </>
-      ))}
+    <div className="flex flex-col items-center w-full rounded-lg ">
+      {players &&
+        players.map((player) => (
+          <>
+            <HLSAudioPlayer
+              key={player._id}
+              id={player._id}
+              data={player}
+              setUsedTrack={setUsedTrack}
+              isActive={activePlayer === player._id}
+              onPlay={handlePlay}
+              onStop={handleStop}
+            />
+            <Separator className="my-2" />
+          </>
+        ))}
     </div>
   );
 };

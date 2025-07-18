@@ -31,6 +31,7 @@ export const eventFormSchema = z
     requiredInfo: z.array(z.string()).optional(),
     country: z.string().optional(),
     discount: z.union([discountSchema, z.null()]).optional(),
+    places: z.number().min(1, "At least one place is required").optional(),
   })
   .refine((data) => data.isOnline || data.location !== null, {
     path: ["location"],

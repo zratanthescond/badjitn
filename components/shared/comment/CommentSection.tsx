@@ -150,7 +150,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
 
       {comments.length === 0 ? (
         <div className="py-4 text-center text-muted-foreground">
-          No comments yet. Be the first to comment!
+          {t("noComments")}
         </div>
       ) : (
         <div className="mt-4">

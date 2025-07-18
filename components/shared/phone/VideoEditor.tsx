@@ -20,6 +20,7 @@ import dynamic from "next/dynamic";
 //   suspense: true,
 // });
 import HLSPlayer from "./HlsPlayer";
+import { useTranslations } from "next-intl";
 export default function VideoEditor({
   url,
   setReel,
@@ -31,14 +32,13 @@ export default function VideoEditor({
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [open, setOpen] = useState(true);
-  const [videoUrl, setVideoUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState<string | File>("");
   const { data, isPending, mutate, error } = useVideoProcess(url);
   const [video, setVideo] = useState<HTMLVideoElement | null>(null);
-
+  const t = useTranslations("fileUploader");
   useEffect(() => {
     if (data) {
-      const videoPath =
-        process.env.NEXT_PUBLIC_FILE_SERVER_URL + "/" + data.path;
+      const videoPath = process.env.NEXT_PUBLIC_FILE_SERVER_URL + data.path;
       console.log(videoPath);
       setVideoUrl(videoPath);
       // if (videoRef.current)
@@ -51,7 +51,7 @@ export default function VideoEditor({
       //alert(url);
     } else {
       if (url) {
-        alert("mutating");
+        //alert("mutating");
         mutate();
       }
     }
@@ -92,14 +92,14 @@ export default function VideoEditor({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="glass">
           <DialogHeader>
-            <DialogTitle className="">Error occured</DialogTitle>
+            <DialogTitle className="">{t("uploadError")}</DialogTitle>
           </DialogHeader>
           <DialogFooter>
             <Button className="glass" onClick={() => mutate()}>
-              Retry
+              {t("retry")}
             </Button>
             <Button className="glass" onClick={() => setOpen(false)}>
-              Close
+              {t("cancel")}
             </Button>
           </DialogFooter>
         </DialogContent>

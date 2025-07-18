@@ -4,7 +4,7 @@ import { formatDateTime, getLastTwoWords } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import React, { use, useMemo, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import { DeleteConfirmation } from "./DeleteConfirmation";
 import HLSPlayer from "./phone/HlsPlayer";
 import HomePostContainer from "./HomePostContainer";
@@ -51,6 +51,7 @@ import TicketControleDropdown from "./TicketControleDropdown";
 import { Avatar } from "@radix-ui/react-avatar";
 import { getUserLocale } from "@/services/locale";
 import { Locale, useLocale } from "next-intl";
+import { json } from "stream/consumers";
 
 type CardProps = {
   event: IEvent;
@@ -62,11 +63,16 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
   // const isEventCreator = userId.toString() === event.organizer._id.toString();
 
   const sponsored = event.Sponsors && event.Sponsors.length > 0;
-  const [userId, setUserId] = useState();
+  const [userId, setUserId] = useState<string>();
+  const getUserId = async () => {
+    const session = await useUser();
+    // alert(JSON.stringify(session));
+    setUserId(session._id);
+  };
+  useEffect(() => {
+    getUserId();
+  }, []);
   // const isEventCreator = userId && event.organizer._id.toString() === userId.toString();
-  const [userLocale, setUserLocale] = React.useState<Locale | undefined>(
-    undefined
-  );
 
   const locale = useLocale();
 
@@ -85,6 +91,9 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
   return (
     <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-2xl backdrop-blur-sm  shadow-md transition-all hover:shadow-lg aspect-[9/16] md:min-h-[380px]">
+      {userId && !hidePrice && !hasOrderLink && (
+        <ReportComponent eventId={event._id} userId={userId.toString()} />
+      )}
       <Link
         href={hidePrice ? {} : `/events/${event._id}`}
         className={`flex-center flex-grow  bg-cover bg-center text-grey-500 w-full h-full `}
@@ -107,12 +116,6 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
             )}
             {!hidePrice && !hasOrderLink && (
               <>
-                {userId && (
-                  <ReportComponent
-                    eventId={event._id}
-                    userId={userId.toString()}
-                  />
-                )}
                 {/* <div className="absolute right-2 top-2 flex flex-col gap-0 items-center p-1 bg-white/30  backdrop-brightness-100 rounded-full backdrop-blur-3xl w-11 h-11   shadow-sm transition-all">
                   <span className="text-white text-xs  font-bold">
                     {
@@ -215,40 +218,41 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
             )}
 
             {hidePrice && (
-              <div className=" invisible group-hover:visible flex w-full h-2/3 glass animate-accordion-up flex-col absolute bottom-0 rounded-t-xl items-center gap-2 justify-start p-2 text-xs dark:text-white">
-                <span>{event.title}</span>
-                <div className="w-full border-b border-dashed border-muted my-2" />
-                <div className="flex w-full flex-row items-center justify-between">
-                  <div className="flex flex-col items-center justify-center">
-                    <span>Date</span>
-                    <span>{formatDateTime(event.startDateTime).dateOnly}</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <span>Time</span>
-                    <span>{formatDateTime(event.startDateTime).timeOnly}</span>
-                  </div>
-                </div>
-              </div>
+              <></>
+              // <div className=" invisible group-hover:visible flex w-full h-2/3 glass animate-accordion-up flex-col absolute bottom-0 rounded-t-xl items-center gap-2 justify-start p-2 text-xs dark:text-white">
+              //   <span>{event.title}</span>
+              //   <div className="w-full border-b border-dashed border-muted my-2" />
+              //   <div className="flex w-full flex-row items-center justify-between">
+              //     <div className="flex flex-col items-center justify-center">
+              //       <span>Date</span>
+              //       <span>{formatDateTime(event.startDateTime).dateOnly}</span>
+              //     </div>
+              //     <div className="flex flex-col items-center justify-center">
+              //       <span>Time</span>
+              //       <span>{formatDateTime(event.startDateTime).timeOnly}</span>
+              //     </div>
+              //   </div>
+              // </div>
             )}
           </div>
-          {hidePrice && (
-            <TicketControleDropdown
-              eventId={event._id.toString()}
-              userId={userId.toString()}
-            />
-
-            // <AlertDialog>
-            //   <AlertDialogTrigger className="absolute top-2 left-2 glass p-3 rounded-lg text-white flex flex-row gap-2">
-            //     <p>details</p> <QrCode />
-            //   </AlertDialogTrigger>
-            //   <AlertDialogContent>
-            //     <QRCode value={event._id} />
-            //     <AlertDialogCancel>Return</AlertDialogCancel>
-            //   </AlertDialogContent>
-            // </AlertDialog>
-          )}
         </div>
       </Link>
+      {hidePrice && userId && (
+        <TicketControleDropdown
+          eventId={event._id.toString()}
+          userId={userId.toString()}
+        />
+
+        // <AlertDialog>
+        //   <AlertDialogTrigger className="absolute top-2 left-2 glass p-3 rounded-lg text-white flex flex-row gap-2">
+        //     <p>details</p> <QrCode />
+        //   </AlertDialogTrigger>
+        //   <AlertDialogContent>
+        //     <QRCode value={event._id} />
+        //     <AlertDialogCancel>Return</AlertDialogCancel>
+        //   </AlertDialogContent>
+        // </AlertDialog>
+      )}
       {/* <div className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4">
         {!hidePrice && (
           <div className="flex gap-2">

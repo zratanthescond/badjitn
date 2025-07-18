@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface XProfileCardProps {
   avatarUrl?: string;
@@ -31,7 +32,7 @@ export function XProfileCard({
   className,
 }: XProfileCardProps) {
   const [isFollowing, setIsFollowing] = useState(initialFollowing);
-
+  const t = useTranslations("follow");
   const toggleFollow = () => {
     setIsFollowing(!isFollowing);
   };
@@ -84,7 +85,7 @@ export function XProfileCard({
                   : "bg-card-foreground/30 text-black hover:bg-zinc-200"
               )}
             >
-              {isFollowing ? "Following" : "Follow"}
+              {isFollowing ? t("following") : t("follow")}
             </Button>
           </div>
 

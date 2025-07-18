@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -18,7 +19,6 @@ import {
   FaListAlt,
   FaDotCircle,
 } from "react-icons/fa";
-import { set } from "mongoose";
 import {
   Card,
   CardContent,
@@ -27,9 +27,10 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Pencil, X } from "lucide-react";
-
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { saveFields } from "@/lib/actions/field.action";
+import { toast } from "@/hooks/use-toast";
+import { title } from "process";
 
 type FieldType = "text" | "number" | "select" | "radio";
 
@@ -39,13 +40,18 @@ interface Field {
   label: string;
   placeholder?: string;
   options?: string[];
-  isEditing: boolean; // Added to track editing state
+  isEditing: boolean;
 }
 
 const FormBuilder = ({ userId }: { userId: string }) => {
+  const t = useTranslations("FormBuilder");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+
   const [fields, setFields] = useState<Field[]>([]);
   const [selectedField, SetSelectedField] = useState<Field | null>(null);
   const [error, setError] = useState<string>("");
+
   const addField = (type: FieldType) => {
     const fieldId = Date.now();
     const newField: Field = {
@@ -55,13 +61,14 @@ const FormBuilder = ({ userId }: { userId: string }) => {
       placeholder: type === "text" || type === "number" ? "" : undefined,
       options:
         type === "select" || type === "radio"
-          ? ["Option 1", "Option 2"]
+          ? [
+              t("fields.defaultOptions.option1"),
+              t("fields.defaultOptions.option2"),
+            ]
           : undefined,
-      isEditing: true, // New field is in editing mode by default
+      isEditing: true,
     };
     setFields((prev) => [...prev, newField]);
-
-    // Set the newly added field as the selected field
     SetSelectedField(newField);
   };
 
@@ -92,68 +99,72 @@ const FormBuilder = ({ userId }: { userId: string }) => {
     );
     SetSelectedField(null);
   };
+
   const saveForm = async () => {
     setError("");
-    // Implement form saving logic here
     const emptyLabel = fields.some((field) => {
       return (
         field.label === "" || field.label === undefined || field.label === null
       );
     });
     if (emptyLabel === true) {
-      alert(emptyLabel);
-      setError("Please fill in all the fields labels");
+      alert(t("validation.emptyLabels"));
+      setError(t("validation.fillAllLabels"));
       return;
     }
     const formattedFields = fields.map(({ id, ...rest }) => ({
       ...rest,
       userId,
-    })); // Exclude local `id`
+    }));
 
     const response = await saveFields(formattedFields);
 
     if (response.success) {
-      alert("Form saved successfully!");
-      setFields([]); // Clear form after saving
+      toast({ title: t("messages.saveSuccess") });
+      setFields([]);
     } else {
-      alert("Error: " + response.message);
+      toast({ title: t("messages.saveError") + response.message });
     }
   };
+
   return (
-    <div className="space-y-6 max-w-4xl mx-auto max-h-screen py-4 ">
+    <div
+      className="space-y-6 max-w-4xl mx-auto max-h-screen py-4"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       <ScrollArea className="h-screen">
-        <h2 className="text-2xl font-bold text-center">Custom Form Builder</h2>
+        <h2 className="text-2xl font-bold text-center">{t("title")}</h2>
 
         <div className="flex justify-center flex-col md:flex-row space-x-4 mb-4">
           <Button variant={"outline"} onClick={() => addField("text")}>
             <FaRegEdit className="mr-2" />
-            Text Field
+            {t("fieldTypes.text")}
           </Button>
           <Button variant={"outline"} onClick={() => addField("number")}>
             <FaListAlt className="mr-2" />
-            Number Field
+            {t("fieldTypes.number")}
           </Button>
           <Button variant={"outline"} onClick={() => addField("select")}>
             <FaPlus className="mr-2" />
-            Dropdown
+            {t("fieldTypes.dropdown")}
           </Button>
           <Button variant={"outline"} onClick={() => addField("radio")}>
             <FaDotCircle className="mr-2" />
-            Radio Buttons
+            {t("fieldTypes.radio")}
           </Button>
         </div>
 
         <div className="space-y-4">
           {selectedField && (
             <div className="p-4 border rounded-lg space-y-3 shadow-md">
-              <Label>Field Label</Label>
+              <Label>{t("fields.fieldLabel")}</Label>
               {selectedField.isEditing ? (
                 <Input
                   value={selectedField.label}
                   onChange={(e) =>
                     updateField(selectedField.id, "label", e.target.value)
                   }
-                  placeholder="Enter field label"
+                  placeholder={t("fields.labelPlaceholder")}
                   className="w-full"
                 />
               ) : (
@@ -167,8 +178,8 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                 <>
                   <Label>
                     {selectedField.type === "select"
-                      ? "Dropdown Options"
-                      : "Radio Options"}
+                      ? t("fields.dropdownOptions")
+                      : t("fields.radioOptions")}
                   </Label>
                   {selectedField.isEditing ? (
                     <Textarea
@@ -180,7 +191,7 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                           e.target.value.split(",").map((opt) => opt.trim())
                         )
                       }
-                      placeholder="Comma-separated options (e.g., Option 1, Option 2)"
+                      placeholder={t("fields.optionsPlaceholder")}
                       className="w-full"
                     />
                   ) : (
@@ -198,7 +209,7 @@ const FormBuilder = ({ userId }: { userId: string }) => {
               {selectedField.type !== "select" &&
                 selectedField.type !== "radio" && (
                   <>
-                    <Label>Placeholder</Label>
+                    <Label>{t("fields.placeholder")}</Label>
                     {selectedField.isEditing ? (
                       <Input
                         value={selectedField.placeholder}
@@ -209,7 +220,7 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                             e.target.value
                           )
                         }
-                        placeholder="Enter placeholder text"
+                        placeholder={t("fields.placeholderText")}
                         className="w-full"
                       />
                     ) : (
@@ -224,28 +235,29 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                   onClick={() => removeField(selectedField.id)}
                 >
                   <FaTrashAlt className="mr-2" />
-                  Remove Field
+                  {t("actions.removeField")}
                 </Button>
                 {selectedField.isEditing ? (
                   <Button
                     onClick={() => finishEditing(selectedField.id)}
                     className="bg-blue-500 text-white"
                   >
-                    Finish Editing
+                    {t("actions.finishEditing")}
                   </Button>
                 ) : (
                   <div className="text-xs text-gray-500">
-                    ID: {selectedField.id}
+                    {t("fields.id")}: {selectedField.id}
                   </div>
                 )}
               </div>
             </div>
           )}
         </div>
+
         <Card className="glass mt-6">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-2xl font-bold tracking-tight">
-              Form Preview
+              {t("preview.title")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -254,9 +266,9 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                 fields.map((field) => (
                   <div
                     key={field.id}
-                    className="space-y-2 border- border-muted-foreground "
+                    className="space-y-2 border- border-muted-foreground"
                   >
-                    <div className=" flex flex-row justify-end gap-2 self-end">
+                    <div className="flex flex-row justify-end gap-2 self-end">
                       <Button
                         variant={"destructive"}
                         size={"icon"}
@@ -278,7 +290,9 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                     {field.type === "select" ? (
                       <Select>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select an option" />
+                          <SelectValue
+                            placeholder={t("preview.selectOption")}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {field.options?.map((option, idx) => (
@@ -322,7 +336,7 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                 ))
               ) : (
                 <div className="flex p-5 rounded-lg w-full h-full items-center justify-center backdrop:blur-2xl backdrop-brightness-150">
-                  <p>no fields added yet</p>
+                  <p>{t("preview.noFields")}</p>
                 </div>
               )}
             </div>
@@ -334,12 +348,10 @@ const FormBuilder = ({ userId }: { userId: string }) => {
           </CardContent>
           <CardFooter className="flex flex-row items-center justify-between">
             <p>
-              <small>
-                this form is used when you want a custom data from the user
-              </small>
+              <small>{t("footer.description")}</small>
             </p>
             <Button size={"lg"} variant={"outline"} onClick={() => saveForm()}>
-              Update Form
+              {t("actions.updateForm")}
             </Button>
           </CardFooter>
         </Card>

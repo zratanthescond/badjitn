@@ -7,12 +7,8 @@ export default function EventLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className=" max-w-screen h-screen">
-      <main className="">
-        <ReactQueryProvider>
-          <SessionProvider>{children}</SessionProvider>
-        </ReactQueryProvider>
-      </main>
-    </div>
+    <ReactQueryProvider>
+      <SessionProvider>{children}</SessionProvider>
+    </ReactQueryProvider>
   );
 }

@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -5,9 +6,10 @@ import NavItems from "./NavItems";
 import MobileNav from "./MobileNav";
 import { ModeToggle } from "../ModeToggle";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { CountryDropdown } from "../ui/country-dropdown";
 import LocaleSwitcher from "./LocaleSwitcher";
-const Header = async () => {
+import { useMediaQuery } from "@/hooks/use-media-query";
+const Header = () => {
+  const dimensions = useMediaQuery("(min-width: 768px)");
   return (
     <header className="flex flex-1 w-full fixed border-b backdrop-blur glass  z-50  ">
       <div className="wrapper flex items-center justify-between">
@@ -35,8 +37,13 @@ const Header = async () => {
           </nav>
         </SignedIn>
         <div className="flex w-36 justify-end items-center align-middle gap-3">
-          <LocaleSwitcher />
-          <ModeToggle />
+          {dimensions && (
+            <>
+              <LocaleSwitcher />
+              <ModeToggle />
+            </>
+          )}
+
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
             <MobileNav />

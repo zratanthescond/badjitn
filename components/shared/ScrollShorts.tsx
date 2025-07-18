@@ -133,7 +133,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
   }, [videosData, parentRef.current]);
 
   return (
-    <>
+    <div className="flex md:container">
       <div
         ref={parentRef}
         className="shorts-scroll-container [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
@@ -350,7 +350,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
           <ArrowDown className="h-10 w-10" />
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 

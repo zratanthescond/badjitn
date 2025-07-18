@@ -1,7 +1,7 @@
 import CheckoutButton from "@/components/shared/CheckoutButton";
 import Collection from "@/components/shared/Collection";
 import HomePostContainer from "@/components/shared/HomePostContainer";
-import ShortsScroll from "@/components/shared/ScrollShorts";
+import ShortsScroll from "@/components/shorts/shorts-scroll";
 import {
   getEventById,
   getRelatedEventsByCategory,
@@ -23,26 +23,8 @@ const EventDetails = async ({
   });
   relatedEvents?.data.unshift(event);
 
-  return (
-    <>
-      <ShortsScroll videos={relatedEvents} />
-
-      {/* EVENTS with the same category */}
-      {/* <section className="wrapper my-8 flex flex-col gap-8 md:gap-12">
-        <h2 className="h2-bold">Related Events</h2>
-
-        <Collection
-          data={relatedEvents?.data}
-          emptyTitle="No Events Found"
-          emptyStateSubtext="Come back later"
-          collectionType="All_Events"
-          limit={3}
-          page={searchParams.page as string}
-          totalPages={relatedEvents?.totalPages}
-        />
-      </section> */}
-    </>
-  );
+  return <ShortsScroll videos={relatedEvents} />;
+  // return <></>;
 };
 
 export default EventDetails;

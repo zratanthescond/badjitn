@@ -114,7 +114,8 @@ export async function approveCertification(certificationId: string) {
     await connectToDatabase();
     const certificate = await Certificate.findOneAndUpdate(
       { _id: certificationId },
-      { status: "approved" }
+      { status: "approved" },
+      { approvedAt: new Date() }
     );
     return JSON.parse(JSON.stringify(certificate));
   } catch (error) {
