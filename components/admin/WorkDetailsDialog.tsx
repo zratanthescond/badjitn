@@ -24,10 +24,14 @@ import { Badge } from "../ui/badge";
 import { extractFileDetails } from "@/lib/utils";
 import { FaFilePdf, FaFileWord, FaFileImage, FaFile } from "react-icons/fa";
 import Link from "next/link";
-import FileViewer from "react-file-viewer";
+
 import { useTranslations, useLocale } from "next-intl";
 import { useState, useRef, useEffect } from "react"; // Import useRef and useEffect
+import dynamic from "next/dynamic";
 
+const FileViewer = dynamic(() => import("react-file-viewer"), {
+  ssr: false, // This is critical
+});
 export function WorkDetailsDialog({ value }: { value: any }) {
   const t = useTranslations("workDetailsDialog");
   const locale = useLocale();

@@ -15,7 +15,7 @@ import {
   File,
   Eye,
 } from "lucide-react";
-import FileViewer from "react-file-viewer";
+
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
 import { Skeleton } from "../ui/skeleton";
@@ -28,7 +28,11 @@ import { extractFileDetails } from "@/lib/utils";
 import { useDropzone } from "react-dropzone";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
+import dynamic from "next/dynamic";
 
+const FileViewer = dynamic(() => import("react-file-viewer"), {
+  ssr: false, // This is critical
+});
 export default function WorkUploader({
   eventId,
   userId,
