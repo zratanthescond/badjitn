@@ -851,6 +851,54 @@
       "workManagement": "Work Management"
     }
   },
+  "workAdministration": {
+    "title": "Work Management",
+    "subtitle": "Manage work submissions and reviews",
+    "searchPlaceholder": "Search works by ID, title, or participant...",
+    "workIdLabel": "Work ID",
+    "participant": "Participant",
+    "table": {
+      "headers": {
+        "id": "ID",
+        "eventTitle": "Event Title",
+        "participant": "Participant",
+        "status": "Status",
+        "submitted": "Submitted",
+        "actions": "Actions"
+      }
+    },
+    "status": {
+      "pendingReview": "Pending Review",
+      "reviewed": "Reviewed",
+      "rejected": "Rejected"
+    },
+    "stats": {
+      "totalWorks": "Total Works",
+      "pendingReview": "Pending Review",
+      "reviewed": "Reviewed",
+      "rejected": "Rejected"
+    },
+    "actions": {
+      "reviewWork": "Review Work",
+      "filterWorks": "Filter Works",
+      "exportData": "Export Data"
+    },
+    "toastMessages": {
+      "success": {
+        "reviewedWork": "{count} work(s) reviewed successfully.",
+        "rejectedWork": "{count} work(s) rejected successfully."
+      },
+      "error": {
+        "reviewError": "{count} work(s) failed to review.",
+        "rejectError": "{count} work(s) failed to reject."
+      }
+    },
+    "emptyState": {
+      "title": "No Works Found",
+      "description": 
+        "There are no works submitted for this event yet. Works will appear here once participants submit their assignments."
+    }
+  },
   "orderAdministration": {
     "title": "Order Management",
     "subtitle": "Track and manage all event orders",
