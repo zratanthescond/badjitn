@@ -10,7 +10,8 @@
   "Navbar": {
     "home": "Accueil",
     "myProfile": "Mon profil",
-    "createEvent": "Créer un événement"
+    "createEvent": "Créer un événement",
+    "login": "Connexion"
    
   },
   "homePage": {
@@ -2812,7 +2813,22 @@
     "support": "Support",
     "privacy": "Confidentialité",
     "helpText": "Besoin d'aide ? Notre équipe de support est là pour vous aider."
-  }
+  },"sponsors": {
+      "title": "Nos Partenaires",
+      "subtitle": "Nous collaborons avec des entreprises innovantes pour créer des expériences exceptionnelles",
+      "badge": "Nos Partenaires de marque",
+      "loading": "Chargement des partenaires...",
+      "tiers": {
+        "platinum": "Partenaire Platine",
+        "gold": "Partenaire Or",
+        "silver": "Partenaire Argent",
+        "bronze": "Partenaire Bronze"
+      },
+      "alt": {
+        "logo": "Logo de {{name}}",
+        "tier": "Badge de niveau {{tier}}"
+      }
+    }
   
 
  

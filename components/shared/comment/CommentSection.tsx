@@ -20,6 +20,7 @@ import { Content } from "@tiptap/react";
 import { useUser } from "@/lib/actions/user.actions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IUser } from "@/lib/database/models/user.model";
+import { useTranslations } from "next-intl";
 //import { PostLikeButton } from "./post-like-button";
 
 interface CommentSectionProps {
@@ -33,6 +34,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const [hasLikedPost, setHasLikedPost] = useState(false);
   const { toast } = useToast();
   const [user, setUser] = useState<IUser | null>(null);
+  const t = useTranslations("comments");
   // Fetch comments and post likes on load
   useEffect(() => {
     const fetchData = async () => {

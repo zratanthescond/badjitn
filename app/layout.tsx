@@ -24,12 +24,16 @@ const poppins = Poppins({
 });
 import { arSA, enUS, frFR } from "@clerk/localizations";
 import { dark } from "@clerk/themes";
+import Icon from "./favicon/favicon.ico";
 export const metadata: Metadata = {
-  title: "Badgi.net",
+  title: "Badgi.net | Event Management Platform",
   description: "Badgi.net is a platform for event management.",
-  icons: {
-    icon: "/assets/images/logo.png",
-  },
+  icons: [
+    {
+      rel: "icon",
+      url: Icon.src,
+    },
+  ],
 };
 const inter = localFont({
   src: [

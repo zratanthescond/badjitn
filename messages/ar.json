@@ -8,7 +8,8 @@
     "Navbar": {
     "home": "الرئيسية",
     "myProfile": "الملف الشخصي",
-    "createEvent": "إنشاء حدث"
+    "createEvent": "إنشاء حدث",
+    "login": "تسجيل الدخول"
     },
     "homePage": {
     "search": "بحث",
@@ -83,8 +84,8 @@
   "cancel": "الغاء",
   "reporting": "جارى الابلاغ..."
 
-}
-,"countries":{
+},
+"countries":{
   "searchPlaceholder": "ابحث عن دولة",
   "noCountries": "لا توجد دول",
   "TA": "تريستان دا كونها",

@@ -8,8 +8,10 @@ import { ModeToggle } from "../ModeToggle";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useTranslations } from "next-intl";
 const Header = () => {
   const dimensions = useMediaQuery("(min-width: 768px)");
+  const t = useTranslations("Navbar");
   return (
     <header className="flex flex-1 w-full fixed border-b backdrop-blur glass  z-50  ">
       <div className="wrapper flex items-center justify-between">
@@ -55,7 +57,7 @@ const Header = () => {
               size="lg"
               variant={"outline"}
             >
-              <Link href="/sign-in">Login</Link>
+              <Link href="/sign-in"> {t("login")}</Link>
             </Button>
           </SignedOut>
         </div>{" "}

@@ -16,7 +16,8 @@
   "Navbar": {
     "home": "Home",
     "myProfile": "My Profile",
-    "createEvent": "Create Event"
+    "createEvent": "Create Event",
+    "login": "Login"
   },
   "datePicker": {
     "pickadate": "Pick a date",
@@ -2828,7 +2829,22 @@
     "orderCreatedSuccess": "Order created successfully",
     "error": "Error",
     "orderCreatedError": "Failed to create order"
+  },"sponsors": {
+    "title": "Trusted by industry leaders",
+    "subtitle": "We partner with innovative companies to create exceptional experiences",
+    "badge": "Our featured partners",
+    "loading": "Loading sponsors...",
+    "tiers": {
+      "platinum": "Platinum Partner",
+      "gold": "Gold Partner",
+      "silver": "Silver Partner",
+      "bronze": "Bronze Partner"
+    },
+    "alt": {
+      "logo": "{{name}} logo",
+      "tier": "{{tier}} badge"
+    }
   }
-
+     
 
 }
