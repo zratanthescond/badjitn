@@ -177,7 +177,7 @@ export default function CreateEventPage({ user }: CreateEventPageProps) {
                 </div>
               </CardHeader>
 
-              <CardContent className="p-8">
+              <CardContent className="p-2 md:p-8">
                 <div className="space-y-6">
                   <p
                     className={`text-muted-foreground leading-relaxed text-lg ${
@@ -295,7 +295,7 @@ export default function CreateEventPage({ user }: CreateEventPageProps) {
                 </div>
               </CardHeader>
 
-              <CardContent className="p-8">
+              <CardContent className="md:p-8 p-2">
                 <div className="space-y-6">
                   <div className="glass bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 backdrop-blur-sm border border-blue-200/30 dark:border-blue-700/30 rounded-2xl p-6">
                     <div

@@ -31,7 +31,7 @@ export default authMiddleware({
         (user.data == null && location === "/cockpit")
       ) {
         console.log("Unauthorized access attempt to cockpit");
-        // NextResponse.redirect(process.env.NEXT_PUBLIC_SERVER_URL + "/");
+        return NextResponse.redirect(process.env.NEXT_PUBLIC_SERVER_URL + "/");
       }
       return NextResponse.next();
     } catch (error) {
