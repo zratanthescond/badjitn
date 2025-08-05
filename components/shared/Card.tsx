@@ -62,7 +62,7 @@ type CardProps = {
 const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
   // const isEventCreator = userId.toString() === event.organizer._id.toString();
 
-  const sponsored = event.Sponsors && event.Sponsors.length > 0;
+  const sponsored = event && event.Sponsors && event.Sponsors.length > 0;
   const [userId, setUserId] = useState<string>();
   const getUserId = async () => {
     const session = await useUser();
@@ -76,18 +76,20 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
   const locale = useLocale();
 
-  const formattedDateParts = useMemo(() => {
-    const formatter = new Intl.DateTimeFormat(locale, {
-      month: "short",
-      day: "2-digit",
-    });
+  const formattedDateParts =
+    event &&
+    useMemo(() => {
+      const formatter = new Intl.DateTimeFormat(locale, {
+        month: "short",
+        day: "2-digit",
+      });
 
-    const parts = formatter.formatToParts(new Date(event.startDateTime));
-    const day = parts.find((p) => p.type === "day")?.value;
-    const month = parts.find((p) => p.type === "month")?.value;
+      const parts = formatter.formatToParts(new Date(event.startDateTime));
+      const day = parts.find((p) => p.type === "day")?.value;
+      const month = parts.find((p) => p.type === "month")?.value;
 
-    return [month, day]; // or [day, month] depending on your layout
-  }, [locale, event.startDateTime]);
+      return [month, day]; // or [day, month] depending on your layout
+    }, [locale, event.startDateTime]);
 
   return (
     <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-2xl backdrop-blur-sm  shadow-md transition-all hover:shadow-lg aspect-[9/16] md:min-h-[380px]">
@@ -99,7 +101,7 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
         className={`flex-center flex-grow  bg-cover bg-center text-grey-500 w-full h-full `}
       >
         <HomePostContainer
-          src={event.imageUrl}
+          src={event ? event.imageUrl : "/images/placeholder-event.jpg"}
           className={`rounded-xl flex w-full h-full ${hidePrice && "h-1/3"}`}
         />
         <div className="absolute inset-0 bg-gradient-to-t pointer-events-none from-black/90 via-black/30 to-transparent">
@@ -217,27 +219,35 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
               </>
             )}
 
-            {hidePrice && (
-              <></>
-              // <div className=" invisible group-hover:visible flex w-full h-2/3 glass animate-accordion-up flex-col absolute bottom-0 rounded-t-xl items-center gap-2 justify-start p-2 text-xs dark:text-white">
-              //   <span>{event.title}</span>
-              //   <div className="w-full border-b border-dashed border-muted my-2" />
-              //   <div className="flex w-full flex-row items-center justify-between">
-              //     <div className="flex flex-col items-center justify-center">
-              //       <span>Date</span>
-              //       <span>{formatDateTime(event.startDateTime).dateOnly}</span>
-              //     </div>
-              //     <div className="flex flex-col items-center justify-center">
-              //       <span>Time</span>
-              //       <span>{formatDateTime(event.startDateTime).timeOnly}</span>
-              //     </div>
-              //   </div>
-              // </div>
-            )}
+            {hidePrice &&
+              (event != null ? (
+                <div className=" invisible group-hover:visible flex w-full h-2/3 glass animate-accordion-up flex-col absolute bottom-0 rounded-t-xl items-center gap-2 justify-start p-2 text-xs dark:text-white">
+                  <span>{event.title}</span>
+                  <div className="w-full border-b border-dashed border-muted my-2" />
+                  <div className="flex w-full flex-row items-center justify-between">
+                    <div className="flex flex-col items-center justify-center">
+                      <span>Date</span>
+                      <span>
+                        {formatDateTime(event.startDateTime).dateOnly}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <span>Time</span>
+                      <span>
+                        {formatDateTime(event.startDateTime).timeOnly}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full h-full flex bg-indigo-500/20 items-center justify-center">
+                  <span className="text-white">No event details available</span>
+                </div>
+              ))}
           </div>
         </div>
       </Link>
-      {hidePrice && userId && (
+      {hidePrice && userId && event && (
         <TicketControleDropdown
           eventId={event._id.toString()}
           userId={userId.toString()}

@@ -1,3 +1,4 @@
+import notFound from "@/app/not-found";
 import SponsorForm from "@/components/shared/AddSponsorComponenet";
 import Collection from "@/components/shared/Collection";
 import FieldViewer from "@/components/shared/FieldViewer";
@@ -23,11 +24,15 @@ import { get } from "http";
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 export const dynamic = "force-dynamic";
 
 const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   const user = await useUser();
+  if (!user) {
+    return redirect("/sign-in");
+  }
   const userId = user?._id;
   //const userId = "676c87bddaac23a02d164642";
   const ordersPage = Number(searchParams?.ordersPage) || 1;
@@ -36,6 +41,7 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   const orders = await getOrdersByUser({ userId, page: ordersPage });
 
   const orderedEvents = orders?.data.map((order: IOrder) => order.event) || [];
+  console.log("orderedEvents", JSON.stringify(orderedEvents, null, 2));
   const organizedEvents = await getEventsByUser({ userId, page: eventsPage });
   const t = await getTranslations("profile");
   return (
@@ -56,7 +62,7 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
       </section>
 
       <section className="wrapper my-8">
-        {/* <Collection
+        <Collection
           data={orderedEvents}
           emptyTitle="No event tickets purchased yet"
           emptyStateSubtext="No worries - plenty of exciting events to explore!"
@@ -65,7 +71,7 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
           page={ordersPage}
           urlParamName="ordersPage"
           totalPages={orders?.totalPages}
-        /> */}
+        />
       </section>
 
       {/* Events Organized */}

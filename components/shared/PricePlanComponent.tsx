@@ -77,6 +77,8 @@ export default function PricePlanComponent({
   };
 
   const handleAddPlan = (e: React.FormEvent) => {
+    alert("handleAddPlan");
+    e.stopPropagation();
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -144,7 +146,7 @@ export default function PricePlanComponent({
 
       <CardContent className="p-6">
         {/* Add Plan Form */}
-        <form onSubmit={handleAddPlan} className="space-y-6 mb-8">
+        <div className="space-y-6 mb-8">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="md:col-span-2">
               <Label htmlFor="description" className="text-sm font-medium">
@@ -208,11 +210,15 @@ export default function PricePlanComponent({
             </div>
           </div>
 
-          <Button type="submit" className="w-full sm:w-auto rounded-full">
+          <Button
+            type="submit"
+            className="w-full sm:w-auto rounded-full"
+            onClick={handleAddPlan}
+          >
             <Plus className="w-4 h-4 mr-2" />
-            {t("buttons.addPlan")}
+            {t("buttons.addPlan")}{" "}
           </Button>
-        </form>
+        </div>
 
         <Separator className="mb-6" />
 

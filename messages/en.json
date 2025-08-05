@@ -2844,6 +2844,16 @@
       "logo": "{{name}} logo",
       "tier": "{{tier}} badge"
     }
+  },"notFound": {
+    "title": "Page Not Found",
+    "description": "Sorry, the page you're looking for doesn't exist or has been moved. Check the URL or return to the homepage to continue browsing.",
+    "backToHome": "Back to Home",
+    "previousPage": "Previous Page",
+    "usefulLinks": "Useful links:",
+    "contact": "Contact",
+    "support": "Support",
+    "privacy": "Privacy",
+    "helpText": "Need help? Our support team is here to assist you."
   }
      
 
