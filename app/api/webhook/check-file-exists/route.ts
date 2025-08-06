@@ -38,6 +38,7 @@ async function getFolderContents(folderId: string): Promise<string[]> {
 export async function POST(request: NextRequest) {
   try {
     const webhookSecret = request.headers.get("x-webhook-secret");
+    console.log("Webhook secret:", webhookSecret);
     if (webhookSecret !== process.env.WEBHOOK_SECRET) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
