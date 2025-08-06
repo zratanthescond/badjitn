@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
+    console.log("Checking file path:", filePath);
     await connectToDatabase();
 
     const folderId = extractFolderIdFromPath(filePath);
