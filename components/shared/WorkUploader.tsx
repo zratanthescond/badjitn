@@ -48,7 +48,7 @@ export default function WorkUploader({
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [note, setNote] = useState<Content>(data?.works.note);
+  const [note, setNote] = useState<Content>(data?.works?.note || "");
   const [fileType, setFileType] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
