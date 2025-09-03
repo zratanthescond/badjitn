@@ -54,11 +54,11 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
 export const createOrder = async (order: CreateOrderParams) => {
   try {
     await connectToDatabase();
-
+    const buyer = await User.findOne({ clerkId: order.buyerId });
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,
-      buyer: order.buyerId,
+      buyer: buyer?._id,
     });
 
     return JSON.parse(JSON.stringify(newOrder));

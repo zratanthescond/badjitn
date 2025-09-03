@@ -13,6 +13,7 @@ import { useUser } from "@/lib/actions/user.actions";
 import { createOrder } from "@/lib/actions/order.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslations } from "next-intl";
+import { useSession } from "@clerk/clerk-react";
 
 export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [checkPlan, setCheckedPlan] = useState<string[]>([]);
@@ -41,11 +42,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   });
   const [userId, setUserId] = useState<string>("");
   const t = useTranslations("eventPrice");
-  const { data: session } = useUser();
+  const { session } = useSession();
 
   useEffect(() => {
     if (session) {
-      setUserId(session._id);
+      /// alert(JSON.stringify(session));
+      setUserId(session?.user.id);
     }
   }, [session]);
 
