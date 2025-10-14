@@ -34,13 +34,10 @@ export async function POST(request: Request) {
       );
     }
 
-    await connectToDatabase();
-    const userId = await User.findOne({ clerkId: metadata?.buyerId });
-
     const order = {
       stripeId: id,
       eventId: metadata?.eventId || "",
-      buyerId: userId?._id || "",
+      buyerId: metadata?.buyerId || "",
       totalAmount: amount_total ? (amount_total / 100).toString() : "0",
       createdAt: new Date(),
       details: JSON.parse(metadata?.details) || "[]",
