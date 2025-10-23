@@ -73,7 +73,7 @@ const Checkout = ({
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Button
-          disabled={price == 0 || !event.isFree}
+          disabled={price == 0}
           type="submit"
           role="link"
           className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full py-7 font-medium shadow-lg shadow-pink-200/50 transition-all duration-300 "
@@ -83,7 +83,7 @@ const Checkout = ({
               <Ticket size={16} className="text-black" />
             </div>
             <span>
-              {event.isFree ? "Get Free Ticket" : `Pay now  {price} TND`}
+              {event.isFree ? "Get Free Ticket" : `Pay now  ${price} TND`}
             </span>
           </div>
         </Button>
