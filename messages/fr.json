@@ -463,11 +463,11 @@
     "addCustomRequiredInfo": "Ajouter des Informations requises personnalisées",
     "emptyTickets": {
       "title": "Aucun billet disponible",
-      "description": "Il n'y a actuellement aucun billet disponible pour cet événement. Veuillez vérifier plus tard ou contacter l'organisateur pour plus d'informations.",
+      "description": "Il n'y a actuellement aucun billet disponible pour cet événement. Veuillez vérifier plus tard ou contacter l'organisateur pour plus d'informations."
     },
     "emptyEventsCreated": {
       "title": "Aucun événement créé",
-      "description": "Vous n'avez pas encore créé d'événements. Commencez à organiser vos événements dès aujourd'hui et atteignez un public mondial avec Badji.net.",
+      "description": "Vous n'avez pas encore créé d'événements. Commencez à organiser vos événements dès aujourd'hui et atteignez un public mondial avec Badji.net."
     }
   },
   "pagination": {
