@@ -466,7 +466,16 @@
     "addSponsor": "Add Sponsor",
     "allSponsors": "All Sponsors",
     "customRequiredInfo": "Custom Required Information",
-    "addCustomRequiredInfo": "Add Custom Required Information"
+    "addCustomRequiredInfo": "Add Custom Required Information",
+    "emptyTickets":{
+    "title":"No event tickets purchased yet",
+    "description":"You haven't purchased any event tickets yet. Explore our events and get your tickets now!"
+
+  },
+  "emptyEventsCreated":{
+    "title":"No events created yet",
+    "description":"You haven't created any events yet. Start organizing your first event now!"
+  }
   },
   "pagination": {
     "previous": "Previous",
@@ -2855,6 +2864,7 @@
     "privacy": "Privacy",
     "helpText": "Need help? Our support team is here to assist you."
   }
+  
      
 
 }

@@ -8,8 +8,10 @@ export default authMiddleware({
   async afterAuth(auth, req: NextRequest) {
     console.log(auth.userId, "User ID from auth middleware");
     try {
+      //for development purposes only
+      const userId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
       const user = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users?clerkId=${auth.userId}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users?clerkId=${userId}`
       );
       const location = req.nextUrl.pathname.match(/\/([^/]+)/)?.[0] || "";
       if (user.data && user.data.isBanned && location !== "banned") {

@@ -460,7 +460,15 @@
     "addSponsor": "Ajouter un Sponsor",
     "allSponsors": "Tous les Sponsors",
     "customRequiredInfo": "Informations requises personnalisées",
-    "addCustomRequiredInfo": "Ajouter des Informations requises personnalisées"
+    "addCustomRequiredInfo": "Ajouter des Informations requises personnalisées",
+    "emptyTickets": {
+      "title": "Aucun billet disponible",
+      "description": "Il n'y a actuellement aucun billet disponible pour cet événement. Veuillez vérifier plus tard ou contacter l'organisateur pour plus d'informations.",
+    },
+    "emptyEventsCreated": {
+      "title": "Aucun événement créé",
+      "description": "Vous n'avez pas encore créé d'événements. Commencez à organiser vos événements dès aujourd'hui et atteignez un public mondial avec Badji.net.",
+    }
   },
   "pagination": {
     "previous": "Précédent",
@@ -2829,6 +2837,7 @@
         "tier": "Badge de niveau {{tier}}"
       }
     }
+    
   
 
  
