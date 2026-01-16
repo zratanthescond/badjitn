@@ -94,9 +94,9 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    //alert("form submitted");
+    alert("form submitted");
 
-    // alert(JSON.stringify(values));
+    alert(JSON.stringify(values));
     console.log(values);
     if (type === "Create") {
       try {
