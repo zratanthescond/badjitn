@@ -42,7 +42,7 @@ export const eventFormSchema = z
     title: z.string().min(3, "Title must be at least 3 characters"),
     description: z.string().min(3, "Description must be at least 3 characters"),
     // FIX: Use .nullable() and .optional()
-    location: locationSchema.nullable().optional(),
+    location: locationSchema.nullable().optional().default(null),
     imageUrl: z.string(),
     startDateTime: z.date(),
     endDateTime: z.date(),

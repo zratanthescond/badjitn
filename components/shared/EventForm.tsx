@@ -63,7 +63,7 @@ type EventFormProps = {
 };
 
 const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState("our location");
   const [latitude, setLatitude] = useState(34.739822);
   const [longitude, setLongitude] = useState(10.7600196);
   const [files, setFiles] = useState<File[]>([]);
