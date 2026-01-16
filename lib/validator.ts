@@ -14,30 +14,62 @@ const discountSchema = z.object({
     })
     .transform((val) => Number(val)),
 });
+// export const eventFormSchema = z
+//   .object({
+//     title: z.string().min(3, "Title must be at least 3 characters"),
+//     description: z.string().min(3, "Description must be at least 3 characters"),
+//     location: z.union([locationSchema, z.null()]).optional(), //for goole maps integration fails
+//     imageUrl: z.string(),
+//     startDateTime: z.date(),
+//     endDateTime: z.date(),
+//     categoryId: z.string(),
+//     price: z.string(),
+//     isFree: z.boolean(),
+//     isOnline: z.boolean().optional(),
+//     url: z.string().url(),
+//     sponsors: z.array(z.string()).optional(),
+//     requiredInfo: z.array(z.string()).optional(),
+//     country: z.string().optional(),
+//     discount: z.union([discountSchema, z.null()]).optional(),
+//     places: z.number().min(1, "At least one place is required").optional(),
+//   })
+//   .refine((data) => data.isOnline || data.location !== null, {
+//     path: ["location"],
+//     message: "Location is required when the event is not online.",
+//   });
 export const eventFormSchema = z
   .object({
     title: z.string().min(3, "Title must be at least 3 characters"),
     description: z.string().min(3, "Description must be at least 3 characters"),
-    location: z.union([locationSchema, z.null()]).optional(),
+    // FIX: Use .nullable() and .optional()
+    location: locationSchema.nullable().optional(),
     imageUrl: z.string(),
     startDateTime: z.date(),
     endDateTime: z.date(),
     categoryId: z.string(),
     price: z.string(),
     isFree: z.boolean(),
-    isOnline: z.boolean().optional(),
+    isOnline: z.boolean().default(false),
     url: z.string().url(),
     sponsors: z.array(z.string()).optional(),
     requiredInfo: z.array(z.string()).optional(),
     country: z.string().optional(),
-    discount: z.union([discountSchema, z.null()]).optional(),
+    discount: discountSchema.nullable().optional(),
     places: z.number().min(1, "At least one place is required").optional(),
   })
-  .refine((data) => data.isOnline || data.location !== null, {
-    path: ["location"],
-    message: "Location is required when the event is not online.",
-  });
-
+  .refine(
+    (data) => {
+      // If it's NOT online, we MUST have a location object with a name
+      if (!data.isOnline) {
+        return !!data.location && !!data.location.name;
+      }
+      return true;
+    },
+    {
+      path: ["location"],
+      message: "Location is required when the event is not online.",
+    },
+  );
 export const signUpFormSchema = z
   .object({
     email: z
