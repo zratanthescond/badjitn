@@ -7,6 +7,7 @@ import { checkoutOrder } from "@/lib/actions/order.actions";
 import { Detail } from "@/lib/database/models/order.model";
 import { motion } from "framer-motion";
 import { Ticket } from "lucide-react";
+import { json } from "stream/consumers";
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 const Checkout = ({
@@ -21,6 +22,7 @@ const Checkout = ({
   const [price, setPrice] = useState<number>(0);
   const [details, setDetails] = useState<Detail[]>([]);
   useEffect(() => {
+    alert(JSON.stringify(event));
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
     if (query.get("success")) {
@@ -29,7 +31,7 @@ const Checkout = ({
 
     if (query.get("canceled")) {
       console.log(
-        "Order canceled -- continue to shop around and checkout when you’re ready."
+        "Order canceled -- continue to shop around and checkout when you’re ready.",
       );
     }
   }, []);
