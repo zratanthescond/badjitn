@@ -55,7 +55,11 @@ export const eventFormSchema = z
     requiredInfo: z.array(z.string()).optional(),
     country: z.string().optional(),
     discount: discountSchema.nullable().optional(),
-    places: z.number().min(1, "At least one place is required").optional(),
+    places: z.coerce
+      .number()
+      .min(1, "At least one place is required")
+      .or(z.literal(0))
+      .optional(),
   })
   .refine(
     (data) => {
