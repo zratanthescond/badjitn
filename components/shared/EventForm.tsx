@@ -170,7 +170,9 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, (e) => {
+          console.log("errors", e);
+        })}
         className="flex flex-col gap-5 rounded-3xl p-5"
       >
         <div className="flex flex-col gap-5 md:flex-row">
@@ -417,7 +419,6 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                             <FormItem className="w-full">
                               <Input
                                 type="number"
-                                disabled={form.getValues("isFree")}
                                 min={0}
                                 placeholder={t("places")}
                                 {...field}
