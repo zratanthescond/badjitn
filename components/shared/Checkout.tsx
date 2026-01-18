@@ -36,23 +36,30 @@ const Checkout = ({
     }
   }, []);
   useEffect(() => {
-    if (parseFloat(event.price) > 0) {
-      console.log("price bigger than 0");
-      setPrice(parseFloat(event.price));
-    }
-    if (chekedPlans && chekedPlans.length >= 0) {
-      let p = 0;
-      let detail: Detail[] = [];
-      event.pricePlan?.map((plan, index) => {
-        if (chekedPlans.indexOf(plan._id) !== -1) {
-          p += plan.price;
+    // 1. Initialize local variables
+    let calculatedPrice = 0;
+    let detail: Detail[] = [];
+
+    // 2. Check for Plans FIRST (If plans exist, they usually override the base price)
+    if (chekedPlans && chekedPlans.length > 0) {
+      event.pricePlan?.forEach((plan) => {
+        if (chekedPlans.includes(plan._id)) {
+          calculatedPrice += plan.price;
           detail.push({ name: plan.name, price: plan.price.toString() });
         }
       });
-      setPrice(p);
+      setPrice(calculatedPrice);
       setDetails(detail);
     }
-    if (event.isFree) setPrice(-1);
+    // 3. FALLBACK to Base Price if no plans are selected
+    else if (event.price && parseFloat(event.price) > 0) {
+      setPrice(parseFloat(event.price));
+    }
+
+    // 4. Handle Free state
+    if (event.isFree) {
+      setPrice(-1);
+    }
   }, [event, chekedPlans]);
   const onCheckout = async () => {
     const order = {
