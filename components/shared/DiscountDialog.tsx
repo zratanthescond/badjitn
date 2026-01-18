@@ -91,10 +91,10 @@ export default function DiscountDialog({
       const updatedData = { ...prev, [id]: value };
 
       // Check if discount applies
-      if (id === discount.field) {
+      if (id === discount?.field) {
         // Check if the selected value matches the discount value
 
-        value === discount.value
+        value === discount?.value
           ? setIsDiscountApplied(true)
           : setIsDiscountApplied(false);
       }
