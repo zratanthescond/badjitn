@@ -6,6 +6,9 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { file: string } },
 ) {
+  if (!params.file) {
+    return new NextResponse("Bad Request", { status: 400 });
+  }
   const filePath = path.join(process.cwd(), "public/uploads", params.file);
 
   if (fs.existsSync(filePath)) {
