@@ -118,7 +118,7 @@ export default function HexGridSponsor({ userId }: { userId: string }) {
                 <Card
                   className="hexagon"
                   style={{
-                    backgroundImage: `url(${card.logo})`,
+                    backgroundImage: `url(api/${card.logo})`,
                     backgroundSize: "contain",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
