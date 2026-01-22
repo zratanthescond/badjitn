@@ -58,7 +58,7 @@ export const createOrder = async (order: CreateOrderParams) => {
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,
-      buyer: buyer?._id !== null ? buyer._id : order.buyerId,
+      buyer: buyer?._id.toString().length > 0 ? buyer._id : order.buyerId,
     });
 
     return JSON.parse(JSON.stringify(newOrder));
