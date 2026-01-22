@@ -58,7 +58,7 @@ export const createOrder = async (order: CreateOrderParams) => {
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,
-      buyer: buyer?._id,
+      buyer: buyer?._id !== null ? buyer._id : order.buyerId,
     });
 
     return JSON.parse(JSON.stringify(newOrder));
@@ -160,9 +160,8 @@ export async function getOrdersByUser({
         },
       });
 
-    const ordersCount = await Order.distinct("event._id").countDocuments(
-      conditions
-    );
+    const ordersCount =
+      await Order.distinct("event._id").countDocuments(conditions);
 
     return {
       data: JSON.parse(JSON.stringify(orders)),
@@ -174,7 +173,7 @@ export async function getOrdersByUser({
 }
 export const getOrderByEventAndBuyer = async (
   eventId: string,
-  userId: string
+  userId: string,
 ) => {
   try {
     await connectToDatabase();
