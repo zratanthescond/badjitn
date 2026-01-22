@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -28,7 +28,7 @@ import {
 } from "../ui/card";
 import { Pencil, X } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { saveFields } from "@/lib/actions/field.action";
+import { fetchFields, saveFields } from "@/lib/actions/field.action";
 import { toast } from "@/hooks/use-toast";
 import { title } from "process";
 
@@ -80,8 +80,8 @@ const FormBuilder = ({ userId }: { userId: string }) => {
     }
     setFields((prev) =>
       prev.map((field) =>
-        field.id === id ? { ...field, [key]: value } : field
-      )
+        field.id === id ? { ...field, [key]: value } : field,
+      ),
     );
     SetSelectedField((prev) => ({ ...prev, [key]: value }));
   };
@@ -94,8 +94,8 @@ const FormBuilder = ({ userId }: { userId: string }) => {
   const finishEditing = (id: number) => {
     setFields((prev) =>
       prev.map((field) =>
-        field.id === id ? { ...field, isEditing: false } : field
-      )
+        field.id === id ? { ...field, isEditing: false } : field,
+      ),
     );
     SetSelectedField(null);
   };
@@ -126,7 +126,14 @@ const FormBuilder = ({ userId }: { userId: string }) => {
       toast({ title: t("messages.saveError") + response.message });
     }
   };
+  useEffect(() => {
+    const formFields = async () => {
+      const response = await fetchFields(userId);
 
+      setFields(response.data || []);
+    };
+    formFields();
+  }, [userId]);
   return (
     <div
       className="space-y-6 max-w-4xl mx-auto max-h-screen py-4"
@@ -188,7 +195,7 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                         updateField(
                           selectedField.id,
                           "options",
-                          e.target.value.split(",").map((opt) => opt.trim())
+                          e.target.value.split(",").map((opt) => opt.trim()),
                         )
                       }
                       placeholder={t("fields.optionsPlaceholder")}
@@ -217,7 +224,7 @@ const FormBuilder = ({ userId }: { userId: string }) => {
                           updateField(
                             selectedField.id,
                             "placeholder",
-                            e.target.value
+                            e.target.value,
                           )
                         }
                         placeholder={t("fields.placeholderText")}
