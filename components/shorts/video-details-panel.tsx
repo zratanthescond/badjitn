@@ -30,8 +30,8 @@ export function VideoDetailsPanel({
   const panelClasses = `
     ${
       isVisible
-        ? "flex top-[30vh] md:top-auto max-h-[70vh] md:max-h-full"
-        : "hidden md:flex"
+        ? "flex top-[15vh] md:top-auto max-h-[85vh] md:max-h-full glass w-full"
+        : "hidden md:flex backdrop-blur top-full max-h-0 overflow-hidden"
     } 
     flex-col glass-panel fixed bottom-0 md:max-w-prose md:relative rounded-2xl w-full 
     md:h-full items-center justify-start gap-2 animate-accordion-down repeat-1
@@ -44,7 +44,7 @@ export function VideoDetailsPanel({
         <Button
           size="icon"
           variant="ghost"
-          className="absolute top-2 right-2 rounded-full z-10 md:hidden text-foreground hover:bg-muted/50 transition-colors duration-200"
+          className="absolute top-2 right-2 rounded-full z-10 md:hidden text-foreground hover:bg-muted/50 transition-colors duration-200 "
           onClick={onClose}
           aria-label={t("close")}
         >

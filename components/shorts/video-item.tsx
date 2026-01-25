@@ -52,7 +52,7 @@ export const VideoItem = forwardRef<HTMLDivElement, VideoItemProps>(
         />
       </div>
     );
-  }
+  },
 );
 
 VideoItem.displayName = "VideoItem";
