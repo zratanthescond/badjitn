@@ -20,7 +20,7 @@ const MobileNav = () => {
         <SheetTrigger className="align-middle">
           <Menu className="w-6 h-6 text-gray-800 dark:text-gray-200" />
         </SheetTrigger>
-        <SheetContent className="flex bg-card/30  flex-col gap-6 md:hidden">
+        <SheetContent className="flex  backdrop-blur-3xl glass  flex-col gap-6 md:hidden">
           <div className="flex flex-row justify-center">
             <Image
               src="/assets/images/logo.png"

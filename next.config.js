@@ -46,7 +46,7 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "4000", // Include the port number if you're running on a specific port
+        port: "3000", // Include the port number if you're running on a specific port
         pathname: "/**",
       },
     ],

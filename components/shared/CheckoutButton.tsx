@@ -30,7 +30,7 @@ const CheckoutButton = ({
     0; // Default to 0 if no price
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center w-full gap-3">
       {hasEventFinished ? (
         <div className="space-y-5 w-full">
           <div className="flex items-center gap-3 p-4 bg-black/30 rounded-2xl border border-red-900/30">

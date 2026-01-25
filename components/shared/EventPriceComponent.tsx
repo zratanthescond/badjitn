@@ -14,7 +14,7 @@ import { createOrder } from "@/lib/actions/order.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslations } from "next-intl";
 import { useSession } from "@clerk/clerk-react";
-
+import { BankTransferModal } from "./bank-transfer-modal";
 export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [checkPlan, setCheckedPlan] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -52,13 +52,13 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   }, [session]);
 
   const validateUserInfo = (
-    objects: { [key: string]: string | number }[]
+    objects: { [key: string]: string | number }[],
   ): boolean => {
     return (
       objects.every((obj) =>
         Object.values(obj).every(
-          (value) => value !== "" && value !== null && value !== undefined
-        )
+          (value) => value !== "" && value !== null && value !== undefined,
+        ),
       ) && objects.length > 0
     );
   };
@@ -254,6 +254,11 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   }}
                   requiredInfo={event.requiredInfo!}
                   discount={event.discount}
+                />
+                <BankTransferModal
+                  orderId={event._id}
+                  amount={price}
+                  currency="TND"
                 />
               </>
             )}
