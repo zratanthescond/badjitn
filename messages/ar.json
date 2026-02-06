@@ -20,7 +20,20 @@
     "home": "الرئيسية",
     "myProfile": "الملف الشخصي",
     "createEvent": "إنشاء حدث",
-    "login": "تسجيل الدخول"
+    "login": "تسجيل الدخول",
+    "aiTools": "أدوات الذكاء الاصطناci"
+    },
+    "aiToolsPage": {
+    "title": "مركز أدوات الذكاء الاصطناعي من Badji",
+    "subtitle": "الوصول إلى جميع أدوات الذكاء الاصطناعي المفضلة لديك في مكان واحد.",
+    "googleIA": "Google IA Pro",
+    "perplexity": "Perplexity",
+    "chatgpt": "ChatGPT Go",
+    "xmind": "Xmind",
+    "capcut": "CapCut",
+    "deepl": "DeepL",
+    "genspark": "Genspark",
+    "visit": "زيارة"
     },
     "homePage": {
     "search": "بحث",

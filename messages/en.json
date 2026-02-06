@@ -17,7 +17,20 @@
     "home": "Home",
     "myProfile": "My Profile",
     "createEvent": "Create Event",
-    "login": "Login"
+    "login": "Login",
+    "aiTools": "AI Tools"
+  },
+  "aiToolsPage": {
+    "title": "Badji AI Tool Hub",
+    "subtitle": "Access all your favorite AI tools in one single place.",
+    "googleIA": "Google IA Pro",
+    "perplexity": "Perplexity",
+    "chatgpt": "ChatGPT Go",
+    "xmind": "Xmind",
+    "capcut": "CapCut",
+    "deepl": "DeepL",
+    "genspark": "Genspark",
+    "visit": "Visit"
   },
   "datePicker": {
     "pickadate": "Pick a date",

@@ -4,7 +4,7 @@ import { headerLinks } from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { CalendarDays, CalendarPlus, User } from "lucide-react";
+import { CalendarDays, CalendarPlus, User, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 const NavItems = () => {
@@ -22,6 +22,9 @@ const NavItems = () => {
       return <User strokeWidth={2.25} />;
     }
 
+    if (link === "/ai-tools") {
+      return <Sparkles strokeWidth={2.25} />;
+    }
     return null;
   };
   return (
