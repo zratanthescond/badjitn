@@ -29,13 +29,16 @@ const Collection = ({
     <>
       {data && data.length > 0 ? (
         <div className="flex flex-col items-center gap-10">
-          <ul className="grid w-full grid-cols-2 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:gap-10">
+          <ul className="grid w-full grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-10">
             {data.map((event) => {
               const hasOrderLink = collectionType === "Events_Organized";
               const hidePrice = collectionType === "My_Tickets";
 
               return (
-                <li key={event?._id} className="flex justify-center">
+                <li
+                  key={event?._id}
+                  className="flex justify-center animate-in fade-in zoom-in duration-500 hover:-translate-y-1 transition-transform"
+                >
                   <Card
                     event={event}
                     hasOrderLink={hasOrderLink}
