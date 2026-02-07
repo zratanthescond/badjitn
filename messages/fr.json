@@ -24,7 +24,11 @@
     "capcut": "CapCut",
     "deepl": "DeepL",
     "genspark": "Genspark",
-    "visit": "Visiter"
+    "badjiAI": "Badji AI Chat",
+    "visit": "Visiter",
+    "selectModel": "Choisir le modèle",
+    "gemini": "Google Gemini",
+    "groq": "Groq / Llama"
   },
   "homePage": {
     "search": "Rechercher",

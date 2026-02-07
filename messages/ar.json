@@ -33,7 +33,11 @@
     "capcut": "CapCut",
     "deepl": "DeepL",
     "genspark": "Genspark",
-    "visit": "زيارة"
+    "badjiAI": "بدجي ذكاء اصطناعي",
+    "visit": "زيارة",
+    "selectModel": "اختر النموذج",
+    "gemini": "جوجل جيميناي",
+    "groq": "جروق / لاما"
     },
     "homePage": {
     "search": "بحث",

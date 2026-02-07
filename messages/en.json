@@ -30,7 +30,11 @@
     "capcut": "CapCut",
     "deepl": "DeepL",
     "genspark": "Genspark",
-    "visit": "Visit"
+    "badjiAI": "Badji AI Chat",
+    "visit": "Visit",
+    "selectModel": "Select Model",
+    "gemini": "Google Gemini",
+    "groq": "Groq / Llama"
   },
   "datePicker": {
     "pickadate": "Pick a date",
