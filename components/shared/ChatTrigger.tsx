@@ -18,7 +18,7 @@ const ChatTrigger = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-500 text-white shadow-lg transition-all hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:bg-primary-600"
-        aria-label={isOpen ? "Close Chat" : "Open Badji Chat"}
+        aria-label={isOpen ? "Close Chat" : "Open Badgi Chat"}
       >
         {isOpen ? (
           <X className="h-7 w-7" />

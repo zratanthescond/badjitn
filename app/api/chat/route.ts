@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const result = await streamText({
     model: google('gemini-2.5-flash'),
     messages: modelMessages,
-    system: `You are "badji chatBOT", a helpful and friendly AI assistant for the Badji events platform.
+    system: `You are "badgi chatBOT", a helpful and friendly AI assistant for the Badji events platform.
 Your goal is to help users navigate the app, find events, understand how to buy tickets, and answer any general questions about the Badji platform.
 
 Key Information about Badji:

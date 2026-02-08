@@ -2865,11 +2865,11 @@
     "helpText": "Need help? Our support team is here to assist you."
   },
   "Chat": {
-    "title": "Badji Chatbot",
-    "placeholder": "Ask anything about Badji...",
+    "title": "Badgi Chatbot",
+    "placeholder": "Ask anything about Badgi...",
     "send": "Send",
     "close": "Close",
-    "welcome": "Hi! I'm Badji chatBOT. How can I help you today?",
+    "welcome": "Hi! I'm Badgi chatBOT. How can I help you today?",
     "error": "Something went wrong. Please try again."
   }
 }

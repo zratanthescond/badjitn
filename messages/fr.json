@@ -2838,11 +2838,11 @@
       }
     },
   "Chat": {
-    "title": "Chatbot Badji",
-    "placeholder": "Posez n'importe quelle question sur Badji...",
+    "title": "Chatbot Badgi",
+    "placeholder": "Posez n'importe quelle question sur Badgi...",
     "send": "Envoyer",
     "close": "Fermer",
-    "welcome": "Salut ! Je suis Badji chatBOT. Comment puis-je vous aider aujourd'hui ?",
+    "welcome": "Salut ! Je suis Badgi chatBOT. Comment puis-je vous aider aujourd'hui ?",
     "error": "Quelque chose s'est mal passé. Veuillez réessayer."
   }
 }
