@@ -2836,9 +2836,13 @@
         "logo": "Logo de {{name}}",
         "tier": "Badge de niveau {{tier}}"
       }
-    }
-    
-  
-
- 
+    },
+  "Chat": {
+    "title": "Chatbot Badji",
+    "placeholder": "Posez n'importe quelle question sur Badji...",
+    "send": "Envoyer",
+    "close": "Fermer",
+    "welcome": "Salut ! Je suis Badji chatBOT. Comment puis-je vous aider aujourd'hui ?",
+    "error": "Quelque chose s'est mal passé. Veuillez réessayer."
+  }
 }

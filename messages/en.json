@@ -2863,8 +2863,13 @@
     "support": "Support",
     "privacy": "Privacy",
     "helpText": "Need help? Our support team is here to assist you."
+  },
+  "Chat": {
+    "title": "Badji Chatbot",
+    "placeholder": "Ask anything about Badji...",
+    "send": "Send",
+    "close": "Close",
+    "welcome": "Hi! I'm Badji chatBOT. How can I help you today?",
+    "error": "Something went wrong. Please try again."
   }
-  
-     
-
 }

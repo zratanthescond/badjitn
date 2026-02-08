@@ -15,7 +15,7 @@ import {
 import React from "react";
 import localFont from "next/font/local";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
+import { getLocale, getMessages } from "next-intl/server";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -67,18 +67,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
-  const clerkLocale = () => {
-    switch (locale) {
-      case "ar":
-        return arSA;
-      case "fr":
-        return frFR;
-      case "en":
-        return enUS;
-      default:
-        return enUS;
-    }
-  };
+  const messages = await getMessages();
+  const localization = locale === "ar" ? arSA : locale === "fr" ? frFR : enUS;
 
   return (
     <html lang={locale}>
@@ -116,15 +106,14 @@ export default async function RootLayout({
             </picture>
           </div>
         </div>
-        <NextIntlClientProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>
-            <ClientProvider clerkLocale={clerkLocale()}>
+            <ClientProvider clerkLocale={localization}>
               <TooltipProvider>{children}</TooltipProvider>
 
               <Toaster />
             </ClientProvider>
           </ThemeProvider>
-          -
         </NextIntlClientProvider>
       </body>
     </html>
