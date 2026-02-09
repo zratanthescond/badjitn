@@ -8,8 +8,10 @@ export default authMiddleware({
   async afterAuth(auth, req: NextRequest) {
     console.log(auth.userId, "User ID from auth middleware");
     try {
-      //for development purposes only
-      const userId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
+      const userId = auth.userId;
+      if (!userId) {
+        return NextResponse.next();
+      }
       const user = await axios.get(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users?clerkId=${userId}`
       );

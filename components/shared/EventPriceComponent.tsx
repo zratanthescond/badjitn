@@ -6,15 +6,17 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
-import { ArrowRight, CheckCircle, ShoppingBag, Ticket } from "lucide-react";
+import { ArrowRight, CheckCircle, Landmark, ShoppingBag, Ticket } from "lucide-react";
 import DiscountDialog from "./DiscountDialog";
 import { toast } from "@/hooks/use-toast";
 import { useUser } from "@/lib/actions/user.actions";
 import { createOrder } from "@/lib/actions/order.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslations } from "next-intl";
-import { useSession } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { BankTransferModal } from "./bank-transfer-modal";
+import { useRouter } from "next/navigation";
+import { Badge } from "../ui/badge";
 export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [checkPlan, setCheckedPlan] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -40,16 +42,10 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     value: "",
     fieldValue: "",
   });
-  const [userId, setUserId] = useState<string>("");
   const t = useTranslations("eventPrice");
-  const { session } = useSession();
+  const { userId } = useAuth();
+  const router = useRouter();
 
-  useEffect(() => {
-    if (session) {
-      /// alert(JSON.stringify(session));
-      setUserId(session?.user.id);
-    }
-  }, [session]);
 
   const validateUserInfo = (
     objects: { [key: string]: string | number }[],
@@ -92,7 +88,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       const discountValue = Number.parseFloat(String(discountInfo.value));
       finalPrice = price - (price * discountValue) / 100;
     }
-    return finalPrice.toFixed(2);
+    return Number.parseFloat(String(finalPrice)).toFixed(2);
   };
 
   const handleGetPreorder = async () => {
@@ -148,8 +144,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   return (
     <div className="relative w-full max-w-full mx-auto">
       {/* Subtle glow effects */}
-      <div className="absolute -top-6 -left-6 w-28 h-28 bg-card/5 rounded-full blur-xl" />
-      <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-card/5 rounded-full blur-xl" />
+      <div className="absolute -top-6 -left-6 w-28 h-28 bg-primary/10 rounded-full blur-xl" />
+      <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/10 rounded-full blur-xl" />
 
       <Card className="relative glass overflow-hidden w-full backdrop-blur-sm bg-card/90 border  shadow-2xl rounded-2xl">
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-pink-500 to-red-500 rounded-t-[2rem]" />
@@ -165,86 +161,117 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         </CardHeader>
 
         <CardContent className="space-y-6 pb-8 px-8">
-          {event.isFree == true ? (
-            <div className="flex items-center justify-between bg-card/5 shadow-md p-4 rounded-full">
-              <p className=" font-medium pl-2">{t("eventFree")}</p>
-              <p className="bg-card text-xl font-bold  py-2 px-4 rounded-full shadow-sm">
-                {t("free")}
-              </p>
-            </div>
-          ) : Number.parseFloat(event.price) > 0 ? (
-            <div className="flex items-center justify-between bg-card/5 shadow-md p-4 rounded-full">
-              <p className=" font-medium pl-2">{t("eventTotalPrice")}</p>
-              <p className="bg-card text-xl font-bold  py-2 px-4 rounded-full shadow-sm">
-                {event.price}{" "}
-                <span className="text-sm font-medium">{"TND"}</span>
-              </p>
-            </div>
-          ) : (
-            event.pricePlan?.map((plan, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between bg-card/5 shadow-md p-4 rounded-full"
-              >
-                <p className=" font-medium pl-2">{plan.name}</p>
-                <p className="bg-card text-xl font-bold  py-2 px-4 rounded-full shadow-sm">
-                  {plan.price}{" "}
-                  <span className="text-sm font-medium">{"TND"}</span>
-                </p>
-                <Checkbox
-                  checked={checkPlan.includes(plan._id!) === true}
-                  className="h-8 w-8 bg-card/5 shadow-md rounded-full"
-                  onCheckedChange={() => handleAddPlan(plan._id)}
-                />
+          {/* Discount and Pricing Section */}
+          <div className="space-y-4">
+            {/* Price Display */}
+            <div className="flex items-center justify-between bg-card/5 shadow-md p-5 rounded-2xl border border-border/50">
+              <p className="font-semibold text-foreground">{t("eventTotalPrice")}</p>
+              <div className="text-right">
+                {Number(discountInfo?.value) > 0 ? (
+                  <div className="flex flex-col items-end">
+                    <span className="text-sm text-destructive line-through opacity-70">
+                      {price} TND
+                    </span>
+                    <span className="text-2xl font-black text-primary animate-in fade-in zoom-in duration-300">
+                      {calculatePriceAsNumber(price)} TND
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-2xl font-black">
+                    {price} TND
+                  </span>
+                )}
               </div>
-            ))
-          )}
+            </div>
 
-          <div className="flex flex-col gap-4">
-            <CheckoutButton event={event} checkPlan={checkPlan} />
             {isAvailable() && (
-              <>
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              <> <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
+                  onClick={() => setIsDialogOpen(true)}
+                  variant="outline"
+                  className={`w-full py-6 rounded-2xl border-dashed border-2 transition-all duration-300 ${Number(discountInfo?.value) > 0
+                    ? "border-green-500/50 bg-green-500/5 text-green-600 dark:text-green-400"
+                    : "border-pink-500/30 hover:border-primary/60 hover:bg-primary/5"
+                    }`}
                 >
-                  <Button
-                    onClick={
-                      event.requiredInfo && !validateUserInfo(requiredUserInfo)
-                        ? () => {
-                            setIsDialogOpen(true);
-                          }
-                        : () => handleGetPreorder()
-                    }
-                    disabled={isProcessing || price == 0}
-                    variant={"outline"}
-                    className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full py-7 font-medium shadow-lg shadow-pink-200/50 transition-all duration-300"
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
+                  <span className="text-foreground font-medium text-pink-500">
+                    {Number(discountInfo?.value) > 0
+                      ? `Discount code applied: ${discountInfo.value}% OFF`
+                      : "Have a discount code? Claim offer!"}
+                  </span>
+                </Button>
+              </motion.div>
+                <CheckoutButton
+                  event={event}
+                  checkPlan={checkPlan}
+                  discountInfo={discountInfo}
+                />
+
+
+                <SignedIn>
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    <div className="flex items-center justify-center gap-3">
-                      {isProcessing ? (
-                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-black border-t-transparent" />
-                      ) : (
-                        <>
-                          <div className="bg-black/10 p-1.5 rounded-full">
-                            <ShoppingBag size={16} className="text-black" />
-                          </div>
-                          <span>
-                            {t("payInDoor")} {calculatePrice(price)}{" "}
-                          </span>
-                          <ArrowRight
-                            size={16}
-                            className={`transition-transform duration-300 ${
-                              isHovered ? "translate-x-1" : ""
-                            }`}
-                          />
-                        </>
-                      )}
-                    </div>
-                  </Button>
-                </motion.div>
+                    <Button
+                      onClick={() => handleGetPreorder()}
+                      disabled={isProcessing || price == 0}
+                      variant={"outline"}
+                      className="w-full h-14 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-700 hover:to-slate-800 text-white rounded-full font-semibold shadow-lg transition-all duration-300"
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                    >
+                      <div className="flex items-center justify-center gap-3">
+                        {isProcessing ? (
+                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        ) : (
+                          <>
+                            <div className="bg-white/10 p-1.5 rounded-full">
+                              <ShoppingBag size={16} className="text-white" />
+                            </div>
+                            <span>
+                              {t("payInDoor")} {calculatePriceAsNumber(price)} TND
+                            </span>
+                            <ArrowRight
+                              size={16}
+                              className={`transition-transform duration-300 ${isHovered ? "translate-x-1" : ""
+                                }`}
+                            />
+                          </>
+                        )}
+                      </div>
+                    </Button>
+                  </motion.div>
+                </SignedIn>
+                <SignedOut>
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Button
+                      onClick={() => router.push("/sign-in")}
+                      disabled={price == 0}
+                      variant={"outline"}
+                      className="w-full h-14 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-700 hover:to-slate-800 text-white rounded-full font-semibold shadow-lg transition-all duration-300"
+                    >
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="bg-white/10 p-1.5 rounded-full">
+                          <ShoppingBag size={16} className="text-white" />
+                        </div>
+                        <span>
+                          {t("payInDoor")} {calculatePriceAsNumber(price)} TND
+                        </span>
+                        <ArrowRight size={16} />
+                      </div>
+                    </Button>
+                  </motion.div>
+                </SignedOut>
+
                 <DiscountDialog
                   setDiscountInfo={setDiscountInfo}
                   setRequiredUserInfo={setRequiredUserInfo}
@@ -255,23 +282,49 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   requiredInfo={event.requiredInfo!}
                   discount={event.discount}
                 />
-                <BankTransferModal
-                  orderId={event._id}
-                  amount={price}
-                  currency="TND"
-                />
+
+                <SignedIn>
+                  <BankTransferModal
+                    eventId={event._id}
+                    buyerId={userId || ""}
+                    amount={Number(calculatePriceAsNumber(price))}
+                    currency="TND"
+                    details={event.pricePlan?.filter((item) => checkPlan.includes(item._id!)).map(item => ({
+                      name: item.name,
+                      price: item.price
+                    })) || []}
+                    requiredUserInfo={requiredUserInfo}
+                    discountInfo={discountInfo}
+                  />
+                </SignedIn>
+                <SignedOut>
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Button
+                      onClick={() => router.push("/sign-in")}
+                      disabled={price == 0}
+                      className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
+                    >
+                      <Landmark className="mr-2 h-5 w-5" />
+                      Virement Bancaire {calculatePriceAsNumber(price)} TND
+                    </Button>
+                  </motion.div>
+                </SignedOut>
               </>
             )}
           </div>
 
-          <div className="pt-2 flex items-center justify-center gap-2 text-sm">
-            <div className="flex items-center glass gap-1 bg-white/5 px-3 py-1.5 rounded-full">
-              <CheckCircle size={14} className="text-green-400" />
-              <span>{t("secureCheckout")}</span>
+          <div className="pt-2 flex items-center justify-center gap-4 text-sm pb-2">
+            <div className="flex items-center glass gap-2 bg-muted/50 px-4 py-2 rounded-full border border-border/60">
+              <CheckCircle size={14} className="text-green-500" />
+              <span className="text-foreground font-bold">{t("secureCheckout")}</span>
             </div>
-            <div className="w-1.5 h-1.5 bg-white/20 rounded-full"></div>
-            <div className="bg-white/5 px-3 py-1.5 glass rounded-full">
-              {t("instantConfirmation")}
+            <div className="flex items-center glass gap-2 bg-muted/50 px-4 py-2 rounded-full border border-border/60">
+              <CheckCircle size={14} className="text-green-500" />
+              <span className="text-foreground font-bold">{t("instantConfirmation")}</span>
             </div>
           </div>
         </CardContent>

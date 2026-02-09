@@ -17,6 +17,7 @@ import { useState, useCallback, useMemo } from "react";
 import { differenceInDays, format } from "date-fns";
 import { enUS, es, fr, de, ar } from "date-fns/locale";
 import { useTranslations, useLocale } from "next-intl";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 import {
   CalendarDays,
@@ -106,9 +107,8 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
           <DropdownMenuItem
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
-            className={`flex items-center gap-2 ${
-              locale === language.code ? "bg-accent" : ""
-            }`}
+            className={`flex items-center gap-2 ${locale === language.code ? "bg-accent" : ""
+              }`}
           >
             <span>{language.flag}</span>
             <span>{language.name}</span>
@@ -126,25 +126,25 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
           <CardContent className="p-6 text-center space-y-4">
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent dark:from-pink-400 dark:via-purple-400 dark:to-indigo-400">
                   {event.title}
                 </h1>
               </div>
             </div>
 
             {/* Event Stats */}
-            <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center justify-center gap-6 text-sm text-foreground/80">
               {event.attendees && (
-                <div className="flex items-center gap-2 bg-white/50 dark:bg-black/20 rounded-full px-3 py-1">
-                  <Users className="h-4 w-4 text-pink-500" />
-                  <span className="font-medium">
+                <div className="flex items-center gap-2 bg-indigo-500/10 rounded-full px-4 py-1.5 border border-indigo-500/20">
+                  <Users className="h-4 w-4 text-indigo-500" />
+                  <span className="font-semibold">
                     {t("attendees", { count: event.attendees.length })}
                   </span>
                 </div>
               )}
-              <div className="flex items-center gap-2 bg-white/50 dark:bg-black/20 rounded-full px-3 py-1">
+              <div className="flex items-center gap-2 bg-purple-500/10 rounded-full px-4 py-1.5 border border-purple-500/20">
                 <Clock className="h-4 w-4 text-purple-500" />
-                <span className="font-medium">
+                <span className="font-semibold">
                   {format(event.startDateTime, "MMM d, yyyy", {
                     locale: dateLocale,
                   })}
@@ -153,21 +153,34 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
             </div>
 
             {/* Join Button */}
-            <Button
-              onClick={handleJoinEvent}
-              disabled={isJoining}
-              size="lg"
-              className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold min-w-32 shadow-lg hover:shadow-xl transition-all duration-200"
-            >
-              {isJoining ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {t("joining")}
-                </>
-              ) : (
-                t("joinButton")
-              )}
-            </Button>
+            <SignedIn>
+              <Button
+                onClick={handleJoinEvent}
+                disabled={isJoining}
+                size="lg"
+                className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold min-w-32 shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                {isJoining ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {t("joining")}
+                  </>
+                ) : (
+                  t("joinButton")
+                )}
+              </Button>
+            </SignedIn>
+            <SignedOut>
+              <Button
+                asChild
+                size="lg"
+                className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold min-w-32 shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                <div onClick={() => router.push("/sign-in")}>
+                  {t("joinButton")}
+                </div>
+              </Button>
+            </SignedOut>
           </CardContent>
         </Card>
 
@@ -317,11 +330,10 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
                   <Button
                     variant={section === value ? "default" : "ghost"}
                     size="sm"
-                    className={`rounded-full whitespace-nowrap transition-all duration-200 ${
-                      section === value
-                        ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md"
-                        : "hover:bg-pink-50 dark:hover:bg-pink-950/20"
-                    }`}
+                    className={`rounded-full whitespace-nowrap transition-all duration-200 ${section === value
+                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md"
+                      : "text-foreground/70 hover:bg-pink-50 dark:hover:bg-pink-950/20"
+                      }`}
                   >
                     <Icon className="h-3.5 w-3.5 mr-2" />
                     {label}
@@ -329,7 +341,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
                 </TabsTrigger>
               ))}
             </div>
-            <ScrollBar orientation="horizontal" className="bg-pink-200/50" />
+            <ScrollBar orientation="horizontal" className="bg-transparent" />
           </ScrollArea>
         </TabsList>
       </Tabs>

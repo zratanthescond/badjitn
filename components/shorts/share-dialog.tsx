@@ -39,9 +39,9 @@ export function ShareDialog({ isOpen, onClose, videoId }: ShareDialogProps) {
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className="sm:max-w-md">
-        <div className="glass flex flex-col w-full p-6 gap-4 rounded-lg backdrop-blur-md bg-white/10 border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-2">
+      <AlertDialogContent className="sm:max-w-md bg-card border-border shadow-2xl rounded-3xl overflow-hidden p-0">
+        <div className="flex flex-col w-full p-6 gap-6">
+          <h3 className="text-xl font-bold text-foreground">
             {t("share.title")}
           </h3>
 
@@ -49,7 +49,7 @@ export function ShareDialog({ isOpen, onClose, videoId }: ShareDialogProps) {
             type="url"
             value={shareUrl}
             readOnly
-            className="bg-white/10 border-white/20 text-white placeholder-white/70"
+            className="bg-muted border-border text-foreground rounded-xl"
             onClick={(e) => e.currentTarget.select()}
           />
 
@@ -87,13 +87,19 @@ export function ShareDialog({ isOpen, onClose, videoId }: ShareDialogProps) {
             </Button>
           </div>
 
-          <div className="flex flex-row items-center justify-end gap-3 mt-4">
-            <AlertDialogCancel className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+          <div className="flex flex-row items-center justify-end gap-3 mt-2">
+            <AlertDialogCancel className="rounded-full px-6">
               {t("share.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-white/20 text-white hover:bg-white/30"
-              onClick={() => navigator.clipboard.writeText(shareUrl)}
+              className="rounded-full px-6 bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={() => {
+                navigator.clipboard.writeText(shareUrl);
+                toast({
+                  title: t("share.copied"),
+                  duration: 2000,
+                });
+              }}
             >
               {t("share.copyLink")}
             </AlertDialogAction>

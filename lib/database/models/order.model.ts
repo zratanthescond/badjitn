@@ -4,6 +4,7 @@ enum OrderType {
   PAID = "paid",
   HOSTED = "hosted",
   DOORPAY = "doorpay",
+  BANK_TRANSFER = "bank_transfer",
 }
 
 export type Detail = {
@@ -43,6 +44,8 @@ export interface IOrder extends Document {
   details: Detail[];
   discountInfo?: DiscountType;
   requiredUserInfo: RequiredUserInfoType[];
+  category: "speaker" | "sponsor" | "staff" | "attendee";
+  badgePrinted: boolean;
 }
 
 // Subdocument schema for `Detail`
@@ -112,6 +115,15 @@ const OrderSchema = new Schema<IOrder>({
     type: [RequiredUserInfoSchema],
     required: false,
     default: [],
+  },
+  category: {
+    type: String,
+    enum: ["speaker", "sponsor", "staff", "attendee"],
+    default: "attendee",
+  },
+  badgePrinted: {
+    type: Boolean,
+    default: false,
   },
 });
 

@@ -47,9 +47,8 @@ export function XProfileCard({
       <div className="flex p-3 gap-3">
         {/* Avatar */}
         <Avatar
-          className={`h-12 w-12 rounded-full border-4 ${
-            isVerified ? "border-[#1d9bf0]" : "border-neutral-400"
-          }`}
+          className={`h-12 w-12 rounded-full border-4 ${isVerified ? "border-[#1d9bf0]" : "border-neutral-400"
+            }`}
         >
           <AvatarImage
             src={avatarUrl || "/placeholder.svg?height=48&width=48"}
@@ -67,9 +66,8 @@ export function XProfileCard({
               <span className="font-bold text-sm truncate">{username}</span>
 
               <div
-                className={`${
-                  isVerified ? " bg-[#1d9bf0]" : "bg-neutral-400"
-                } rounded-full p-0.5 flex-shrink-0`}
+                className={`${isVerified ? " bg-[#1d9bf0]" : "bg-neutral-400"
+                  } rounded-full p-0.5 flex-shrink-0`}
               >
                 <CheckIcon className="h-2.5 w-2.5 text-white" />
               </div>
@@ -90,13 +88,13 @@ export function XProfileCard({
           </div>
 
           <div className="flex flex-col text-xs">
-            <span className="text-zinc-500">@{handle}</span>
+            <span className="text-foreground/70">@{handle}</span>
             {organization && (
               <a
                 href={organizationUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-zinc-400 mt-0.5"
+                className="text-foreground/80 mt-0.5"
               >
                 <Button
                   variant={"link"}
@@ -109,7 +107,7 @@ export function XProfileCard({
               </a>
             )}
             {bio && (
-              <p className="mt-1 text-zinc-300 line-clamp-2 text-xs">{bio}</p>
+              <p className="mt-1 text-foreground font-medium line-clamp-2 text-xs">{bio}</p>
             )}
           </div>
         </div>

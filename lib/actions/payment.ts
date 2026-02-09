@@ -1,9 +1,21 @@
 'use server'
 
+import { v4 as uuidv4 } from 'uuid'
+import { connectToDatabase } from '../database'
+import BankTransfer from '../database/models/banktransfer.model'
+import Order from '../database/models/order.model'
+import Event from '../database/models/event.model'
+import User from '../database/models/user.model'
+
 interface BankTransferInput {
-  orderId: string
+  eventId: string
+  buyerId: string
+  totalAmount: string
+  details: any[]
+  requiredUserInfo?: any[]
+  discountInfo?: any
   transferId: string | null
-  screenshot: FormData | null
+  screenshotUrl: string | null
 }
 
 interface BankTransferResponse {
@@ -14,90 +26,100 @@ interface BankTransferResponse {
 
 export async function submitBankTransfer(input: BankTransferInput): Promise<BankTransferResponse> {
   try {
-    const { orderId, transferId, screenshot } = input
+    const {
+      eventId,
+      buyerId,
+      totalAmount,
+      details,
+      requiredUserInfo,
+      discountInfo,
+      transferId,
+      screenshotUrl
+    } = input
 
-    // Validate orderId
-    if (!orderId || typeof orderId !== 'string') {
+    // Basic validation
+    if (!eventId || !buyerId || !totalAmount) {
       return {
         success: false,
-        message: 'Invalid order ID',
+        message: 'Missing required order information',
       }
     }
 
     // Validate that at least one submission method is provided
-    if (!transferId && !screenshot) {
+    if (!transferId && !screenshotUrl) {
       return {
         success: false,
         message: 'Please provide either a transfer ID or a screenshot',
       }
     }
 
-    let screenshotUrl: string | null = null
+    await connectToDatabase()
 
-    // Handle screenshot upload if provided
-    if (screenshot) {
-      const file = screenshot.get('file') as File
-      
-      if (!file) {
-        return {
-          success: false,
-          message: 'No file provided',
-        }
-      }
+    // 1. Find the buyer to get their MongoDB ID
+    // Try by clerkId first (most common), fallback to _id if it's a valid ObjectId string
+    let buyer = await User.findOne({ clerkId: buyerId })
 
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        return {
-          success: false,
-          message: 'File must be an image',
-        }
-      }
-
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        return {
-          success: false,
-          message: 'File size must be less than 5MB',
-        }
-      }
-
-      // TODO: Upload to Vercel Blob Storage or your preferred storage
-      // For now, we'll store the filename and size
-      screenshotUrl = `${file.name}`
+    if (!buyer && buyerId.match(/^[0-9a-fA-F]{24}$/)) {
+      buyer = await User.findById(buyerId)
     }
 
-    // TODO: Store bank transfer record in database
-    // This is where you would:
-    // 1. Create a new bank_transfer record with:
-    //    - orderId
-    //    - transferId (if provided)
-    //    - screenshotUrl (if provided)
-    //    - status: 'pending' (awaiting admin verification)
-    //    - createdAt: current timestamp
-    //
-    // Example structure:
-    // await db.bankTransfer.create({
-    //   orderId,
-    //   transferId: transferId || null,
-    //   screenshotUrl: screenshotUrl || null,
-    //   status: 'pending',
-    //   createdAt: new Date(),
-    // })
+    if (!buyer) {
+      console.error(`[Bank Transfer] Buyer not found for ID: ${buyerId}`)
+      return {
+        success: false,
+        message: `Buyer not found (ID: ${buyerId}). Please ensure your profile is fully set up.`,
+      }
+    }
 
-    console.log('[v0] Bank transfer submitted:', {
-      orderId,
-      transferId,
-      hasScreenshot: !!screenshotUrl,
-      screenshotUrl,
+    // 2. Find the event to get its title
+    const event = await Event.findById(eventId)
+    if (!event) {
+      return {
+        success: false,
+        message: 'Event not found',
+      }
+    }
+
+    // 3. Create the Order first
+    const newOrder = await Order.create({
+      stripeId: `bt_${uuidv4()}`,
+      event: eventId,
+      buyer: buyer._id,
+      totalAmount: Number(totalAmount),
+      type: 'bank_transfer',
+      details: details || [],
+      requiredUserInfo: requiredUserInfo || [],
+      discountInfo: discountInfo || null,
+    })
+
+    if (!newOrder) {
+      throw new Error('Failed to create order')
+    }
+
+    // 4. Create bank transfer record linked to the new order
+    const bankTransfer = await BankTransfer.create({
+      orderId: newOrder._id.toString(),
+      transferId: transferId || null,
+      screenshotUrl: screenshotUrl || null,
+      status: 'pending',
+      amount: Number(totalAmount),
+      buyerName: `${buyer.firstName || ''} ${buyer.lastName || ''}`.trim() || buyer.username,
+      eventTitle: event.title,
+    })
+
+    console.log('[Bank Transfer] Order and Transfer created:', {
+      orderId: newOrder._id,
+      transferId: bankTransfer._id,
+      status: 'pending',
     })
 
     return {
       success: true,
       message: 'Bank transfer submitted successfully. Please wait for verification.',
-      paymentId: `BT-${orderId}-${Date.now()}`,
+      paymentId: bankTransfer._id.toString(),
     }
   } catch (error) {
-    console.error('[v0] Error submitting bank transfer:', error)
+    console.error('[Bank Transfer] Error submitting:', error)
     return {
       success: false,
       message: 'An unexpected error occurred. Please try again.',

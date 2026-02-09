@@ -14,10 +14,12 @@ const Checkout = ({
   event,
   userId,
   chekedPlans,
+  discountInfo,
 }: {
   event: IEvent;
   userId?: string;
   chekedPlans?: string[];
+  discountInfo?: any;
 }) => {
   const [price, setPrice] = useState<number>(0);
   const [details, setDetails] = useState<Detail[]>([]);
@@ -42,7 +44,7 @@ const Checkout = ({
 
     // 2. Check for Plans FIRST (If plans exist, they usually override the base price)
     if (chekedPlans && chekedPlans.length > 0) {
-      event.pricePlan?.forEach((plan) => {
+      event.pricePlan?.forEach((plan: any) => {
         if (chekedPlans.includes(plan._id)) {
           calculatedPrice += plan.price;
           detail.push({ name: plan.name, price: plan.price.toString() });
@@ -53,21 +55,31 @@ const Checkout = ({
     }
     // 3. FALLBACK to Base Price if no plans are selected
     else if (event.price && parseFloat(event.price) > 0) {
-      setPrice(parseFloat(event.price));
+      calculatedPrice = parseFloat(event.price);
+      setPrice(calculatedPrice);
     }
 
-    // 4. Handle Free state
+    // 4. Apply Discount BEFORE setting final price
+    const discountValue = Number(discountInfo?.value) || 0;
+    if (discountValue > 0 && calculatedPrice > 0) {
+      const discountedPrice = calculatedPrice - (calculatedPrice * discountValue) / 100;
+      setPrice(discountedPrice);
+    } else {
+      setPrice(calculatedPrice);
+    }
+
+    // 5. Handle Free state
     if (event.isFree) {
       setPrice(-1);
     }
-  }, [event, chekedPlans]);
+  }, [event, chekedPlans, discountInfo]);
   const onCheckout = async () => {
     const order = {
       eventTitle: event.title,
       eventId: event._id,
       price: price,
       isFree: event.isFree,
-      buyerId: userId,
+      buyerId: userId || "",
       details: details,
     };
 
@@ -85,14 +97,14 @@ const Checkout = ({
           disabled={price == 0}
           type="submit"
           role="link"
-          className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full py-7 font-medium shadow-lg shadow-pink-200/50 transition-all duration-300 "
+          className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300 "
         >
-          <div className="flex w-full items-center justify-center gap-3">
-            <div className="bg-black/10 p-1.5 rounded-full">
-              <Ticket size={16} className="text-black" />
+          <div className="flex items-center justify-center gap-3">
+            <div className="bg-primary-foreground/20 p-1.5 rounded-full">
+              <Ticket size={16} className="text-primary-foreground" />
             </div>
             <span>
-              {event.isFree ? "Get Free Ticket" : `Pay now  ${price} TND`}
+              {event.isFree ? "Get Free Ticket" : `Pay now  ${price.toFixed(2)} TND`}
             </span>
           </div>
         </Button>

@@ -13,15 +13,23 @@ import { Upload, AlertCircle, X, Landmark } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { motion } from "framer-motion";
 interface BankTransferModalProps {
-  orderId: string;
+  eventId: string;
+  buyerId: string;
   amount: number;
   currency: string;
+  details: any[];
+  requiredUserInfo: any[];
+  discountInfo: any;
 }
 
 export function BankTransferModal({
-  orderId,
+  eventId,
+  buyerId,
   amount,
   currency,
+  details,
+  requiredUserInfo,
+  discountInfo,
 }: BankTransferModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [transferId, setTransferId] = useState("");
@@ -76,9 +84,14 @@ export function BankTransferModal({
     setIsLoading(true);
     try {
       const result = await submitBankTransfer({
-        orderId,
+        eventId,
+        buyerId,
+        totalAmount: amount.toString(),
+        details,
+        requiredUserInfo,
+        discountInfo,
         transferId: transferId.trim(),
-        screenshot: null,
+        screenshotUrl: null,
       });
 
       if (result.success) {
@@ -121,13 +134,37 @@ export function BankTransferModal({
 
     setIsLoading(true);
     try {
+      // First, upload the file to the server
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
+      const uploadResponse = await fetch("/api/upload-bank-transfer", {
+        method: "POST",
+        body: formData,
+      });
+
+      const uploadResult = await uploadResponse.json();
+
+      if (!uploadResult.success) {
+        toast({
+          title: "Error",
+          description: uploadResult.message || "Failed to upload screenshot",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Then submit the bank transfer with the uploaded file URL
       const result = await submitBankTransfer({
-        orderId,
+        eventId,
+        buyerId,
+        totalAmount: amount.toString(),
+        details,
+        requiredUserInfo,
+        discountInfo,
         transferId: null,
-        screenshot: formData,
+        screenshotUrl: uploadResult.url,
       });
 
       if (result.success) {
@@ -173,26 +210,26 @@ export function BankTransferModal({
       >
         <Button
           onClick={() => setIsOpen(true)}
-          className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full py-7 font-medium shadow-lg shadow-pink-200/50 transition-all duration-300"
+          className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
         >
           <Landmark className="mr-2 h-5 w-5" />
           Virement Bancaire {amount} {currency}
         </Button>
       </motion.div>
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-card text-card-foreground border border-border rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Landmark className="h-5 w-5 text-pink-500" />
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold">
                   Bank Transfer Payment
                 </h2>
               </div>
               <button
                 onClick={closeModal}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -200,16 +237,15 @@ export function BankTransferModal({
 
             {/* Content */}
             <div className="p-6">
-              <Alert className="mb-6 border-blue-200 bg-blue-50">
-                <AlertCircle className="h-4 w-4 text-blue-600" />
-                <AlertDescription className="text-sm text-blue-900">
-                  Make a bank transfer to our account and provide your transfer
-                  ID or a screenshot of the confirmation.
+              <Alert className="mb-6 bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription className="text-sm">
+                  Make a bank transfer to our account and provide your transfer ID or a screenshot of the confirmation.
                 </AlertDescription>
               </Alert>
 
               <Tabs defaultValue="transfer-id" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50">
                   <TabsTrigger value="transfer-id" className="text-sm">
                     Transfer ID
                   </TabsTrigger>
@@ -236,7 +272,7 @@ export function BankTransferModal({
                         className="text-sm"
                       />
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       Enter the reference or confirmation number from your bank
                       transfer.
                     </p>
@@ -266,16 +302,16 @@ export function BankTransferModal({
                       >
                         Upload Screenshot
                       </Label>
-                      <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-4 transition-colors hover:border-gray-400 hover:bg-gray-50">
+                      <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-border p-4 transition-colors hover:border-primary/50 hover:bg-muted/50">
                         <label
                           htmlFor="file-upload"
                           className="flex w-full cursor-pointer flex-col items-center justify-center"
                         >
-                          <Upload className="h-6 w-6 text-gray-400" />
-                          <p className="mt-1 text-xs font-medium text-gray-700">
+                          <Upload className="h-6 w-6 text-muted-foreground" />
+                          <p className="mt-1 text-xs font-medium text-foreground">
                             Click to upload or drag and drop
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             PNG, JPG, GIF up to 5MB
                           </p>
                           <input
@@ -292,7 +328,7 @@ export function BankTransferModal({
                       {preview && (
                         <ScrollArea className="h-36 w-full rounded-lg border">
                           <div className="space-y-2">
-                            <p className="text-xs font-medium text-gray-700">
+                            <p className="text-xs font-medium text-foreground">
                               Preview:
                             </p>
 

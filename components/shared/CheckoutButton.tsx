@@ -13,24 +13,31 @@ import { motion } from "framer-motion";
 const CheckoutButton = ({
   event,
   checkPlan,
+  discountInfo,
 }: {
   event: IEvent;
-  checkPlan?: number[];
+  checkPlan?: string[];
+  discountInfo?: any;
 }) => {
   const { session } = useSession();
 
   const hasEventFinished = new Date(event.endDateTime) < new Date();
 
   // Ensure event.pricePlan exists before reducing
-  const price =
-    event.price ||
-    event.pricePlan?.reduce((sum, item) => {
+  let initialPriceValue = 0;
+  if (event.price) {
+    initialPriceValue = parseFloat(event.price);
+  } else if (event.pricePlan) {
+    initialPriceValue = event.pricePlan.reduce((sum, item: any) => {
       return checkPlan?.includes(item._id!) ? sum + item.price : sum;
-    }, 0) ||
-    0; // Default to 0 if no price
+    }, 0);
+  }
+
+  const discountValue = Number(discountInfo?.value) || 0;
+  const price = initialPriceValue - (initialPriceValue * discountValue) / 100;
 
   return (
-    <div className="flex items-center w-full gap-3">
+    <div className="w-full">
       {hasEventFinished ? (
         <div className="space-y-5 w-full">
           <div className="flex items-center gap-3 p-4 bg-black/30 rounded-2xl border border-red-900/30">
@@ -52,11 +59,11 @@ const CheckoutButton = ({
             >
               <Button
                 asChild
-                className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full py-7 font-medium shadow-lg  transition-all duration-300 shadow-white/10"
+                className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
               >
                 <div className="flex items-center justify-center gap-3">
-                  <div className="bg-black/10 p-1.5 rounded-full">
-                    <Ticket size={16} className="text-black" />
+                  <div className="bg-primary-foreground/20 p-1.5 rounded-full">
+                    <Ticket size={16} className="text-primary-foreground" />
                   </div>
                   <Link href="/sign-in">Pay now {price} TND</Link>
                 </div>
@@ -66,10 +73,10 @@ const CheckoutButton = ({
 
           <SignedIn>
             <Checkout
-              disabled={hasEventFinished} // Fixed: Ensure a valid boolean
               chekedPlans={checkPlan}
               event={event}
               userId={session?.user?.id || ""} // Fixed: Ensure user ID is defined
+              discountInfo={discountInfo}
             />
           </SignedIn>
         </>
