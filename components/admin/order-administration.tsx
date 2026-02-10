@@ -24,7 +24,9 @@ import {
   CreditCard,
   Filter,
   Download,
+  Printer,
 } from "lucide-react";
+import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
 import { CardSkeleton } from "./CardSkeleton";
 import { useTranslations, useLocale } from "next-intl";
@@ -73,9 +75,8 @@ export default function OrderAdministration({
       accessor: "buyer",
       cell: (value: string) => (
         <div
-          className={`flex items-center gap-2 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
+          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
+            }`}
         >
           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-medium">
             {value.charAt(0).toUpperCase()}
@@ -101,15 +102,13 @@ export default function OrderAdministration({
       accessor: "createdAt",
       cell: (value: Date) => (
         <div
-          className={`flex items-center gap-2 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
+          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
+            }`}
         >
           <Calendar className="h-4 w-4 text-muted-foreground" />
           <span
-            className={`text-sm text-muted-foreground ${
-              isRTL ? "font-arabic" : ""
-            }`}
+            className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
+              }`}
           >
             {formatDateTime(value).dateTime}
           </span>
@@ -122,9 +121,8 @@ export default function OrderAdministration({
       align: "right" as const,
       cell: (value: number) => (
         <div
-          className={`flex items-center gap-2 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
+          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
+            }`}
         >
           <CreditCard className="h-4 w-4 text-green-600" />
           <span className="font-semibold text-green-600 dark:text-green-400">
@@ -148,9 +146,8 @@ export default function OrderAdministration({
     >
       <CardHeader className="pb-3">
         <div
-          className={`flex items-center justify-between ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
+          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""
+            }`}
         >
           <CardTitle className={`text-lg ${isRTL ? "font-arabic" : ""}`}>
             {item.eventTitle}
@@ -165,9 +162,8 @@ export default function OrderAdministration({
           </Badge>
         </div>
         <CardDescription
-          className={`font-mono text-sm ${
-            isRTL ? "font-arabic text-right" : ""
-          }`}
+          className={`font-mono text-sm ${isRTL ? "font-arabic text-right" : ""
+            }`}
         >
           {t("orderIdLabel")}: {item._id.slice(-8)}
         </CardDescription>
@@ -175,9 +171,8 @@ export default function OrderAdministration({
 
       <CardContent className="space-y-3">
         <div
-          className={`flex items-center gap-3 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
+          className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+            }`}
         >
           <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
             {item.buyer.charAt(0).toUpperCase()}
@@ -187,9 +182,8 @@ export default function OrderAdministration({
               {item.buyer}
             </p>
             <p
-              className={`text-sm text-muted-foreground ${
-                isRTL ? "font-arabic" : ""
-              }`}
+              className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
+                }`}
             >
               {t("buyer")}
             </p>
@@ -197,35 +191,30 @@ export default function OrderAdministration({
         </div>
 
         <div
-          className={`flex items-center justify-between ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
+          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""
+            }`}
         >
           <div
-            className={`flex items-center gap-2 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
+              }`}
           >
             <CreditCard className="h-4 w-4 text-green-600" />
             <span
-              className={`font-semibold text-green-600 dark:text-green-400 ${
-                isRTL ? "font-arabic" : ""
-              }`}
+              className={`font-semibold text-green-600 dark:text-green-400 ${isRTL ? "font-arabic" : ""
+                }`}
             >
               ${parseFloat(item.totalAmount).toFixed(2)}
             </span>
           </div>
 
           <div
-            className={`flex items-center gap-2 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
+              }`}
           >
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <span
-              className={`text-sm text-muted-foreground ${
-                isRTL ? "font-arabic" : ""
-              }`}
+              className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
+                }`}
             >
               {formatDateTime(item.createdAt).dateTime}
             </span>
@@ -246,30 +235,26 @@ export default function OrderAdministration({
       {/* Header Section */}
       <div className="glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-6">
         <div
-          className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 ${
-            isRTL ? "lg:flex-row-reverse" : ""
-          }`}
+          className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 ${isRTL ? "lg:flex-row-reverse" : ""
+            }`}
         >
           <div
-            className={`flex items-center gap-4 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""
+              }`}
           >
             <div className="p-3 rounded-xl bg-gradient-to-r from-green-500/20 to-emerald-500/20">
               <ShoppingCart className="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
             <div className={isRTL ? "text-right" : ""}>
               <h2
-                className={`text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("title")}
               </h2>
               <p
-                className={`text-muted-foreground ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-muted-foreground ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("subtitle")}
               </p>
@@ -277,9 +262,8 @@ export default function OrderAdministration({
           </div>
 
           <div
-            className={`flex items-center gap-3 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+              }`}
           >
             <Search
               placeholder={t("searchPlaceholder")}
@@ -301,6 +285,18 @@ export default function OrderAdministration({
             >
               <Download className="h-4 w-4" />
             </Button>
+            {eventId && (
+              <Button
+                asChild
+                variant="default"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md transition-all duration-300"
+              >
+                <Link href={`/events/${eventId}/badge`}>
+                  <Printer className="w-4 h-4 mr-2" />
+                  Manage Badges
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
 
@@ -309,25 +305,22 @@ export default function OrderAdministration({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
             <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-4">
               <div
-                className={`flex items-center gap-3 ${
-                  isRTL ? "flex-row-reverse" : ""
-                }`}
+                className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+                  }`}
               >
                 <div className="p-2 rounded-lg bg-blue-500/20">
                   <ShoppingCart className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className={isRTL ? "text-right" : ""}>
                   <p
-                    className={`text-2xl font-bold ${
-                      isRTL ? "font-arabic" : ""
-                    }`}
+                    className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
+                      }`}
                   >
                     {data.length}
                   </p>
                   <p
-                    className={`text-sm text-muted-foreground ${
-                      isRTL ? "font-arabic" : ""
-                    }`}
+                    className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
+                      }`}
                   >
                     {t("stats.totalOrders")}
                   </p>
@@ -337,18 +330,16 @@ export default function OrderAdministration({
 
             <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-4">
               <div
-                className={`flex items-center gap-3 ${
-                  isRTL ? "flex-row-reverse" : ""
-                }`}
+                className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+                  }`}
               >
                 <div className="p-2 rounded-lg bg-green-500/20">
                   <CreditCard className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div className={isRTL ? "text-right" : ""}>
                   <p
-                    className={`text-2xl font-bold ${
-                      isRTL ? "font-arabic" : ""
-                    }`}
+                    className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
+                      }`}
                   >
                     $
                     {data
@@ -360,9 +351,8 @@ export default function OrderAdministration({
                       ?.toFixed(2)}
                   </p>
                   <p
-                    className={`text-sm text-muted-foreground ${
-                      isRTL ? "font-arabic" : ""
-                    }`}
+                    className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
+                      }`}
                   >
                     {t("stats.totalRevenue")}
                   </p>
@@ -372,25 +362,22 @@ export default function OrderAdministration({
 
             <div className="glass bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/20 rounded-xl p-4">
               <div
-                className={`flex items-center gap-3 ${
-                  isRTL ? "flex-row-reverse" : ""
-                }`}
+                className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+                  }`}
               >
                 <div className="p-2 rounded-lg bg-purple-500/20">
                   <User className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div className={isRTL ? "text-right" : ""}>
                   <p
-                    className={`text-2xl font-bold ${
-                      isRTL ? "font-arabic" : ""
-                    }`}
+                    className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
+                      }`}
                   >
                     {new Set(data.map((order: any) => order.buyer)).size}
                   </p>
                   <p
-                    className={`text-sm text-muted-foreground ${
-                      isRTL ? "font-arabic" : ""
-                    }`}
+                    className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
+                      }`}
                   >
                     {t("stats.uniqueBuyers")}
                   </p>
@@ -416,16 +403,14 @@ export default function OrderAdministration({
             <div className="text-center py-12">
               <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3
-                className={`text-lg font-semibold mb-2 ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-lg font-semibold mb-2 ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("emptyState.title")}
               </h3>
               <p
-                className={`text-muted-foreground ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-muted-foreground ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("emptyState.description")}
               </p>
@@ -439,9 +424,8 @@ export default function OrderAdministration({
           <div className="text-center py-12">
             <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3
-              className={`text-lg font-semibold mb-2 ${
-                isRTL ? "font-arabic" : ""
-              }`}
+              className={`text-lg font-semibold mb-2 ${isRTL ? "font-arabic" : ""
+                }`}
             >
               {t("emptyState.title")}
             </h3>

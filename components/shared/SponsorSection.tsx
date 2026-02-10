@@ -52,9 +52,8 @@ const TierBadge = ({ tier }: { tier: string }) => {
 
   return (
     <div
-      className={`absolute ${
-        isRTL ? "-top-3 -left-3" : "-top-3 -right-3"
-      } z-20 ${badgeColor} p-1.5 rounded-full shadow-lg`}
+      className={`absolute ${isRTL ? "-top-3 -left-3" : "-top-3 -right-3"
+        } z-20 ${badgeColor} p-1.5 rounded-full shadow-lg`}
       title={t(tier as keyof typeof badges)}
     >
       <BadgeIcon size={12} className="text-white" />
@@ -180,18 +179,16 @@ const Sponsor = ({
           className="relative z-10"
         >
           <div
-            className={`p-1 transition-all duration-500 ${
-              isHovered ? "opacity-100" : "opacity-90"
-            }`}
+            className={`p-1 transition-all duration-500 ${isHovered ? "opacity-100" : "opacity-90"
+              }`}
           >
             <div
               className={`hexagon-container ${colorsConfig[tier].color} backdrop-blur-md border border-white/20 shadow-2xl transform-style-3d`}
             >
               {/* Shine effect */}
               <div
-                className={`absolute inset-0 shine-effect ${
-                  isHovered ? "opacity-40" : "opacity-0"
-                } transition-opacity duration-300`}
+                className={`absolute inset-0 shine-effect ${isHovered ? "opacity-40" : "opacity-0"
+                  } transition-opacity duration-300`}
               />
 
               {/* Inner content */}
@@ -218,13 +215,11 @@ const Sponsor = ({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 5, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className={`absolute bottom-1 ${
-                isRTL
-                  ? "right-1/4 transform translate-x-1/4"
-                  : "left-1/4 transform -translate-x-1/4"
-              } bg-black/80 backdrop-blur-md text-white text-xs font-medium px-4 py-1.5 rounded-full whitespace-nowrap shadow-xl border border-white/10 z-20 ${
-                isRTL ? "font-arabic" : ""
-              }`}
+              className={`absolute bottom-1 ${isRTL
+                ? "right-1/4 transform translate-x-1/4"
+                : "left-1/4 transform -translate-x-1/4"
+                } bg-black/80 backdrop-blur-md text-white text-xs font-medium px-4 py-1.5 rounded-full whitespace-nowrap shadow-xl border border-white/10 z-20 ${isRTL ? "font-arabic" : ""
+                }`}
               dir={isRTL ? "rtl" : "ltr"}
             >
               {name}
@@ -287,9 +282,8 @@ export default function SponsorsSection({
       ) : (
         <section
           ref={sectionRef}
-          className={`relative p-2 rounded-xl w-full overflow-hidden bg-gradient-to-b from-card/30 via-card/50 to-card/70 ${
-            isRTL ? "rtl" : "ltr"
-          }`}
+          className={`relative p-2 rounded-xl w-full overflow-hidden bg-gradient-to-b from-card/30 via-card/50 to-card/70 ${isRTL ? "rtl" : "ltr"
+            }`}
           dir={isRTL ? "rtl" : "ltr"}
         >
           {/* Animated background */}
@@ -360,9 +354,8 @@ export default function SponsorsSection({
             >
               <div className="inline-block w-full mb-3">
                 <span
-                  className={`inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase bg-white/10 text-foreground/70 px-3 py-1 rounded-full mb-1 ${
-                    isRTL ? "flex-row-reverse" : ""
-                  }`}
+                  className={`inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase bg-primary/20 text-primary px-3 py-1 rounded-full mb-1 ${isRTL ? "flex-row-reverse" : ""
+                    }`}
                 >
                   <Sparkles size={14} className="text-amber-400" />
                   <span>{t("badge")}</span>
@@ -370,20 +363,18 @@ export default function SponsorsSection({
               </div>
 
               <h2
-                className={`text-lg md:text-lg font-bold mb-2 relative inline-block ${
-                  isRTL ? "text-right" : "text-left"
-                }`}
+                className={`text-lg md:text-lg font-bold mb-2 relative inline-block ${isRTL ? "text-right" : "text-left"
+                  }`}
               >
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-card-foreground/10 via-gray-400 to-card-foreground/10">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/80 to-foreground">
                   {t("title")}
                 </span>
                 <motion.div
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 1, delay: 0.5 }}
-                  className={`absolute -bottom-3 ${
-                    isRTL ? "right-0" : "left-0"
-                  } h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-emerald-500 rounded-full`}
+                  className={`absolute -bottom-3 ${isRTL ? "right-0" : "left-0"
+                    } h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-emerald-500 rounded-full`}
                 />
               </h2>
 
@@ -391,9 +382,8 @@ export default function SponsorsSection({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.7 }}
-                className={`text-gray-400 mt-2 max-w-sm mx-auto text-sm ${
-                  isRTL ? "text-right" : "text-left"
-                }`}
+                className={`text-foreground mt-4 max-w-sm mx-auto text-sm font-bold ${isRTL ? "text-right" : "text-left"
+                  }`}
               >
                 {t("subtitle")}
               </motion.p>
@@ -401,9 +391,8 @@ export default function SponsorsSection({
 
             {/* Sponsors grid */}
             <div
-              className={`grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16 items-center justify-items-center mb-4 ${
-                isRTL ? "rtl" : ""
-              }`}
+              className={`grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16 items-center justify-items-center mb-4 ${isRTL ? "rtl" : ""
+                }`}
             >
               {sponsors &&
                 sponsors?.data.map((sponsor, index) => (

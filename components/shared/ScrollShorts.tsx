@@ -152,9 +152,9 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
             return (
               <div
                 key={video._id}
-                className="h-screen  snap-start flex items-center justify-end gap-2 md:p-4 md:m-4 "
+                className="h-screen snap-start flex items-center justify-center gap-4 md:p-6 lg:p-8"
               >
-                <div className="flex h-full w-full md:w-1/4 lg:w-1/4">
+                <div className="flex h-full w-full md:w-[450px] lg:w-[500px] relative shadow-2xl">
                   <HLSPlayer
                     manifest={video.imageUrl}
                     ref={(el) => (videoRefs.current[virtualItem.index] = el)}
@@ -162,9 +162,9 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                     loop
                     muted
                     controls
-                    className="md:rounded-xl object-fill w-full h-full   "
+                    className="md:rounded-2xl object-cover w-full h-full shadow-2xl"
                   />
-                  <div className="flex h-screen pointer-events-none justify-between w-full absolute flex-col p-2 md:w-1/4">
+                  <div className="flex h-screen pointer-events-none justify-between w-full absolute flex-col p-4 md:w-full">
                     <Button
                       size={"icon"}
                       className="glass rounded-full  pointer-events-auto"
@@ -223,15 +223,16 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                         </AlertDialogContent>
                       </AlertDialog>
                     </div>
-                    <h4 className="text-white pb-10">{video.title}</h4>
+                    <h4 className="text-white drop-shadow-lg font-bold text-lg pb-10 line-clamp-2 px-2">
+                      {video.title}
+                    </h4>
                   </div>
                 </div>{" "}
                 <div
-                  className={`${
-                    show
-                      ? "flex top-[30vh] bg-card/5 md:top-auto max-h-[70vh] md:max-h-full"
-                      : "hidden  md:flex"
-                  } flex-col glass  fixed bottom-0  md:max-w-prose md:relative  rounded-2xl w-full  md:h-full items-center justify-start gap-2   animate-accordion-down repeat-1`}
+                  className={`${show
+                      ? "flex top-[20vh] bg-card/95 md:top-auto max-h-[80vh] md:max-h-full"
+                      : "hidden md:flex"
+                    } flex-col glass fixed bottom-0 md:max-w-md md:relative rounded-t-3xl md:rounded-2xl w-full md:h-full items-center justify-start gap-4 animate-accordion-down repeat-1 shadow-2xl border-t md:border border-border/50`}
                 >
                   <Button
                     size={"icon"}

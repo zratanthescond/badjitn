@@ -22,7 +22,7 @@ export function VideoControls({
       {showBackButton && (
         <Button
           size="icon"
-          className="glass rounded-full pointer-events-auto backdrop-blur-md bg-black/20 hover:bg-black/30 border-white/20"
+          className="glass-control rounded-full pointer-events-auto"
           onClick={() => router.push("/")}
         >
           <ArrowLeft className="h-5 w-5 text-white" />
@@ -32,7 +32,7 @@ export function VideoControls({
       <div className=" max-h-fit absolute top-1/3 max-w-fit self-end justify-self-end items-center pointer-events-auto justify-evenly gap-3 flex flex-col">
         <Button
           size="icon"
-          className="glass rounded-full backdrop-blur-md bg-black/20 hover:bg-black/30 border-white/20"
+          className="glass-control rounded-full"
           onClick={onToggleDetails}
         >
           <List className="h-5 w-5 text-white" />
@@ -40,14 +40,14 @@ export function VideoControls({
 
         <Button
           size="icon"
-          className="glass rounded-full backdrop-blur-md bg-black/20 hover:bg-black/30 border-white/20"
+          className="glass-control rounded-full"
         >
           <Heart className="h-5 w-5 text-white" />
         </Button>
 
         <Button
           size="icon"
-          className="glass rounded-full backdrop-blur-md bg-black/20 hover:bg-black/30 border-white/20"
+          className="glass-control rounded-full"
           onClick={onShare}
         >
           <Share2Icon className="h-5 w-5 text-white" />

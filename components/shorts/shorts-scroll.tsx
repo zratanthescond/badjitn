@@ -136,7 +136,7 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
   }
 
   return (
-    <div className="flex md:container mx-auto bg-background">
+    <div className="flex md:container mx-auto bg-background md:justify-center">
       {/* Main scroll container */}
       <div
         ref={parentRef}

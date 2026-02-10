@@ -28,14 +28,14 @@ export function VideoDetailsPanel({
   const c = useTranslations("category");
 
   const panelClasses = `
-    ${
-      isVisible
-        ? "flex top-[15vh] md:top-auto max-h-[85vh] md:max-h-full glass w-full"
-        : "hidden md:flex backdrop-blur top-full max-h-0 overflow-hidden"
+    ${isVisible
+      ? "flex top-[12vh] md:top-auto max-h-[88vh] md:max-h-full glass w-full"
+      : "hidden md:flex backdrop-blur top-full max-h-0 overflow-hidden"
     } 
-    flex-col glass-panel fixed bottom-0 md:max-w-prose md:relative rounded-2xl w-full 
-    md:h-full items-center justify-start gap-2 animate-accordion-down repeat-1
-    transition-all duration-300 ease-in-out
+    flex-col fixed bottom-0 md:max-w-md md:relative rounded-t-3xl md:rounded-2xl w-full 
+    md:h-full items-center justify-start gap-4 animate-accordion-down repeat-1
+    transition-all duration-300 ease-in-out border-t md:border border-border/50
+    [--glass-opacity:40%] [--glass-blur:60px] dark:[--glass-opacity:20%]
   `;
 
   return (
@@ -106,7 +106,7 @@ export function VideoDetailsPanel({
           </div>
 
           {/* Event Details */}
-          <div className="bg-muted/30 rounded-lg p-4 backdrop-blur-sm">
+          <div className="bg-foreground/5 rounded-2xl p-4 backdrop-blur-sm border border-foreground/5">
             <ReelDetails event={video} />
           </div>
         </div>

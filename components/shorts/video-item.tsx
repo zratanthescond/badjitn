@@ -19,22 +19,23 @@ export const VideoItem = forwardRef<HTMLDivElement, VideoItemProps>(
     return (
       <div
         ref={ref}
-        className="h-screen snap-start flex items-center justify-end gap-2 md:p-4 md:m-4 relative"
+        className="h-screen snap-start flex items-center justify-center gap-4 md:p-6 lg:p-8 relative"
       >
         {/* Video Player */}
-        <div className="flex h-full w-full md:w-1/4 lg:w-1/4 relative">
+        <div className="flex h-full w-full md:w-[450px] lg:w-[500px] relative shadow-2xl">
           <HLSPlayer
             manifest={video.imageUrl}
             ref={videoRef}
+            isActive={true}
             autoPlay
             loop
             muted
             controls
-            className="md:rounded-xl object-cover w-full h-full"
+            className="md:rounded-2xl object-cover w-full h-full"
           />
           {/* Video Title */}
           <div className="absolute bottom-4 left-4 right-16">
-            <h4 className="text-white font-semibold text-lg drop-shadow-lg">
+            <h4 className="text-white font-bold text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               {video.title}
             </h4>
           </div>
