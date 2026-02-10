@@ -11,8 +11,24 @@
     "home": "Accueil",
     "myProfile": "Mon profil",
     "createEvent": "Créer un événement",
-    "login": "Connexion"
-   
+    "login": "Connexion",
+    "aiTools": "Outils IA"
+  },
+  "aiToolsPage": {
+    "title": "Centre d'Outils IA Badji",
+    "subtitle": "Accédez à tous vos outils d'intelligence artificielle préférés en un seul endroit.",
+    "googleIA": "Google IA Pro",
+    "perplexity": "Perplexity",
+    "chatgpt": "ChatGPT Go",
+    "xmind": "Xmind",
+    "capcut": "CapCut",
+    "deepl": "DeepL",
+    "genspark": "Genspark",
+    "badjiAI": "Badji AI Chat",
+    "visit": "Visiter",
+    "selectModel": "Choisir le modèle",
+    "gemini": "Google Gemini",
+    "groq": "Groq / Llama"
   },
   "homePage": {
     "search": "Rechercher",

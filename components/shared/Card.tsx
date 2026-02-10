@@ -135,14 +135,14 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
                     }
                   </span>
                 </div> */}
-                <div className="absolute right-2 top-2 bg-black/30 backdrop-blur-sm rounded-full px-2.5 py-1 text-center ">
-                  <div className="text-white font-semibold text-lg leading-none">
+                <div className="absolute right-2 top-2 bg-black/30 backdrop-blur-sm rounded-full px-2 py-0.5 sm:px-2.5 sm:py-1 text-center ">
+                  <div className="text-white font-semibold text-base sm:text-lg leading-none">
                     {/*  formatDateTime(event.startDateTime).homeEvents.split(
                         " "
                       )[1]*/}
                     {formattedDateParts[1]}
                   </div>
-                  <div className="text-white/90 text-xs leading-none mt-0.5">
+                  <div className="text-white/90 text-[10px] sm:text-xs leading-none mt-0.5">
                     {formattedDateParts[0]}
                   </div>
                 </div>
@@ -172,7 +172,7 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
                   )}
 
                 </div> */}
-                <div className="absolute bottom-0 left-0 right-0 p-3">
+                <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
                   <h3 className="text-white font-medium text-sm mb-3 leading-tight line-clamp-2">
                     {event.title}
                   </h3>
