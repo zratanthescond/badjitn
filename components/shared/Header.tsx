@@ -22,14 +22,14 @@ const Header = () => {
               width={128}
               height={38}
               alt="BadjiTn logo"
-              className="object-cover hidden dark:block  "
+              className="object-cover hidden dark:block w-[100px] md:w-[128px] h-auto"
             />
             <Image
               src="/assets/images/logoDark.png"
               width={128}
               height={38}
               alt="BadjiTn logo"
-              className="object-cover  block dark:hidden"
+              className="object-cover block dark:hidden w-[100px] md:w-[128px] h-auto"
             />
           </Link>
         </div>
@@ -38,7 +38,7 @@ const Header = () => {
             <NavItems />
           </nav>
         </SignedIn>
-        <div className="flex w-36 justify-end items-center align-middle gap-3">
+        <div className="flex items-center justify-end gap-3 min-w-max">
           {dimensions && (
             <>
               <LocaleSwitcher />

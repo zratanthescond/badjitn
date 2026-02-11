@@ -15,7 +15,7 @@ import {
 import React from "react";
 import localFont from "next/font/local";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
+import { getLocale, getMessages } from "next-intl/server";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -67,18 +67,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
-  const clerkLocale = () => {
-    switch (locale) {
-      case "ar":
-        return arSA;
-      case "fr":
-        return frFR;
-      case "en":
-        return enUS;
-      default:
-        return enUS;
-    }
-  };
+  const messages = await getMessages();
+  const localization = locale === "ar" ? arSA : locale === "fr" ? frFR : enUS;
 
   return (
     <html lang={locale}>
@@ -95,36 +85,35 @@ export default async function RootLayout({
                 srcSet="/assets/images//docs@30.8b9a76a2.avif"
                 type="image/avif"
               />
-              <img
-                src="/assets/images/docs@tinypng.d9e4dcdc.png"
-                alt=""
-                className="w-[71.75rem] flex-none max-w-none dark:hidden"
-                decoding="async"
-              />
-            </picture>
-            <picture>
-              <source
-                srcSet="/assets/images//docs-dark@30.1a9f8cbf.avif"
-                type="image/avif"
-              />
-              <img
-                src="/assets/images//docs-dark@tinypng.1bbe175e.png"
-                alt=""
-                className="w-[90rem] flex-none max-w-none hidden dark:block"
-                decoding="async"
-              />
+                <img
+                  src="/assets/images/docs@tinypng.d9e4dcdc.png"
+                  alt=""
+                  className="w-0 md:w-[71.75rem] flex-none max-w-none dark:hidden animate-in fade-in duration-1000"
+                  decoding="async"
+                />
+              </picture>
+              <picture>
+                <source
+                  srcSet="/assets/images//docs-dark@30.1a9f8cbf.avif"
+                  type="image/avif"
+                />
+                <img
+                  src="/assets/images//docs-dark@tinypng.1bbe175e.png"
+                  alt=""
+                  className="w-0 md:w-[90rem] flex-none max-w-none hidden dark:block animate-in fade-in duration-1000"
+                  decoding="async"
+                />
             </picture>
           </div>
         </div>
-        <NextIntlClientProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>
-            <ClientProvider clerkLocale={clerkLocale()}>
+            <ClientProvider clerkLocale={localization}>
               <TooltipProvider>{children}</TooltipProvider>
 
               <Toaster />
             </ClientProvider>
           </ThemeProvider>
-          -
         </NextIntlClientProvider>
       </body>
     </html>

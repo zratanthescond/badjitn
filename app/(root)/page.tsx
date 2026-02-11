@@ -35,11 +35,17 @@ export default async function Home({ searchParams }: SearchParamProps) {
         id="events"
         className="wrapper  my-2 flex flex-col gap-8 md:gap-12 rounded-xl  p-2 md:p-3"
       >
-        <div className="flex w-full flex-col  gap-5 md:flex-row">
-          <div className="flex w-full items-center justify-between   flex-row">
-            <CountryFilter />
-            <Search slim placeholder="Search events..." />
-            <DatePickerWithPresets />
+        <div className="flex w-full flex-col gap-5 lg:flex-row">
+          <div className="flex w-full flex-col md:flex-row items-center gap-3 md:justify-between">
+            <div className="flex w-full items-center gap-3 md:w-auto">
+              <CountryFilter />
+              <div className="flex-1 w-full md:w-auto">
+                <Search slim placeholder="Search events..." />
+              </div>
+            </div>
+            <div className="w-full md:w-auto">
+              <DatePickerWithPresets />
+            </div>
           </div>
           <CategoryFilter />
         </div>
