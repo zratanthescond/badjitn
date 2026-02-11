@@ -51,8 +51,8 @@ const AIChatWindow = ({ toolId = "badji-chat", toolName, onClose }: AIChatWindow
   };
 
   return (
-    <div className="flex flex-col h-[70vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md">
+    <div className="flex flex-col w-[min(96vw,44rem)] h-[70vh] max-h-[760px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+      <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -122,7 +122,7 @@ const AIChatWindow = ({ toolId = "badji-chat", toolName, onClose }: AIChatWindow
 
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800"
+        className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800"
       >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-8">
@@ -171,7 +171,7 @@ const AIChatWindow = ({ toolId = "badji-chat", toolName, onClose }: AIChatWindow
 
       <form
         onSubmit={handleSubmit}
-        className="p-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800"
+        className="shrink-0 p-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800"
       >
         <div className="relative flex items-center gap-3">
           <input
