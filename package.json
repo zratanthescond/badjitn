@@ -14,7 +14,7 @@
   "dependencies": {
     "@ai-sdk/google": "^3.0.22",
     "@ai-sdk/openai": "^3.0.26",
-    "@ai-sdk/react": "^3.0.77",
+    "@ai-sdk/react": "^3.0.79",
     "@auth/mongodb-adapter": "^3.7.0",
     "@clerk/elements": "^0.22.5",
     "@clerk/localizations": "^3.16.4",
@@ -65,7 +65,7 @@
     "@tiptap/starter-kit": "^2.9.1",
     "@uploadthing/react": "^6.0.2",
     "add": "^2.0.6",
-    "ai": "^6.0.75",
+    "ai": "^6.0.77",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",

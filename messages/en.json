@@ -2880,8 +2880,13 @@
     "support": "Support",
     "privacy": "Privacy",
     "helpText": "Need help? Our support team is here to assist you."
+  },
+  "Chat": {
+    "title": "Badgi Chatbot",
+    "placeholder": "Ask anything about Badgi...",
+    "send": "Send",
+    "close": "Close",
+    "welcome": "Hi! I'm Badgi chatBOT. How can I help you today?",
+    "error": "Something went wrong. Please try again."
   }
-  
-     
-
 }

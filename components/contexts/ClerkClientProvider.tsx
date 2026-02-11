@@ -9,7 +9,7 @@ export function ClientProvider({
   clerkLocale,
 }: {
   children: React.ReactNode;
-  clerkLocale: () => Record<string, string>;
+  clerkLocale: any;
 }) {
   const { resolvedTheme, theme } = useTheme();
   const [userTheme, setUserTheme] = React.useState<typeof dark | undefined>();
