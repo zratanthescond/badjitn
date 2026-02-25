@@ -4,7 +4,7 @@ import { headerLinks } from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { CalendarDays, CalendarPlus, User } from "lucide-react";
+import { CalendarDays, CalendarPlus, User, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 const NavItems = () => {
@@ -22,6 +22,9 @@ const NavItems = () => {
       return <User strokeWidth={2.25} />;
     }
 
+    if (link === "/ai-tools") {
+      return <Sparkles strokeWidth={2.25} />;
+    }
     return null;
   };
   return (
@@ -33,11 +36,16 @@ const NavItems = () => {
           <li
             key={link.route}
             className={`${
-              isActive && "text-secondary-foreground"
-            } flex-center bg-none p-medium-16 whitespace-nowrap  outline-2 p-2 outline-offset-2 rounded-full  hover:text-muted-foreground focus-visible:outline focus-visible:outline-primary`}
+              isActive
+                ? "text-primary dark:text-white bg-primary/10 dark:bg-white/10"
+                : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5"
+            } flex items-center w-full md:w-auto p-medium-16 whitespace-nowrap transition-all duration-200 rounded-xl md:rounded-full px-4 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary`}
           >
-            <Link href={link.route} className="flex flex-row gap-2 ">
-              {getIcon(link.route)} {t(link.label)}
+            <Link href={link.route} className="flex flex-row items-center gap-3 w-full">
+              <span className={isActive ? "text-primary dark:text-blue-400" : "text-muted-foreground"}>
+                {getIcon(link.route)}
+              </span>
+              <span className="font-medium">{t(link.label)}</span>
             </Link>
           </li>
         );

@@ -11,6 +11,10 @@ export const headerLinks = [
     label: "myProfile",
     route: "/profile",
   },
+  {
+    label: "aiTools",
+    route: "/ai-tools",
+  },
 ];
 
 export const eventDefaultValues = {

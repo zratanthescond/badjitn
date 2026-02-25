@@ -17,7 +17,24 @@
     "home": "Home",
     "myProfile": "My Profile",
     "createEvent": "Create Event",
-    "login": "Login"
+    "login": "Login",
+    "aiTools": "AI Tools"
+  },
+  "aiToolsPage": {
+    "title": "Badji AI Tool Hub",
+    "subtitle": "Access all your favorite AI tools in one single place.",
+    "googleIA": "Google IA Pro",
+    "perplexity": "Perplexity",
+    "chatgpt": "ChatGPT Go",
+    "xmind": "Xmind",
+    "capcut": "CapCut",
+    "deepl": "DeepL",
+    "genspark": "Genspark",
+    "badjiAI": "Badji AI Chat",
+    "visit": "Visit",
+    "selectModel": "Select Model",
+    "gemini": "Google Gemini",
+    "groq": "Groq / Llama"
   },
   "datePicker": {
     "pickadate": "Pick a date",
@@ -2863,8 +2880,13 @@
     "support": "Support",
     "privacy": "Privacy",
     "helpText": "Need help? Our support team is here to assist you."
+  },
+  "Chat": {
+    "title": "Badgi Chatbot",
+    "placeholder": "Ask anything about Badgi...",
+    "send": "Send",
+    "close": "Close",
+    "welcome": "Hi! I'm Badgi chatBOT. How can I help you today?",
+    "error": "Something went wrong. Please try again."
   }
-  
-     
-
 }

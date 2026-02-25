@@ -36,7 +36,7 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
   const rowVirtualizer = useVirtualizer({
     count: videosData.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => window.innerHeight,
+    estimateSize: () => (typeof window !== "undefined" ? window.innerHeight : 800),
     overscan: 2,
   });
 

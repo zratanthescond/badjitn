@@ -20,7 +20,24 @@
     "home": "الرئيسية",
     "myProfile": "الملف الشخصي",
     "createEvent": "إنشاء حدث",
-    "login": "تسجيل الدخول"
+    "login": "تسجيل الدخول",
+    "aiTools": "أدوات الذكاء الاصطناci"
+    },
+    "aiToolsPage": {
+    "title": "مركز أدوات الذكاء الاصطناعي من Badji",
+    "subtitle": "الوصول إلى جميع أدوات الذكاء الاصطناعي المفضلة لديك في مكان واحد.",
+    "googleIA": "Google IA Pro",
+    "perplexity": "Perplexity",
+    "chatgpt": "ChatGPT Go",
+    "xmind": "Xmind",
+    "capcut": "CapCut",
+    "deepl": "DeepL",
+    "genspark": "Genspark",
+    "badjiAI": "بدجي ذكاء اصطناعي",
+    "visit": "زيارة",
+    "selectModel": "اختر النموذج",
+    "gemini": "جوجل جيميناي",
+    "groq": "جروق / لاما"
     },
     "homePage": {
     "search": "بحث",
@@ -2859,8 +2876,16 @@
       "emptyEventsCreator": {
         "title": "لا توجد فعاليات حتى الآن",
         "description": "لم تقم بإنشاء أي فعاليات بعد. ابدأ بإنشاء فعاليتك الأولى لجذب الحضور وإدارة الفعاليات بسهولة."
+      },
+      "Chat": {
+        "title": "Badgi بوت الدردشة",
+        "placeholder": "اسأل أي شيء عن Badgi...",
+        "send": "إرسال",
+        "close": "إغلاق",
+        "welcome": "مرحباً! أنا Badgi chatBOT. كيف يمكنني مساعدتك اليوم؟",
+        "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
       }
-  }
+}
 
 
     
