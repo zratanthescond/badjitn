@@ -77,7 +77,6 @@ export default function PricePlanComponent({
   };
 
   const handleAddPlan = (e: React.FormEvent) => {
-    alert("handleAddPlan");
     e.stopPropagation();
     e.preventDefault();
 

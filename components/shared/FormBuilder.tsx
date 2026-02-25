@@ -62,9 +62,9 @@ const FormBuilder = ({ userId }: { userId: string }) => {
       options:
         type === "select" || type === "radio"
           ? [
-              t("fields.defaultOptions.option1"),
-              t("fields.defaultOptions.option2"),
-            ]
+            t("fields.defaultOptions.option1"),
+            t("fields.defaultOptions.option2"),
+          ]
           : undefined,
       isEditing: true,
     };
@@ -83,7 +83,7 @@ const FormBuilder = ({ userId }: { userId: string }) => {
         field.id === id ? { ...field, [key]: value } : field,
       ),
     );
-    SetSelectedField((prev) => ({ ...prev, [key]: value }));
+    SetSelectedField((prev) => prev ? { ...prev, [key]: value } : prev);
   };
 
   const removeField = (id: number) => {
@@ -108,7 +108,7 @@ const FormBuilder = ({ userId }: { userId: string }) => {
       );
     });
     if (emptyLabel === true) {
-      alert(t("validation.emptyLabels"));
+      toast({ title: t("validation.emptyLabels") });
       setError(t("validation.fillAllLabels"));
       return;
     }
@@ -182,36 +182,36 @@ const FormBuilder = ({ userId }: { userId: string }) => {
 
               {(selectedField.type === "select" ||
                 selectedField.type === "radio") && (
-                <>
-                  <Label>
-                    {selectedField.type === "select"
-                      ? t("fields.dropdownOptions")
-                      : t("fields.radioOptions")}
-                  </Label>
-                  {selectedField.isEditing ? (
-                    <Textarea
-                      value={selectedField.options?.join(", ")}
-                      onChange={(e) =>
-                        updateField(
-                          selectedField.id,
-                          "options",
-                          e.target.value.split(",").map((opt) => opt.trim()),
-                        )
-                      }
-                      placeholder={t("fields.optionsPlaceholder")}
-                      className="w-full"
-                    />
-                  ) : (
-                    <div>
-                      {selectedField.options?.map((opt, idx) => (
-                        <span key={idx} className="text-sm block">
-                          {opt}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
+                  <>
+                    <Label>
+                      {selectedField.type === "select"
+                        ? t("fields.dropdownOptions")
+                        : t("fields.radioOptions")}
+                    </Label>
+                    {selectedField.isEditing ? (
+                      <Textarea
+                        value={selectedField.options?.join(", ")}
+                        onChange={(e) =>
+                          updateField(
+                            selectedField.id,
+                            "options",
+                            e.target.value.split(",").map((opt) => opt.trim()),
+                          )
+                        }
+                        placeholder={t("fields.optionsPlaceholder")}
+                        className="w-full"
+                      />
+                    ) : (
+                      <div>
+                        {selectedField.options?.map((opt, idx) => (
+                          <span key={idx} className="text-sm block">
+                            {opt}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
 
               {selectedField.type !== "select" &&
                 selectedField.type !== "radio" && (

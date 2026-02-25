@@ -24,7 +24,6 @@ const Checkout = ({
   const [price, setPrice] = useState<number>(0);
   const [details, setDetails] = useState<Detail[]>([]);
   useEffect(() => {
-    alert(JSON.stringify(event));
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
     if (query.get("success")) {

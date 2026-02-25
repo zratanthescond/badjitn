@@ -48,6 +48,7 @@ interface CountryDropdownProps {
   disabled?: boolean;
   placeholder?: string;
   slim?: boolean;
+  className?: string;
 }
 
 const CountryDropdownComponent = (

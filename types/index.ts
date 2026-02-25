@@ -35,7 +35,7 @@ export type CreateEventParams = {
       lon: number;
       lat: number;
     };
-    pricePlan: [pricePlan];
+    pricePlan: pricePlan[];
     imageUrl: string;
     startDateTime: Date;
     endDateTime: Date;
@@ -43,16 +43,16 @@ export type CreateEventParams = {
     price: string;
     isFree: boolean;
     isOnline?: boolean;
-    url: string;
-    sponsors: string[];
-    requiredInfo: string[];
-    country: string;
-    discount: {
+    url?: string | null;
+    sponsors?: string[];
+    requiredInfo?: string[];
+    country?: string;
+    discount?: {
       field: string;
       value: string;
       discount: number;
-    };
-    places: number;
+    } | null;
+    places?: number;
   };
   path: string;
 };
@@ -69,23 +69,23 @@ export type UpdateEventParams = {
       lon: number;
       lat: number;
     };
-    pricePlan: [pricePlan];
+    pricePlan: pricePlan[];
     startDateTime: Date;
     endDateTime: Date;
     categoryId: string;
     price: string;
     isFree: boolean;
     isOnline?: boolean;
-    url: string;
-    sponsors: string[];
-    requiredInfo: string[];
-    country: string;
-    discount: {
+    url?: string | null;
+    sponsors?: string[];
+    requiredInfo?: string[];
+    country?: string;
+    discount?: {
       field: string;
       value: string;
       discount: number;
-    };
-    places: number;
+    } | null;
+    places?: number;
   };
   path: string;
 };

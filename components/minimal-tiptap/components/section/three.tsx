@@ -124,7 +124,6 @@ const MemoizedColorPicker = React.memo<{
     type="single"
     value={selectedColor}
     onValueChange={(value: string) => {
-      alert(value);
       if (value) onColorChange(value);
     }}
     className="gap-1.5"

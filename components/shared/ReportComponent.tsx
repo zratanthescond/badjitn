@@ -84,8 +84,8 @@ export default function ReportComponent({
       </DropdownMenu>
       <AlertDialog
         open={open}
-        onOpenChange={() => {
-          alert("closed");
+        onOpenChange={(open) => {
+          setOpen(open);
           setTimeout(() => {
             document.body.style.pointerEvents = "";
           }, 100);

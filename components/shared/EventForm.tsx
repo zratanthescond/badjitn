@@ -19,7 +19,7 @@ import { eventDefaultValues } from "@/constants";
 import Dropdown from "./Dropdown";
 import { Textarea } from "@/components/ui/textarea";
 import { FileUploader } from "./FileUploader";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
 import { useUploadThing } from "@/lib/uploadthing";
@@ -72,9 +72,10 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const [reel, setReel] = useState<string>("");
 
   // When toggling to price plan mode, set a default price so Zod validation doesn't block submission
-  const handleSetIsPricePlan = (value: boolean) => {
-    setIsPricePlan(value);
-    if (value) {
+  const handleSetIsPricePlan: Dispatch<SetStateAction<boolean>> = (value) => {
+    const resolved = typeof value === "function" ? value(isPricePlan) : value;
+    setIsPricePlan(resolved);
+    if (resolved) {
       form.setValue("price", "0");
     }
   };
@@ -102,9 +103,6 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    alert("form submitted");
-
-    alert(JSON.stringify(values));
     console.log(values);
     if (type === "Create") {
       try {
@@ -135,13 +133,12 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       }
 
       try {
-        // alert(JSON.stringify(pricePlan));
         const updatedEvent = await updateEvent({
           userId,
           event: {
             ...values,
             pricePlan: pricePlan,
-
+            location: { name: address, lon: longitude, lat: latitude },
             imageUrl: values.imageUrl,
             _id: eventId,
           },
@@ -577,7 +574,6 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                                 console.log(value);
                               }}
                               placeholder={t("searchSponsorsPlaceholder")}
-                              onChange={(value) => console.log(value)}
                             />
                           </FormControl>
                           <FormMessage />
