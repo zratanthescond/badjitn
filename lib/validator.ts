@@ -50,7 +50,7 @@ export const eventFormSchema = z
     price: z.string(),
     isFree: z.boolean(),
     isOnline: z.boolean().default(false),
-    url: z.string().url(),
+    url: z.string().url().nullable().optional(),
     sponsors: z.array(z.string()).optional().default([]),
     requiredInfo: z.array(z.string()).optional(),
     country: z.string().optional(),
