@@ -72,11 +72,11 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   };
 
   const price =
-    event.price ||
-    event.pricePlan?.reduce((sum, item) => {
-      return checkPlan?.includes(item._id!) ? sum + item.price : sum;
-    }, 0) ||
-    0;
+    event.pricePlan && event.pricePlan.length > 0
+      ? event.pricePlan.reduce((sum, item: any) => {
+        return checkPlan?.includes(item._id!) ? sum + item.price : sum;
+      }, 0)
+      : Number(event.price) || 0;
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -183,6 +183,64 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 )}
               </div>
             </div>
+
+            {/* Price Plans Selection */}
+            {event.pricePlan && event.pricePlan.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                  {t("selectPlans") ?? "Select your plans"}
+                </p>
+                <div className="grid gap-3">
+                  {event.pricePlan.map((plan: any) => {
+                    const isSelected = checkPlan.includes(plan._id);
+                    return (
+                      <motion.div
+                        key={plan._id}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => handleAddPlan(plan._id)}
+                        className={`relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${isSelected
+                          ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                          : "border-border/50 bg-card/5 hover:border-primary/30 hover:bg-primary/[0.02]"
+                          }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`flex items-center justify-center w-6 h-6 rounded-full border-2 transition-all duration-200 ${isSelected
+                              ? "border-primary bg-primary"
+                              : "border-muted-foreground/30"
+                              }`}
+                          >
+                            {isSelected && (
+                              <CheckCircle size={14} className="text-primary-foreground" />
+                            )}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-foreground">
+                              {plan.name}
+                            </span>
+                            {plan.places && (
+                              <span className="text-xs text-muted-foreground">
+                                {plan.places} {t("availablePlaces") ?? "places available"}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <Badge
+                          variant={isSelected ? "default" : "secondary"}
+                          className={`text-sm font-bold px-3 py-1 rounded-full transition-all duration-200 ${isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : ""
+                            }`}
+                        >
+                          {plan.price} TND
+                        </Badge>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {isAvailable() && (
               <> <motion.div

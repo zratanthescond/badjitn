@@ -23,6 +23,7 @@ export type UpdateUserParams = {
 export type pricePlan = {
   name: string;
   price: number;
+  places?: number;
 };
 // ====== EVENT PARAMS
 export type CreateEventParams = {
