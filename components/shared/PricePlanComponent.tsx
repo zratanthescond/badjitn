@@ -157,9 +157,8 @@ export default function PricePlanComponent({
                 placeholder={t("form.placeholders.planDescription")}
                 value={planDescription}
                 onChange={(e) => setPlanDescription(e.target.value)}
-                className={`mt-1 rounded-full ${
-                  errors.description ? "border-destructive" : ""
-                }`}
+                className={`mt-1 rounded-full ${errors.description ? "border-destructive" : ""
+                  }`}
               />
               {errors.description && (
                 <p className="text-sm text-destructive mt-1">
@@ -180,9 +179,8 @@ export default function PricePlanComponent({
                 placeholder={t("form.placeholders.price")}
                 value={planPrice}
                 onChange={(e) => setPlanPrice(e.target.value)}
-                className={`mt-1 rounded-full ${
-                  errors.price ? "border-destructive" : ""
-                }`}
+                className={`mt-1 rounded-full ${errors.price ? "border-destructive" : ""
+                  }`}
               />
               {errors.price && (
                 <p className="text-sm text-destructive mt-1">{errors.price}</p>
@@ -200,9 +198,8 @@ export default function PricePlanComponent({
                 placeholder={t("form.placeholders.places")}
                 value={planPlaces}
                 onChange={(e) => setPlanPlaces(e.target.value)}
-                className={`mt-1 rounded-full ${
-                  errors.places ? "border-destructive" : ""
-                }`}
+                className={`mt-1 rounded-full ${errors.places ? "border-destructive" : ""
+                  }`}
               />
               {errors.places && (
                 <p className="text-sm text-destructive mt-1">{errors.places}</p>
@@ -211,7 +208,7 @@ export default function PricePlanComponent({
           </div>
 
           <Button
-            type="submit"
+            type="button"
             className="w-full sm:w-auto rounded-full"
             onClick={handleAddPlan}
           >

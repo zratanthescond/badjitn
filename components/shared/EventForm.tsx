@@ -70,14 +70,22 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const [pricePlan, setPricePlan] = useState<pricePlan[]>([]);
   const [isPricePlan, setIsPricePlan] = useState<boolean>(false);
   const [reel, setReel] = useState<string>("");
+
+  // When toggling to price plan mode, set a default price so Zod validation doesn't block submission
+  const handleSetIsPricePlan = (value: boolean) => {
+    setIsPricePlan(value);
+    if (value) {
+      form.setValue("price", "0");
+    }
+  };
   const initialValues =
     event && type === "Update"
       ? {
-          ...event,
+        ...event,
 
-          startDateTime: new Date(event.startDateTime),
-          endDateTime: new Date(event.endDateTime),
-        }
+        startDateTime: new Date(event.startDateTime),
+        endDateTime: new Date(event.endDateTime),
+      }
       : eventDefaultValues;
   const router = useRouter();
 
@@ -265,19 +273,19 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                           <MapPin className="mr-2" />
                           <Input
                             placeholder={t("locationPlaceHolder")}
-                            {...field}
                             className="input-field w-full hidden"
                             value={JSON.stringify(field.value)}
+                            readOnly
                           />
                           <span className=" text-center w-full text-sm">
                             {address.length > 0 ||
-                            (field.value &&
-                              field.value.name &&
-                              field.value.name.length > 0)
+                              (field.value &&
+                                field.value.name &&
+                                field.value.name.length > 0)
                               ? address!.length > 0 ||
-                                (field.value &&
-                                  field.value.name &&
-                                  field.value.name.length > 0)
+                              (field.value &&
+                                field.value.name &&
+                                field.value.name.length > 0)
                               : t("locationPlaceHolder")}
                           </span>
                         </AlertDialogTrigger>
@@ -388,7 +396,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               <PricePlanComponent
                 setPricePlan={setPricePlan}
                 pricePlan={pricePlan}
-                setIsPricePlan={setIsPricePlan}
+                setIsPricePlan={handleSetIsPricePlan}
               />
             ) : (
               <FormField
@@ -428,7 +436,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                           )}
                         />
                         <Button
-                          onClick={() => setIsPricePlan(true)}
+                          onClick={() => handleSetIsPricePlan(true)}
                           type="button"
                           variant={"outline"}
                           className="border-2  gap-1 rounded-full mx-1 bg-pink-500"
@@ -481,6 +489,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       <Input
                         placeholder={t("url")}
                         {...field}
+                        value={field.value ?? ""}
                         className="input-field !bg-transparent"
                       />
                     </div>

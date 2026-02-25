@@ -43,7 +43,7 @@ export function FileUploader({
   setReel,
   userId,
 }: FileUploaderProps) {
-  const [fileToUpload, setFileToUpload] = useState<File | string>(null);
+  const [fileToUpload, setFileToUpload] = useState<File | string | null>(null);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
     setFileToUpload(acceptedFiles[0]);
@@ -55,7 +55,7 @@ export function FileUploader({
     accept: generateClientDropzoneAccept(["image/*", "video/*"]),
   });
   useEffect(() => {
-    if (imageUrl.indexOf(".m3u8")) {
+    if (imageUrl.includes(".m3u8")) {
       //  alert("update");
       setFileToUpload(imageUrl);
     }
@@ -68,7 +68,7 @@ export function FileUploader({
         <div className="camera"></div>
         <div className="display bg-card/30 min-h-full w-full  ">
           <AspectRatio ratio={7.5 / 15}>
-            <VideoEditor url={fileToUpload} setReel={setReel} userId={userId} />
+            <VideoEditor url={fileToUpload ?? imageUrl} setReel={setReel} userId={userId} />
 
             <div className="absolute right-0  top-0  h-full p-4">
               <div className="flex w-full justify-end">

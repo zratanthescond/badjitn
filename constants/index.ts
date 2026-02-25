@@ -31,7 +31,13 @@ export const eventDefaultValues = {
   categoryId: "",
   price: "",
   isFree: false,
-  url: "",
+  isOnline: false,
+  url: null as string | null,
+  sponsors: [] as string[],
+  requiredInfo: [] as string[],
+  country: "",
+  discount: null as { field: string; value: string; discount: number } | null,
+  places: 0,
 };
 export const borderColors = [
   "#ef4444", // red
