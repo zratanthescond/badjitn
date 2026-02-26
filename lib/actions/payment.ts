@@ -6,6 +6,8 @@ import BankTransfer from '../database/models/banktransfer.model'
 import Order from '../database/models/order.model'
 import Event from '../database/models/event.model'
 import User from '../database/models/user.model'
+import { writeFile, mkdir } from 'fs/promises'
+import path from 'path'
 
 interface BankTransferInput {
   eventId: string
@@ -15,7 +17,7 @@ interface BankTransferInput {
   requiredUserInfo?: any[]
   discountInfo?: any
   transferId: string | null
-  screenshotUrl: string | null
+  screenshotBase64: string | null
 }
 
 interface BankTransferResponse {
@@ -34,7 +36,7 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
       requiredUserInfo,
       discountInfo,
       transferId,
-      screenshotUrl
+      screenshotBase64
     } = input
 
     // Basic validation
@@ -46,10 +48,41 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
     }
 
     // Validate that at least one submission method is provided
-    if (!transferId && !screenshotUrl) {
+    if (!transferId && !screenshotBase64) {
       return {
         success: false,
         message: 'Please provide either a transfer ID or a screenshot',
+      }
+    }
+
+    // Save screenshot file if base64 is provided
+    let screenshotUrl: string | null = null
+    if (screenshotBase64) {
+      try {
+        // Extract the mime type and base64 data
+        const matches = screenshotBase64.match(/^data:image\/(\w+);base64,(.+)$/)
+        if (!matches) {
+          return {
+            success: false,
+            message: 'Invalid image format',
+          }
+        }
+        const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1]
+        const base64Data = matches[2]
+        const buffer = Buffer.from(base64Data, 'base64')
+
+        // Generate unique filename and save
+        const filename = `bank-transfer-${Date.now()}-${uuidv4().slice(0, 8)}.${ext}`
+        const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+        await mkdir(uploadsDir, { recursive: true })
+        await writeFile(path.join(uploadsDir, filename), new Uint8Array(buffer))
+        screenshotUrl = `/uploads/${filename}`
+      } catch (fileError) {
+        console.error('[Bank Transfer] Error saving screenshot:', fileError)
+        return {
+          success: false,
+          message: 'Failed to save screenshot. Please try again.',
+        }
       }
     }
 
