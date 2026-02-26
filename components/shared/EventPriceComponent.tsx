@@ -46,6 +46,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const { userId } = useAuth();
   const router = useRouter();
 
+  // Check if the event actually has a discount configured
+  const hasDiscount = !!(event.discount && event.discount.field && event.discount.discount > 0);
+
 
   const validateUserInfo = (
     objects: { [key: string]: string | number }[],
@@ -104,10 +107,10 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       console.log(details);
       const order = await createOrder({
         eventId: event._id,
-        totalAmount: calculatePriceAsNumber(Number(event.price)),
+        totalAmount: calculatePriceAsNumber(price),
         type: "doorpay",
-        requiredUserInfo,
-        discountInfo,
+        ...(hasDiscount && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
+        ...(hasDiscount && Number(discountInfo?.value) > 0 ? { discountInfo } : {}),
         details: details,
         buyerId: userId,
         stripeId: `${uuidv4()}`,
@@ -243,25 +246,28 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             )}
 
             {isAvailable() && (
-              <> <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  onClick={() => setIsDialogOpen(true)}
-                  variant="outline"
-                  className={`w-full py-6 rounded-2xl border-dashed border-2 transition-all duration-300 ${Number(discountInfo?.value) > 0
-                    ? "border-green-500/50 bg-green-500/5 text-green-600 dark:text-green-400"
-                    : "border-pink-500/30 hover:border-primary/60 hover:bg-primary/5"
-                    }`}
-                >
-                  <span className="text-foreground font-medium text-pink-500">
-                    {Number(discountInfo?.value) > 0
-                      ? `Discount code applied: ${discountInfo.value}% OFF`
-                      : "Have a discount code? Claim offer!"}
-                  </span>
-                </Button>
-              </motion.div>
+              <>
+                {hasDiscount && (
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      onClick={() => setIsDialogOpen(true)}
+                      variant="outline"
+                      className={`w-full py-6 rounded-2xl border-dashed border-2 transition-all duration-300 ${Number(discountInfo?.value) > 0
+                        ? "border-green-500/50 bg-green-500/5 text-green-600 dark:text-green-400"
+                        : "border-pink-500/30 hover:border-primary/60 hover:bg-primary/5"
+                        }`}
+                    >
+                      <span className="text-foreground font-medium text-pink-500">
+                        {Number(discountInfo?.value) > 0
+                          ? `Discount code applied: ${discountInfo.value}% OFF`
+                          : "Have a discount code? Claim offer!"}
+                      </span>
+                    </Button>
+                  </motion.div>
+                )}
                 <CheckoutButton
                   event={event}
                   checkPlan={checkPlan}
@@ -330,16 +336,18 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   </motion.div>
                 </SignedOut>
 
-                <DiscountDialog
-                  setDiscountInfo={setDiscountInfo}
-                  setRequiredUserInfo={setRequiredUserInfo}
-                  isOpen={isDialogOpen}
-                  onClose={() => {
-                    setIsDialogOpen(false);
-                  }}
-                  requiredInfo={event.requiredInfo!}
-                  discount={event.discount}
-                />
+                {hasDiscount && (
+                  <DiscountDialog
+                    setDiscountInfo={setDiscountInfo}
+                    setRequiredUserInfo={setRequiredUserInfo}
+                    isOpen={isDialogOpen}
+                    onClose={() => {
+                      setIsDialogOpen(false);
+                    }}
+                    requiredInfo={event.requiredInfo || []}
+                    discount={event.discount}
+                  />
+                )}
 
                 <SignedIn>
                   <BankTransferModal
