@@ -96,15 +96,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
   const handleGetPreorder = async () => {
     try {
-      const details = event.pricePlan?.map((item) => {
-        if (checkPlan.includes(item._id!) === true) {
-          return {
-            name: item.name,
-            price: item.price,
-          };
-        }
-      });
-      console.log(details);
+      const details = event.pricePlan
+        ?.filter((item) => checkPlan.includes(item._id!))
+        .map((item) => ({
+          name: item.name,
+          price: item.price.toString(),
+        })) || [];
       const order = await createOrder({
         eventId: event._id,
         totalAmount: calculatePriceAsNumber(price),
@@ -357,7 +354,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                     currency="TND"
                     details={event.pricePlan?.filter((item) => checkPlan.includes(item._id!)).map(item => ({
                       name: item.name,
-                      price: item.price
+                      price: item.price.toString()
                     })) || []}
                     requiredUserInfo={requiredUserInfo}
                     discountInfo={discountInfo}

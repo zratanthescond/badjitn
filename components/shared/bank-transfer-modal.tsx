@@ -18,8 +18,8 @@ interface BankTransferModalProps {
   amount: number;
   currency: string;
   details: any[];
-  requiredUserInfo: any[];
-  discountInfo: any;
+  requiredUserInfo?: any[];
+  discountInfo?: any;
 }
 
 export function BankTransferModal({
@@ -88,8 +88,8 @@ export function BankTransferModal({
         buyerId,
         totalAmount: amount.toString(),
         details,
-        requiredUserInfo,
-        discountInfo,
+        ...(requiredUserInfo && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
+        ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
         transferId: transferId.trim(),
         screenshotUrl: null,
       });
@@ -161,8 +161,8 @@ export function BankTransferModal({
         buyerId,
         totalAmount: amount.toString(),
         details,
-        requiredUserInfo,
-        discountInfo,
+        ...(requiredUserInfo && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
+        ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
         transferId: null,
         screenshotUrl: uploadResult.url,
       });
