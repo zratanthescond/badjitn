@@ -406,12 +406,14 @@
       "labels": {
         "planDescription": "Plan Description",
         "price": "Price (TND)",
-        "availablePlaces": "Available Places"
+        "availablePlaces": "Available Places",
+        "note": "Plan Note"
       },
       "placeholders": {
         "planDescription": "e.g., Premium monthly subscription with unlimited access",
         "price": "29.99",
-        "places": "100"
+        "places": "100",
+        "note": "e.g., Includes drinks, VIP seating"
       },
       "errors": {
         "descriptionRequired": "Plan description must be at least 10 characters",

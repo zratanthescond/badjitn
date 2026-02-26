@@ -413,12 +413,14 @@
       "labels": {
         "planDescription": "وصف الخطة",
         "price": "السعر (دينار تونسي)",
-        "availablePlaces": "الأماكن المتاحة"
+        "availablePlaces": "الأماكن المتاحة",
+        "note": "ملاحظة حول الخطة"
       },
       "placeholders": {
         "planDescription": "مثال: اشتراك شهري مميز مع وصول غير محدود",
         "price": "29.99",
-        "places": "100"
+        "places": "100",
+        "note": "مثال: تشمل المشروبات، مقاعد VIP"
       },
       "errors": {
         "descriptionRequired": "يجب أن يحتوي وصف الخطة على 10 أحرف على الأقل",
