@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Upload, AlertCircle, X, Landmark } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 interface BankTransferModalProps {
   eventId: string;
   buyerId: string;
@@ -37,6 +38,7 @@ export function BankTransferModal({
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -102,6 +104,7 @@ export function BankTransferModal({
         });
         setTransferId("");
         setIsOpen(false);
+        router.push("/profile");
       } else {
         toast({
           title: "Error",
@@ -134,7 +137,7 @@ export function BankTransferModal({
 
     setIsLoading(true);
     try {
-      // First, upload the file to the server
+      // Upload the file to the server
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
@@ -176,6 +179,7 @@ export function BankTransferModal({
         setUploadedFile(null);
         setPreview(null);
         setIsOpen(false);
+        router.push("/profile");
       } else {
         toast({
           title: "Error",

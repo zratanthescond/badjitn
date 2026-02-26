@@ -49,6 +49,7 @@ export default authMiddleware({
     "/api/webhook/fileServer",
     "/api/webhook/stripe",
     "/api/uploadthing",
+    "/api/upload-bank-transfer",
     "/banned",
   ],
   ignoredRoutes: [
@@ -56,6 +57,7 @@ export default authMiddleware({
     "/api/webhook/stripe",
     "/api/webhook/fileServer",
     "/api/uploadthing",
+    "/api/upload-bank-transfer",
     "/api/users",
   ],
 });

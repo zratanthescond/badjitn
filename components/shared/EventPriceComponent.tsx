@@ -117,6 +117,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           title: t("success"),
           description: t("orderCreatedSuccess"),
         });
+        router.push("/profile");
       }
     } catch (error) {
       toast({
