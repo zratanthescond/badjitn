@@ -2828,6 +2828,8 @@
     "success": "Succès",
     "orderCreatedSuccess": "Commande créée avec succès",
     "error": "Erreur",
+    "availablePlaces": "Places Disponibles",
+    "note": "Note relative au plan",
     "orderCreatedError": "Échec de la création de la commande"
   }, "notFound": {
     "title": "Page non trouvée",

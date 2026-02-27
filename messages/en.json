@@ -2856,6 +2856,8 @@
     "success": "Success",
     "orderCreatedSuccess": "Order created successfully",
     "error": "Error",
+    "availablePlaces": "Available Places",
+    "note": "Plan Note",
     "orderCreatedError": "Failed to create order"
   },"sponsors": {
     "title": "Trusted by industry leaders",

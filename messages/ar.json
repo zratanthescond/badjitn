@@ -2869,6 +2869,8 @@
         "success": "نجح",
         "orderCreatedSuccess": "تم إنشاء الطلب بنجاح",
         "error": "خطأ",
+         "availablePlaces": "الأماكن المتاحة",
+        "note": "ملاحظة حول الخطة",
         "orderCreatedError": "فشل في إنشاء الطلب"
       },
       "emptyTickets": {
