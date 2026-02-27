@@ -63,9 +63,10 @@ interface BadgeDesignerProps {
         start?: Date
         end?: Date
     }
+    onDesignSaved?: () => void
 }
 
-export function BadgeDesigner({ eventId, initialDesign, eventDetails }: BadgeDesignerProps) {
+export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSaved }: BadgeDesignerProps) {
     const [design, setDesign] = useState<BadgeDesignData>({
         front: initialDesign?.frontElements || [],
         back: initialDesign?.backElements || [],
@@ -114,6 +115,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails }: BadgeDes
                 setDesignId(newDesign?._id)
                 toast.success("Design saved!")
             }
+            onDesignSaved?.()
         } catch (error) {
             console.error("Error saving design:", error)
             toast.error("Failed to save design")
