@@ -88,9 +88,9 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
 
     const currentElements = design[currentSide]
 
-    // Canvas dimensions based on orientation
-    const CANVAS_WIDTH = design.orientation === "landscape" ? 500 : 350
-    const CANVAS_HEIGHT = design.orientation === "landscape" ? 350 : 500
+    // Canvas dimensions — A4 proportional (21cm × 29.7cm)
+    const CANVAS_WIDTH = design.orientation === "landscape" ? 566 : 400
+    const CANVAS_HEIGHT = design.orientation === "landscape" ? 400 : 566
 
     const handleSaveDesign = async () => {
         setIsSaving(true)
