@@ -60,7 +60,7 @@ const BadgeDesignSchema = new Schema({
     backgroundImage: { type: String },
     backBackgroundImage: { type: String },
     width: { type: Number, default: 400 },
-    height: { type: Number, default: 600 },
+    height: { type: Number, default: 566 },
     orientation: { type: String, enum: ["portrait", "landscape"], default: "portrait" },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
