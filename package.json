@@ -106,6 +106,7 @@
     "react-medium-image-zoom": "^5.2.10",
     "react-qr-code": "^2.0.15",
     "react-qrcode-logo": "^3.0.0",
+    "html5-qrcode": "^2.3.8",
     "react-to-pdf": "^1.0.1",
     "react-to-print": "^3.0.5",
     "shadcn": "^2.1.3",

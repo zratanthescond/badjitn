@@ -202,3 +202,29 @@ export const getOrderByEventAndBuyer = async (
     handleError(error);
   }
 };
+
+export const getOrderById = async (orderId: string) => {
+  try {
+    await connectToDatabase();
+
+    const order = await Order.findById(orderId)
+      .populate({
+        path: "event",
+        model: Event,
+        populate: {
+          path: "organizer",
+          model: User,
+          select: "_id firstName lastName",
+        },
+      })
+      .populate({
+        path: "buyer",
+        model: User,
+        select: "_id firstName lastName",
+      });
+
+    return JSON.parse(JSON.stringify(order));
+  } catch (error) {
+    handleError(error);
+  }
+};

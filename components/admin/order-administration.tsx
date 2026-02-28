@@ -30,6 +30,7 @@ import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
 import { CardSkeleton } from "./CardSkeleton";
 import { useTranslations, useLocale } from "next-intl";
+import QRScannerDialog from "./QRScannerDialog";
 
 export default function OrderAdministration({
   eventId,
@@ -126,7 +127,7 @@ export default function OrderAdministration({
         >
           <CreditCard className="h-4 w-4 text-green-600" />
           <span className="font-semibold text-green-600 dark:text-green-400">
-            {parseFloat(value).toFixed(2)} {/* Ensure value is a number */}
+            {value.toFixed(2)}
           </span>
         </div>
       ),
@@ -203,7 +204,7 @@ export default function OrderAdministration({
               className={`font-semibold text-green-600 dark:text-green-400 ${isRTL ? "font-arabic" : ""
                 }`}
             >
-              ${parseFloat(item.totalAmount).toFixed(2)}
+              ${item.totalAmount.toFixed(2)}
             </span>
           </div>
 
@@ -285,6 +286,7 @@ export default function OrderAdministration({
             >
               <Download className="h-4 w-4" />
             </Button>
+            <QRScannerDialog />
             {eventId && (
               <Button
                 asChild
@@ -345,7 +347,7 @@ export default function OrderAdministration({
                     {data
                       .reduce(
                         (sum: number, order: any) =>
-                          sum + parseFloat(order.totalAmount) || 0,
+                          sum + (order.totalAmount || 0),
                         0
                       )
                       ?.toFixed(2)}
