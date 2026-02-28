@@ -65,7 +65,7 @@ export default function OrderAdministration({
       header: t("table.headers.eventTitle"),
       accessor: "eventTitle",
       cell: (value: string) => (
-        <span className={`font-medium ${isRTL ? "font-arabic" : ""}`}>
+        <span className={`font-medium text-foreground ${isRTL ? "font-arabic" : ""}`}>
           {value}
         </span>
       ),
@@ -149,7 +149,7 @@ export default function OrderAdministration({
           className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""
             }`}
         >
-          <CardTitle className={`text-lg ${isRTL ? "font-arabic" : ""}`}>
+          <CardTitle className={`text-lg text-foreground font-bold ${isRTL ? "font-arabic" : ""}`}>
             {item.eventTitle}
           </CardTitle>
           <Badge
@@ -178,7 +178,7 @@ export default function OrderAdministration({
             {item.buyer.charAt(0).toUpperCase()}
           </div>
           <div className={isRTL ? "text-right" : ""}>
-            <p className={`font-medium ${isRTL ? "font-arabic" : ""}`}>
+            <p className={`font-semibold text-foreground ${isRTL ? "font-arabic" : ""}`}>
               {item.buyer}
             </p>
             <p
