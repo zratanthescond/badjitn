@@ -332,3 +332,31 @@ export async function adminBanEventCreator(eventId: string) {
     handleError(error);
   }
 }
+
+export async function getEventDates() {
+  try {
+    await connectToDatabase();
+
+    const eventDates = await Event.aggregate([
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$startDateTime" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+
+    return JSON.parse(JSON.stringify(eventDates));
+  } catch (error) {
+    handleError(error);
+  }
+}
