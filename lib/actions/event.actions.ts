@@ -129,7 +129,14 @@ export async function getAllEvents({
 }: GetAllEventsParams) {
   try {
     await connectToDatabase();
-    const dateFilter = date ? { startDateTime: { $gte: new Date(date) } } : {};
+    const dateFilter = date
+      ? {
+          startDateTime: {
+            $gte: new Date(`${date}T00:00:00.000Z`),
+            $lte: new Date(`${date}T23:59:59.999Z`),
+          },
+        }
+      : {};
     const countryCondition = country
       ? { country: { $regex: country, $options: "i" } }
       : {};
