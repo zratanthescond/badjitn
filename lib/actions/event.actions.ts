@@ -129,7 +129,14 @@ export async function getAllEvents({
 }: GetAllEventsParams) {
   try {
     await connectToDatabase();
-    const dateFilter = date ? { startDateTime: { $gte: new Date(date) } } : {};
+    const dateFilter = date
+      ? {
+          startDateTime: {
+            $gte: new Date(`${date}T00:00:00.000Z`),
+            $lte: new Date(`${date}T23:59:59.999Z`),
+          },
+        }
+      : {};
     const countryCondition = country
       ? { country: { $regex: country, $options: "i" } }
       : {};
@@ -321,6 +328,34 @@ export async function adminBanEventCreator(eventId: string) {
     await creator.save();
     await Report.updateMany({ eventId }, { status: "resolved" });
     return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function getEventDates() {
+  try {
+    await connectToDatabase();
+
+    const eventDates = await Event.aggregate([
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$startDateTime" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+
+    return JSON.parse(JSON.stringify(eventDates));
   } catch (error) {
     handleError(error);
   }
