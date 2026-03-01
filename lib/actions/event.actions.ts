@@ -137,9 +137,18 @@ export async function getAllEvents({
     const titleCondition = query
       ? { title: { $regex: query, $options: "i" } }
       : {};
-    const categoryCondition = category
-      ? await getCategoryByName(category)
-      : null;
+
+    let categoryCondition = null;
+    if (category && category !== "all" && category !== "forYou") {
+      categoryCondition = await getCategoryByName(category || "");
+      if (!categoryCondition) {
+        return {
+          data: [],
+          totalPages: 0,
+        };
+      }
+    }
+
     const conditions = {
       $and: [
         dateFilter,

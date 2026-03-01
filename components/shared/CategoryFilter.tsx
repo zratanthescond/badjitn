@@ -12,23 +12,54 @@ import { v4 as uuidv4 } from "uuid";
 import { useTranslations } from "next-intl";
 import clsx from "clsx";
 
-const CategoryFilter = () => {
-  const [categories, setCategories] = useState<ICategory[]>([]);
-  const [loading, setLoading] = useState(true);
+const CATEGORY_KEYS = [
+  "all",
+  "forYou",
+  "pulmonology",
+  "cardiology",
+  "dermatology",
+  "gastroenterology",
+  "neurosurgery",
+  "surgery",
+  "orthopedics",
+  "psychiatry",
+  "internalMedicine",
+  "generalMedicine",
+  "sportsMedicine",
+  "aestheticMedicine",
+  "emergencyMedicine",
+  "pediatricMedicine",
+  "geriatricMedicine",
+  "preventiveMedicine",
+  "occupationalMedicine",
+  "familyMedicine",
+  "surgicalMedicine",
+  "reproductiveMedicine",
+  "neurology",
+  "oncology",
+  "radiology",
+  "urology",
+  "endocrinology",
+  "rheumatology",
+  "nephrology",
+  "ophthalmology",
+  "otolaryngology",
+  "allergology",
+  "anesthesiology",
+  "pathology",
+  "genetics",
+  "infectiousDiseases",
+  "nuclearMedicine",
+  "hematology",
+  "painManagement",
+];
 
+const CategoryFilter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("category");
 
-  useEffect(() => {
-    const getCategories = async () => {
-      const categoryList = await getAllCategories();
-      if (categoryList) setCategories(categoryList);
-      setLoading(false);
-    };
-
-    getCategories();
-  }, []);
+  const currentCategory = searchParams.get("category") || "all";
 
   const onSelectCategory = (category: string) => {
     let newUrl = "";
@@ -86,9 +117,7 @@ const CategoryFilter = () => {
         className="flex gap-2 overflow-x-auto scroll-smooth  items-center  no-scrollbar rounded-full w-full"
       >
         <div
-          className={`absolute top-0 rounded-l-full bottom-0 left-0 w-20 bg-gradient-to-r from-slate-50/90 via-slate-50/50  dark:from-gray-900/90 dark:via-gray-900/50 dark: to-transparent pointer-events-none z-10 transition-opacity duration-300 
-          
-          `}
+          className={`absolute top-0 rounded-l-full bottom-0 left-0 w-20 bg-gradient-to-r from-slate-50/90 via-slate-50/50  dark:from-gray-900/90 dark:via-gray-900/50 dark: to-transparent pointer-events-none z-10 transition-opacity duration-300 `}
         />
 
         {/* Right shadow */}
@@ -97,35 +126,17 @@ const CategoryFilter = () => {
             opacity-100
           `}
         />
-        {loading ? (
-          [...Array(7)].map((_, i) => (
-            <Skeleton key={i} className="h-8 w-24 rounded-full bg-muted/50" />
-          ))
-        ) : (
-          <>
-            <Button
-              variant="secondary"
-              key={uuidv4()}
-              size="sm"
-              className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
-              onClick={() => onSelectCategory("For you")}
-            >
-              {t("forYou")}
-            </Button>
-
-            {categories.map((category) => (
-              <Button
-                variant="secondary"
-                key={category._id}
-                size="sm"
-                className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
-                onClick={() => onSelectCategory(category.name)}
-              >
-                {t(category.name)}
-              </Button>
-            ))}
-          </>
-        )}
+        {CATEGORY_KEYS.map((key) => (
+          <Button
+            variant={currentCategory === key ? "default" : "secondary"}
+            key={key}
+            size="sm"
+            className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
+            onClick={() => onSelectCategory(key)}
+          >
+            {t(key)}
+          </Button>
+        ))}
       </div>
     </div>
   );
