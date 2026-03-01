@@ -22,7 +22,7 @@ export default function DataTable({ columns, data }: DataTableProps) {
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className={`px-4 py-3 text-sm font-medium text-gray-400 text-${
+                  className={`px-4 py-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider text-${
                     column.align || "left"
                   }`}
                 >
@@ -40,7 +40,7 @@ export default function DataTable({ columns, data }: DataTableProps) {
                 {columns.map((column, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`px-4 py-3 text-sm text-${
+                    className={`px-4 py-3 text-sm text-foreground/90 text-${
                       column.align || "left"
                     }`}
                   >

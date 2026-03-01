@@ -153,32 +153,32 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
         <CardHeader className="pb-2 pt-8 px-8 items-center">
           <div className="flex items-center gap-2 shadow-md rounded-full mb-2">
-            <span className="inline-flex items-center justify-center bg-card/10  text-xs font-medium px-3 py-1 rounded-full">
+            <span className="inline-flex items-center justify-center bg-card/10 text-xs font-semibold px-3 py-1 rounded-full text-foreground/80">
               <Ticket size={12} className="mr-1" />
               {event.title}
             </span>
           </div>
-          <CardTitle className="text-2xl font-bold">{t("buyTicket")}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-foreground">{t("buyTicket")}</CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6 pb-8 px-8">
           {/* Discount and Pricing Section */}
           <div className="space-y-4">
             {/* Price Display */}
-            <div className="flex items-center justify-between bg-card/5 shadow-md p-5 rounded-2xl border border-border/50">
-              <p className="font-semibold text-foreground">{t("eventTotalPrice")}</p>
+            <div className="flex items-center justify-between bg-card/5 p-5 rounded-2xl border border-border/50 backdrop-blur-sm">
+              <p className="font-bold text-foreground text-lg">{t("eventTotalPrice")}</p>
               <div className="text-right">
                 {Number(discountInfo?.value) > 0 ? (
                   <div className="flex flex-col items-end">
-                    <span className="text-sm text-destructive line-through opacity-70">
+                    <span className="text-sm text-destructive font-medium line-through opacity-80">
                       {price} TND
                     </span>
-                    <span className="text-2xl font-black text-primary animate-in fade-in zoom-in duration-300">
+                    <span className="text-3xl font-black text-primary animate-in fade-in zoom-in duration-300">
                       {calculatePriceAsNumber(price)} TND
                     </span>
                   </div>
                 ) : (
-                  <span className="text-2xl font-black">
+                  <span className="text-3xl font-black text-foreground">
                     {price} TND
                   </span>
                 )}
@@ -217,11 +217,11 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             )}
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-semibold text-foreground">
+                            <span className="font-bold text-foreground">
                               {plan.name}
                             </span>
                             {plan.places && (
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-xs font-medium text-muted-foreground">
                                 {plan.places} {t("availablePlaces") ?? "places available"}
                               </span>
                             )}
