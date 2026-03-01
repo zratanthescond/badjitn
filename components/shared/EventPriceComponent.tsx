@@ -195,48 +195,58 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   {event.pricePlan.map((plan: any) => {
                     const isSelected = checkPlan.includes(plan._id);
                     return (
-                      <motion.div
-                        key={plan._id}
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.99 }}
-                        onClick={() => handleAddPlan(plan._id)}
-                        className={`relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${isSelected
-                          ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
-                          : "border-border/50 bg-card/5 hover:border-primary/30 hover:bg-primary/[0.02]"
-                          }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`flex items-center justify-center w-6 h-6 rounded-full border-2 transition-all duration-200 ${isSelected
-                              ? "border-primary bg-primary"
-                              : "border-muted-foreground/30"
-                              }`}
-                          >
-                            {isSelected && (
-                              <CheckCircle size={14} className="text-primary-foreground" />
-                            )}
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-bold text-foreground">
-                              {plan.name}
-                            </span>
-                            {plan.places && (
-                              <span className="text-xs font-medium text-muted-foreground">
-                                {plan.places} {t("availablePlaces") ?? "places available"}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <Badge
-                          variant={isSelected ? "default" : "secondary"}
-                          className={`text-sm font-bold px-3 py-1 rounded-full transition-all duration-200 ${isSelected
-                            ? "bg-primary text-primary-foreground"
-                            : ""
+                      <div key={plan._id} className="flex flex-col gap-2">
+                        <motion.div
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
+                          onClick={() => handleAddPlan(plan._id)}
+                          className={`relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${isSelected
+                            ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                            : "border-border/50 bg-card/5 hover:border-primary/30 hover:bg-primary/[0.02]"
                             }`}
                         >
-                          {plan.price} TND
-                        </Badge>
-                      </motion.div>
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`flex items-center justify-center w-6 h-6 rounded-full border-2 transition-all duration-200 ${isSelected
+                                ? "border-primary bg-primary"
+                                : "border-muted-foreground/30"
+                                }`}
+                            >
+                              {isSelected && (
+                                <CheckCircle size={14} className="text-primary-foreground" />
+                              )}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-semibold text-foreground">
+                                {plan.name}
+                              </span>
+                              {plan.places && (
+                                <span className="text-xs text-muted-foreground">
+                                  {plan.places} {t("availablePlaces") ?? "places available"}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <Badge
+                            variant={isSelected ? "default" : "secondary"}
+                            className={`text-sm font-bold px-3 py-1 rounded-full transition-all duration-200 ${isSelected
+                              ? "bg-primary text-primary-foreground"
+                              : ""
+                              }`}
+                          >
+                            {plan.price} TND
+                          </Badge>
+                        </motion.div>
+                        {plan.note && (
+                          <div className="px-4 pb-2">
+                            <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs shadow-sm">
+                              <p className="leading-relaxed font-medium">
+                                {t("note")}: {plan.note}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
