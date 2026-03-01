@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 export async function POST(request: NextRequest) {
@@ -40,7 +40,9 @@ export async function POST(request: NextRequest) {
         const filename = `bank-transfer-${timestamp}-${originalName}`;
 
         // Save to public/uploads directory
-        const uploadPath = path.join(process.cwd(), "public", "uploads", filename);
+        const uploadsDir = path.join(process.cwd(), "public", "uploads");
+        await mkdir(uploadsDir, { recursive: true });
+        const uploadPath = path.join(uploadsDir, filename);
         await writeFile(uploadPath, new Uint8Array(buffer));
 
         // Return the public URL

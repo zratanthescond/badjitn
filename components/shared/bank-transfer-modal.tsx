@@ -12,14 +12,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Upload, AlertCircle, X, Landmark } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 interface BankTransferModalProps {
   eventId: string;
   buyerId: string;
   amount: number;
   currency: string;
   details: any[];
-  requiredUserInfo: any[];
-  discountInfo: any;
+  requiredUserInfo?: any[];
+  discountInfo?: any;
 }
 
 export function BankTransferModal({
@@ -37,6 +38,7 @@ export function BankTransferModal({
   const [preview, setPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,10 +90,10 @@ export function BankTransferModal({
         buyerId,
         totalAmount: amount.toString(),
         details,
-        requiredUserInfo,
-        discountInfo,
+        ...(requiredUserInfo && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
+        ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
         transferId: transferId.trim(),
-        screenshotUrl: null,
+        screenshotBase64: null,
       });
 
       if (result.success) {
@@ -102,6 +104,7 @@ export function BankTransferModal({
         });
         setTransferId("");
         setIsOpen(false);
+        router.push("/profile");
       } else {
         toast({
           title: "Error",
@@ -134,37 +137,16 @@ export function BankTransferModal({
 
     setIsLoading(true);
     try {
-      // First, upload the file to the server
-      const formData = new FormData();
-      formData.append("file", uploadedFile);
-
-      const uploadResponse = await fetch("/api/upload-bank-transfer", {
-        method: "POST",
-        body: formData,
-      });
-
-      const uploadResult = await uploadResponse.json();
-
-      if (!uploadResult.success) {
-        toast({
-          title: "Error",
-          description: uploadResult.message || "Failed to upload screenshot",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      // Then submit the bank transfer with the uploaded file URL
+      // Submit the bank transfer with the base64 screenshot directly
       const result = await submitBankTransfer({
         eventId,
         buyerId,
         totalAmount: amount.toString(),
         details,
-        requiredUserInfo,
-        discountInfo,
+        ...(requiredUserInfo && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
+        ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
         transferId: null,
-        screenshotUrl: uploadResult.url,
+        screenshotBase64: preview,
       });
 
       if (result.success) {
@@ -176,6 +158,7 @@ export function BankTransferModal({
         setUploadedFile(null);
         setPreview(null);
         setIsOpen(false);
+        router.push("/profile");
       } else {
         toast({
           title: "Error",

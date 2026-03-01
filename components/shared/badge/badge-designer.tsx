@@ -63,9 +63,10 @@ interface BadgeDesignerProps {
         start?: Date
         end?: Date
     }
+    onDesignSaved?: () => void
 }
 
-export function BadgeDesigner({ eventId, initialDesign, eventDetails }: BadgeDesignerProps) {
+export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSaved }: BadgeDesignerProps) {
     const [design, setDesign] = useState<BadgeDesignData>({
         front: initialDesign?.frontElements || [],
         back: initialDesign?.backElements || [],
@@ -87,9 +88,9 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails }: BadgeDes
 
     const currentElements = design[currentSide]
 
-    // Canvas dimensions based on orientation
-    const CANVAS_WIDTH = design.orientation === "landscape" ? 500 : 350
-    const CANVAS_HEIGHT = design.orientation === "landscape" ? 350 : 500
+    // Canvas dimensions — A4 proportional (21cm × 29.7cm)
+    const CANVAS_WIDTH = design.orientation === "landscape" ? 566 : 400
+    const CANVAS_HEIGHT = design.orientation === "landscape" ? 400 : 566
 
     const handleSaveDesign = async () => {
         setIsSaving(true)
@@ -114,6 +115,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails }: BadgeDes
                 setDesignId(newDesign?._id)
                 toast.success("Design saved!")
             }
+            onDesignSaved?.()
         } catch (error) {
             console.error("Error saving design:", error)
             toast.error("Failed to save design")

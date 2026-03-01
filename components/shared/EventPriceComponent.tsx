@@ -46,6 +46,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const { userId } = useAuth();
   const router = useRouter();
 
+  // Check if the event actually has a discount configured
+  const hasDiscount = !!(event.discount && event.discount.field && event.discount.discount > 0);
+
 
   const validateUserInfo = (
     objects: { [key: string]: string | number }[],
@@ -93,21 +96,18 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
   const handleGetPreorder = async () => {
     try {
-      const details = event.pricePlan?.map((item) => {
-        if (checkPlan.includes(item._id!) === true) {
-          return {
-            name: item.name,
-            price: item.price,
-          };
-        }
-      });
-      console.log(details);
+      const details = event.pricePlan
+        ?.filter((item) => checkPlan.includes(item._id!))
+        .map((item) => ({
+          name: item.name,
+          price: item.price.toString(),
+        })) || [];
       const order = await createOrder({
         eventId: event._id,
-        totalAmount: calculatePriceAsNumber(Number(event.price)),
+        totalAmount: calculatePriceAsNumber(price),
         type: "doorpay",
-        requiredUserInfo,
-        discountInfo,
+        ...(hasDiscount && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
+        ...(hasDiscount && Number(discountInfo?.value) > 0 ? { discountInfo } : {}),
         details: details,
         buyerId: userId,
         stripeId: `${uuidv4()}`,
@@ -117,6 +117,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           title: t("success"),
           description: t("orderCreatedSuccess"),
         });
+        router.push("/profile");
       }
     } catch (error) {
       toast({
@@ -152,32 +153,32 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
         <CardHeader className="pb-2 pt-8 px-8 items-center">
           <div className="flex items-center gap-2 shadow-md rounded-full mb-2">
-            <span className="inline-flex items-center justify-center bg-card/10  text-xs font-medium px-3 py-1 rounded-full">
+            <span className="inline-flex items-center justify-center bg-card/10 text-xs font-semibold px-3 py-1 rounded-full text-foreground/80">
               <Ticket size={12} className="mr-1" />
               {event.title}
             </span>
           </div>
-          <CardTitle className="text-2xl font-bold">{t("buyTicket")}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-foreground">{t("buyTicket")}</CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6 pb-8 px-8">
           {/* Discount and Pricing Section */}
           <div className="space-y-4">
             {/* Price Display */}
-            <div className="flex items-center justify-between bg-card/5 shadow-md p-5 rounded-2xl border border-border/50">
-              <p className="font-semibold text-foreground">{t("eventTotalPrice")}</p>
+            <div className="flex items-center justify-between bg-card/5 p-5 rounded-2xl border border-border/50 backdrop-blur-sm">
+              <p className="font-bold text-foreground text-lg">{t("eventTotalPrice")}</p>
               <div className="text-right">
                 {Number(discountInfo?.value) > 0 ? (
                   <div className="flex flex-col items-end">
-                    <span className="text-sm text-destructive line-through opacity-70">
+                    <span className="text-sm text-destructive font-medium line-through opacity-80">
                       {price} TND
                     </span>
-                    <span className="text-2xl font-black text-primary animate-in fade-in zoom-in duration-300">
+                    <span className="text-3xl font-black text-primary animate-in fade-in zoom-in duration-300">
                       {calculatePriceAsNumber(price)} TND
                     </span>
                   </div>
                 ) : (
-                  <span className="text-2xl font-black">
+                  <span className="text-3xl font-black text-foreground">
                     {price} TND
                   </span>
                 )}
@@ -253,25 +254,28 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             )}
 
             {isAvailable() && (
-              <> <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  onClick={() => setIsDialogOpen(true)}
-                  variant="outline"
-                  className={`w-full py-6 rounded-2xl border-dashed border-2 transition-all duration-300 ${Number(discountInfo?.value) > 0
-                    ? "border-green-500/50 bg-green-500/5 text-green-600 dark:text-green-400"
-                    : "border-pink-500/30 hover:border-primary/60 hover:bg-primary/5"
-                    }`}
-                >
-                  <span className="text-foreground font-medium text-pink-500">
-                    {Number(discountInfo?.value) > 0
-                      ? `Discount code applied: ${discountInfo.value}% OFF`
-                      : "Have a discount code? Claim offer!"}
-                  </span>
-                </Button>
-              </motion.div>
+              <>
+                {hasDiscount && (
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      onClick={() => setIsDialogOpen(true)}
+                      variant="outline"
+                      className={`w-full py-6 rounded-2xl border-dashed border-2 transition-all duration-300 ${Number(discountInfo?.value) > 0
+                        ? "border-green-500/50 bg-green-500/5 text-green-600 dark:text-green-400"
+                        : "border-pink-500/30 hover:border-primary/60 hover:bg-primary/5"
+                        }`}
+                    >
+                      <span className="text-foreground font-medium text-pink-500">
+                        {Number(discountInfo?.value) > 0
+                          ? `Discount code applied: ${discountInfo.value}% OFF`
+                          : "Have a discount code? Claim offer!"}
+                      </span>
+                    </Button>
+                  </motion.div>
+                )}
                 <CheckoutButton
                   event={event}
                   checkPlan={checkPlan}
@@ -340,16 +344,18 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   </motion.div>
                 </SignedOut>
 
-                <DiscountDialog
-                  setDiscountInfo={setDiscountInfo}
-                  setRequiredUserInfo={setRequiredUserInfo}
-                  isOpen={isDialogOpen}
-                  onClose={() => {
-                    setIsDialogOpen(false);
-                  }}
-                  requiredInfo={event.requiredInfo!}
-                  discount={event.discount}
-                />
+                {hasDiscount && (
+                  <DiscountDialog
+                    setDiscountInfo={setDiscountInfo}
+                    setRequiredUserInfo={setRequiredUserInfo}
+                    isOpen={isDialogOpen}
+                    onClose={() => {
+                      setIsDialogOpen(false);
+                    }}
+                    requiredInfo={event.requiredInfo || []}
+                    discount={event.discount}
+                  />
+                )}
 
                 <SignedIn>
                   <BankTransferModal
@@ -359,7 +365,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                     currency="TND"
                     details={event.pricePlan?.filter((item) => checkPlan.includes(item._id!)).map(item => ({
                       name: item.name,
-                      price: item.price
+                      price: item.price.toString()
                     })) || []}
                     requiredUserInfo={requiredUserInfo}
                     discountInfo={discountInfo}

@@ -21,6 +21,7 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  components: customComponents,
   ...props
 }: CalendarProps) {
   const [locale, setLocale] = React.useState<Locale | undefined>(undefined);
@@ -78,6 +79,7 @@ function Calendar({
       components={{
         IconLeft: () => <ChevronLeft className="h-4 w-4" />,
         IconRight: () => <ChevronRight className="h-4 w-4" />,
+        ...customComponents,
       }}
       {...props}
     />
