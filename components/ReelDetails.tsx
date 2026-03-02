@@ -35,6 +35,7 @@ import {
 import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
 import FeedBackComponent from "./shared/FeedBackComponent";
+import { TiptapRenderer } from "./shared/TiptapRenderer";
 
 interface ReelDetailsProps {
   event: Event;
@@ -187,10 +188,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
         {/* Description */}
         <Card>
           <CardContent className="p-6">
-            <div
-              className="prose prose-sm dark:prose-invert max-w-none leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: event.description }}
-            />
+            <TiptapRenderer content={event.description} />
           </CardContent>
         </Card>
 

@@ -19,18 +19,97 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { useGetEventDates } from "@/hooks/useGetEventDates";
+import { useDayRender, DayModifiers } from "react-day-picker";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const DayButton = React.forwardRef<HTMLButtonElement, any>(
+  ({ calendarRef, ...props }, forwardedRef) => {
+    const setRefs = useCallback(
+      (node: HTMLButtonElement | null) => {
+        // Attach focus ref for DayPicker
+        if (typeof calendarRef === "function") calendarRef(node);
+        else if (calendarRef && "current" in calendarRef) calendarRef.current = node;
+
+        // Attach tooltip ref
+        if (typeof forwardedRef === "function") forwardedRef(node);
+        else if (forwardedRef && "current" in forwardedRef) forwardedRef.current = node;
+      },
+      [calendarRef, forwardedRef]
+    );
+
+    return <button {...props} ref={setRefs} />;
+  }
+);
+DayButton.displayName = "DayButton";
+
+const CalendarDay = ({ 
+  date, 
+  displayMonth, 
+  modifiers, 
+  getEventCountForDate 
+}: any) => {
+  const calendarRef = React.useRef<HTMLButtonElement>(null);
+  const dayRender = useDayRender(date, displayMonth, calendarRef);
+
+  if (dayRender.isHidden) return null;
+
+  const count = getEventCountForDate(date);
+  const { ref: _dayRef, ...buttonProps } = dayRender.buttonProps as any;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <DayButton calendarRef={calendarRef} {...buttonProps} />
+      </TooltipTrigger>
+      {count > 0 && (
+        <TooltipContent>
+          <p>
+            {count}{" "}
+            {count > 1 ? "événements programmés" : "événement programmé"}
+          </p>
+        </TooltipContent>
+      )}
+    </Tooltip>
+  );
+};
 
 export function DatePickerWithPresets() {
   const searchParams = useSearchParams();
   const initalDateString = searchParams.get("date") || null;
-  const initialDate = initalDateString ? new Date(initalDateString) : null;
-  const [date, setDate] = React.useState<Date | null>(initialDate);
+  const initialDate = initalDateString ? new Date(initalDateString) : undefined;
+  const [date, setDate] = React.useState<Date | undefined>(initialDate);
   const router = useRouter();
   const t = useTranslations("datePicker");
+
+  const { data: eventDates } = useGetEventDates();
+
+  const eventModifiers: DayModifiers = useMemo(() => {
+    if (!eventDates) return { hasEvents: [] };
+    const dates = eventDates.map((ed) => {
+      const [year, month, day] = ed.date.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    });
+    return { hasEvents: dates };
+  }, [eventDates]);
+
+  const getEventCountForDate = useCallback(
+    (day: Date) => {
+      if (!eventDates) return 0;
+      const dateString = format(day, "yyyy-MM-dd");
+      return eventDates.find((ed) => ed.date === dateString)?.count || 0;
+    },
+    [eventDates]
+  );
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       let newUrl = "";
@@ -49,7 +128,6 @@ export function DatePickerWithPresets() {
       }
 
       router.push(newUrl, { scroll: false });
-      //alert("Country changed to: " + newUrl);
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
@@ -68,7 +146,10 @@ export function DatePickerWithPresets() {
               <Button
                 variant="ghost"
                 size={"icon"}
-                onClick={() => setDate(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDate(undefined);
+                }}
                 className="mr-0.5"
               >
                 <X className="h-4 w-4" />
@@ -99,7 +180,26 @@ export function DatePickerWithPresets() {
           </SelectContent>
         </Select>
         <div className="rounded-md border ">
-          <Calendar mode="single" selected={date} onSelect={setDate} />
+          <TooltipProvider>
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate as any}
+              modifiers={eventModifiers}
+              modifiersClassNames={{
+                hasEvents:
+                  "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-1 after:w-1 after:rounded-full after:bg-primary font-bold",
+              }}
+              components={{
+                Day: (props: any) => (
+                  <CalendarDay
+                    {...props}
+                    getEventCountForDate={getEventCountForDate}
+                  />
+                ),
+              }}
+            />
+          </TooltipProvider>
         </div>
       </PopoverContent>
     </Popover>

@@ -74,6 +74,22 @@ export function BadgePrinter({
             .replace(/{event_date}/g, eventDetails.start ? new Date(eventDetails.start).toLocaleDateString() : "")
     }
 
+    // Design canvas dimensions (from saved design or defaults)
+    const canvasW = width || 400
+    const canvasH = height || 566
+
+    // A4 dimensions at 96 DPI
+    const isLandscape = orientation === "landscape"
+    const a4WidthPx = isLandscape ? 1123 : 794
+    const a4HeightPx = isLandscape ? 794 : 1123
+
+    // Scale factor to fill the full A4 page from design canvas
+    const scaleX = a4WidthPx / canvasW
+    const scaleY = a4HeightPx / canvasH
+    const printScale = Math.min(scaleX, scaleY) // uniform scale to fit
+
+    const hasBackContent = backElements.length > 0 || !!backBackgroundImage
+
     const renderElements = (elements: BadgeElement[], attendee: any) => {
         return elements.map((el) => (
             <div
@@ -151,15 +167,17 @@ export function BadgePrinter({
         ))
     }
 
-    const BADGE_WIDTH = width || (orientation === "landscape" ? 500 : 350)
-    const BADGE_HEIGHT = height || (orientation === "landscape" ? 350 : 500)
+    // Preview scale for screen (fit in viewport)
+    const previewScale = 0.55
 
     return (
         <div className="fixed inset-0 z-50 bg-black/80 flex flex-col">
             <div className="bg-card border-b p-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <h2 className="text-lg font-bold">Print Preview ({attendees.length} badges)</h2>
-                    <p className="text-sm text-muted-foreground">Both sides are laid out to print on the same page.</p>
+                    <h2 className="text-lg font-bold">Print Preview ({attendees.length} badge{attendees.length > 1 ? "s" : ""})</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Full A4 — 1 badge per page{hasBackContent ? " (front + back)" : " (front only)"}
+                    </p>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button onClick={() => handlePrint()}>
@@ -173,16 +191,25 @@ export function BadgePrinter({
             </div>
 
             <div className="flex-1 overflow-auto p-8 bg-slate-200">
-                <div ref={componentRef} className="mx-auto flex flex-col items-center gap-8 print:gap-4 print:m-0">
-                    {attendees.map((attendee, index) => (
-                        <div key={attendee._id} className="flex flex-col gap-4 print:gap-4 print:break-after-page items-center justify-center">
-                            <div className={`flex ${orientation === "landscape" ? "flex-col" : "flex-row"} gap-4 print:gap-4`}>
-                                {/* Front Side */}
+                <div ref={componentRef} className="badge-print-root mx-auto flex flex-col items-center gap-8 print:gap-0">
+                    {attendees.map((attendee) => (
+                        <div key={attendee._id} className="badge-attendee-group">
+                            {/* ===== FRONT (RECTO) — Full A4 Page ===== */}
+                            <div
+                                className="badge-a4-page bg-white shadow-xl print:shadow-none mx-auto"
+                                style={{
+                                    width: `${a4WidthPx * previewScale}px`,
+                                    height: `${a4HeightPx * previewScale}px`,
+                                }}
+                            >
                                 <div
-                                    className="relative bg-white shadow-xl print:shadow-none border border-slate-200"
+                                    className="badge-canvas-scaler"
                                     style={{
-                                        width: `${BADGE_WIDTH}px`,
-                                        height: `${BADGE_HEIGHT}px`,
+                                        width: `${canvasW}px`,
+                                        height: `${canvasH}px`,
+                                        transform: `scale(${printScale * previewScale})`,
+                                        transformOrigin: "top left",
+                                        position: "relative",
                                         backgroundImage: backgroundImage ? `url(${backgroundImage})` : "none",
                                         backgroundSize: "cover",
                                         backgroundPosition: "center",
@@ -190,34 +217,76 @@ export function BadgePrinter({
                                 >
                                     {renderElements(badgeElements, attendee)}
                                 </div>
+                            </div>
 
-                                {/* Back Side */}
+                            {/* ===== BACK (VERSO) — Full A4 Page — Only if back has content ===== */}
+                            {hasBackContent && (
                                 <div
-                                    className="relative bg-white shadow-xl print:shadow-none border border-slate-200"
+                                    className="badge-a4-page bg-white shadow-xl print:shadow-none mx-auto mt-8 print:mt-0"
                                     style={{
-                                        width: `${BADGE_WIDTH}px`,
-                                        height: `${BADGE_HEIGHT}px`,
-                                        backgroundImage: backBackgroundImage ? `url(${backBackgroundImage})` : "none",
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center",
+                                        width: `${a4WidthPx * previewScale}px`,
+                                        height: `${a4HeightPx * previewScale}px`,
                                     }}
                                 >
-                                    {backElements.length > 0 ? renderElements(backElements, attendee) : (
-                                        <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                            <span>Back Side (Empty)</span>
-                                        </div>
-                                    )}
+                                    <div
+                                        className="badge-canvas-scaler"
+                                        style={{
+                                            width: `${canvasW}px`,
+                                            height: `${canvasH}px`,
+                                            transform: `scale(${printScale * previewScale})`,
+                                            transformOrigin: "top left",
+                                            position: "relative",
+                                            backgroundImage: backBackgroundImage ? `url(${backBackgroundImage})` : "none",
+                                            backgroundSize: "cover",
+                                            backgroundPosition: "center",
+                                        }}
+                                    >
+                                        {renderElements(backElements, attendee)}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     ))}
                 </div>
             </div>
+
             <style jsx global>{`
                 @media print {
                     @page {
-                        size: auto;
-                        margin: 10mm;
+                        size: ${isLandscape ? "A4 landscape" : "A4 portrait"};
+                        margin: 0;
+                    }
+
+                    body {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+
+                    .badge-print-root {
+                        gap: 0 !important;
+                    }
+
+                    .badge-a4-page {
+                        width: ${isLandscape ? "29.7cm" : "21cm"} !important;
+                        height: ${isLandscape ? "21cm" : "29.7cm"} !important;
+                        overflow: hidden;
+                        page-break-after: always;
+                        box-shadow: none !important;
+                        margin: 0 !important;
+                    }
+
+                    .badge-a4-page:last-child {
+                        page-break-after: auto;
+                    }
+
+                    .badge-canvas-scaler {
+                        transform: scale(${printScale}) !important;
+                    }
+
+                    .badge-attendee-group {
+                        break-inside: avoid;
                     }
                 }
             `}</style>

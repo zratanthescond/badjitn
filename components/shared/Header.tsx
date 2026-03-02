@@ -13,7 +13,7 @@ const Header = () => {
   const dimensions = useMediaQuery("(min-width: 768px)");
   const t = useTranslations("Navbar");
   return (
-    <header className="flex flex-1 w-full fixed border-b backdrop-blur glass  z-50  ">
+    <header className="flex flex-1 w-full fixed border-b border-border/40 backdrop-blur-xl glass z-50">
       <div className="wrapper flex items-center justify-between">
         <div className="flex-row flex items-center ">
           <Link href="/" className=" d-flex flex-row ">

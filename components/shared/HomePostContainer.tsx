@@ -13,42 +13,46 @@ export default function HomePostContainer({
   src: string;
   className?: string;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [hovred, setHovered] = useState<boolean>(false);
-  const poster = useSinglePreview(src, 2);
+  
+  // Detect if the src is an HLS manifest (video) or a static image
+  const isVideo = src?.includes(".m3u8");
+  
+  // Only attempt video preview for manifests
+  const videoPoster = useSinglePreview(isVideo ? src : "", 2);
+  
+  // Use extracted video poster if video, otherwise use src directly as image
+  const poster = isVideo ? videoPoster : src;
 
   return (
     <div
-      className=" w-full h-full rounded-lg"
+      className="w-full h-full rounded-lg relative overflow-hidden"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {hovred && poster ? (
-        <>
-          <HLSPlayer
-            manifest={src}
-            muted
-            autoPlay
-            className={className}
-            poster={poster}
-          />
-        </>
+      {hovred && isVideo && poster ? (
+        <HLSPlayer
+          manifest={src}
+          muted
+          autoPlay
+          className={className}
+          poster={poster}
+          isActive={hovred}
+        />
       ) : (
-        <>
-          {poster && (
+        <div className="w-full h-full relative">
+          {poster ? (
             <Image
-              alt={""}
-              style={{ objectFit: "fill" }}
-              layout="responsive"
-              width={296}
-              height={81 / 16 / 9}
-              src={poster!}
-              className="rounded-lg w-full h-full object-cover"
+              alt="Event visual"
+              src={poster}
+              fill
+              className={`rounded-lg object-cover transition-opacity duration-300 ${className}`}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
+          ) : (
+            <Skeleton className="h-full w-full rounded-lg" />
           )}
-
-          <Skeleton className="min-h-full w-full" />
-        </>
+        </div>
       )}
     </div>
   );

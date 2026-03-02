@@ -37,15 +37,15 @@ const NavItems = () => {
             key={link.route}
             className={`${
               isActive
-                ? "text-primary dark:text-white bg-primary/10 dark:bg-white/10"
-                : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5"
+                ? "text-primary dark:text-blue-400 bg-primary/10 dark:bg-blue-400/10"
+                : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
             } flex items-center w-full md:w-auto p-medium-16 whitespace-nowrap transition-all duration-200 rounded-xl md:rounded-full px-4 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary`}
           >
             <Link href={link.route} className="flex flex-row items-center gap-3 w-full">
-              <span className={isActive ? "text-primary dark:text-blue-400" : "text-muted-foreground"}>
+              <span className={isActive ? "text-primary dark:text-blue-400" : "text-inherit"}>
                 {getIcon(link.route)}
               </span>
-              <span className="font-medium">{t(link.label)}</span>
+              <span className="font-semibold">{t(link.label)}</span>
             </Link>
           </li>
         );

@@ -100,6 +100,7 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
                             eventId={eventId}
                             initialDesign={badgeDesign}
                             eventDetails={{ title: eventTitle, start: eventStart, end: eventEnd }}
+                            onDesignSaved={fetchDesign}
                         />
                     </TabsContent>
 

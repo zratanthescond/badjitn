@@ -402,12 +402,14 @@
       "labels": {
         "planDescription": "Description du Plan",
         "price": "Prix (TND)",
-        "availablePlaces": "Places Disponibles"
+        "availablePlaces": "Places Disponibles",
+        "note": "Note relative au plan"
       },
       "placeholders": {
         "planDescription": "ex: Abonnement mensuel premium avec accès illimité",
         "price": "29,99",
-        "places": "100"
+        "places": "100",
+        "note": "ex: Boissons incluses, Placement VIP"
       },
       "errors": {
         "descriptionRequired": "La description du plan doit contenir au moins 10 caractères",
@@ -2826,6 +2828,8 @@
     "success": "Succès",
     "orderCreatedSuccess": "Commande créée avec succès",
     "error": "Erreur",
+    "availablePlaces": "Places Disponibles",
+    "note": "Note relative au plan",
     "orderCreatedError": "Échec de la création de la commande"
   }, "notFound": {
     "title": "Page non trouvée",
