@@ -369,6 +369,11 @@ export async function removeScanPoint(eventId: string, scanPoint: string) {
     }
 
     return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 export async function getEventDates() {
   try {
     await connectToDatabase();
