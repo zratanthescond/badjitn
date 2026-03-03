@@ -27,8 +27,8 @@ export default function ContactPage() {
     {
       key: "phone",
       icon: Phone,
-      value: "+216 XX XXX XXX",
-      href: "tel:+216XXXXXXX",
+      value: "+216 29 173 135",
+      href: "tel:+21629173135",
     },
     {
       key: "address",

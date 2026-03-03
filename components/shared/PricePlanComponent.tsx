@@ -23,6 +23,7 @@ interface PricePlan {
   name: string;
   price: number;
   places?: number;
+  note?: string;
 }
 
 interface PricePlanComponentProps {
@@ -41,6 +42,7 @@ export default function PricePlanComponent({
   const [planDescription, setPlanDescription] = useState<string>("");
   const [planPrice, setPlanPrice] = useState<string>("");
   const [planPlaces, setPlanPlaces] = useState<string>("");
+  const [planNote, setPlanNote] = useState<string>("");
   const [errors, setErrors] = useState<{
     description: string;
     price: string;
@@ -86,12 +88,14 @@ export default function PricePlanComponent({
       name: planDescription.trim(),
       price: Number.parseFloat(planPrice),
       places: Number.parseInt(planPlaces),
+      note: planNote.trim(),
     };
 
     setPricePlan([...pricePlan, newPlan]);
     setPlanDescription("");
     setPlanPrice("");
     setPlanPlaces("");
+    setPlanNote("");
     setErrors({ description: "", price: "", places: "" });
   };
 
@@ -204,6 +208,19 @@ export default function PricePlanComponent({
                 <p className="text-sm text-destructive mt-1">{errors.places}</p>
               )}
             </div>
+
+            <div className="md:col-span-2">
+              <Label htmlFor="note" className="text-sm font-medium">
+                {t("form.labels.note")}
+              </Label>
+              <Input
+                id="note"
+                placeholder={t("form.placeholders.note")}
+                value={planNote}
+                onChange={(e) => setPlanNote(e.target.value)}
+                className="mt-1 rounded-full"
+              />
+            </div>
           </div>
 
           <Button
@@ -257,6 +274,11 @@ export default function PricePlanComponent({
                       <p className="font-medium text-sm leading-relaxed">
                         {plan.name}
                       </p>
+                      {plan.note && (
+                        <p className="text-muted-foreground text-xs mt-2 italic">
+                          {plan.note}
+                        </p>
+                      )}
                     </CardContent>
 
                     <CardFooter className="pt-0 flex items-center justify-between">

@@ -182,7 +182,7 @@ const Footer = () => {
                       isRTL ? "font-arabic" : ""
                     }`}
                   >
-                    +216 XX XXX XXX
+                    +216 29 173 135
                   </span>
                 </div>
                 <div

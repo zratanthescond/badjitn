@@ -24,6 +24,7 @@ export type pricePlan = {
   name: string;
   price: number;
   places?: number;
+  note?: string;
 };
 // ====== EVENT PARAMS
 export type CreateEventParams = {

@@ -29,13 +29,13 @@ export function VideoDetailsPanel({
 
   const panelClasses = `
     ${isVisible
-      ? "flex top-[12vh] md:top-auto max-h-[88vh] md:max-h-full glass w-full"
+      ? "flex top-[12vh] md:top-auto max-h-[88vh] md:max-h-full glass w-full shadow-2xl"
       : "hidden md:flex backdrop-blur top-full max-h-0 overflow-hidden"
     } 
     flex-col fixed bottom-0 md:max-w-md md:relative rounded-t-3xl md:rounded-2xl w-full 
     md:h-full items-center justify-start gap-4 animate-accordion-down repeat-1
-    transition-all duration-300 ease-in-out border-t md:border border-border/50
-    [--glass-opacity:40%] [--glass-blur:60px] dark:[--glass-opacity:20%]
+    transition-all duration-300 ease-in-out border-t md:border border-border/60
+    [--glass-opacity:70%] [--glass-blur:80px] dark:[--glass-opacity:40%]
   `;
 
   return (
