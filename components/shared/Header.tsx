@@ -13,54 +13,63 @@ const Header = () => {
   const dimensions = useMediaQuery("(min-width: 768px)");
   const t = useTranslations("Navbar");
   return (
-    <header className="flex flex-1 w-full fixed border-b border-border/40 backdrop-blur-xl glass z-50">
-      <div className="wrapper flex items-center justify-between">
-        <div className="flex-row flex items-center ">
-          <Link href="/" className=" d-flex flex-row ">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
+      <div className="wrapper flex h-16 md:h-20 items-center justify-between py-2">
+        <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center transition-opacity hover:opacity-90">
             <Image
               src="/assets/images/logo.png"
-              width={128}
-              height={38}
+              width={140}
+              height={42}
               alt="BadjiTn logo"
-              className="object-cover hidden dark:block w-[100px] md:w-[128px] h-auto"
+              className="hidden dark:block w-[110px] md:w-[140px] h-auto object-contain"
             />
             <Image
               src="/assets/images/logoDark.png"
-              width={128}
-              height={38}
+              width={140}
+              height={42}
               alt="BadjiTn logo"
-              className="object-cover block dark:hidden w-[100px] md:w-[128px] h-auto"
+              className="block dark:hidden w-[110px] md:w-[140px] h-auto object-contain"
             />
           </Link>
         </div>
-        <SignedIn>
-          <nav className="md:flex-between hidden w-full max-w-xs">
-            <NavItems />
-          </nav>
-        </SignedIn>
-        <div className="flex items-center justify-end gap-3 min-w-max">
-          {dimensions && (
-            <>
-              <LocaleSwitcher />
-              <ModeToggle />
-            </>
-          )}
 
+        <div className="flex items-center justify-end gap-2 md:gap-4 flex-1">
           <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-            <MobileNav />
+            <nav className="hidden md:flex items-center mr-4">
+              <NavItems />
+            </nav>
           </SignedIn>
-          <SignedOut>
-            <Button
-              asChild
-              className="rounded-full"
-              size="lg"
-              variant={"outline"}
-            >
-              <Link href="/sign-in"> {t("login")}</Link>
-            </Button>
-          </SignedOut>
-        </div>{" "}
+
+          <div className="flex items-center gap-2 md:gap-3">
+            {dimensions && (
+              <div className="flex items-center gap-2 border-r border-border/50 pr-2 md:pr-3 mr-1 md:mr-2">
+                <LocaleSwitcher />
+                <ModeToggle />
+              </div>
+            )}
+
+            <SignedIn>
+              <div className="flex items-center gap-3">
+                <UserButton afterSignOutUrl="/" />
+                <MobileNav />
+              </div>
+            </SignedIn>
+
+            <SignedOut>
+              <div className="flex items-center gap-3">
+                <Button
+                  asChild
+                  className="rounded-full px-6 transition-all hover:shadow-lg active:scale-95"
+                  size="default"
+                  variant="outline"
+                >
+                  <Link href="/sign-in">{t("login")}</Link>
+                </Button>
+              </div>
+            </SignedOut>
+          </div>
+        </div>
       </div>
     </header>
   );
