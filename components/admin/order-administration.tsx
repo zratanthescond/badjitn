@@ -25,6 +25,7 @@ import {
   Filter,
   Download,
   Printer,
+  QrCode,
 } from "lucide-react";
 import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
@@ -126,7 +127,7 @@ export default function OrderAdministration({
         >
           <CreditCard className="h-4 w-4 text-green-600" />
           <span className="font-semibold text-green-600 dark:text-green-400">
-            {parseFloat(value).toFixed(2)} {/* Ensure value is a number */}
+            {value.toFixed(2)}
           </span>
         </div>
       ),
@@ -203,7 +204,7 @@ export default function OrderAdministration({
               className={`font-semibold text-green-600 dark:text-green-400 ${isRTL ? "font-arabic" : ""
                 }`}
             >
-              ${parseFloat(item.totalAmount).toFixed(2)}
+              ${item.totalAmount.toFixed(2)}
             </span>
           </div>
 
@@ -285,6 +286,16 @@ export default function OrderAdministration({
             >
               <Download className="h-4 w-4" />
             </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 gap-2"
+            >
+              <Link href={`/events/${eventId}/scan`}>
+                <QrCode className="h-4 w-4" />
+                <span>Scan Ticket</span>
+              </Link>
+            </Button>
             {eventId && (
               <Button
                 asChild
@@ -345,7 +356,7 @@ export default function OrderAdministration({
                     {data
                       .reduce(
                         (sum: number, order: any) =>
-                          sum + parseFloat(order.totalAmount) || 0,
+                          sum + (order.totalAmount || 0),
                         0
                       )
                       ?.toFixed(2)}

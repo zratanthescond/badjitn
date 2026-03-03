@@ -32,6 +32,7 @@ export interface IEvent extends Document {
   organizer: { _id: string; firstName: string; lastName: string };
   discount: { field: string; value: string; discount: number };
   restricted: boolean;
+  scanPoints?: string[];
 }
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
@@ -56,6 +57,7 @@ const EventSchema = new Schema({
   },
   requiredInfo: { type: [String], default: [] },
   sponsors: { type: [String], default: [] },
+  scanPoints: { type: [String], default: [] },
   pricePlan: { type: [pricePlanSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },

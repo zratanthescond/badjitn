@@ -54,6 +54,7 @@ import { Value } from "@radix-ui/react-select";
 import DiscountDialog from "./DiscountDialogComponenet";
 import { useLocale, useTranslations } from "next-intl";
 import { useLoadScript } from "@react-google-maps/api";
+import ScanPointsConfig from "./ScanPointsConfig";
 
 type EventFormProps = {
   userId: string;
@@ -107,14 +108,15 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
     if (type === "Create") {
       try {
         const newEvent = await createEvent({
-          event: {
-            ...values,
-            pricePlan: pricePlan,
-            location: { name: address, lon: longitude, lat: latitude },
-            imageUrl: reel,
-          },
-          userId,
-          path: "/profile",
+            event: {
+              ...values,
+              pricePlan: pricePlan,
+              location: { name: address, lon: longitude, lat: latitude },
+              imageUrl: reel,
+              scanPoints: values.scanPoints,
+            },
+            userId,
+            path: "/profile",
         });
 
         if (newEvent) {
@@ -135,14 +137,15 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       try {
         const updatedEvent = await updateEvent({
           userId,
-          event: {
-            ...values,
-            pricePlan: pricePlan,
-            location: { name: address, lon: longitude, lat: latitude },
-            imageUrl: values.imageUrl,
-            _id: eventId,
-          },
-          path: `/events/${eventId}`,
+            event: {
+              ...values,
+              pricePlan: pricePlan,
+              location: { name: address, lon: longitude, lat: latitude },
+              imageUrl: values.imageUrl,
+              _id: eventId,
+              scanPoints: values.scanPoints,
+            },
+            path: `/events/${eventId}`,
         });
 
         if (updatedEvent) {
@@ -580,6 +583,8 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                         </FormItem>
                       )}
                     />
+                    <Separator className="my-4" />
+                    <ScanPointsConfig form={form} />
                   </CardContent>
                 </Card>
               )}

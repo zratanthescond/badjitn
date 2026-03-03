@@ -55,6 +55,7 @@ export type CreateEventParams = {
       discount: number;
     } | null;
     places?: number;
+    scanPoints?: string[];
   };
   path: string;
 };
@@ -88,6 +89,7 @@ export type UpdateEventParams = {
       discount: number;
     } | null;
     places?: number;
+    scanPoints?: string[];
   };
   path: string;
 };

@@ -38,6 +38,7 @@ export const eventDefaultValues = {
   country: "",
   discount: null as { field: string; value: string; discount: number } | null,
   places: 0,
+  scanPoints: [] as string[],
 };
 export const borderColors = [
   "#ef4444", // red

@@ -333,6 +333,47 @@ export async function adminBanEventCreator(eventId: string) {
   }
 }
 
+export async function addScanPoint(eventId: string, scanPoint: string) {
+  try {
+    await connectToDatabase();
+
+    const event = await Event.findById(eventId);
+    if (!event) throw new Error("Event not found");
+
+    // Initialize scanPoints if it doesn't exist (legacy events)
+    if (!event.scanPoints) {
+      event.scanPoints = [];
+    }
+
+    if (!event.scanPoints.includes(scanPoint)) {
+      event.scanPoints.push(scanPoint);
+      await event.save();
+    }
+
+    return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function removeScanPoint(eventId: string, scanPoint: string) {
+  try {
+    await connectToDatabase();
+
+    const event = await Event.findById(eventId);
+    if (!event) throw new Error("Event not found");
+
+    if (event.scanPoints) {
+      event.scanPoints = event.scanPoints.filter((p: string) => p !== scanPoint);
+      await event.save();
+    }
+
+    return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 export async function getEventDates() {
   try {
     await connectToDatabase();

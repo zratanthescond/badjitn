@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,9 +18,11 @@ import { useTranslations } from "next-intl";
 const Search = ({
   placeholder = "Search title...",
   slim = false,
+  className,
 }: {
   placeholder?: string;
   slim?: boolean;
+  className?: string;
 }) => {
   const [query, setQuery] = useState("");
   const router = useRouter();
@@ -53,7 +56,10 @@ const Search = ({
       <DropdownMenuTrigger asChild>
         <Button
           variant={"ghost"}
-          className=" min-h-[54px] glass rounded-full md:p-4 md:mx-2"
+          className={cn(
+            " min-h-[54px] glass rounded-full md:p-4 md:mx-2",
+            className
+          )}
         >
           {query.length > 0 ? (
             <>
