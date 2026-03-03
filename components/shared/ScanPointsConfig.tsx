@@ -37,6 +37,15 @@ export default function ScanPointsConfig({ form }: ScanPointsConfigProps) {
 
   const scanPoints = form.watch("scanPoints") || [];
 
+  const SUGGESTIONS = [
+    { key: "mainEntrance", label: t("scanPoints.items.mainEntrance") },
+    { key: "vipEntrance", label: t("scanPoints.items.vipEntrance") },
+    { key: "workshop1", label: t("scanPoints.items.workshop1") },
+    { key: "workshop2", label: t("scanPoints.items.workshop2") },
+    { key: "exhibitors", label: t("scanPoints.items.exhibitors") },
+    { key: "exit", label: t("scanPoints.items.exit") },
+  ];
+
   const addPoint = (point: string) => {
     const trimmedPoint = point.trim();
     if (trimmedPoint && !scanPoints.includes(trimmedPoint)) {
@@ -60,10 +69,10 @@ export default function ScanPointsConfig({ form }: ScanPointsConfigProps) {
         render={() => (
           <FormItem>
             <FormLabel className="text-lg font-semibold flex items-center gap-2">
-              Configuration de scannage
+              {t("scanPoints.title")}
             </FormLabel>
             <FormDescription>
-              Définissez les points de contrôle où les tickets seront scannés (ex: Entrée, Atelier).
+              {t("scanPoints.description")}
             </FormDescription>
             <div className="flex gap-2">
               <FormControl>
@@ -76,7 +85,7 @@ export default function ScanPointsConfig({ form }: ScanPointsConfigProps) {
                       addPoint(inputValue);
                     }
                   }}
-                  placeholder="Ex: Entrée principale"
+                  placeholder={t("scanPoints.placeholder")}
                   className="input-field glass"
                 />
               </FormControl>
@@ -87,7 +96,7 @@ export default function ScanPointsConfig({ form }: ScanPointsConfigProps) {
                 className="glass border-white/20 hover:bg-white/20"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Ajouter
+                {t("scanPoints.add")}
               </Button>
             </div>
 
@@ -110,25 +119,27 @@ export default function ScanPointsConfig({ form }: ScanPointsConfigProps) {
                   </Badge>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground italic">Aucun point de scannage configuré.</p>
+                <p className="text-sm text-muted-foreground italic">
+                  {t("scanPoints.empty")}
+                </p>
               )}
             </div>
 
             <div className="mt-4 p-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
               <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 mb-3">
                 <Lightbulb className="h-3 w-3 text-amber-500" />
-                Suggestions
+                {t("scanPoints.suggestions")}
               </label>
               <div className="flex flex-wrap gap-2">
-                {SUGGESTIONS.filter((s) => !scanPoints.includes(s)).map(
+                {SUGGESTIONS.filter((s) => !scanPoints.includes(s.label)).map(
                   (suggestion) => (
                     <button
-                      key={suggestion}
+                      key={suggestion.key}
                       type="button"
-                      onClick={() => addPoint(suggestion)}
+                      onClick={() => addPoint(suggestion.label)}
                       className="text-xs px-3 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 transition-all duration-200"
                     >
-                      {suggestion}
+                      {suggestion.label}
                     </button>
                   )
                 )}

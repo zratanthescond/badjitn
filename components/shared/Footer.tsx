@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
+import { useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -22,12 +23,21 @@ import {
   CreditCard,
   ExternalLink,
 } from "lucide-react";
+import { setUserLocale } from "@/services/locale";
+import { Locale } from "@/i18n/config";
 
 const Footer = () => {
   const t = useTranslations("footer");
   const locale = useLocale();
   const isRTL = locale === "ar";
   const currentYear = new Date().getFullYear();
+  const [isPending, startTransition] = useTransition();
+
+  const handleLocaleChange = (newLocale: string) => {
+    startTransition(() => {
+      setUserLocale(newLocale as Locale);
+    });
+  };
 
   const footerLinks = {
     company: [
@@ -168,7 +178,7 @@ const Footer = () => {
                       isRTL ? "font-arabic" : ""
                     }`}
                   >
-                    contact@badji.net
+                    {t("contactEmail")}: contact@badji.net
                   </span>
                 </div>
                 <div
@@ -182,7 +192,7 @@ const Footer = () => {
                       isRTL ? "font-arabic" : ""
                     }`}
                   >
-                    +216 29 173 135
+                    {t("contactPhone")}: +216 29 173 135
                   </span>
                 </div>
                 <div
@@ -394,25 +404,28 @@ const Footer = () => {
                   variant={locale === "en" ? "default" : "ghost"}
                   size="sm"
                   className="h-6 px-2 text-xs rounded-full"
-                  asChild
+                  disabled={isPending}
+                  onClick={() => handleLocaleChange("en")}
                 >
-                  <Link href="#">EN</Link>
+                  EN
                 </Button>
                 <Button
                   variant={locale === "fr" ? "default" : "ghost"}
                   size="sm"
                   className="h-6 px-2 text-xs rounded-full"
-                  asChild
+                  disabled={isPending}
+                  onClick={() => handleLocaleChange("fr")}
                 >
-                  <Link href="#">FR</Link>
+                  FR
                 </Button>
                 <Button
                   variant={locale === "ar" ? "default" : "ghost"}
                   size="sm"
                   className="h-6 px-2 text-xs rounded-full font-arabic"
-                  asChild
+                  disabled={isPending}
+                  onClick={() => handleLocaleChange("ar")}
                 >
-                  <Link href="#">عر</Link>
+                  عر
                 </Button>
               </div>
             </div>

@@ -53,7 +53,10 @@ const requestFormSchema = organizationSchema;
 // Types for our form data
 type RequestFormValues = z.infer<typeof requestFormSchema>;
 
+import { useTranslations } from "next-intl";
+
 export default function PublisherCard({ userId }: { userId: any }) {
+  const t = useTranslations("publisherCard");
   const [activeTab, setActiveTab] = useState<string>("request");
 
   // Request form
@@ -90,15 +93,15 @@ export default function PublisherCard({ userId }: { userId: any }) {
       console.log("Request form data:", data);
 
       toast({
-        title: "Request submitted",
-        description: "Your publisher request has been submitted for review.",
+        title: t("messages.requestSubmitted"),
+        description: t("messages.requestSubmittedDesc"),
       });
 
       //requestForm.reset();
     } catch (error) {
       toast({
-        title: "Error",
-        description: "There was a problem submitting your request.",
+        title: t("messages.error"),
+        description: t("messages.requestError"),
         variant: "destructive",
       });
     }
@@ -117,15 +120,15 @@ export default function PublisherCard({ userId }: { userId: any }) {
       console.log("Purchase form data:", data);
 
       toast({
-        title: "Purchase successful",
-        description: "Your publisher badge has been purchased successfully.",
+        title: t("messages.purchaseSuccess"),
+        description: t("messages.purchaseSuccessDesc"),
       });
 
       purchaseForm.reset();
     } catch (error) {
       toast({
-        title: "Error",
-        description: "There was a problem processing your payment.",
+        title: t("messages.error"),
+        description: t("messages.purchaseError"),
         variant: "destructive",
       });
     }
@@ -134,11 +137,9 @@ export default function PublisherCard({ userId }: { userId: any }) {
   return (
     <Card className="w-full max-w-3xl mx-auto bg-card/50 rounded-3xl">
       <CardHeader>
-        <CardTitle className="text-2xl">Publisher Access</CardTitle>
+        <CardTitle className="text-2xl">{t("title")}</CardTitle>
         <CardDescription>
-          you need an admin check to become a publisher and unlock exclusive
-          features and content. Request to become a publisher or purchase a
-          publisher badge directly.
+          {t("description")}
         </CardDescription>
       </CardHeader>
       <Tabs
@@ -147,8 +148,8 @@ export default function PublisherCard({ userId }: { userId: any }) {
         onValueChange={setActiveTab}
       >
         <TabsList className="grid grid-cols-2  rounded-full mx-2">
-          <TabsTrigger value="request">Request</TabsTrigger>
-          <TabsTrigger value="purchase">Purchase</TabsTrigger>
+          <TabsTrigger value="request">{t("tabs.request")}</TabsTrigger>
+          <TabsTrigger value="purchase">{t("tabs.purchase")}</TabsTrigger>
         </TabsList>
 
         {/* Request Tab */}
@@ -164,11 +165,11 @@ export default function PublisherCard({ userId }: { userId: any }) {
                   name="organizationName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization Name</FormLabel>
+                      <FormLabel>{t("form.organizationName")}</FormLabel>
                       <FormControl>
                         <Input
                           className="input-field glass"
-                          placeholder="Enter your organization name"
+                          placeholder={t("form.organizationNamePlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -182,11 +183,11 @@ export default function PublisherCard({ userId }: { userId: any }) {
                   name="organizationWebsite"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization Website</FormLabel>
+                      <FormLabel>{t("form.organizationWebsite")}</FormLabel>
                       <FormControl>
                         <Input
                           className="input-field glass"
-                          placeholder="https://example.com"
+                          placeholder={t("form.organizationWebsitePlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -200,10 +201,10 @@ export default function PublisherCard({ userId }: { userId: any }) {
                   name="organizationDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization Description</FormLabel>
+                      <FormLabel>{t("form.organizationDescription")}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Tell us about your organization and why you want to be a publisher"
+                          placeholder={t("form.organizationDescriptionPlaceholder")}
                           className="min-h-[100px] glass rounded-3xl"
                           {...field}
                         />
@@ -223,12 +224,12 @@ export default function PublisherCard({ userId }: { userId: any }) {
                   {requestForm.formState.isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing
+                      {t("form.processing")}
                     </>
                   ) : (
                     <>
                       <FileText className="mr-2 h-4 w-4" />
-                      Submit Request
+                      {t("form.submitRequest")}
                     </>
                   )}
                 </Button>
@@ -251,11 +252,11 @@ export default function PublisherCard({ userId }: { userId: any }) {
                   name="organizationName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization Name</FormLabel>
+                      <FormLabel>{t("form.organizationName")}</FormLabel>
                       <FormControl>
                         <Input
                           className="input-field glass"
-                          placeholder="Enter your organization name"
+                          placeholder={t("form.organizationNamePlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -269,11 +270,11 @@ export default function PublisherCard({ userId }: { userId: any }) {
                   name="organizationWebsite"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization Website</FormLabel>
+                      <FormLabel>{t("form.organizationWebsite")}</FormLabel>
                       <FormControl>
                         <Input
                           className="input-field glass"
-                          placeholder="https://example.com"
+                          placeholder={t("form.organizationWebsitePlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -287,10 +288,10 @@ export default function PublisherCard({ userId }: { userId: any }) {
                   name="organizationDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization Description</FormLabel>
+                      <FormLabel>{t("form.organizationDescription")}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Tell us about your organization and why you want to be a publisher"
+                          placeholder={t("form.organizationDescriptionPlaceholder")}
                           className="min-h-[100px]  glass rounded-3xl"
                           {...field}
                         />
@@ -303,10 +304,11 @@ export default function PublisherCard({ userId }: { userId: any }) {
                 {/* Payment section */}
                 <div className="rounded-lg border p-4 mb-2">
                   <div className="flex items-center justify-between mb-2">
-                    <div className="font-medium">Publisher Badge</div>
-                    <div className="font-bold">$99.00</div>
+                    <div className="font-medium">{t("form.badge")}</div>
+                    <div className="font-bold">{t("form.price")}</div>
                   </div>
                   <p className="text-sm text-muted-foreground">
+                    {/* fallback for nested desc if needed, but using description from before for now */}
                     Get immediate publisher status with our verified badge.
                     Includes all publisher features.
                   </p>
@@ -322,12 +324,12 @@ export default function PublisherCard({ userId }: { userId: any }) {
                   {purchaseForm.formState.isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing
+                      {t("form.processing")}
                     </>
                   ) : (
                     <>
                       <CreditCard className="mr-2 h-4 w-4" />
-                      Purchase Badge ($99.00)
+                      {t("form.purchaseBadge")}
                     </>
                   )}
                 </Button>

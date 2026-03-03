@@ -39,7 +39,10 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Edit, Trash } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 export default function CategorieAdministration() {
+  const t = useTranslations("workAdministration");
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [newCategory, setNewCategory] = useState<string>("");
   const { isLoading, data, error, refetch } = useQuery({
@@ -53,9 +56,9 @@ export default function CategorieAdministration() {
   const [type, setType] = useState<string>("create");
   const [open, setOpen] = useState(false);
   const columns = [
-    { header: "ID", accessor: "_id" },
+    { header: t("categories.table.id"), accessor: "_id" },
     {
-      header: "Title",
+      header: t("categories.table.title"),
       accessor: "name",
       cell: (value: string) =>
         value && value !== "" ? (
@@ -65,7 +68,7 @@ export default function CategorieAdministration() {
         ),
     },
     {
-      header: "Events",
+      header: t("categories.table.events"),
       accessor: "eventCount",
 
       cell: (value: string) =>
@@ -76,7 +79,7 @@ export default function CategorieAdministration() {
         ),
     },
     {
-      header: "Actions",
+      header: t("categories.table.actions"),
       accessor: "root",
       align: "right",
       cell: (value: any) => (
@@ -92,9 +95,8 @@ export default function CategorieAdministration() {
                   })
                   .catch((error) => {
                     toast({
-                      title: "Error",
-                      description:
-                        "There was a problem processing your request.",
+                      title: t("common.error"),
+                      description: t("common.processingError"),
                       variant: "destructive",
                     });
                   });
@@ -132,7 +134,7 @@ export default function CategorieAdministration() {
       badge={item.role}
       details={[
         { label: "", value: item.username },
-        { label: "Publisher", value: item.publisher, align: "right" },
+        { label: t("users.table.publisher"), value: item.publisher, align: "right" },
       ]}
       footer={
         <div className="flex justify-between items-center w-full">
@@ -159,8 +161,8 @@ export default function CategorieAdministration() {
       })
       .catch((error) => {
         toast({
-          title: "Error",
-          description: "There was a problem processing your request.",
+          title: t("common.error"),
+          description: t("common.processingError"),
           variant: "destructive",
         });
       });
@@ -177,8 +179,8 @@ export default function CategorieAdministration() {
       })
       .catch((error) => {
         toast({
-          title: "Error",
-          description: "There was a problem processing your request.",
+          title: t("common.error"),
+          description: t("common.processingError"),
           variant: "destructive",
         });
       });
@@ -187,7 +189,7 @@ export default function CategorieAdministration() {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold">
-          Categories Administration
+          {t("categories.title")}
         </h2>
         <AlertDialog
           open={open}
@@ -206,16 +208,16 @@ export default function CategorieAdministration() {
               variant={"outline"}
               className=" rounded-full"
             >
-              Add new category
+              {t("categories.add")}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent className="glass backdrop-blur-lg w-96 self-center rounded-2xl">
             <AlertDialogHeader>
-              <AlertDialogTitle>New Category</AlertDialogTitle>
+              <AlertDialogTitle>{t("categories.new")}</AlertDialogTitle>
               <AlertDialogDescription>
                 <Input
                   type="text"
-                  placeholder="Category name"
+                  placeholder={t("categories.name")}
                   className="input-field mt-3"
                   onChange={(e) => setNewCategory(e.target.value)}
                   value={newCategory}
@@ -227,7 +229,7 @@ export default function CategorieAdministration() {
                 onClick={() => setOpen(false)}
                 className="bg-pink-500 rounded-full"
               >
-                Cancel
+                {t("common.cancel")}
               </AlertDialogCancel>
               <AlertDialogAction
                 className="bg-green-500 rounded-full"
@@ -237,12 +239,12 @@ export default function CategorieAdministration() {
                   )
                 }
               >
-                {type === "edit" ? "Edit" : "Add"}
+                {type === "edit" ? t("common.edit") : t("common.add")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <Search placeholder="Search orders..." />
+        <Search placeholder={t("common.search")} />
       </div>
 
       {isMobile ? (

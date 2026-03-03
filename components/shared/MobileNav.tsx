@@ -13,7 +13,11 @@ import { ModeToggle } from "../ModeToggle";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { Menu } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 const MobileNav = () => {
+  const t = useTranslations();
+  
   return (
     <nav className="md:hidden  ">
       <Sheet>
@@ -45,11 +49,15 @@ const MobileNav = () => {
 
           <div className="mt-auto flex flex-row items-center justify-between p-4 glass rounded-2xl bg-white/5 dark:bg-black/5">
             <div className="flex flex-col gap-1 items-start">
-               <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Appearance</span>
+               <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                 {t("theme.appearance")}
+               </span>
                <ModeToggle />
             </div>
             <div className="flex flex-col gap-1 items-end">
-               <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Language</span>
+               <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                 {t("LocaleSwitcher.label")}
+               </span>
                <LocaleSwitcher />
             </div>
           </div>

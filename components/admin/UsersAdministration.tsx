@@ -21,7 +21,10 @@ import {
 } from "@/lib/actions/user.actions";
 import UserAlertDialog from "./admin-alert-dialog";
 
+import { useTranslations } from "next-intl";
+
 export default function UsersAdministration() {
+  const t = useTranslations("workAdministration");
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { isLoading, data, error } = useQuery({
     queryKey: ["orders"],
@@ -31,11 +34,11 @@ export default function UsersAdministration() {
     },
   });
   const columns = [
-    { header: "ID", accessor: "_id" },
-    { header: "Email", accessor: "email" },
-    { header: "username", accessor: "username" },
+    { header: t("users.table.id"), accessor: "_id" },
+    { header: t("users.table.email"), accessor: "email" },
+    { header: t("users.table.username"), accessor: "username" },
     {
-      header: "Role",
+      header: t("users.table.role"),
       accessor: "role",
       cell: (value: string) =>
         value && value !== "" ? (
@@ -45,7 +48,7 @@ export default function UsersAdministration() {
         ),
     },
     {
-      header: "Member Since",
+      header: t("users.table.memberSince"),
       accessor: "createdAt",
       cell: (value: Date) => (
         <span className="text-xs text-gray-400">
@@ -54,9 +57,9 @@ export default function UsersAdministration() {
       ),
     },
     {
-      header: "Publisher",
+      header: t("users.table.publisher"),
       accessor: "publisher",
-      align: "right",
+      align: "right" as const,
       cell: (value: string) => (
         <Badge
           className={`${
@@ -72,9 +75,9 @@ export default function UsersAdministration() {
       ),
     },
     {
-      header: "Details",
+      header: t("users.table.details"),
       accessor: "root",
-      align: "right",
+      align: "right" as const,
       cell: (value: any) => (
         <UserAlertDialog
           user={value}
@@ -95,7 +98,7 @@ export default function UsersAdministration() {
       badge={item.role}
       details={[
         { label: "", value: item.username },
-        { label: "Publisher", value: item.publisher, align: "right" },
+        { label: t("users.table.publisher"), value: item.publisher, align: "right" },
       ]}
       footer={
         <div className="flex justify-between items-center w-full">
@@ -116,9 +119,9 @@ export default function UsersAdministration() {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold">
-          Order Administration
+          {t("users.title")}
         </h2>
-        <Search placeholder="Search orders..." />
+        <Search placeholder={t("common.search")} />
       </div>
       <pre></pre>
       {isMobile ? (
