@@ -39,11 +39,16 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
     const getCategories = async () => {
       const categoryList = await getAllCategories();
 
-      categoryList && setCategories(categoryList as ICategory[]);
+      if (categoryList) {
+        const sortedList = (categoryList as ICategory[]).sort((a, b) => 
+          t(a.name).localeCompare(t(b.name))
+        );
+        setCategories(sortedList);
+      }
     };
 
     getCategories();
-  }, []);
+  }, [t]);
 
   return (
     <Select onValueChange={onChangeHandler} defaultValue={value}>

@@ -5,6 +5,8 @@ import { handleError } from "../utils";
 import { connectToDatabase } from "../database";
 import Category from "../database/models/category.model";
 import Event from "../database/models/event.model";
+import { CATEGORY_KEYS } from "@/constants";
+
 export const createCategory = async ({
   categoryName,
 }: CreateCategoryParams) => {
@@ -24,6 +26,19 @@ export const getAllCategories = async () => {
     await connectToDatabase();
 
     const categories = await Category.find();
+
+    // Seed missing categories from constants
+    const existingNames = categories.map((cat: any) => cat.name);
+    const missingKeys = CATEGORY_KEYS.filter(
+      (key) => key !== "all" && key !== "forYou" && !existingNames.includes(key)
+    );
+
+    if (missingKeys.length > 0) {
+      const newCategories = await Category.insertMany(
+        missingKeys.map((name) => ({ name }))
+      );
+      return JSON.parse(JSON.stringify([...categories, ...newCategories]));
+    }
 
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {
