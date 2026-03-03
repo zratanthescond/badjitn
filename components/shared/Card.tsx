@@ -4,7 +4,7 @@ import { formatDateTime, getLastTwoWords } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import React, { use, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { DeleteConfirmation } from "./DeleteConfirmation";
 import HLSPlayer from "./phone/HlsPlayer";
 import HomePostContainer from "./HomePostContainer";
@@ -48,10 +48,8 @@ import { Separator } from "../ui/separator";
 import { FaEllipsis, FaEllipsisVertical } from "react-icons/fa6";
 import ReportComponent from "./ReportComponent";
 import TicketControleDropdown from "./TicketControleDropdown";
-import { Avatar } from "@radix-ui/react-avatar";
-import { getUserLocale } from "@/services/locale";
-import { Locale, useLocale } from "next-intl";
-import { json } from "stream/consumers";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useLocale } from "next-intl";
 
 type CardProps = {
   event: IEvent;
@@ -140,10 +138,10 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
                     {/*  formatDateTime(event.startDateTime).homeEvents.split(
                         " "
                       )[1]*/}
-                    {formattedDateParts[1]}
+                    {formattedDateParts?.[1]}
                   </div>
                   <div className="text-white/90 text-[10px] sm:text-xs leading-none mt-0.5">
-                    {formattedDateParts[0]}
+                    {formattedDateParts?.[0]}
                   </div>
                 </div>
                 {/* <div className="absolute bottom-0 left-0 flex flex-col gap-0 items-center justify-evenly p-1  bg-white/10 backdrop-brightness-100 rounded-b-lg backdrop-blur-sm w-full h-1/5  shadow-sm transition-all">
@@ -172,7 +170,7 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
                   )}
 
                 </div> */}
-                <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
+                <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-10">
                   <h3 className="text-white font-medium text-sm mb-3 leading-tight line-clamp-2">
                     {event.title}
                   </h3>
@@ -206,13 +204,14 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
                 <div className="absolute bottom-3 right-3">
                   <div className="w-7 h-7 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
                     <Avatar className="w-6 h-6">
-                      <Image
+                      <AvatarImage
                         src={event.organizer.photo}
-                        alt={`${event.organizer.firstName} ${event.organizer.lastName}`}
-                        width={24}
-                        height={24}
-                        className="rounded-full"
+                        className="rounded-full object-cover"
                       />
+                      <AvatarFallback className="bg-primary/10 text-[8px]">
+                        {event.organizer.firstName?.[0]}
+                        {event.organizer.lastName?.[0]}
+                      </AvatarFallback>
                     </Avatar>
                   </div>
                 </div>
@@ -221,27 +220,24 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
             {hidePrice &&
               (event != null ? (
-                <div className=" invisible group-hover:visible flex w-full h-2/3 glass animate-accordion-up flex-col absolute bottom-0 rounded-t-xl items-center gap-2 justify-start p-2 text-xs dark:text-white">
-                  <span>{event.title}</span>
-                  <div className="w-full border-b border-dashed border-muted my-2" />
-                  <div className="flex w-full flex-row items-center justify-between">
-                    <div className="flex flex-col items-center justify-center">
-                      <span>Date</span>
-                      <span>
-                        {formatDateTime(event.startDateTime).dateOnly}
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center">
-                      <span>Time</span>
-                      <span>
-                        {formatDateTime(event.startDateTime).timeOnly}
-                      </span>
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-10">
+                  <h3 className="text-white font-semibold text-sm mb-2 leading-tight line-clamp-2">
+                    {event.title}
+                  </h3>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-3.5 w-3.5 text-white/80" />
+                      <div className="flex flex-wrap items-center gap-x-2 text-[10px] sm:text-xs text-white/90 font-medium">
+                        <span>{formatDateTime(event.startDateTime).dateOnly}</span>
+                        <span className="text-white/40">•</span>
+                        <span>{formatDateTime(event.startDateTime).timeOnly}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="w-full h-full flex bg-indigo-500/20 items-center justify-center">
-                  <span className="text-white">No event details available</span>
+                <div className="w-full h-full flex bg-black/20 items-center justify-center">
+                  <span className="text-white text-xs">No event details</span>
                 </div>
               ))}
           </div>

@@ -26,10 +26,11 @@ export interface IEvent extends Document {
   url?: string;
   isOnline?: boolean;
   sponsors?: string[];
+  Sponsors?: any[];
   country?: string;
   requiredInfo?: string[];
   category: { _id: string; name: string };
-  organizer: { _id: string; firstName: string; lastName: string };
+  organizer: { _id: string; firstName: string; lastName: string; photo: string };
   discount: { field: string; value: string; discount: number };
   restricted: boolean;
   scanPoints?: string[];

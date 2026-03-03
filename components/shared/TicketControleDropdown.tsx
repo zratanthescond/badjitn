@@ -43,7 +43,7 @@ export default function TicketControleDropdown({
 
   return (
     <div
-      className="flex justify-center items-center mt-16 z-50"
+      className="flex justify-center items-center z-50"
       dir={isRTL ? "rtl" : "ltr"}
     >
       <DropdownMenu
