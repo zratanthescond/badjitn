@@ -60,6 +60,7 @@ export const eventFormSchema = z
       .min(1, "At least one place is required")
       .or(z.literal(0))
       .optional(),
+    scanPoints: z.array(z.string()).optional().default([]),
   })
   .refine(
     (data) => {

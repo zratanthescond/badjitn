@@ -25,12 +25,12 @@ import {
   Filter,
   Download,
   Printer,
+  QrCode,
 } from "lucide-react";
 import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
 import { CardSkeleton } from "./CardSkeleton";
 import { useTranslations, useLocale } from "next-intl";
-import QRScannerDialog from "./QRScannerDialog";
 
 export default function OrderAdministration({
   eventId,
@@ -286,7 +286,16 @@ export default function OrderAdministration({
             >
               <Download className="h-4 w-4" />
             </Button>
-            <QRScannerDialog />
+            <Button
+              asChild
+              variant="outline"
+              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 gap-2"
+            >
+              <Link href={`/events/${eventId}/scan`}>
+                <QrCode className="h-4 w-4" />
+                <span>Scan Ticket</span>
+              </Link>
+            </Button>
             {eventId && (
               <Button
                 asChild

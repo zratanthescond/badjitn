@@ -2884,7 +2884,48 @@
         "close": "إغلاق",
         "welcome": "مرحباً! أنا Badgi chatBOT. كيف يمكنني مساعدتك اليوم؟",
         "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
-      }
+  },
+  "QRScanner": {
+    "back": "عودة",
+    "adminScanner": "ماسح الإدارة",
+    "subtitle": "مسح ومراقبة الدخول في الوقت الحقيقي",
+    "currentPoint": "نقطة المسح الحالية",
+    "cancel": "إلغاء",
+    "newPoint": "نقطة جديدة",
+    "pointName": "اسم النقطة...",
+    "ok": "موافق",
+    "choosePoint": "اختر نقطة",
+    "instructions": {
+      "title": "تعليمات",
+      "step1": "1. اختر نقطة المراقبة.",
+      "step2": "2. وجه رمز الاستجابة السريعة (QR) للتذكرة نحو الكاميرا.",
+      "step3": "3. انتظر التأكيد المرئي والصوتي."
+    },
+    "verifying": "جاري التحقق من التذكرة...",
+    "pleaseWait": "يرجى الانتظار لحظة",
+    "invalidTicket": "تذكرة غير صالحة",
+    "retry": "إعادة المحاولة",
+    "accessGranted": "تم السماح بالدخول",
+    "registeredAt": "تم التسجيل في",
+    "participant": "المشارك",
+    "ticketType": "نوع التذكرة",
+    "unknown": "غير معروف",
+    "scannedAt": "تم المسح في:",
+    "scanNext": "مسح التذكرة التالية",
+    "notBelong": "هذه التذكرة لا تنتمي لهذا الحدث.",
+    "notFound": "التذكرة غير موجودة أو الرمز غير صالح.",
+    "errorOccurred": "حدث خطأ أثناء التحقق من التذكرة.",
+    "requestPermissions": "طلب إذن الكاميرا",
+    "scanImageFile": "مسح صورة",
+    "chooseImage": "اختر صورة",
+    "noImageChosen": "لا يوجد ملف",
+    "orDropImage": "اسحب الصورة هنا",
+    "scanCameraDirectly": "استخدم الكاميرا",
+    "stopScanning": "إيقاف",
+    "deletePoint": "حذف",
+    "pointDeleted": "تم حذف نقطة المسح بنجاح",
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف نقطة المسح هذه؟"
+  }
 }
 
 
