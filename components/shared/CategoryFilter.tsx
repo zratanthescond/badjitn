@@ -11,48 +11,8 @@ import { ICategory } from "@/lib/database/models/category.model";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslations } from "next-intl";
 import clsx from "clsx";
-
-const CATEGORY_KEYS = [
-  "all",
-  "forYou",
-  "pulmonology",
-  "cardiology",
-  "dermatology",
-  "gastroenterology",
-  "neurosurgery",
-  "surgery",
-  "orthopedics",
-  "psychiatry",
-  "internalMedicine",
-  "generalMedicine",
-  "sportsMedicine",
-  "aestheticMedicine",
-  "emergencyMedicine",
-  "pediatricMedicine",
-  "geriatricMedicine",
-  "preventiveMedicine",
-  "occupationalMedicine",
-  "familyMedicine",
-  "surgicalMedicine",
-  "reproductiveMedicine",
-  "neurology",
-  "oncology",
-  "radiology",
-  "urology",
-  "endocrinology",
-  "rheumatology",
-  "nephrology",
-  "ophthalmology",
-  "otolaryngology",
-  "allergology",
-  "anesthesiology",
-  "pathology",
-  "genetics",
-  "infectiousDiseases",
-  "nuclearMedicine",
-  "hematology",
-  "painManagement",
-];
+import { CATEGORY_KEYS } from "@/constants";
+import { CategorySearch } from "./CategorySearch";
 
 const CategoryFilter = () => {
   const router = useRouter();
@@ -92,10 +52,14 @@ const CategoryFilter = () => {
 
   return (
     <div className="relative flex flex-row px-2 w-full glass md:w-4/6 group rounded-full">
+      <div className="flex items-center mr-2 pr-2 border-r border-slate-200 dark:border-slate-800 my-2 z-20">
+        <CategorySearch />
+      </div>
+
       {/* Scroll Buttons */}
       <Button
         onClick={() => scrollByAmount(-200)}
-        className="absolute glass left-0 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-background shadow transition group-hover:flex"
+        className="absolute glass left-10 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-background shadow transition group-hover:flex"
         variant="ghost"
         size="icon"
       >
@@ -117,7 +81,7 @@ const CategoryFilter = () => {
         className="flex gap-2 overflow-x-auto scroll-smooth  items-center  no-scrollbar rounded-full w-full"
       >
         <div
-          className={`absolute top-0 rounded-l-full bottom-0 left-0 w-20 bg-gradient-to-r from-slate-50/90 via-slate-50/50  dark:from-gray-900/90 dark:via-gray-900/50 dark: to-transparent pointer-events-none z-10 transition-opacity duration-300 `}
+          className={`absolute top-0 rounded-l-full bottom-0 left-10 w-20 bg-gradient-to-r from-slate-50/90 via-slate-50/50  dark:from-gray-900/90 dark:via-gray-900/50 dark: to-transparent pointer-events-none z-10 transition-opacity duration-300 `}
         />
 
         {/* Right shadow */}
@@ -131,7 +95,7 @@ const CategoryFilter = () => {
             variant={currentCategory === key ? "default" : "secondary"}
             key={key}
             size="sm"
-            className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
+            className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-all hover:scale-105"
             onClick={() => onSelectCategory(key)}
           >
             {t(key)}
