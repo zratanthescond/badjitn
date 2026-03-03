@@ -73,10 +73,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={
-          (inter.className,
-          " flex flex-1 min-h-screen flex-col items-center justify-center  antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900")
-        }
+        className={`${inter.className} flex flex-1 min-h-screen flex-col items-center justify-center antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900`}
       >
         <div className="absolute z-20 top-0 inset-x-0 flex justify-center overflow-hidden pointer-events-none">
           <div className="w-full flex-none flex justify-end">
