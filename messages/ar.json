@@ -1314,6 +1314,82 @@
     "settings": "إعدادات الفعالية",
     "sponsor": "قم بالترويج لمنشورك"
   },
+  "eventReport": {
+    "title": "تقرير الفعالية",
+    "loading": "جاري إنشاء التقرير...",
+    "noData": "لا توجد بيانات متاحة. يرجى اختيار فعالية.",
+    "generatedOn": "تم إنشاء التقرير في",
+    "shareSubject": "تقرير الفعالية",
+    "free": "مجاني",
+    "seats": "مقاعد",
+    "entries": "دخول",
+    "totalOrders": "إجمالي الطلبات",
+    "totalRevenue": "إجمالي الإيرادات",
+    "uniqueAttendees": "الحضور الفريدون",
+    "scanCoverage": "تغطية المسح",
+    "shareLinkLabel": "رابط التقرير",
+    "creatorLabel": "منشئ الفعالية",
+    "highlightsTitle": "أهم النقاط",
+    "totalSuffix": "الإجمالي",
+    "highlights": {
+      "noOrders": "لا توجد طلبات مسجلة لهذه الفعالية.",
+      "ordersAndAttendees": "تم إنشاء {orders} طلبًا لـ {attendees} من الحضور الفريدين.",
+      "avgOrder": "متوسط قيمة الطلب التقديري: {amount} لكل طلب.",
+      "attendanceRate": "معدل الحضور الممسوح: {rate}% ({scanned} حضور تم مسحهم).",
+      "topPlan": "الخطة الأعلى أداءً: {plan} ({orders} مبيعات)."
+    },
+    "breakdownByType": "التوزيع حسب نوع التذكرة",
+    "breakdownByCategory": "التوزيع حسب الفئة",
+    "scanPointsDescription": "تفاصيل الدخول والخروج المسجلة عبر مسح رمز QR في كل نقطة تحكم.",
+    "footer": "تقرير تم إنشاؤه بواسطة Badji.net",
+    "actions": {
+      "print": "طباعة",
+      "download": "تحميل",
+      "email": "بريد إلكتروني",
+      "whatsapp": "واتساب"
+    },
+    "sections": {
+      "eventInfo": "معلومات الفعالية",
+      "pricePlans": "خطط الأسعار",
+      "orderStats": "إحصائيات الطلبات",
+      "scanPoints": "تفاصيل نقاط المسح",
+      "executiveTrends": "الملخص التنفيذي والاتجاهات",
+      "pricePlanPerformance": "أداء خطط الأسعار"
+    },
+    "charts": {
+      "ordersTrendTitle": "اتجاه الطلبات (يومًا بيوم)",
+      "ordersTrendEmpty": "لا توجد بيانات اتجاه متاحة.",
+      "scanHourlyTitle": "نشاط المسح حسب الساعة"
+    },
+    "fields": {
+      "category": "الفئة",
+      "organizer": "المنظم",
+      "date": "التاريخ",
+      "location": "الموقع",
+      "description": "الوصف",
+      "online": "عبر الإنترنت"
+    },
+    "ticketTypes": {
+      "paid": "مدفوع",
+      "hosted": "مستضاف",
+      "doorpay": "الدفع عند الباب",
+      "bankTransfer": "تحويل بنكي"
+    },
+    "categories": {
+      "attendee": "حاضر",
+      "speaker": "متحدث",
+      "sponsor": "راعي",
+      "staff": "طاقم"
+    },
+    "tableHeaders": {
+      "attendee": "الحاضر",
+      "scannedAt": "تم المسح في",
+      "plan": "الخطة",
+      "sales": "المبيعات",
+      "revenue": "الإيراد",
+      "weight": "الوزن"
+    }
+  },
   "eventForm": {
     "Create": "إنشاء",
     "Update": "تحديث",
@@ -2272,6 +2348,7 @@
     "actions": {
       "export": "تصدير البيانات",
       "filter": "تصفية الطلبات",
+      "rapport": "تقرير",
       "viewDetails": "عرض التفاصيل"
     },
     "buyer": "المشتري",

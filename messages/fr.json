@@ -1314,6 +1314,82 @@
     "settings": "Paramètres de l'Événement",
     "sponsor": "promouvoir votre publication"
   },
+  "eventReport": {
+    "title": "Rapport de l'Événement",
+    "loading": "Génération du rapport...",
+    "noData": "Aucune donnée disponible. Veuillez sélectionner un événement.",
+    "generatedOn": "Rapport généré le",
+    "shareSubject": "Rapport de l'Événement",
+    "free": "Gratuit",
+    "seats": "places",
+    "entries": "entrées",
+    "totalOrders": "Total des Commandes",
+    "totalRevenue": "Revenu Total",
+    "uniqueAttendees": "Participants Uniques",
+    "scanCoverage": "Couverture des Scans",
+    "shareLinkLabel": "Lien du rapport",
+    "creatorLabel": "Créateur de l'événement",
+    "highlightsTitle": "Points clés",
+    "totalSuffix": "total",
+    "highlights": {
+      "noOrders": "Aucune commande enregistrée pour cet événement.",
+      "ordersAndAttendees": "{orders} commandes générées pour {attendees} participants uniques.",
+      "avgOrder": "Panier moyen estimé: {amount} par commande.",
+      "attendanceRate": "Taux de présence scannée: {rate}% ({scanned} participants scannés).",
+      "topPlan": "Plan le plus performant: {plan} ({orders} ventes)."
+    },
+    "breakdownByType": "Répartition par Type de Ticket",
+    "breakdownByCategory": "Répartition par Catégorie",
+    "scanPointsDescription": "Entrées et sorties enregistrées par scan QR code à chaque point de contrôle.",
+    "footer": "Rapport généré par Badji.net",
+    "actions": {
+      "print": "Imprimer",
+      "download": "Télécharger",
+      "email": "Email",
+      "whatsapp": "WhatsApp"
+    },
+    "sections": {
+      "eventInfo": "Informations de l'Événement",
+      "pricePlans": "Plans Tarifaires",
+      "orderStats": "Statistiques des Commandes",
+      "scanPoints": "Détails des Points de Scannage",
+      "executiveTrends": "Résumé exécutif et tendances",
+      "pricePlanPerformance": "Performance des plans tarifaires"
+    },
+    "charts": {
+      "ordersTrendTitle": "Évolution des commandes (jour par jour)",
+      "ordersTrendEmpty": "Aucune évolution disponible.",
+      "scanHourlyTitle": "Activité des scans par heure"
+    },
+    "fields": {
+      "category": "Catégorie",
+      "organizer": "Organisateur",
+      "date": "Date",
+      "location": "Lieu",
+      "description": "Description",
+      "online": "En Ligne"
+    },
+    "ticketTypes": {
+      "paid": "Payant",
+      "hosted": "Hébergé",
+      "doorpay": "Paiement à la Porte",
+      "bankTransfer": "Virement Bancaire"
+    },
+    "categories": {
+      "attendee": "Participant",
+      "speaker": "Intervenant",
+      "sponsor": "Sponsor",
+      "staff": "Personnel"
+    },
+    "tableHeaders": {
+      "attendee": "Participant",
+      "scannedAt": "Scanné le",
+      "plan": "Plan",
+      "sales": "Ventes",
+      "revenue": "Revenu",
+      "weight": "Poids"
+    }
+  },
   "eventForm": {
     "Create": "Créer ",
     "Update": "Mettre à jour",
@@ -2272,6 +2348,7 @@
     "actions": {
       "export": "Exporter les Données",
       "filter": "Filtrer les Commandes",
+      "rapport": "Rapport",
       "viewDetails": "Voir les Détails"
     },
     "buyer": "Acheteur",

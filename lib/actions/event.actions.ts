@@ -20,6 +20,8 @@ import { differenceInDays, isValid, parseISO } from "date-fns";
 import Sponsor from "../database/models/sponor.model";
 import { model } from "mongoose";
 import Report from "../database/models/report.model";
+import Order from "../database/models/order.model";
+import Attendance from "../database/models/attendance.model";
 import { json } from "stream/consumers";
 import { date } from "zod";
 import { start } from "repl";
@@ -397,6 +399,194 @@ export async function getEventDates() {
     ]);
 
     return JSON.parse(JSON.stringify(eventDates));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// GET EVENT REPORT DATA
+export async function getEventReportData(eventId: string) {
+  try {
+    await connectToDatabase();
+
+    // Get event details
+    const event = await populateEvent(Event.findById(eventId));
+    if (!event) throw new Error("Event not found");
+
+    // Get order statistics
+    const orders = await Order.find({ event: eventId }).populate({
+      path: "buyer",
+      model: User,
+      select: "firstName lastName",
+    });
+
+    const totalOrders = orders.length;
+    const totalRevenue = orders.reduce(
+      (sum: number, o: any) => sum + (o.totalAmount || 0),
+      0
+    );
+    const uniqueBuyers = new Set(
+      orders.map((o: any) => o.buyer?._id?.toString())
+    ).size;
+    const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+    // Breakdown by type
+    const ordersByType: Record<string, number> = {};
+    orders.forEach((o: any) => {
+      const type = o.type || "paid";
+      ordersByType[type] = (ordersByType[type] || 0) + 1;
+    });
+
+    // Breakdown by category
+    const ordersByCategory: Record<string, number> = {};
+    orders.forEach((o: any) => {
+      const cat = o.category || "attendee";
+      ordersByCategory[cat] = (ordersByCategory[cat] || 0) + 1;
+    });
+
+    // Revenue by ticket type
+    const revenueByType: Record<string, number> = {};
+    orders.forEach((o: any) => {
+      const type = o.type || "paid";
+      revenueByType[type] = (revenueByType[type] || 0) + Number(o.totalAmount || 0);
+    });
+
+    // Price plan performance from order details
+    const pricePlanPerformance: Record<
+      string,
+      { orders: number; revenue: number }
+    > = {};
+    orders.forEach((o: any) => {
+      if (!Array.isArray(o.details)) return;
+      o.details.forEach((detail: any) => {
+        const name = (detail?.name || "Unnamed plan").toString().trim();
+        const rawPrice = String(detail?.price || "0")
+          .replace(/[^\d,.-]/g, "")
+          .replace(",", ".");
+        const parsedPrice = Number(rawPrice);
+        if (!pricePlanPerformance[name]) {
+          pricePlanPerformance[name] = { orders: 0, revenue: 0 };
+        }
+        pricePlanPerformance[name].orders += 1;
+        pricePlanPerformance[name].revenue += Number.isFinite(parsedPrice)
+          ? parsedPrice
+          : Number(o.totalAmount || 0);
+      });
+    });
+
+    const topPricePlans = Object.entries(pricePlanPerformance)
+      .map(([name, value]) => ({ name, ...value }))
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 8);
+
+    // Order trend by day
+    const ordersTrendByDay: Record<string, { orders: number; revenue: number }> = {};
+    orders.forEach((o: any) => {
+      const key = new Date(o.createdAt).toISOString().slice(0, 10);
+      if (!ordersTrendByDay[key]) {
+        ordersTrendByDay[key] = { orders: 0, revenue: 0 };
+      }
+      ordersTrendByDay[key].orders += 1;
+      ordersTrendByDay[key].revenue += Number(o.totalAmount || 0);
+    });
+    const orderTrend = Object.entries(ordersTrendByDay)
+      .sort(([a], [b]) => (a > b ? 1 : -1))
+      .map(([date, values]) => ({
+        date,
+        orders: values.orders,
+        revenue: Number(values.revenue.toFixed(2)),
+      }));
+
+    // Get attendance / scan point data
+    const attendances = await Attendance.find({ event: eventId })
+      .populate({
+        path: "order",
+        model: Order,
+        populate: {
+          path: "buyer",
+          model: User,
+          select: "firstName lastName",
+        },
+      })
+      .sort({ scannedAt: "desc" });
+
+    // Group by scan point
+    const scanPointData: Record<
+      string,
+      { count: number; entries: any[] }
+    > = {};
+    attendances.forEach((a: any) => {
+      const point = a.scanPoint || "default";
+      if (!scanPointData[point]) {
+        scanPointData[point] = { count: 0, entries: [] };
+      }
+      scanPointData[point].count += 1;
+      scanPointData[point].entries.push({
+        attendee: a.order?.buyer
+          ? `${a.order.buyer.firstName} ${a.order.buyer.lastName}`
+          : "Unknown",
+        scannedAt: a.scannedAt,
+      });
+    });
+
+    const uniqueScannedAttendees = new Set(
+      attendances.map((a: any) => a.order?.buyer?._id?.toString()).filter(Boolean)
+    ).size;
+    const attendanceRate =
+      uniqueBuyers > 0 ? Number(((uniqueScannedAttendees / uniqueBuyers) * 100).toFixed(1)) : 0;
+
+    // Scan activity by hour
+    const scanActivityByHour: Record<string, number> = {};
+    for (let h = 0; h < 24; h++) {
+      scanActivityByHour[String(h).padStart(2, "0")] = 0;
+    }
+    attendances.forEach((a: any) => {
+      const hour = new Date(a.scannedAt).getHours().toString().padStart(2, "0");
+      scanActivityByHour[hour] = (scanActivityByHour[hour] || 0) + 1;
+    });
+
+    // Automated highlights
+    const highlights: string[] = [];
+    if (totalOrders === 0) {
+      highlights.push("Aucune commande enregistrée pour cet événement.");
+    } else {
+      highlights.push(
+        `${totalOrders} commandes générées pour ${uniqueBuyers} participants uniques.`
+      );
+      highlights.push(
+        `Panier moyen estimé: ${averageOrderValue.toFixed(2)} EUR par commande.`
+      );
+      highlights.push(
+        `Taux de présence scannée: ${attendanceRate}% (${uniqueScannedAttendees} participants scannés).`
+      );
+    }
+    if (topPricePlans.length > 0) {
+      highlights.push(
+        `Plan le plus performant: ${topPricePlans[0].name} (${topPricePlans[0].orders} ventes).`
+      );
+    }
+
+    return JSON.parse(
+      JSON.stringify({
+        event,
+        stats: {
+          totalOrders,
+          totalRevenue,
+          uniqueBuyers,
+          uniqueScannedAttendees,
+          attendanceRate,
+          averageOrderValue,
+          ordersByType,
+          ordersByCategory,
+          revenueByType,
+          scanActivityByHour,
+          topPricePlans,
+          orderTrend,
+          highlights,
+        },
+        scanPointData,
+      })
+    );
   } catch (error) {
     handleError(error);
   }
