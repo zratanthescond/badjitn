@@ -2540,13 +2540,14 @@
   },
   "profile": {
     "addCustomRequiredInfo": "اضافة معلومات مطلوبة مخصصة",
+    "emptyCustomFields": "لم تتم إضافة أي معلومات مطلوبة مخصصة بعد.",
     "addSponsor": "اعضافة رعة",
     "allSponsors": "جميع الرعات",
     "createNewEvent": "إنشاء حدث جديد",
     "customRequiredInfo": "معلومات مطلوبة مخصصة",
     "emptyEventsCreated": {
-      "description": "You haven't created any events yet. Start organizing your first event now!",
-      "title": "No events created yet"
+      "description": "لم تقم بإنشاء أي فعاليات بعد. ابدأ بإنشاء فعاليتك الأولى لجذب الحضور وإدارة الفعاليات بسهولة.",
+      "title": "لا توجد فعاليات حتى الآن"
     },
     "emptyEventsCreator": {
       "description": "لم تقم بإنشاء أي فعاليات بعد. ابدأ بإنشاء فعاليتك الأولى لجذب الحضور وإدارة الفعاليات بسهولة.",
@@ -2610,7 +2611,16 @@
     "description": "إذا كان لديك أي مشكلة في الصورة أو العنوان، يرجى الإبلاغ عنها.",
     "report": "الإبلاغ",
     "reporting": "جارى الابلاغ...",
-    "title": "الإبلاغ عن صورة أو عنوان"
+    "title": "الإبلاغ عن صورة أو عنوان",
+    "successTitle": "تم الإبلاغ",
+    "successDescription": "تم إرسال بلاغك بنجاح"
+  },
+  "deleteConfirmation": {
+    "title": "هل أنت متأكد أنك تريد الحذف؟",
+    "description": "سيؤدي هذا إلى حذف هذه الفعالية نهائياً",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "deleting": "جاري الحذف..."
   },
   "scanPoints": {
     "noPoints": "لا توجد نقاط مسح مهيأة.",
@@ -3091,5 +3101,9 @@
       "description": "المحتوى النصي المقدم من المشارك",
       "title": "التقديم المكتوب"
     }
+  },
+  "Card": {
+    "sponsored": "ممول",
+    "noEventDetails": "لا توجد تفاصيل للفعالية"
   }
 }

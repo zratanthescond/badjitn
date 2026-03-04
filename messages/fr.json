@@ -2539,10 +2539,11 @@
     }
   },
   "profile": {
-    "addCustomRequiredInfo": "Ajouter des Informations requises personnalisées",
+    "addCustomRequiredInfo": "Ajouter des informations requises personnalisées",
+    "emptyCustomFields": "Aucune information requise personnalisée n'a encore été ajoutée.",
     "addSponsor": "Ajouter un Sponsor",
     "allSponsors": "Tous les Sponsors",
-    "createNewEvent": "Créer un nouvel event",
+    "createNewEvent": "Créer un nouvel événement",
     "customRequiredInfo": "Informations requises personnalisées",
     "emptyEventsCreated": {
       "description": "Vous n'avez pas encore créé d'événements. Commencez à organiser vos événements dès aujourd'hui et atteignez un public mondial avec Badji.net.",
@@ -2556,8 +2557,8 @@
       "description": "Il n'y a actuellement aucun billet disponible pour cet événement. Veuillez vérifier plus tard ou contacter l'organisateur pour plus d'informations.",
       "title": "Aucun billet disponible"
     },
-    "eventsOrganized": "Events Organized",
-    "exploreMoreEvents": "Explorer plus d'events",
+    "eventsOrganized": "Événements organisés",
+    "exploreMoreEvents": "Explorer plus d'événements",
     "mySponsors": "Mes Sponsors",
     "myTickets": "Mes Tickets"
   },
@@ -2610,7 +2611,16 @@
     "description": "Si vous avez un problème avec l'image ou le titre, veuillez le signaler.",
     "report": "Signaler un problème",
     "reporting": "Signalement en cours...",
-    "title": "Signaler une image ou un titre"
+    "title": "Signaler une image ou un titre",
+    "successTitle": "Signalé",
+    "successDescription": "Votre signalement a été envoyé avec succès"
+  },
+  "deleteConfirmation": {
+    "title": "Êtes-vous sûr de vouloir supprimer ?",
+    "description": "Cela supprimera définitivement cet événement",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "deleting": "Suppression en cours..."
   },
   "scanPoints": {
     "noPoints": "Aucun point de scannage configuré.",
@@ -3091,5 +3101,9 @@
       "description": "Contenu textuel fourni par le participant",
       "title": "Soumission Écrite"
     }
+  },
+  "Card": {
+    "sponsored": "Sponsorisé",
+    "noEventDetails": "Aucun détail sur l'événement"
   }
 }

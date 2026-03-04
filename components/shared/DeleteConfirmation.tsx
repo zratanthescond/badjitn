@@ -18,13 +18,18 @@ import {
 
 import { deleteEvent } from "@/lib/actions/event.actions";
 
+import { useTranslations } from "next-intl";
+
 export const DeleteConfirmation = ({
   eventId,
   open,
   onOpenChange,
 }: {
   eventId: string;
+  open: boolean;
+  onOpenChange: () => void;
 }) => {
+  const t = useTranslations("deleteConfirmation");
   const pathname = usePathname();
   let [isPending, startTransition] = useTransition();
 
@@ -32,14 +37,14 @@ export const DeleteConfirmation = ({
     <AlertDialog onOpenChange={() => onOpenChange()} open={open}>
       <AlertDialogContent className="glass">
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure you want to delete?</AlertDialogTitle>
+          <AlertDialogTitle>{t("title")}</AlertDialogTitle>
           <AlertDialogDescription className="p-regular-16 text-grey-600">
-            This will permanently delete this event
+            {t("description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
 
           <AlertDialogAction
             onClick={() =>
@@ -48,7 +53,7 @@ export const DeleteConfirmation = ({
               })
             }
           >
-            {isPending ? "Deleting..." : "Delete"}
+            {isPending ? t("deleting") : t("delete")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

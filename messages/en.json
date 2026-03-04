@@ -87,7 +87,7 @@
     }
   },
   "LocaleSwitcher": {
-    "ar": "العربية",
+    "ar": "Arabic",
     "en": "English",
     "fr": "Français",
     "label": "Language"
@@ -1274,12 +1274,12 @@
     "title": "Contact d'Urgence"
   },
   "emptyEventsCreator": {
-    "description": "لم تقم بإنشاء أي فعاليات بعد. ابدأ بإنشاء فعاليتك الأولى لجذب الحضور وإدارة الفعاليات بسهولة.",
-    "title": "لا توجد فعاليات حتى الآن"
+    "description": "You haven't created any events yet. Start organizing your first event to attract attendees and manage events easily.",
+    "title": "No events created yet"
   },
   "emptyTickets": {
-    "description": "عذرًا، لا توجد تذاكر متاحة لهذا الحدث في الوقت الحالي. يرجى التحقق مرة أخرى لاحقًا.",
-    "title": "لا توجد تذاكر متاحة"
+    "description": "Sorry, there are no tickets available for this event right now. Please check back later.",
+    "title": "No tickets available"
   },
   "event": {
     "attendees": "{count, plural, =0 {No attendees} =1 {1 person attending} other {# people attending}}",
@@ -1292,8 +1292,8 @@
     "schedule": "Event Schedule",
     "startDate": "Start date",
     "stats": {
-      "attending": "سيحضر",
-      "duration": "المدة"
+      "attending": "Attending",
+      "duration": "Duration"
     },
     "tabs": {
       "date": "Date",
@@ -2540,8 +2540,10 @@
   },
   "profile": {
     "addCustomRequiredInfo": "Add Custom Required Information",
+    "emptyCustomFields": "No custom required information has been added yet.",
     "addSponsor": "Add Sponsor",
     "allSponsors": "All Sponsors",
+    "allTickets": "All Tickets",
     "createNewEvent": "Create New Event",
     "customRequiredInfo": "Custom Required Information",
     "emptyEventsCreated": {
@@ -2549,8 +2551,8 @@
       "title": "No events created yet"
     },
     "emptyEventsCreator": {
-      "description": "لم تقم بإنشاء أي فعاليات بعد. ابدأ بإنشاء فعاليتك الأولى لجذب الحضور وإدارة الفعاليات بسهولة.",
-      "title": "لا توجد فعاليات حتى الآن"
+      "description": "You haven't created any events yet. Start organizing your first event now!",
+      "title": "No events created yet"
     },
     "emptyTickets": {
       "description": "You haven't purchased any event tickets yet. Explore our events and get your tickets now!",
@@ -2610,45 +2612,54 @@
     "description": "If you have a problem with the image or title, please report it.",
     "report": "Report a Problem",
     "reporting": "Reporting...",
-    "title": "Report an Image or Title"
+    "title": "Report an Image or Title",
+    "successTitle": "Reported",
+    "successDescription": "Your report has been sent successfully"
+  },
+  "deleteConfirmation": {
+    "title": "Are you sure you want to delete?",
+    "description": "This will permanently delete this event",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting..."
   },
   "scanPoints": {
-    "noPoints": "لا توجد نقاط مسح مهيأة.",
-    "placeholder": "مثال: المدخل الرئيسي"
+    "noPoints": "No scan points configured.",
+    "placeholder": "Ex: Main Entrance"
   },
   "shorts": {
     "controls": {
-      "back": "العودة",
-      "hideDetails": "إخفاء التفاصيل",
-      "like": "إعجاب",
-      "scrollDown": "التمرير لأسفل",
-      "scrollUp": "التمرير لأعلى",
-      "share": "مشاركة",
-      "showDetails": "إظهار التفاصيل"
+      "back": "Back",
+      "hideDetails": "Hide Details",
+      "like": "Like",
+      "scrollDown": "Scroll Down",
+      "scrollUp": "Scroll Up",
+      "share": "Share",
+      "showDetails": "Show Details"
     },
     "details": {
-      "allCategories": "الكل",
-      "category": "الفئة",
-      "close": "إغلاق",
-      "organizer": "المنظم",
-      "sponsors": "الرعاة",
-      "verified": "موثق",
-      "visitWebsite": "زيارة الموقع الإلكتروني"
+      "allCategories": "All",
+      "category": "Category",
+      "close": "Close",
+      "organizer": "Organizer",
+      "sponsors": "Sponsors",
+      "verified": "Verified",
+      "visitWebsite": "Visit Website"
     },
-    "loading": "جاري تحميل الفيديوهات...",
+    "loading": "Loading videos...",
     "share": {
-      "cancel": "إلغاء",
-      "copyLink": "نسخ الرابط",
-      "facebook": "فيسبوك",
-      "instagram": "إنستغرام",
-      "linkCopied": "تم نسخ الرابط إلى الحافظة!",
-      "title": "مشاركة الحدث",
-      "twitter": "إكس/تويتر",
-      "whatsapp": "واتساب"
+      "cancel": "Cancel",
+      "copyLink": "Copy Link",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkCopied": "Link copied to clipboard!",
+      "title": "Share Event",
+      "twitter": "X/Twitter",
+      "whatsapp": "WhatsApp"
     },
     "video": {
-      "autoplayBlocked": "تم حظر التشغيل التلقائي من قبل المتصفح",
-      "playError": "فشل في تشغيل الفيديو"
+      "autoplayBlocked": "Autoplay blocked by browser",
+      "playError": "Failed to play video"
     }
   },
   "sponsors": {
@@ -2717,14 +2728,14 @@
     },
     "description": "Merci de nous avoir contactés. Nous avons reçu votre demande de support et répondrons dès que possible.",
     "ticketNumber": "Numéro de Ticket",
-    "title": "تم تقديم الطلب بنجاح!"
+    "title": "Request submitted successfully!"
   },
   "supportHours": {
-    "currentStatus": "نحن متصلون حاليًا ومستعدون للمساعدة!",
-    "timezone": "المنطقة الزمنية",
-    "title": "ساعات الدعم",
-    "weekdays": "الإثنين - الجمعة",
-    "weekends": "السبت - الأحد"
+    "currentStatus": "We are currently online and ready to help!",
+    "timezone": "Timezone",
+    "title": "Support Hours",
+    "weekdays": "Monday - Friday",
+    "weekends": "Saturday - Sunday"
   },
   "supportPage": {
     "channels": {
@@ -3015,18 +3026,18 @@
       "pendingReview": "Pending Review",
       "rejected": "Rejected",
       "reviewed": "Reviewed",
-      "submitted": "مقدمة",
-      "total": "إجمالي الأعمال",
+      "submitted": "Submitted",
+      "total": "Total Works",
       "totalWorks": "Total Works"
     },
     "status": {
-      "pending": "قيد المراجعة",
+      "pending": "Pending Review",
       "pendingReview": "Pending Review",
       "rejected": "Rejected",
       "reviewed": "Reviewed",
-      "submitted": "مقدم"
+      "submitted": "Submitted"
     },
-    "submitter": "المقدم",
+    "submitter": "Submitter",
     "subtitle": "Manage work submissions and reviews",
     "table": {
       "headers": {
@@ -3036,7 +3047,7 @@
         "participant": "Participant",
         "status": "Status",
         "submitted": "Submitted",
-        "submitter": "المقدم"
+        "submitter": "Submitter"
       }
     },
     "title": "Work Management",
@@ -3091,5 +3102,9 @@
       "description": "Text content provided by the participant",
       "title": "Written Submission"
     }
+  },
+  "Card": {
+    "sponsored": "Sponsored",
+    "noEventDetails": "No event details"
   }
 }

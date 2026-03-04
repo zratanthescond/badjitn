@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -27,27 +28,41 @@ interface Field {
 
 const FieldViewer = ({ userId }: { userId: string }) => {
   const [fields, setFields] = useState<Field[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const t = useTranslations("profile");
 
   useEffect(() => {
     const loadFields = async () => {
       if (!userId) return;
 
-      const fetchedFields = await fetchFields(userId);
-      if (fetchedFields.success) {
-        setFields(fetchedFields.data);
+      try {
+        const fetchedFields = await fetchFields(userId);
+        if (fetchedFields.success) {
+          setFields(fetchedFields.data);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
     loadFields();
   }, [userId]);
 
-  if (!fields.length) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center flex-col gap-4">
         <Skeleton className="h-8 w-full bg-muted-foreground/10" />
         <Skeleton className="h-8 w-full bg-muted-foreground/10" />
         <Skeleton className="h-8 w-full bg-muted-foreground/10" />
         <Skeleton className="h-16 w-full bg-muted-foreground/10" />
+      </div>
+    );
+  }
+
+  if (!fields.length) {
+    return (
+      <div className="flex items-center justify-center p-8 bg-card/30 rounded-xl border border-dashed border-muted-foreground/20">
+        <p className="text-muted-foreground">{t("emptyCustomFields")}</p>
       </div>
     );
   }

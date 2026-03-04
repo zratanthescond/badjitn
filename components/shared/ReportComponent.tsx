@@ -40,8 +40,8 @@ export default function ReportComponent({
       setOpen(false);
       setCause("");
       toast({
-        title: "Reported",
-        description: "Your report has been sent successfully",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
     }
   }, [isSuccess]);

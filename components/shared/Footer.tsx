@@ -54,7 +54,7 @@ const Footer = () => {
     ],
     product: [
       { key: "events", href: "/events", icon: Calendar },
-      { key: "pricing", href: "/pricing", icon: CreditCard },
+      // { key: "pricing", href: "/pricing", icon: CreditCard },
       { key: "features", href: "/features", icon: FileText },
       { key: "integrations", href: "/integrations", icon: ExternalLink },
     ],

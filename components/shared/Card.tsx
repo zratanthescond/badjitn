@@ -49,15 +49,17 @@ import { FaEllipsis, FaEllipsisVertical } from "react-icons/fa6";
 import ReportComponent from "./ReportComponent";
 import TicketControleDropdown from "./TicketControleDropdown";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 type CardProps = {
   event: IEvent;
   hasOrderLink?: boolean;
   hidePrice?: boolean;
+  userPhoto?: string;
 };
 
-const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
+const Card = ({ event, hasOrderLink, hidePrice, userPhoto }: CardProps) => {
+  const t = useTranslations("Card");
   // const isEventCreator = userId.toString() === event.organizer._id.toString();
 
   const sponsored = event && event.Sponsors && event.Sponsors.length > 0;
@@ -111,7 +113,7 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
           >
             {sponsored && (
               <Badge className="absolute rounded-t-none  top-0 left-1/2 transform -translate-x-1/2 bg-yellow-500">
-                Sponsored
+                {t("sponsored")}
               </Badge>
             )}
             {!hidePrice && (
@@ -196,23 +198,9 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
                     <div className="flex items-center space-x-1.5">
                       <Clock className="h-3.5 w-3.5 text-white/80 flex-shrink-0" />
                       <span className="text-white/90 text-xs font-medium">
-                        {formatDateTime(event.startDateTime).timeOnly}
+                        {formatDateTime(event.startDateTime, locale).timeOnly}
                       </span>
                     </div>
-                  </div>
-                </div>
-                <div className="absolute bottom-3 right-3">
-                  <div className="w-7 h-7 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
-                    <Avatar className="w-6 h-6">
-                      <AvatarImage
-                        src={event.organizer.photo}
-                        className="rounded-full object-cover"
-                      />
-                      <AvatarFallback className="bg-primary/10 text-[8px]">
-                        {event.organizer.firstName?.[0]}
-                        {event.organizer.lastName?.[0]}
-                      </AvatarFallback>
-                    </Avatar>
                   </div>
                 </div>
               </>
@@ -228,18 +216,32 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
                     <div className="flex items-center gap-2">
                       <Clock className="h-3.5 w-3.5 text-white/80" />
                       <div className="flex flex-wrap items-center gap-x-2 text-[10px] sm:text-xs text-white/90 font-medium">
-                        <span>{formatDateTime(event.startDateTime).dateOnly}</span>
+                        <span>{formatDateTime(event.startDateTime, locale).dateOnly}</span>
                         <span className="text-white/40">•</span>
-                        <span>{formatDateTime(event.startDateTime).timeOnly}</span>
+                        <span>{formatDateTime(event.startDateTime, locale).timeOnly}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="w-full h-full flex bg-black/20 items-center justify-center">
-                  <span className="text-white text-xs">No event details</span>
+                  <span className="text-white text-xs">{t("noEventDetails")}</span>
                 </div>
               ))}
+            <div className="absolute bottom-3 right-3">
+              <div className="w-7 h-7 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
+                <Avatar className="w-6 h-6">
+                  <AvatarImage
+                    src={userPhoto || event.organizer.photo}
+                    className="rounded-full object-cover"
+                  />
+                  <AvatarFallback className="bg-primary/10 text-[8px]">
+                    {event.organizer.firstName?.[0]}
+                    {event.organizer.lastName?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+            </div>
           </div>
         </div>
       </Link>

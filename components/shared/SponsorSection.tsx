@@ -194,10 +194,7 @@ const Sponsor = ({
               {/* Inner content */}
               <div className="hexagon-inner bg-gradient-to-br from-white/95 to-white/85 flex items-center justify-center p-5">
                 <Image
-                  src={
-                    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/${logo}` ||
-                    "/placeholder.svg"
-                  }
+                  src={logo || "/placeholder.svg"}
                   alt={t("alt.logo", { name })}
                   fill
                   className="object-contain transition-all duration-500 drop-shadow-md"

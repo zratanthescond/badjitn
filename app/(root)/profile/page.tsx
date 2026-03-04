@@ -71,6 +71,7 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
           page={ordersPage}
           urlParamName="ordersPage"
           totalPages={orders?.totalPages}
+          userPhoto={user.photo}
         />
       </section>
 
@@ -101,6 +102,7 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
           page={eventsPage}
           urlParamName="eventsPage"
           totalPages={organizedEvents?.totalPages}
+          userPhoto={user.photo}
         />
       </section>
       <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">

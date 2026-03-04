@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatDateTime = (dateString: Date) => {
+export const formatDateTime = (dateString: Date, locale: string = "en-US") => {
   const dateTimeOptions: Intl.DateTimeFormatOptions = {
     weekday: "short", // abbreviated weekday name (e.g., 'Mon')
     month: "short", // abbreviated month name (e.g., 'Oct')
@@ -35,17 +35,17 @@ export const formatDateTime = (dateString: Date) => {
   };
 
   const formattedDateTime: string = new Date(dateString).toLocaleString(
-    "en-US",
+    locale,
     dateTimeOptions
   );
 
   const formattedDate: string = new Date(dateString).toLocaleString(
-    "en-US",
+    locale,
     dateOptions
   );
 
   const formattedTime: string = new Date(dateString).toLocaleString(
-    "en-US",
+    locale,
     timeOptions
   );
 
@@ -202,7 +202,8 @@ function parseAddressManual(address: string) {
 export { parseAddressManual };
 export function formatDateRange(
   startDate: string | Date,
-  endDate: string | Date
+  endDate: string | Date,
+  locale: string = "en-US"
 ): { dateRange: string; summary: string } {
   const options: Intl.DateTimeFormatOptions = {
     month: "long",
@@ -220,22 +221,22 @@ export function formatDateRange(
 
   if (diffDays === 1) {
     // Single-day event: "March 15, 2025"
-    formattedDate = start.toLocaleDateString("en-US", options);
+    formattedDate = start.toLocaleDateString(locale, options);
   } else if (
     start.getMonth() === end.getMonth() &&
     start.getFullYear() === end.getFullYear()
   ) {
     // Same month & year: "March 15-17, 2025"
-    formattedDate = `${start.toLocaleDateString("en-US", {
+    formattedDate = `${start.toLocaleDateString(locale, {
       month: "long",
       day: "numeric",
     })}-${end.getDate()}, ${end.getFullYear()}`;
   } else {
     // Different month/year: "March 15, 2025 - April 2, 2025"
     formattedDate = `${start.toLocaleDateString(
-      "en-US",
+      locale,
       options
-    )} - ${end.toLocaleDateString("en-US", options)}`;
+    )} - ${end.toLocaleDateString(locale, options)}`;
   }
 
   return {
