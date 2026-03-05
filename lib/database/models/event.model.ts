@@ -72,7 +72,7 @@ const EventSchema = new Schema({
   isOnline: { type: Boolean },
   category: { type: Schema.Types.ObjectId, ref: "Category" },
   organizer: { type: Schema.Types.ObjectId, ref: "User" },
-  organisation: { type: Schema.Types.ObjectId, ref: "Organisation" },
+  organisation: { type: Schema.Types.ObjectId, ref: "Organisation", required: true },
   discount: {
     field: { type: String },
     value: { type: String },

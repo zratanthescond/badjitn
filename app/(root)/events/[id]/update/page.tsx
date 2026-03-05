@@ -1,7 +1,8 @@
 import EventForm from "@/components/shared/EventForm";
 import { getEventById } from "@/lib/actions/event.actions";
 import { useUser } from "@/lib/actions/user.actions";
-import { auth } from "@clerk/nextjs";
+import { checkOrgPermission } from "@/lib/actions/organisation.actions";
+import { notFound, redirect } from "next/navigation";
 
 type UpdateEventProps = {
   params: {
@@ -11,9 +12,29 @@ type UpdateEventProps = {
 
 const UpdateEvent = async ({ params: { id } }: UpdateEventProps) => {
   const user = await useUser();
+  if (!user) {
+    return redirect("/sign-in");
+  }
 
-  const userId = user?._id.toString();
+  const userId = user._id.toString();
   const event = await getEventById(id);
+
+  if (!event) {
+    return notFound();
+  }
+
+  // Check permission: user must be organizer OR admin/creator of the event's organisation
+  const isOrganizer = event.organizer?._id === userId;
+  let hasOrgAccess = false;
+
+  if (event.organisation?._id) {
+    const permission = await checkOrgPermission(event.organisation._id, userId);
+    hasOrgAccess = permission.hasAccess;
+  }
+
+  if (!isOrganizer && !hasOrgAccess) {
+    return redirect("/");
+  }
 
   return (
     <>
@@ -29,6 +50,7 @@ const UpdateEvent = async ({ params: { id } }: UpdateEventProps) => {
           event={event}
           eventId={event._id}
           userId={userId}
+          organisationId={event.organisation?._id}
         />
       </div>
     </>

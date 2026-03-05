@@ -56,20 +56,23 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
     const organizer = await User.findById(userId);
     if (!organizer) throw new Error("Organizer not found");
 
-    // If organisationId is provided, verify user has permission
-    let organisationId = event.organisationId;
-    if (organisationId) {
-      const org = await Organisation.findById(organisationId);
-      if (!org) throw new Error("Organisation not found");
+    // Organisation is required — events are always published under an organisation
+    const organisationId = event.organisationId;
+    if (!organisationId) {
+      throw new Error("Organisation is required to create an event");
+    }
 
-      const isCreator = org.creator.toString() === userId;
-      const isAdmin = org.admins.some(
-        (adminId: any) => adminId.toString() === userId
-      );
+    const org = await Organisation.findById(organisationId);
+    if (!org) throw new Error("Organisation not found");
 
-      if (!isCreator && !isAdmin) {
-        throw new Error("You do not have permission to create events for this organisation");
-      }
+    // Check if user is creator or admin of this organisation
+    const isCreator = org.creator.toString() === userId;
+    const isAdmin = org.admins.some(
+      (adminId: any) => adminId.toString() === userId
+    );
+
+    if (!isCreator && !isAdmin) {
+      throw new Error("You do not have permission to create events for this organisation");
     }
 
     const newEvent = await Event.create({
@@ -77,7 +80,7 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
       pricePlan: event.pricePlan,
       category: event.categoryId,
       organizer: userId,
-      organisation: organisationId || undefined,
+      organisation: organisationId,
     });
     revalidatePath(path);
 
@@ -104,14 +107,31 @@ export async function getEventById(eventId: string) {
 
 // UPDATE
 export async function updateEvent({ userId, event, path }: UpdateEventParams) {
-  console.log(event);
-  console.log(userId);
   try {
     await connectToDatabase();
 
     const eventToUpdate = await Event.findById(event._id);
-    if (!eventToUpdate || eventToUpdate.organizer.toHexString() !== userId) {
-      throw new Error("Unauthorized or event not found");
+    if (!eventToUpdate) {
+      throw new Error("Event not found");
+    }
+
+    // Check permission: user must be organizer OR admin/creator of the event's organisation
+    const isOrganizer = eventToUpdate.organizer?.toHexString() === userId;
+    let hasOrgAccess = false;
+
+    if (eventToUpdate.organisation) {
+      const org = await Organisation.findById(eventToUpdate.organisation);
+      if (org) {
+        const isCreator = org.creator.toString() === userId;
+        const isAdmin = org.admins.some(
+          (adminId: any) => adminId.toString() === userId
+        );
+        hasOrgAccess = isCreator || isAdmin;
+      }
+    }
+
+    if (!isOrganizer && !hasOrgAccess) {
+      throw new Error("Unauthorized: you do not have permission to update this event");
     }
 
     const updatedEvent = await Event.findByIdAndUpdate(
@@ -132,9 +152,33 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
 }
 
 // DELETE
-export async function deleteEvent({ eventId, path }: DeleteEventParams) {
+export async function deleteEvent({ eventId, path, userId }: DeleteEventParams) {
   try {
     await connectToDatabase();
+
+    const event = await Event.findById(eventId);
+    if (!event) throw new Error("Event not found");
+
+    // Check permission: user must be organizer OR admin/creator of the event's organisation
+    if (userId) {
+      const isOrganizer = event.organizer?.toHexString() === userId;
+      let hasOrgAccess = false;
+
+      if (event.organisation) {
+        const org = await Organisation.findById(event.organisation);
+        if (org) {
+          const isCreator = org.creator.toString() === userId;
+          const isAdmin = org.admins.some(
+            (adminId: any) => adminId.toString() === userId
+          );
+          hasOrgAccess = isCreator || isAdmin;
+        }
+      }
+
+      if (!isOrganizer && !hasOrgAccess) {
+        throw new Error("Unauthorized: you do not have permission to delete this event");
+      }
+    }
 
     const deletedEvent = await Event.findByIdAndDelete(eventId);
     if (deletedEvent) revalidatePath(path);
@@ -208,7 +252,7 @@ export async function getAllEvents({
   }
 }
 
-// GET EVENTS BY ORGANIZER
+// GET EVENTS BY ORGANIZER (includes events from orgs where user is admin)
 export async function getEventsByUser({
   userId,
   limit = 6,
@@ -217,7 +261,22 @@ export async function getEventsByUser({
   try {
     await connectToDatabase();
 
-    const conditions = { organizer: userId };
+    // Find all organisations the user is creator or admin of
+    const userOrgs = await Organisation.find({
+      $or: [
+        { creator: userId },
+        { admins: userId },
+      ],
+    }).select("_id");
+    const orgIds = userOrgs.map((org: any) => org._id);
+
+    // Events where user is organizer OR belongs to user's organisations
+    const conditions = {
+      $or: [
+        { organizer: userId },
+        { organisation: { $in: orgIds } },
+      ],
+    };
     const skipAmount = (page - 1) * limit;
 
     const eventsQuery = Event.find(conditions)
