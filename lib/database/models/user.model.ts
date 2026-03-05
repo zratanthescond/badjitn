@@ -12,11 +12,7 @@ export interface IUser extends Document {
   emailTocken: string;
   isActive: boolean;
   new: boolean;
-  publisher: "none" | "pending" | "approved" | "rejected";
-  organisationName: string;
   role: "user" | "admin";
-  organisationWebsite: string;
-  organisationDescription: string;
   isBanned: boolean;
 }
 const UserSchema = new Schema({
@@ -38,14 +34,6 @@ const UserSchema = new Schema({
   emailTocken: { type: String },
   isActive: { type: Boolean, default: false },
   new: { type: Boolean, default: true },
-  publisher: {
-    type: String,
-    default: "none",
-    enum: ["none", "pending", "approved", "rejected"],
-  },
-  organisationName: { type: String },
-  organisationDescription: { type: String },
-  organisationWebsite: { type: String },
   role: { type: String, default: "user" },
   isBanned: { type: Boolean, default: false },
 });

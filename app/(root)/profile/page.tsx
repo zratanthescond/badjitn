@@ -1,31 +1,13 @@
-import notFound from "@/app/not-found";
-import SponsorForm from "@/components/shared/AddSponsorComponenet";
-import Collection from "@/components/shared/Collection";
-import FieldViewer from "@/components/shared/FieldViewer";
-import FormBuilder from "@/components/shared/FormBuilder";
-import HexGridSponsor from "@/components/shared/HexSponsor";
-import HexGrid from "@/components/shared/HexSponsor";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { getEventsByUser } from "@/lib/actions/event.actions";
 import { getOrdersByUser } from "@/lib/actions/order.actions";
 import { useUser } from "@/lib/actions/user.actions";
+import { getOrganisationsByUser } from "@/lib/actions/organisation.actions";
 import { IOrder } from "@/lib/database/models/order.model";
 import { SearchParamProps } from "@/types";
-import { auth } from "@clerk/nextjs";
-import { get } from "http";
-import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import React from "react";
+import ProfileDashboard from "@/components/shared/ProfileDashboard";
+
 export const dynamic = "force-dynamic";
 
 const ProfilePage = async ({ searchParams }: SearchParamProps) => {
@@ -34,122 +16,44 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
     return redirect("/sign-in");
   }
   const userId = user?._id;
-  //const userId = "676c87bddaac23a02d164642";
   const ordersPage = Number(searchParams?.ordersPage) || 1;
   const eventsPage = Number(searchParams?.eventsPage) || 1;
 
   const orders = await getOrdersByUser({ userId, page: ordersPage });
-
   const orderedEvents = orders?.data.map((order: IOrder) => order.event) || [];
-  console.log("orderedEvents", JSON.stringify(orderedEvents, null, 2));
   const organizedEvents = await getEventsByUser({ userId, page: eventsPage });
+  const organisations = await getOrganisationsByUser(userId) || [];
   const t = await getTranslations("profile");
+
+  // Pre-resolve all translation strings to pass as plain data
+  const translations = {
+    myTickets: t("myTickets"),
+    exploreMoreEvents: t("exploreMoreEvents"),
+    emptyTicketsTitle: t("emptyTickets.title"),
+    emptyTicketsDescription: t("emptyTickets.description"),
+    eventsOrganized: t("eventsOrganized"),
+    createNewEvent: t("createNewEvent"),
+    emptyEventsCreatedTitle: t("emptyEventsCreated.title"),
+    emptyEventsCreatedDescription: t("emptyEventsCreated.description"),
+    mySponsors: t("mySponsors"),
+    addSponsor: t("addSponsor"),
+    customRequiredInfo: t("customRequiredInfo"),
+    addCustomRequiredInfo: t("addCustomRequiredInfo"),
+  };
+
   return (
-    <>
-      {/* My Tickets */}
-      <section className="backdrop-blur backdrop-brightness-90  bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
-        <div className="wrapper flex items-center justify-center sm:justify-between">
-          <h3 className="h3-bold text-center sm:text-left">{t("myTickets")}</h3>
-          <Button
-            asChild
-            variant={"outline"}
-            size="lg"
-            className="button hidden sm:flex"
-          >
-            <Link href="/#events">{t("exploreMoreEvents")}</Link>
-          </Button>
-        </div>
-      </section>
-
-      <section className="wrapper my-8">
-        <Collection
-          data={orderedEvents}
-          emptyTitle={t("emptyTickets.title")}
-          emptyStateSubtext={t("emptyTickets.description")}
-          collectionType="My_Tickets"
-          limit={3}
-          page={ordersPage}
-          urlParamName="ordersPage"
-          totalPages={orders?.totalPages}
-          userPhoto={user.photo}
-        />
-      </section>
-
-      {/* Events Organized */}
-      <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
-        <div className="wrapper flex items-center justify-center sm:justify-between">
-          <h3 className="h3-bold text-center sm:text-left">
-            {t("eventsOrganized")}
-          </h3>
-          <Button
-            asChild
-            size="lg"
-            variant={"outline"}
-            className="button hidden sm:flex"
-          >
-            <Link href="/events/create">{t("createNewEvent")}</Link>
-          </Button>
-        </div>
-      </section>
-
-      <section className="wrapper my-8">
-        <Collection
-          data={organizedEvents?.data}
-          emptyTitle={t("emptyEventsCreated.title")}
-          emptyStateSubtext={t("emptyEventsCreated.description")}
-          collectionType="Events_Organized"
-          limit={3}
-          page={eventsPage}
-          urlParamName="eventsPage"
-          totalPages={organizedEvents?.totalPages}
-          userPhoto={user.photo}
-        />
-      </section>
-      <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
-        <div className="wrapper flex items-center justify-center sm:justify-between">
-          <h3 className="h3-bold text-center sm:text-left">
-            {t("mySponsors")}
-          </h3>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size="lg" variant={"outline"} className="button">
-                {t("addSponsor")}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="min-w-full bg-card ">
-              <ScrollArea className="h-[500px] w-full">
-                <SponsorForm userId={userId.toString()} />
-                <ScrollBar orientation="vertical" />
-              </ScrollArea>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </section>
-      <section className="wrapper my-8">
-        <HexGridSponsor userId={userId.toString()} />
-      </section>
-      <section className=" backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
-        <div className="wrapper flex items-center justify-center sm:justify-between">
-          <h3 className="h3-bold text-center sm:text-left">
-            {t("customRequiredInfo")}
-          </h3>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size="lg" variant={"outline"} className="button">
-                {t("addCustomRequiredInfo")}
-              </Button>
-            </DialogTrigger>
-
-            <DialogContent className="min-w-full bg-card ">
-              <FormBuilder userId={userId.toString()} />
-            </DialogContent>
-          </Dialog>
-        </div>
-      </section>
-      <section className="wrapper my-8">
-        <FieldViewer userId={userId.toString()} />
-      </section>
-    </>
+    <ProfileDashboard
+      userId={userId.toString()}
+      user={JSON.parse(JSON.stringify(user))}
+      orderedEvents={orderedEvents}
+      ordersPage={ordersPage}
+      ordersTotalPages={orders?.totalPages || 1}
+      organizedEvents={organizedEvents?.data || []}
+      eventsPage={eventsPage}
+      eventsTotalPages={organizedEvents?.totalPages || 1}
+      organisations={organisations}
+      translations={translations}
+    />
   );
 };
 

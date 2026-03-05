@@ -3,13 +3,14 @@
 import { SearchParamProps } from "@/types";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Flag, Shapes, Users } from "lucide-react";
+import { Flag, Shapes, Users, Building2 } from "lucide-react";
 
 import UsersAdministration from "@/components/admin/UsersAdministration";
 import ReportsAdminstration from "@/components/admin/ReportsAdminstration";
 import React from "react";
 import CategoryFilter from "@/components/shared/CategoryFilter";
 import CategorieAdministration from "@/components/admin/CategorieAdministration";
+import OrganisationsAdministration from "@/components/admin/OrganisationsAdministration";
 
 const Orders = ({ searchParams }: SearchParamProps) => {
   const eventId = (searchParams?.eventId as string) || "";
@@ -23,6 +24,8 @@ const Orders = ({ searchParams }: SearchParamProps) => {
         return <ReportsAdminstration />;
       case "categories":
         return <CategorieAdministration />;
+      case "organisations":
+        return <OrganisationsAdministration />;
       default:
         return <UsersAdministration />;
     }
@@ -39,21 +42,29 @@ const Orders = ({ searchParams }: SearchParamProps) => {
         className="w-full !rounded-full"
         onValueChange={(value) => setValue(value)}
       >
-        <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6  rounded-full">
+        <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-6  rounded-full">
           <TabsTrigger
             value="users"
             className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-card rounded-full"
           >
             <Users className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">Users administration</span>
+            <span className="hidden sm:inline">Users</span>
             <span className="sm:hidden">Users</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="organisations"
+            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-card rounded-full"
+          >
+            <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Organisations</span>
+            <span className="sm:hidden">Orgs</span>
           </TabsTrigger>
           <TabsTrigger
             value="reports"
             className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-card rounded-full"
           >
             <Flag className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">Reports Administration</span>
+            <span className="hidden sm:inline">Reports</span>
             <span className="sm:hidden">Reports</span>
           </TabsTrigger>
           <TabsTrigger
@@ -61,8 +72,8 @@ const Orders = ({ searchParams }: SearchParamProps) => {
             className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-card rounded-full"
           >
             <Shapes className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">Categories Administration</span>
-            <span className="sm:hidden">Categories</span>
+            <span className="hidden sm:inline">Categories</span>
+            <span className="sm:hidden">Cats</span>
           </TabsTrigger>
         </TabsList>
       </Tabs>

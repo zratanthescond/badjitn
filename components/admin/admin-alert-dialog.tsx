@@ -56,17 +56,9 @@ interface UserAlertDialogProps {
     avatar?: string;
     joinDate: string;
     isBanned: boolean;
-    publisherRequest?: {
-      description: string;
-      organizationName: string;
-      organizationWebsite: string;
-      status: "pending" | "approved" | "rejected";
-    };
   };
   onBanUser?: (userId: string) => Promise<void>;
   onUnbanUser?: (userId: string) => Promise<void>;
-  onApprovePublisherRequest?: (userId: string) => Promise<void>;
-  onRejectPublisherRequest?: (userId: string) => Promise<void>;
   triggerClassName?: string;
   triggerText?: string;
 }
@@ -74,8 +66,6 @@ interface UserAlertDialogProps {
 export default function UserAlertDialog({
   onBanUser,
   onUnbanUser,
-  onApprovePublisherRequest,
-  onRejectPublisherRequest,
   triggerClassName = "",
   triggerText = "Manage User",
   user,
@@ -99,37 +89,6 @@ export default function UserAlertDialog({
       console.error("Error updating user ban status:", error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handlePublisherRequest = async (approve: boolean) => {
-    setIsLoading(true);
-    try {
-      if (approve) {
-        if (onApprovePublisherRequest) {
-          //  alert("Approved");
-          await onApprovePublisherRequest(value._id);
-          setvalue((prev) => ({ ...prev, publisher: "approved" }));
-        }
-      } else {
-        if (onRejectPublisherRequest) await onRejectPublisherRequest(value._id);
-        setvalue((prev) => ({ ...prev, publisher: "rejected" }));
-      }
-    } catch (error) {
-      console.error("Error handling publisher request:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "approved":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
-      case "rejected":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
-      default:
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
     }
   };
 
@@ -201,102 +160,21 @@ export default function UserAlertDialog({
                     <Button
                       variant={value.isBanned ? "outline" : "destructive"}
                       size="sm"
-                      className={`mt-2 w-full transition-all duration-300 rounded-full ${
-                        value.isBanned
+                      className={`mt-2 w-full transition-all duration-300 rounded-full ${value.isBanned
                           ? "hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400"
                           : "hover:bg-red-700"
-                      }`}
+                        }`}
                       onClick={handleBanAction}
                       disabled={isLoading}
                     >
                       <ShieldAlert
-                        className={`mr-2 h-4 w-4 ${
-                          isLoading ? "animate-spin" : ""
-                        }`}
+                        className={`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""
+                          }`}
                       />
                       {value.isBanned ? "Unban User" : "Ban User"}
                     </Button>
                   </CardContent>
                 </Card>
-
-                {value.publisher !== "none" && (
-                  <Card className="mt-4 border-0 shadow-md overflow-hidden rounded-3xl">
-                    <div className="h-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400"></div>
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-base">
-                          Publisher Request
-                        </CardTitle>
-                        <Badge className={`${getStatusColor(value.publisher)}`}>
-                          {value?.publisher?.charAt(0).toUpperCase() +
-                            value?.publisher?.slice(1)}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3 text-sm">
-                      <div className="bg-muted/50 p-3 rounded-md">
-                        <p className="font-medium text-xs uppercase tracking-wider text-muted-foreground mb-1">
-                          Organization
-                        </p>
-                        <p className="font-medium">{value.organisationName}</p>
-                      </div>
-                      <div className="bg-muted/50 p-3 rounded-md">
-                        <p className="font-medium text-xs uppercase tracking-wider text-muted-foreground mb-1">
-                          Website
-                        </p>
-                        <a
-                          href={value.organisationWebsite}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center text-blue-600 hover:underline font-medium"
-                        >
-                          {value.organisationWebsite}
-                          <ExternalLink className="ml-1 h-3 w-3" />
-                        </a>
-                      </div>
-                      <div className="bg-muted/50 p-3 rounded-md">
-                        <p className="font-medium text-xs uppercase tracking-wider text-muted-foreground mb-1">
-                          Description
-                        </p>
-                        <p className="text-muted-foreground max-h-[150px] overflow-y-auto custom-scrollbar pr-2">
-                          {value.organisationDescription}
-                        </p>
-                      </div>
-                    </CardContent>
-                    {value.publisher === "pending" && (
-                      <CardFooter className="flex gap-2 p-4 bg-muted/30">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 rounded-full border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:hover:bg-red-900/20 dark:hover:text-red-400"
-                          onClick={() => handlePublisherRequest(false)}
-                          disabled={isLoading}
-                        >
-                          <XCircle
-                            className={`mr-2 h-4 w-4 ${
-                              isLoading ? "animate-spin" : ""
-                            }`}
-                          />
-                          Reject
-                        </Button>
-                        <Button
-                          variant="default"
-                          size="sm"
-                          className="flex-1 rounded-full bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-                          onClick={() => handlePublisherRequest(true)}
-                          disabled={isLoading}
-                        >
-                          <CheckCircle
-                            className={`mr-2 h-4 w-4 ${
-                              isLoading ? "animate-spin" : ""
-                            }`}
-                          />
-                          Approve
-                        </Button>
-                      </CardFooter>
-                    )}
-                  </Card>
-                )}
               </div>
 
               <AlertDialogFooter>

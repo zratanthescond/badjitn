@@ -10,7 +10,7 @@ export interface IEvent extends Document {
     lon: number;
     lat: number;
   };
-    pricePlan?: {
+  pricePlan?: {
     _id?: string;
     name: string;
     price: number;
@@ -31,6 +31,7 @@ export interface IEvent extends Document {
   requiredInfo?: string[];
   category: { _id: string; name: string };
   organizer: { _id: string; firstName: string; lastName: string; photo: string };
+  organisation?: { _id: string; name: string; slug: string; logo: string };
   discount: { field: string; value: string; discount: number };
   restricted: boolean;
   scanPoints?: string[];
@@ -71,6 +72,7 @@ const EventSchema = new Schema({
   isOnline: { type: Boolean },
   category: { type: Schema.Types.ObjectId, ref: "Category" },
   organizer: { type: Schema.Types.ObjectId, ref: "User" },
+  organisation: { type: Schema.Types.ObjectId, ref: "Organisation" },
   discount: {
     field: { type: String },
     value: { type: String },

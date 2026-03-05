@@ -6,6 +6,7 @@ import { connectToDatabase } from "@/lib/database";
 import Event from "@/lib/database/models/event.model";
 import User from "@/lib/database/models/user.model";
 import Category from "@/lib/database/models/category.model";
+import Organisation from "@/lib/database/models/organisation.model";
 import { handleError } from "@/lib/utils";
 
 import {
@@ -36,10 +37,15 @@ const populateEvent = (query: any) => {
       path: "organizer",
       model: User,
       select:
-        "_id firstName lastName username photo organisationName publisher organisationWebsite organisationDescription clerkId",
+        "_id firstName lastName username photo clerkId",
     })
     .populate({ path: "category", model: Category, select: "_id name" })
-    .populate({ path: "Sponsors", model: Sponsor, select: "_id" });
+    .populate({ path: "Sponsors", model: Sponsor, select: "_id" })
+    .populate({
+      path: "organisation",
+      model: Organisation,
+      select: "_id name slug logo description isVerified",
+    });
 };
 
 // CREATE
@@ -50,11 +56,28 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
     const organizer = await User.findById(userId);
     if (!organizer) throw new Error("Organizer not found");
 
+    // If organisationId is provided, verify user has permission
+    let organisationId = event.organisationId;
+    if (organisationId) {
+      const org = await Organisation.findById(organisationId);
+      if (!org) throw new Error("Organisation not found");
+
+      const isCreator = org.creator.toString() === userId;
+      const isAdmin = org.admins.some(
+        (adminId: any) => adminId.toString() === userId
+      );
+
+      if (!isCreator && !isAdmin) {
+        throw new Error("You do not have permission to create events for this organisation");
+      }
+    }
+
     const newEvent = await Event.create({
       ...event,
       pricePlan: event.pricePlan,
       category: event.categoryId,
       organizer: userId,
+      organisation: organisationId || undefined,
     });
     revalidatePath(path);
 
@@ -133,11 +156,11 @@ export async function getAllEvents({
     await connectToDatabase();
     const dateFilter = date
       ? {
-          startDateTime: {
-            $gte: new Date(`${date}T00:00:00.000Z`),
-            $lte: new Date(`${date}T23:59:59.999Z`),
-          },
-        }
+        startDateTime: {
+          $gte: new Date(`${date}T00:00:00.000Z`),
+          $lte: new Date(`${date}T23:59:59.999Z`),
+        },
+      }
       : {};
     const countryCondition = country
       ? { country: { $regex: country, $options: "i" } }

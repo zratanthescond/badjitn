@@ -59,10 +59,10 @@ export function VideoDetailsPanel({
             <XProfileCard
               username={`${video.organizer.firstName} ${video.organizer.lastName}`}
               avatarUrl={video.organizer.photo}
-              isVerified={video.organizer.publisher === "approved"}
+              isVerified={video.organisation?.isVerified || false}
               handle={video.organizer.username}
-              organization={video.organizer.organisationName}
-              bio={video.organizer.organisationDescription}
+              organization={video.organisation?.name || ""}
+              bio={""}
             />
           </div>
 

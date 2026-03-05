@@ -230,8 +230,8 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                 </div>{" "}
                 <div
                   className={`${show
-                      ? "flex top-[20vh] bg-card/95 md:top-auto max-h-[80vh] md:max-h-full"
-                      : "hidden md:flex"
+                    ? "flex top-[20vh] bg-card/95 md:top-auto max-h-[80vh] md:max-h-full"
+                    : "hidden md:flex"
                     } flex-col glass fixed bottom-0 md:max-w-md md:relative rounded-t-3xl md:rounded-2xl w-full md:h-full items-center justify-start gap-4 animate-accordion-down repeat-1 shadow-2xl border-t md:border border-border/50`}
                 >
                   <Button
@@ -253,13 +253,10 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                           video.organizer.lastName
                         }
                         avatarUrl={video.organizer.photo}
-                        isVerified={
-                          video.organizer.publisher &&
-                          video.organizer.publisher === "approved"
-                        }
+                        isVerified={video.organisation?.isVerified || false}
                         handle={video.organizer.username}
-                        organization={video.organizer.organisationName}
-                        bio={video.organizer.organisationDescription}
+                        organization={video.organisation?.name || ""}
+                        bio={""}
                       />
                     </div>
                     <div className="flex flex-row items-center justify-between p-2">

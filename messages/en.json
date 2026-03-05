@@ -97,7 +97,8 @@
     "createEvent": "Create Event",
     "home": "Home",
     "login": "Login",
-    "myProfile": "My Profile"
+    "myProfile": "My Profile",
+    "organisations": "Organisations"
   },
   "QRScanner": {
     "accessGranted": "Access Granted",
@@ -699,7 +700,16 @@
       "send": "Send Message",
       "sending": "Sending...",
       "subject": "Subject",
-      "success": "Thank you! We'll get back to you soon."
+      "success": "Thank you! We'll get back to you soon.",
+      "title": "Send Us a Message",
+      "submit": "Send Message",
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "subject": "Subject",
+        "message": "Message"
+      }
     },
     "hero": {
       "description": "Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
@@ -724,11 +734,54 @@
       },
       "title": "Contact Information"
     },
+    "methods": {
+      "email": {
+        "title": "Email Us",
+        "description": "Send us an email and we'll get back to you within 24 hours."
+      },
+      "phone": {
+        "title": "Call Us",
+        "description": "Speak directly with our support team during business hours."
+      },
+      "address": {
+        "title": "Visit Us",
+        "description": "Come visit us at our office in Tunis, Tunisia."
+      }
+    },
+    "success": {
+      "title": "Message Sent!",
+      "description": "Thank you for reaching out. We'll get back to you as soon as possible.",
+      "back": "Send Another Message"
+    },
     "support": {
       "description": "For technical support and account issues, please visit our help center or contact our support team directly.",
       "helpCenter": "Visit Help Center",
       "supportEmail": "support@badji.net",
-      "title": "Need Support?"
+      "title": "Need Support?",
+      "options": {
+        "general": {
+          "title": "General Inquiries",
+          "description": "Questions about our platform, pricing, or features."
+        },
+        "technical": {
+          "title": "Technical Support",
+          "description": "Help with bugs, errors, or technical issues."
+        },
+        "sales": {
+          "title": "Sales & Partnerships",
+          "description": "Discuss enterprise plans and partnership opportunities."
+        },
+        "partnerships": {
+          "title": "Partnerships",
+          "description": "Explore collaboration and partnership possibilities."
+        }
+      }
+    },
+    "hours": {
+      "title": "Business Hours",
+      "weekdays": "Monday - Friday: 9:00 AM - 6:00 PM",
+      "weekends": "Saturday - Sunday: Closed",
+      "timezone": "All times are in GMT+1 (Tunisia)"
     }
   },
   "contributorSelection": {

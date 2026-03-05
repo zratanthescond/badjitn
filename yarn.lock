@@ -11,6 +11,15 @@
     "@ai-sdk/provider-utils" "4.0.14"
     "@vercel/oidc" "3.1.0"
 
+"@ai-sdk/gateway@3.0.63":
+  version "3.0.63"
+  resolved "https://registry.yarnpkg.com/@ai-sdk/gateway/-/gateway-3.0.63.tgz#c00ebf42388714f8fdc6a78fec668e9af381bbcc"
+  integrity sha512-0jwdkN3elC4Q9aT2ALxjXtGGVoye15zYgof6GfvuH1a9QKx9Rj4Wi2vy6SyyLvtSA/lB786dTZgC+cGwe6vzmA==
+  dependencies:
+    "@ai-sdk/provider" "3.0.8"
+    "@ai-sdk/provider-utils" "4.0.17"
+    "@vercel/oidc" "3.1.0"
+
 "@ai-sdk/google@^3.0.22":
   version "3.0.22"
   resolved "https://registry.npmjs.org/@ai-sdk/google/-/google-3.0.22.tgz"
@@ -36,6 +45,15 @@
     "@standard-schema/spec" "^1.1.0"
     eventsource-parser "^3.0.6"
 
+"@ai-sdk/provider-utils@4.0.17":
+  version "4.0.17"
+  resolved "https://registry.yarnpkg.com/@ai-sdk/provider-utils/-/provider-utils-4.0.17.tgz#41f07bd740a20f9ce49c10fb9a18db5a4a81290f"
+  integrity sha512-oyCeFINTYK0B8ZGUBiQc05G5vytPlKSmTTtm19xfJuUgoi8zkvvRcoPQci4mSnyfpPn2XSFFDfsALG8uGcapfg==
+  dependencies:
+    "@ai-sdk/provider" "3.0.8"
+    "@standard-schema/spec" "^1.1.0"
+    eventsource-parser "^3.0.6"
+
 "@ai-sdk/provider@3.0.8":
   version "3.0.8"
   resolved "https://registry.npmjs.org/@ai-sdk/provider/-/provider-3.0.8.tgz"
@@ -43,13 +61,13 @@
   dependencies:
     json-schema "^0.4.0"
 
-"@ai-sdk/react@^3.0.79":
-  version "3.0.79"
-  resolved "https://registry.npmjs.org/@ai-sdk/react/-/react-3.0.79.tgz"
-  integrity sha512-s/Y+/sISlsEX5Zo/by0jwOyA6vnQ7+CldpRYGv5hMmgnarZ1m5B6myw3Y1Bc2xnozUy+wrmwA6HttlmR4xOOEg==
+"@ai-sdk/react@^3.0.112":
+  version "3.0.112"
+  resolved "https://registry.yarnpkg.com/@ai-sdk/react/-/react-3.0.112.tgz#8cc915bd51d16f8829bdaae58fcf738c3b1cd556"
+  integrity sha512-Zx6ays7CPyg7C+BhWzG4JC+wSuxStzYZn309iPiHd04T7y3oT0Xg3pOeZDQWtWAYhxXti/dYhEz2Wgk6payz3Q==
   dependencies:
-    "@ai-sdk/provider-utils" "4.0.14"
-    ai "6.0.77"
+    "@ai-sdk/provider-utils" "4.0.17"
+    ai "6.0.110"
     swr "^2.2.5"
     throttleit "2.1.0"
 
@@ -4110,7 +4128,17 @@ agentkeepalive@^4.2.1:
   dependencies:
     humanize-ms "^1.2.1"
 
-ai@6.0.77, ai@^6.0.77:
+ai@6.0.110:
+  version "6.0.110"
+  resolved "https://registry.yarnpkg.com/ai/-/ai-6.0.110.tgz#a000e2a90347a1562df547ec717693240ac19fc7"
+  integrity sha512-zwkX2UQ0vlWvK3OWp8eI+ugupNfddQh/G4Q15TNUxeYdB8oeXSh4e9mJDTjJVbd2SUwKKKjhg2MAvGA9rywyVQ==
+  dependencies:
+    "@ai-sdk/gateway" "3.0.63"
+    "@ai-sdk/provider" "3.0.8"
+    "@ai-sdk/provider-utils" "4.0.17"
+    "@opentelemetry/api" "1.9.0"
+
+ai@^6.0.77:
   version "6.0.77"
   resolved "https://registry.npmjs.org/ai/-/ai-6.0.77.tgz"
   integrity sha512-tyyhrRpCRFVlivdNIFLK8cexSBB2jwTqO0z1qJQagk+UxZ+MW8h5V8xsvvb+xdKDY482Y8KAm0mr7TDnPKvvlw==

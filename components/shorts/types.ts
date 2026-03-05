@@ -11,9 +11,13 @@ export interface Event {
     lastName: string
     photo: string
     username: string
-    organisationName: string
-    organisationDescription: string
-    publisher?: string
+  }
+  organisation?: {
+    _id: string
+    name: string
+    slug: string
+    logo: string
+    isVerified?: boolean
   }
   sponsors?: string[]
 }

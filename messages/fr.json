@@ -699,7 +699,16 @@
       "send": "Envoyer",
       "sending": "Envoi en Cours...",
       "subject": "Sujet",
-      "success": "Merci ! Nous vous répondrons bientôt."
+      "success": "Merci ! Nous vous répondrons bientôt.",
+      "title": "Envoyez-nous un Message",
+      "submit": "Envoyer le Message",
+      "fields": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Adresse Email",
+        "subject": "Sujet",
+        "message": "Message"
+      }
     },
     "hero": {
       "description": "Des questions? Nous serions ravis d'avoir de vos nouvelles. Envoyez-nous un message et nous répondrons au plus vite.",
@@ -724,11 +733,54 @@
       },
       "title": "Coordonnées"
     },
+    "methods": {
+      "email": {
+        "title": "Envoyez-nous un Email",
+        "description": "Envoyez-nous un email et nous vous répondrons dans les 24 heures."
+      },
+      "phone": {
+        "title": "Appelez-nous",
+        "description": "Parlez directement avec notre équipe de support pendant les heures d'ouverture."
+      },
+      "address": {
+        "title": "Visitez-nous",
+        "description": "Venez nous rendre visite à notre bureau à Tunis, Tunisie."
+      }
+    },
+    "success": {
+      "title": "Message Envoyé !",
+      "description": "Merci de nous avoir contactés. Nous vous répondrons dès que possible.",
+      "back": "Envoyer un Autre Message"
+    },
     "support": {
       "description": "Pour le support technique et les problèmes de compte, visitez notre centre d'aide ou contactez directement notre équipe.",
       "helpCenter": "Visiter le Centre d'Aide",
       "supportEmail": "support@badji.net",
-      "title": "Besoin d'Aide?"
+      "title": "Besoin d'Aide?",
+      "options": {
+        "general": {
+          "title": "Questions Générales",
+          "description": "Questions sur notre plateforme, tarifs ou fonctionnalités."
+        },
+        "technical": {
+          "title": "Support Technique",
+          "description": "Aide pour les bugs, erreurs ou problèmes techniques."
+        },
+        "sales": {
+          "title": "Ventes & Partenariats",
+          "description": "Discutez des plans entreprise et opportunités de partenariat."
+        },
+        "partnerships": {
+          "title": "Partenariats",
+          "description": "Explorez les possibilités de collaboration et de partenariat."
+        }
+      }
+    },
+    "hours": {
+      "title": "Heures d'Ouverture",
+      "weekdays": "Lundi - Vendredi: 9h00 - 18h00",
+      "weekends": "Samedi - Dimanche: Fermé",
+      "timezone": "Tous les horaires sont en GMT+1 (Tunisie)"
     }
   },
   "contributorSelection": {

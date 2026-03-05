@@ -56,6 +56,7 @@ export type CreateEventParams = {
     } | null;
     places?: number;
     scanPoints?: string[];
+    organisationId?: string;
   };
   path: string;
 };
@@ -90,6 +91,7 @@ export type UpdateEventParams = {
     } | null;
     places?: number;
     scanPoints?: string[];
+    organisationId?: string;
   };
   path: string;
 };
@@ -142,16 +144,19 @@ export type Event = {
     lastName: string;
     username: string;
     photo: string;
-    organisationName: string;
-    publisher: "none" | "pending" | "approved" | "rejected";
-    organisationWebsite: string;
-    organisationDescription: string;
   };
   pricePlan: [pricePlan];
   isOnline: boolean;
   category: {
     _id: string;
     name: string;
+  };
+  organisation?: {
+    _id: string;
+    name: string;
+    slug: string;
+    logo: string;
+    isVerified?: boolean;
   };
 };
 

@@ -44,6 +44,11 @@ const nextConfig = {
         port: "",
       },
       {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+        port: ""
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "3000", // Include the port number if you're running on a specific port

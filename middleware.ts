@@ -51,6 +51,8 @@ export default authMiddleware({
     "/api/uploadthing",
     "/api/upload-bank-transfer",
     "/banned",
+    "/organisations",
+    "/organisations/:slug",
   ],
   ignoredRoutes: [
     "/api/webhook/clerk",

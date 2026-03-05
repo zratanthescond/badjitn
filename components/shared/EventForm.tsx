@@ -61,9 +61,10 @@ type EventFormProps = {
   type: "Create" | "Update";
   event?: IEvent;
   eventId?: string;
+  organisationId?: string;
 };
 
-const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
+const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormProps) => {
   const [address, setAddress] = useState("our location");
   const [latitude, setLatitude] = useState(34.739822);
   const [longitude, setLongitude] = useState(10.7600196);
@@ -108,15 +109,16 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
     if (type === "Create") {
       try {
         const newEvent = await createEvent({
-            event: {
-              ...values,
-              pricePlan: pricePlan,
-              location: { name: address, lon: longitude, lat: latitude },
-              imageUrl: reel,
-              scanPoints: values.scanPoints,
-            },
-            userId,
-            path: "/profile",
+          event: {
+            ...values,
+            pricePlan: pricePlan,
+            location: { name: address, lon: longitude, lat: latitude },
+            imageUrl: reel,
+            scanPoints: values.scanPoints,
+            organisationId: organisationId,
+          },
+          userId,
+          path: "/profile",
         });
 
         if (newEvent) {
@@ -137,15 +139,15 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       try {
         const updatedEvent = await updateEvent({
           userId,
-            event: {
-              ...values,
-              pricePlan: pricePlan,
-              location: { name: address, lon: longitude, lat: latitude },
-              imageUrl: values.imageUrl,
-              _id: eventId,
-              scanPoints: values.scanPoints,
-            },
-            path: `/events/${eventId}`,
+          event: {
+            ...values,
+            pricePlan: pricePlan,
+            location: { name: address, lon: longitude, lat: latitude },
+            imageUrl: values.imageUrl,
+            _id: eventId,
+            scanPoints: values.scanPoints,
+          },
+          path: `/events/${eventId}`,
         });
 
         if (updatedEvent) {

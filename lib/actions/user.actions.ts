@@ -22,9 +22,9 @@ export async function useUser() {
     const clerkUser = await currentUser();
 
     //console.log("clerkId", clerkUser?.id);
-    // const clerkId = "user_2qjB11CRNqSQhU49dfemouaQJJ0";
+    const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
     // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
-     const clerkId = clerkUser?.id;
+    // const clerkId = clerkUser?.id;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
   } catch (error) {
@@ -268,96 +268,11 @@ export async function getUserWorkByEventId({
     handleError(error);
   }
 }
-export async function requestPublisherBadge(data: {
-  userId: string;
-  organisationName: string;
-  organisationWebsite: string;
-  organisationDescription: string;
-}) {
-  try {
-    await connectToDatabase();
-    const user = await User.findById(data.userId);
-    if (!user) throw new Error("User not found");
-    user.publisher = "pending";
-    user.organisationName = data.organisationName;
-    user.organisationWebsite = data.organisationWebsite;
-    user.organisationDescription = data.organisationDescription;
-    await user.save();
-    revalidatePath("events/create");
-    return JSON.parse(JSON.stringify(user));
-  } catch (error) {
-    handleError(error);
-    return { error: (error as Error).message };
-  }
-}
-
-export async function checkoutPublisherRequest(data: {
-  userId: string;
-  organisationName: string;
-  organisationWebsite: string;
-  organisationDescription: string;
-}) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
-  try {
-    const session = await stripe.checkout.sessions.create({
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            unit_amount: 1000,
-            product_data: {
-              name: "publisher badge",
-              metadata: { name: "dfdfdfdfdf", price: 200 },
-            },
-          },
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        userId: data.userId,
-        details: JSON.stringify(data),
-      },
-      mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/events/create`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/events/create`,
-    });
-
-    redirect(session.url!);
-  } catch (error) {
-    throw error;
-  }
-}
 export async function admingetUsers() {
   try {
     await connectToDatabase();
     const users = await User.find({});
     return JSON.parse(JSON.stringify(users));
-  } catch (error) {
-    handleError(error);
-  }
-}
-export async function approvePublisher(userId: string) {
-  try {
-    await connectToDatabase();
-    const user = await User.findById(userId);
-    if (!user) throw new Error("User not found");
-    user.publisher = "approved";
-    await user.save();
-    return JSON.parse(JSON.stringify(user));
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-export async function rejectPublisher(userId: string) {
-  try {
-    await connectToDatabase();
-    const user = await User.findById(userId);
-    if (!user) throw new Error("User not found");
-    user.publisher = "rejected";
-    await user.save();
-    return JSON.parse(JSON.stringify(user));
   } catch (error) {
     handleError(error);
   }
@@ -421,5 +336,33 @@ export async function adminDiscardReport(reportId: string) {
     return JSON.parse(JSON.stringify(report));
   } catch (error) {
     handleError(error);
+  }
+}
+
+// ==========================================
+// SEARCH USERS (for autocomplete)
+// ==========================================
+export async function searchUsers(query: string) {
+  try {
+    if (!query || query.trim().length < 2) return [];
+    await connectToDatabase();
+
+    const regex = new RegExp(query.trim(), "i");
+    const users = await User.find({
+      $or: [
+        { firstName: regex },
+        { lastName: regex },
+        { email: regex },
+        { username: regex },
+      ],
+    })
+      .select("_id firstName lastName email username photo")
+      .limit(10)
+      .lean();
+
+    return JSON.parse(JSON.stringify(users));
+  } catch (error) {
+    handleError(error);
+    return [];
   }
 }

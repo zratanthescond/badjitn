@@ -9,9 +9,16 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 const Header = () => {
+  const [hasMounted, setHasMounted] = useState(false);
   const dimensions = useMediaQuery("(min-width: 768px)");
   const t = useTranslations("Navbar");
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
       <div className="wrapper flex h-16 md:h-20 items-center justify-between py-2">
@@ -42,7 +49,7 @@ const Header = () => {
           </SignedIn>
 
           <div className="flex items-center gap-2 md:gap-3">
-            {dimensions && (
+            {hasMounted && dimensions && (
               <div className="flex items-center gap-2 border-r border-border/50 pr-2 md:pr-3 mr-1 md:mr-2">
                 <LocaleSwitcher />
                 <ModeToggle />

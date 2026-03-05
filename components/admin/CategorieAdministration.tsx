@@ -23,8 +23,6 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "../ui/alert-dialog";
-import { approvePublisher, rejectPublisher } from "@/lib/actions/user.actions";
-import UserAlertDialog from "./admin-alert-dialog";
 import {
   createCategory,
   deleteCategory,
@@ -133,19 +131,14 @@ export default function CategorieAdministration() {
       subtitle={`ID: ${item._id}`}
       badge={item.role}
       details={[
-        { label: "", value: item.username },
-        { label: t("users.table.publisher"), value: item.publisher, align: "right" },
+        { label: "", value: item.name },
+        { label: "Events", value: String(item.eventCount || 0), align: "right" },
       ]}
       footer={
         <div className="flex justify-between items-center w-full">
           <span className="text-xs ">
-            {formatDateTime(item.createdAt).dateTime}
+            {item._id}
           </span>
-          <UserAlertDialog
-            user={item}
-            onApprovePublisherRequest={approvePublisher}
-            onRejectPublisherRequest={rejectPublisher}
-          />
         </div>
       }
     />

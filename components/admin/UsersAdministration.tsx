@@ -14,9 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CardSkeleton } from "./CardSkeleton";
 import {
   admingetUsers,
-  approvePublisher,
   banUser,
-  rejectPublisher,
   unbanUser,
 } from "@/lib/actions/user.actions";
 import UserAlertDialog from "./admin-alert-dialog";
@@ -57,32 +55,12 @@ export default function UsersAdministration() {
       ),
     },
     {
-      header: t("users.table.publisher"),
-      accessor: "publisher",
-      align: "right" as const,
-      cell: (value: string) => (
-        <Badge
-          className={`${
-            value === "pending"
-              ? "bg-yellow-400"
-              : value === "approved"
-              ? "bg-green-400"
-              : "bg-red-400"
-          }`}
-        >
-          {value}
-        </Badge>
-      ),
-    },
-    {
       header: t("users.table.details"),
       accessor: "root",
       align: "right" as const,
       cell: (value: any) => (
         <UserAlertDialog
           user={value}
-          onApprovePublisherRequest={approvePublisher}
-          onRejectPublisherRequest={rejectPublisher}
           onBanUser={banUser}
           onUnbanUser={unbanUser}
         />
@@ -98,7 +76,7 @@ export default function UsersAdministration() {
       badge={item.role}
       details={[
         { label: "", value: item.username },
-        { label: t("users.table.publisher"), value: item.publisher, align: "right" },
+        { label: t("users.table.role"), value: item.role || "user", align: "right" },
       ]}
       footer={
         <div className="flex justify-between items-center w-full">
@@ -107,8 +85,8 @@ export default function UsersAdministration() {
           </span>
           <UserAlertDialog
             user={item}
-            onApprovePublisherRequest={approvePublisher}
-            onRejectPublisherRequest={rejectPublisher}
+            onBanUser={banUser}
+            onUnbanUser={unbanUser}
           />
         </div>
       }
