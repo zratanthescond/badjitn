@@ -22,9 +22,9 @@ export async function useUser() {
     const clerkUser = await currentUser();
 
     //console.log("clerkId", clerkUser?.id);
-    const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
+    // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
     // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
-    // const clerkId = clerkUser?.id;
+    const clerkId = clerkUser?.id;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
   } catch (error) {
