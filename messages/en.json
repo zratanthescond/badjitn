@@ -2692,7 +2692,33 @@
     "eventsOrganized": "Events Organized",
     "exploreMoreEvents": "Explore more events",
     "mySponsors": "My Sponsors",
-    "myTickets": "My Tickets"
+    "myTickets": "My Tickets",
+    "settings": {
+      "title": "Profile Settings",
+      "description": "Update your profile information.",
+      "saveProfile": "Save Profile",
+      "saving": "Saving...",
+      "countryPlaceholder": "Select a republic",
+      "cityPlaceholder": "Select a city",
+      "cityNoOptions": "No cities available for this country",
+      "citySearchPlaceholder": "Search a city...",
+      "cityNoMatch": "No matching city found",
+      "worldExceptIsrael": "Available worldwide except Israel.",
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "jobTitle": "Role / Specialty",
+        "republic": "Republic",
+        "city": "City",
+        "village": "Village"
+      },
+      "messages": {
+        "updatedTitle": "Profile updated",
+        "updatedDescription": "Your profile settings were saved successfully.",
+        "errorTitle": "Update failed",
+        "errorDescription": "Unable to save your profile settings."
+      }
+    }
   },
   "publisherCard": {
     "description": "You need an admin check to become a publisher and unlock exclusive features and content. Request to become a publisher or purchase a publisher badge directly.",

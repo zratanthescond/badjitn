@@ -2690,7 +2690,33 @@
     "eventsOrganized": "Événements organisés",
     "exploreMoreEvents": "Explorer plus d'événements",
     "mySponsors": "Mes Sponsors",
-    "myTickets": "Mes Tickets"
+    "myTickets": "Mes Tickets",
+    "settings": {
+      "title": "Paramètres du profil",
+      "description": "Mettez à jour les informations de votre profil.",
+      "saveProfile": "Enregistrer le profil",
+      "saving": "Enregistrement...",
+      "countryPlaceholder": "Sélectionnez une république",
+      "cityPlaceholder": "Sélectionnez une ville",
+      "cityNoOptions": "Aucune ville disponible pour ce pays",
+      "citySearchPlaceholder": "Rechercher une ville...",
+      "cityNoMatch": "Aucune ville correspondante",
+      "worldExceptIsrael": "Disponible dans le monde entier sauf Israël.",
+      "fields": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "jobTitle": "Fonction / Spécialité",
+        "republic": "République",
+        "city": "Ville",
+        "village": "Village"
+      },
+      "messages": {
+        "updatedTitle": "Profil mis à jour",
+        "updatedDescription": "Les paramètres de votre profil ont été enregistrés.",
+        "errorTitle": "Échec de la mise à jour",
+        "errorDescription": "Impossible d'enregistrer les paramètres du profil."
+      }
+    }
   },
   "publisherCard": {
     "description": "Vous avez besoin d'une vérification administrative pour devenir éditeur et débloquer des fonctionnalités et du contenu exclusifs. Demandez à devenir éditeur ou achetez directement un badge d'éditeur.",

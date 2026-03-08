@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     Ticket,
@@ -13,8 +14,12 @@ import {
     ChevronRight,
     CalendarPlus,
     CheckCircle,
+    Check,
+    ChevronsUpDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Dialog,
     DialogContent,
@@ -27,8 +32,23 @@ import HexGridSponsor from "@/components/shared/HexSponsor";
 import FormBuilder from "@/components/shared/FormBuilder";
 import FieldViewer from "@/components/shared/FieldViewer";
 import OrganisationCard from "@/components/shared/OrganisationCard";
+import { toast } from "@/hooks/use-toast";
+import { updateCurrentUserProfile } from "@/lib/actions/user.actions";
+import { CountryDropdown, Country } from "@/components/ui/country-dropdown";
+import { countries, timezones } from "country-data-list";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { countryGovernorates } from "@/constants/country-governorates";
 
-type TabKey = "overview" | "tickets" | "events" | "organisations" | "sponsors" | "fields";
+type TabKey = "overview" | "profileSettings" | "tickets" | "events" | "organisations" | "sponsors" | "fields";
 
 interface TranslationStrings {
     myTickets: string;
@@ -43,6 +63,28 @@ interface TranslationStrings {
     addSponsor: string;
     customRequiredInfo: string;
     addCustomRequiredInfo: string;
+    profileSettings: string;
+    profileSettingsDescription: string;
+    saveProfile: string;
+    saving: string;
+    fields: {
+        firstName: string;
+        lastName: string;
+        jobTitle: string;
+        republic: string;
+        city: string;
+        village: string;
+    };
+    profileUpdatedTitle: string;
+    profileUpdatedDescription: string;
+    profileUpdateErrorTitle: string;
+    profileUpdateErrorDescription: string;
+    worldExceptIsrael: string;
+    countryPlaceholder: string;
+    cityPlaceholder: string;
+    cityNoOptions: string;
+    citySearchPlaceholder: string;
+    cityNoMatch: string;
 }
 
 interface ProfileDashboardProps {
@@ -60,6 +102,7 @@ interface ProfileDashboardProps {
 
 const sidebarItems: { key: TabKey; icon: any; labelKey: string }[] = [
     { key: "overview", icon: LayoutDashboard, labelKey: "Overview" },
+    { key: "profileSettings", icon: CheckCircle, labelKey: "Profile Settings" },
     { key: "tickets", icon: Ticket, labelKey: "My Tickets" },
     { key: "events", icon: CalendarDays, labelKey: "Events Organized" },
     { key: "organisations", icon: Building2, labelKey: "Organisations" },
@@ -79,7 +122,67 @@ export default function ProfileDashboard({
     organisations,
     translations,
 }: ProfileDashboardProps) {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState<TabKey>("overview");
+    const [cityOpen, setCityOpen] = useState(false);
+    const [isSavingProfile, setIsSavingProfile] = useState(false);
+    const [profileForm, setProfileForm] = useState({
+        firstName: user?.firstName || "",
+        lastName: user?.lastName || "",
+        jobTitle: user?.jobTitle || "",
+        republic: user?.republic || "",
+        city: user?.city || "",
+        village: user?.village || "",
+    });
+    const allowedCountries = countries.all.filter(
+        (country) =>
+            country.emoji &&
+            country.status !== "deleted" &&
+            country.ioc !== "PRK" &&
+            country.alpha2 !== "IL"
+    );
+    const selectedCountry = allowedCountries.find(
+        (country) => country.alpha3 === profileForm.republic
+    );
+    const cityOptions = useMemo(() => {
+        if (!selectedCountry) return [];
+
+        const governorates = countryGovernorates[selectedCountry.alpha3];
+        if (governorates && governorates.length > 0) {
+            return [...governorates].sort((a, b) => a.localeCompare(b));
+        }
+
+        return (timezones.getTimezonesByCountry(selectedCountry.alpha2) || [])
+            .map((tz) => tz.split("/").pop() || tz)
+            .map((city) => city.replace(/_/g, " "))
+            .filter((city, index, arr) => arr.indexOf(city) === index)
+            .sort((a, b) => a.localeCompare(b));
+    }, [selectedCountry]);
+    const cityOptionsWithCurrent =
+        profileForm.city && !cityOptions.includes(profileForm.city)
+            ? [profileForm.city, ...cityOptions]
+            : cityOptions;
+
+    const handleProfileSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsSavingProfile(true);
+        try {
+            await updateCurrentUserProfile(profileForm);
+            toast({
+                title: translations.profileUpdatedTitle,
+                description: translations.profileUpdatedDescription,
+            });
+            router.refresh();
+        } catch {
+            toast({
+                title: translations.profileUpdateErrorTitle,
+                description: translations.profileUpdateErrorDescription,
+                variant: "destructive",
+            });
+        } finally {
+            setIsSavingProfile(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-slate-950 dark:via-indigo-950/10 dark:to-purple-950/10">
@@ -306,6 +409,147 @@ export default function ProfileDashboard({
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    )}
+
+                    {/* Tickets Tab */}
+                    {activeTab === "profileSettings" && (
+                        <div className="space-y-6">
+                            <div>
+                                <h2 className="text-2xl font-bold">{translations.profileSettings}</h2>
+                                <p className="text-muted-foreground text-sm mt-1">
+                                    {translations.profileSettingsDescription}
+                                </p>
+                            </div>
+
+                            <form
+                                onSubmit={handleProfileSubmit}
+                                className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-2xl p-5 space-y-4"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="firstName">{translations.fields.firstName}</Label>
+                                        <Input
+                                            id="firstName"
+                                            value={profileForm.firstName}
+                                            onChange={(e) =>
+                                                setProfileForm((prev) => ({ ...prev, firstName: e.target.value }))
+                                            }
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="lastName">{translations.fields.lastName}</Label>
+                                        <Input
+                                            id="lastName"
+                                            value={profileForm.lastName}
+                                            onChange={(e) =>
+                                                setProfileForm((prev) => ({ ...prev, lastName: e.target.value }))
+                                            }
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2 md:col-span-2">
+                                        <Label htmlFor="jobTitle">{translations.fields.jobTitle}</Label>
+                                        <Input
+                                            id="jobTitle"
+                                            value={profileForm.jobTitle}
+                                            onChange={(e) =>
+                                                setProfileForm((prev) => ({ ...prev, jobTitle: e.target.value }))
+                                            }
+                                        />
+                                    </div>
+                                    <div className="space-y-2 md:col-span-2">
+                                        <Label>{translations.fields.republic}</Label>
+                                        <CountryDropdown
+                                            options={allowedCountries as Country[]}
+                                            defaultValue={profileForm.republic}
+                                            placeholder={translations.countryPlaceholder}
+                                            onChange={(country) =>
+                                                setProfileForm((prev) => ({
+                                                    ...prev,
+                                                    republic: country.alpha3,
+                                                    city: "",
+                                                }))
+                                            }
+                                        />
+                                        <p className="text-xs text-muted-foreground">
+                                            {translations.worldExceptIsrael}
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="city">{translations.fields.city}</Label>
+                                        <Popover open={cityOpen} onOpenChange={setCityOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    id="city"
+                                                    type="button"
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    aria-expanded={cityOpen}
+                                                    disabled={!profileForm.republic || cityOptionsWithCurrent.length === 0}
+                                                    className="w-full justify-between font-normal"
+                                                >
+                                                    <span className="truncate text-left">
+                                                        {profileForm.city || translations.cityPlaceholder}
+                                                    </span>
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                                                <Command>
+                                                    <CommandInput placeholder={translations.citySearchPlaceholder} />
+                                                    <CommandList>
+                                                        <CommandEmpty>
+                                                            {cityOptionsWithCurrent.length === 0
+                                                                ? translations.cityNoOptions
+                                                                : translations.cityNoMatch}
+                                                        </CommandEmpty>
+                                                        <CommandGroup>
+                                                            {cityOptionsWithCurrent.map((city) => (
+                                                                <CommandItem
+                                                                    key={city}
+                                                                    value={city}
+                                                                    onSelect={() => {
+                                                                        setProfileForm((prev) => ({ ...prev, city }));
+                                                                        setCityOpen(false);
+                                                                    }}
+                                                                >
+                                                                    <Check
+                                                                        className={cn(
+                                                                            "mr-2 h-4 w-4",
+                                                                            profileForm.city === city ? "opacity-100" : "opacity-0"
+                                                                        )}
+                                                                    />
+                                                                    {city}
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="village">{translations.fields.village}</Label>
+                                        <Input
+                                            id="village"
+                                            value={profileForm.village}
+                                            onChange={(e) =>
+                                                setProfileForm((prev) => ({ ...prev, village: e.target.value }))
+                                            }
+                                        />
+                                    </div>
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full"
+                                    disabled={isSavingProfile}
+                                >
+                                    {isSavingProfile ? translations.saving : translations.saveProfile}
+                                </Button>
+                            </form>
                         </div>
                     )}
 

@@ -2690,7 +2690,33 @@
     "eventsOrganized": "الأحداث المنظمة",
     "exploreMoreEvents": "استكشاف المزيد من الأحداث",
     "mySponsors": "رعاتي",
-    "myTickets": "تذاكري"
+    "myTickets": "تذاكري",
+    "settings": {
+      "title": "إعدادات الملف الشخصي",
+      "description": "قم بتحديث معلومات ملفك الشخصي.",
+      "saveProfile": "حفظ الملف الشخصي",
+      "saving": "جارٍ الحفظ...",
+      "countryPlaceholder": "اختر الجمهورية",
+      "cityPlaceholder": "اختر المدينة",
+      "cityNoOptions": "لا توجد مدن متاحة لهذا البلد",
+      "citySearchPlaceholder": "ابحث عن مدينة...",
+      "cityNoMatch": "لا توجد مدينة مطابقة",
+      "worldExceptIsrael": "متاح في جميع أنحاء العالم باستثناء إسرائيل.",
+      "fields": {
+        "firstName": "الاسم الأول",
+        "lastName": "الاسم العائلي",
+        "jobTitle": "الوظيفة / التخصص",
+        "republic": "الجمهورية",
+        "city": "المدينة",
+        "village": "القرية"
+      },
+      "messages": {
+        "updatedTitle": "تم تحديث الملف الشخصي",
+        "updatedDescription": "تم حفظ إعدادات ملفك الشخصي بنجاح.",
+        "errorTitle": "فشل التحديث",
+        "errorDescription": "تعذر حفظ إعدادات الملف الشخصي."
+      }
+    }
   },
   "publisherCard": {
     "description": "تحتاج إلى مراجعة إدارية لتصبح ناشرًا وتفتح ميزات ومحتوى حصريًا. اطلب أن تصبح ناشرًا أو اشترِ شارة ناشر مباشرة.",

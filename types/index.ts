@@ -4,6 +4,10 @@ import { Detail } from "@/lib/database/models/order.model";
 export type CreateUserParams = {
   firstName: string;
   lastName: string;
+  jobTitle?: string;
+  republic?: string;
+  city?: string;
+  village?: string;
   username: string;
   email: string;
   photo: string;
@@ -15,10 +19,14 @@ export type CreateUserParams = {
 };
 
 export type UpdateUserParams = {
-  firstName: string;
-  lastName: string;
-  username: string;
-  photo: string;
+  firstName?: string;
+  lastName?: string;
+  jobTitle?: string;
+  republic?: string;
+  city?: string;
+  village?: string;
+  username?: string;
+  photo?: string;
 };
 export type pricePlan = {
   name: string;

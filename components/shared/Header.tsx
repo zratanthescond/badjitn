@@ -58,7 +58,59 @@ const Header = () => {
 
             <SignedIn>
               <div className="flex items-center gap-3">
-                <UserButton afterSignOutUrl="/" />
+                <UserButton
+                  afterSignOutUrl="/"
+                  userProfileProps={{
+                    appearance: {
+                      elements: {
+                        modalBackdrop:
+                          "bg-slate-950/60 backdrop-blur-[2px]",
+                        modalContent:
+                          "bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-2xl",
+                        navbar:
+                          "bg-slate-100/80 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800",
+                        navbarButton:
+                          "text-slate-700 dark:text-slate-200 hover:bg-slate-200/70 dark:hover:bg-slate-800 data-[active=true]:bg-slate-200 dark:data-[active=true]:bg-slate-800",
+                        navbarButtonText:
+                          "text-slate-800 dark:text-slate-100 font-medium",
+                        pageScrollBox:
+                          "bg-white dark:bg-slate-950",
+                        headerTitle:
+                          "text-slate-900 dark:text-slate-100",
+                        headerSubtitle:
+                          "text-slate-600 dark:text-slate-300",
+                        formFieldLabel:
+                          "text-slate-700 dark:text-slate-300",
+                        formFieldInput:
+                          "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100",
+                        profileSectionTitleText:
+                          "text-slate-900 dark:text-slate-100",
+                        profileSectionPrimaryButton:
+                          "bg-indigo-600 text-white hover:bg-indigo-700",
+                      },
+                    },
+                  }}
+                  appearance={{
+                    elements: {
+                      userButtonPopoverCard:
+                        "bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-2xl",
+                      userButtonPopoverMain: "bg-transparent",
+                      userButtonPopoverActions: "gap-1",
+                      userButtonPopoverActionButton:
+                        "text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors",
+                      userButtonPopoverActionButtonText:
+                        "text-slate-800 dark:text-slate-100 font-medium",
+                      userButtonPopoverActionButtonIcon:
+                        "text-slate-600 dark:text-slate-300",
+                      userPreviewMainIdentifier:
+                        "text-slate-900 dark:text-slate-100 font-semibold",
+                      userPreviewSecondaryIdentifier:
+                        "text-slate-600 dark:text-slate-300",
+                      userButtonPopoverFooter:
+                        "border-t border-slate-200 dark:border-slate-700",
+                    },
+                  }}
+                />
                 <MobileNav />
               </div>
             </SignedIn>

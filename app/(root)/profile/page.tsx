@@ -39,6 +39,28 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
     addSponsor: t("addSponsor"),
     customRequiredInfo: t("customRequiredInfo"),
     addCustomRequiredInfo: t("addCustomRequiredInfo"),
+    profileSettings: t("settings.title"),
+    profileSettingsDescription: t("settings.description"),
+    saveProfile: t("settings.saveProfile"),
+    saving: t("settings.saving"),
+    fields: {
+      firstName: t("settings.fields.firstName"),
+      lastName: t("settings.fields.lastName"),
+      jobTitle: t("settings.fields.jobTitle"),
+      republic: t("settings.fields.republic"),
+      city: t("settings.fields.city"),
+      village: t("settings.fields.village"),
+    },
+    profileUpdatedTitle: t("settings.messages.updatedTitle"),
+    profileUpdatedDescription: t("settings.messages.updatedDescription"),
+    profileUpdateErrorTitle: t("settings.messages.errorTitle"),
+    profileUpdateErrorDescription: t("settings.messages.errorDescription"),
+    worldExceptIsrael: t("settings.worldExceptIsrael"),
+    countryPlaceholder: t("settings.countryPlaceholder"),
+    cityPlaceholder: t("settings.cityPlaceholder"),
+    cityNoOptions: t("settings.cityNoOptions"),
+    citySearchPlaceholder: t("settings.citySearchPlaceholder"),
+    cityNoMatch: t("settings.cityNoMatch"),
   };
 
   return (

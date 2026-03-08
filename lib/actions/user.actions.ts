@@ -20,11 +20,11 @@ export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-
     //console.log("clerkId", clerkUser?.id);
     // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
     // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
     const clerkId = clerkUser?.id;
+    if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
   } catch (error) {
@@ -84,6 +84,64 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
     return JSON.parse(JSON.stringify(updatedUser));
   } catch (error) {
     handleError(error);
+  }
+}
+
+export async function updateCurrentUserProfile(
+  profile: Pick<
+    UpdateUserParams,
+    "firstName" | "lastName" | "jobTitle" | "republic" | "city" | "village"
+  >
+) {
+  try {
+    await connectToDatabase();
+    const clerkUser = await currentUser();
+    // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
+    const clerkId = clerkUser?.id;
+
+    if (!clerkId) throw new Error("Not authenticated");
+
+    const updatedUser = await User.findOneAndUpdate(
+      { clerkId },
+      {
+        firstName: profile.firstName?.trim(),
+        lastName: profile.lastName?.trim(),
+        jobTitle: profile.jobTitle?.trim(),
+        republic: profile.republic?.trim(),
+        city: profile.city?.trim(),
+        village: profile.village?.trim(),
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) throw new Error("User update failed");
+
+    // Best-effort sync with Clerk. Do not block profile save if this fails.
+    try {
+      if (profile.firstName || profile.lastName) {
+        await clerkClient.users.updateUser(clerkId, {
+          ...(profile.firstName ? { firstName: profile.firstName.trim() } : {}),
+          ...(profile.lastName ? { lastName: profile.lastName.trim() } : {}),
+        });
+      }
+
+      await clerkClient.users.updateUserMetadata(clerkId, {
+        publicMetadata: {
+          jobTitle: profile.jobTitle?.trim() || "",
+          republic: profile.republic?.trim() || "",
+          city: profile.city?.trim() || "",
+          village: profile.village?.trim() || "",
+        },
+      });
+    } catch (clerkSyncError) {
+      console.error("Clerk sync failed, local profile saved:", clerkSyncError);
+    }
+
+    revalidatePath("/profile");
+    return JSON.parse(JSON.stringify(updatedUser));
+  } catch (error) {
+    handleError(error);
+    throw error;
   }
 }
 

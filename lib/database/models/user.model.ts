@@ -5,6 +5,10 @@ export interface IUser extends Document {
   username: string;
   firstName: string;
   lastName: string;
+  jobTitle?: string;
+  republic?: string;
+  city?: string;
+  village?: string;
   photo: string;
   phoneNumber: string;
   createdAt: Date;
@@ -25,6 +29,10 @@ const UserSchema = new Schema({
   username: { type: String, required: true, unique: true },
   firstName: { type: String },
   lastName: { type: String },
+  jobTitle: { type: String },
+  republic: { type: String },
+  city: { type: String },
+  village: { type: String },
   photo: { type: String },
   phoneNumber: {
     type: String,
