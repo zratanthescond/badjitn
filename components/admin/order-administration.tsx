@@ -34,6 +34,13 @@ import EventReportDialog from "./EventReportDialog";
 import { CardSkeleton } from "./CardSkeleton";
 import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function OrderAdministration({
   eventId,
@@ -46,7 +53,9 @@ export default function OrderAdministration({
   const locale = useLocale();
   const isRTL = locale === "ar";
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const { toast } = useToast();
 
   const { isPending, data, error } = useQuery({
     queryKey: ["orders", eventId, searchString],
@@ -235,6 +244,167 @@ export default function OrderAdministration({
     </Card>
   );
 
+  type ExportFormat = "csv" | "xlsx" | "word" | "pdf";
+
+  const getExportPayload = () => {
+    const headers = [
+      t("table.headers.orderId"),
+      t("table.headers.eventTitle"),
+      t("table.headers.buyer"),
+      t("table.headers.ticketType"),
+      t("table.headers.created"),
+      t("table.headers.amount"),
+    ];
+
+    const rows = (data || []).map((order: any) => [
+      order?._id ?? "",
+      order?.eventTitle ?? "",
+      order?.buyer ?? "",
+      order?.type !== undefined ? t(`ticketTypes.${order.type}`) : "",
+      order?.createdAt ? formatDateTime(order.createdAt).dateTime : "",
+      typeof order?.totalAmount === "number"
+        ? order.totalAmount.toFixed(2)
+        : "0.00",
+    ]);
+
+    return { headers, rows };
+  };
+
+  const handleExportOrders = async (format: ExportFormat) => {
+    if (!data || data.length === 0) {
+      toast({
+        title: "Export",
+        description: "Aucune commande à exporter.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const safeDate = new Date().toISOString().slice(0, 10);
+    const safeEventTitle = String(data[0]?.eventTitle || "orders")
+      .trim()
+      .replace(/[^a-zA-Z0-9-_ ]/g, "")
+      .replace(/\s+/g, "_");
+    const baseFileName = `${safeEventTitle || "orders"}_${safeDate}`;
+    const { headers, rows } = getExportPayload();
+
+    const downloadBlob = (blob: Blob, fileName: string) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
+    try {
+      setIsExporting(true);
+
+      if (format === "csv") {
+        const delimiter = locale === "fr" || locale === "ar" ? ";" : ",";
+        const escapeCell = (value: unknown) => {
+          const text = value == null ? "" : String(value);
+          return `"${text.replace(/"/g, '""')}"`;
+        };
+        const csvContent = [
+          headers.map(escapeCell).join(delimiter),
+          ...rows.map((row) => row.map(escapeCell).join(delimiter)),
+        ].join("\n");
+        const blob = new Blob(["\uFEFF" + csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        downloadBlob(blob, `${baseFileName}.csv`);
+      }
+
+      if (format === "xlsx") {
+        const xlsxModule = await import("xlsx");
+        const XLSX: any = (xlsxModule as any).default ?? xlsxModule;
+        const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+        const binary = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "binary",
+        });
+
+        const toArrayBuffer = (s: string) => {
+          const buffer = new ArrayBuffer(s.length);
+          const view = new Uint8Array(buffer);
+          for (let i = 0; i < s.length; i += 1) {
+            view[i] = s.charCodeAt(i) & 0xff;
+          }
+          return buffer;
+        };
+
+        const xlsxBlob = new Blob([toArrayBuffer(binary)], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
+      }
+
+      if (format === "word") {
+        const headerHtml = headers
+          .map((h) => `<th style="border:1px solid #ccc;padding:8px;background:#f5f5f5;">${h}</th>`)
+          .join("");
+        const rowsHtml = rows
+          .map(
+            (row) =>
+              `<tr>${row
+                .map((cell) => `<td style="border:1px solid #ccc;padding:8px;">${String(cell)}</td>`)
+                .join("")}</tr>`
+          )
+          .join("");
+
+        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>Orders Export</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
+        const blob = new Blob(["\uFEFF" + htmlDoc], {
+          type: "application/msword;charset=utf-8",
+        });
+        downloadBlob(blob, `${baseFileName}.doc`);
+      }
+
+      if (format === "pdf") {
+        const { jsPDF } = await import("jspdf");
+        const doc = new jsPDF({ unit: "pt", format: "a4" });
+        let y = 40;
+        doc.setFontSize(14);
+        doc.text("Orders Export", 40, y);
+        y += 22;
+        doc.setFontSize(9);
+        doc.text(headers.join(" | "), 40, y);
+        y += 16;
+
+        rows.forEach((row) => {
+          const line = row.join(" | ");
+          const wrapped = doc.splitTextToSize(line, 515);
+          if (y > 780) {
+            doc.addPage();
+            y = 40;
+          }
+          doc.text(wrapped, 40, y);
+          y += wrapped.length * 12 + 4;
+        });
+
+        doc.save(`${baseFileName}.pdf`);
+      }
+
+      toast({
+        title: "Export",
+        description: `${data.length} commande(s) exportée(s) en ${format.toUpperCase()}.`,
+      });
+    } catch (exportError) {
+      console.error("Export failed", exportError);
+      toast({
+        title: "Export",
+        description: "Échec de l'export. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className={`space-y-6 ${isRTL ? "rtl" : "ltr"}`}>
       {/* Header Section */}
@@ -267,33 +437,52 @@ export default function OrderAdministration({
           </div>
 
           <div
-            className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+            className={`w-full lg:w-auto flex flex-wrap items-center gap-2 sm:gap-3 ${isRTL ? "flex-row-reverse" : ""
               }`}
           >
             <Search
               placeholder={t("searchPlaceholder")}
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50"
+              className="w-full sm:w-auto glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50"
             />
             <Button
               variant="outline"
               size="icon"
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
+              className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
               title={t("actions.filter")}
             >
               <Filter className="h-4 w-4" />
             </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
-              title={t("actions.export")}
-            >
-              <Download className="h-4 w-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  disabled={isExporting || isPending || !data || data.length === 0}
+                  className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
+                  title={t("actions.export")}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align={isRTL ? "start" : "end"}>
+                <DropdownMenuItem onClick={() => handleExportOrders("xlsx")}>
+                  Export XLSX
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExportOrders("word")}>
+                  Export Word
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExportOrders("pdf")}>
+                  Export PDF
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExportOrders("csv")}>
+                  Export CSV
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               asChild
               variant="outline"
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 gap-2"
+              className="w-full sm:w-auto justify-center glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 gap-2"
             >
               <Link href={`/events/${eventId}/scan`}>
                 <QrCode className="h-4 w-4" />
@@ -305,7 +494,7 @@ export default function OrderAdministration({
                 <Button
                   variant="outline"
                   onClick={() => setIsReportOpen(true)}
-                  className="gap-2 glass bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border-amber-300/50 dark:border-amber-700/50 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-700 dark:text-amber-400"
+                  className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border-amber-300/50 dark:border-amber-700/50 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-700 dark:text-amber-400"
                 >
                   <FileText className="h-4 w-4" />
                   <span>{t("actions.rapport")}</span>
@@ -313,7 +502,7 @@ export default function OrderAdministration({
                 <Button
                   asChild
                   variant="default"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md transition-all duration-300"
+                  className="w-full sm:w-auto justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md transition-all duration-300"
                 >
                   <Link href={`/events/${eventId}/badge`}>
                     <Printer className="w-4 h-4 mr-2" />
