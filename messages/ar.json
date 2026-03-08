@@ -1495,6 +1495,7 @@
     "orderCreatedError": "فشل في إنشاء الطلب",
     "orderCreatedSuccess": "تم إنشاء الطلب بنجاح",
     "payInDoor": "ادفع عند الباب",
+    "selectPlans": "اختر خططك",
     "secureCheckout": "دفع آمن",
     "success": "نجح",
     "validate": "التحقق"

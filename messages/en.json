@@ -1496,6 +1496,7 @@
     "orderCreatedError": "Failed to create order",
     "orderCreatedSuccess": "Order created successfully",
     "payInDoor": "Pay in door",
+    "selectPlans": "Select your plans",
     "secureCheckout": "Secure checkout",
     "success": "Success",
     "validate": "validate"
