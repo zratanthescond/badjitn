@@ -267,17 +267,17 @@ export default function OrderAdministration({
           </div>
 
           <div
-            className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+            className={`w-full lg:w-auto flex flex-wrap items-center gap-2 sm:gap-3 ${isRTL ? "flex-row-reverse" : ""
               }`}
           >
             <Search
               placeholder={t("searchPlaceholder")}
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50"
+              className="w-full sm:w-auto glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50"
             />
             <Button
               variant="outline"
               size="icon"
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
+              className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
               title={t("actions.filter")}
             >
               <Filter className="h-4 w-4" />
@@ -285,7 +285,7 @@ export default function OrderAdministration({
             <Button
               variant="outline"
               size="icon"
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
+              className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
               title={t("actions.export")}
             >
               <Download className="h-4 w-4" />
@@ -293,7 +293,7 @@ export default function OrderAdministration({
             <Button
               asChild
               variant="outline"
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 gap-2"
+              className="w-full sm:w-auto justify-center glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 gap-2"
             >
               <Link href={`/events/${eventId}/scan`}>
                 <QrCode className="h-4 w-4" />
@@ -305,7 +305,7 @@ export default function OrderAdministration({
                 <Button
                   variant="outline"
                   onClick={() => setIsReportOpen(true)}
-                  className="gap-2 glass bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border-amber-300/50 dark:border-amber-700/50 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-700 dark:text-amber-400"
+                  className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border-amber-300/50 dark:border-amber-700/50 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-700 dark:text-amber-400"
                 >
                   <FileText className="h-4 w-4" />
                   <span>{t("actions.rapport")}</span>
@@ -313,7 +313,7 @@ export default function OrderAdministration({
                 <Button
                   asChild
                   variant="default"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md transition-all duration-300"
+                  className="w-full sm:w-auto justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md transition-all duration-300"
                 >
                   <Link href={`/events/${eventId}/badge`}>
                     <Printer className="w-4 h-4 mr-2" />
