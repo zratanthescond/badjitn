@@ -47,6 +47,7 @@ export default function QRScannerPage({
   scanPoints,
   userId,
 }: QRScannerPageProps) {
+  const MONGO_OBJECT_ID_REGEX = /\b[a-fA-F0-9]{24}\b/;
   const [orderData, setOrderData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -224,16 +225,100 @@ export default function QRScannerPage({
 
     setIsLoading(true);
     setError(null);
+    let tempScanner: Html5Qrcode | null = null;
     try {
-      // Create a temporary scanner for file scanning if none exists
-      const tempScanner = scannerRef.current || new Html5Qrcode("reader-hidden", false);
+      // File scanning must use a dedicated scanner instance to avoid camera state conflicts.
+      if (scannerRef.current?.isScanning) {
+        await stopScanner();
+      }
+      tempScanner = new Html5Qrcode("reader-hidden", false);
       const decodedText = await tempScanner.scanFile(file, true);
       await handleScanSuccess(decodedText);
     } catch (err) {
       setError(t("notFound"));
     } finally {
+      if (tempScanner) {
+        try {
+          await tempScanner.clear();
+        } catch {
+          // Ignore clear errors from temporary file scanner
+        }
+      }
+      if (e.target) {
+        e.target.value = "";
+      }
       setIsLoading(false);
     }
+  };
+
+  const extractCandidateOrderIds = (rawValue: string) => {
+    const value = (rawValue || "").trim();
+    if (!value) return [];
+    const candidates: string[] = [];
+    const seen = new Set<string>();
+    const addCandidate = (candidate?: string | null) => {
+      if (!candidate) return;
+      const normalized = candidate.toLowerCase();
+      if (seen.has(normalized)) return;
+      seen.add(normalized);
+      candidates.push(candidate);
+    };
+
+    // Direct ObjectId payload
+    const directMatch = value.match(MONGO_OBJECT_ID_REGEX);
+    if (directMatch) {
+      addCandidate(directMatch[0]);
+    }
+
+    // Common formats and URL/query payloads
+    const decoded = (() => {
+      try {
+        return decodeURIComponent(value);
+      } catch {
+        return value;
+      }
+    })();
+
+    const prefixedMatch = decoded.match(/RC-([a-fA-F0-9]{24})/i);
+    addCandidate(prefixedMatch?.[1]);
+
+    // Query params priority: orderId/ticketId/id
+    try {
+      const url = new URL(decoded);
+      const qpOrderId = url.searchParams.get("orderId");
+      const qpTicketId = url.searchParams.get("ticketId");
+      const qpId = url.searchParams.get("id");
+      addCandidate(qpOrderId?.match(MONGO_OBJECT_ID_REGEX)?.[0]);
+      addCandidate(qpTicketId?.match(MONGO_OBJECT_ID_REGEX)?.[0]);
+      addCandidate(qpId?.match(MONGO_OBJECT_ID_REGEX)?.[0]);
+    } catch {
+      // Ignore non-URL payloads
+    }
+
+    // JSON payload support: {"orderId":"..."} or similar
+    if (decoded.startsWith("{") && decoded.endsWith("}")) {
+      try {
+        const parsed = JSON.parse(decoded);
+        const candidates = [
+          parsed?.orderId,
+          parsed?._id,
+          parsed?.id,
+          parsed?.ticketId,
+        ].filter(Boolean);
+        for (const candidate of candidates) {
+          const match = String(candidate).match(MONGO_OBJECT_ID_REGEX);
+          if (match) addCandidate(match[0]);
+        }
+      } catch {
+        // Ignore invalid JSON payloads
+      }
+    }
+
+    // Keep all ObjectIds found in the payload, prioritize the last one.
+    const allMatches = decoded.match(new RegExp(MONGO_OBJECT_ID_REGEX.source, "g")) || [];
+    [...allMatches].reverse().forEach((id) => addCandidate(id));
+
+    return candidates;
   };
 
   useEffect(() => {
@@ -259,18 +344,26 @@ export default function QRScannerPage({
     };
   }, []);
 
-  const handleScanSuccess = async (orderId: string) => {
+  const handleScanSuccess = async (rawScanValue: string) => {
     setIsLoading(true);
     setError(null);
     try {
-      const order = await getOrderById(orderId);
-      if (order) {
-        if (order.event._id !== eventId) {
-            setError(t('notBelong'));
-            setIsLoading(false);
-            return;
+      const candidateOrderIds = extractCandidateOrderIds(rawScanValue);
+      if (candidateOrderIds.length === 0) {
+        setError(t("notFound"));
+        return;
+      }
+
+      let foundOrderForAnotherEvent = false;
+      for (const orderId of candidateOrderIds) {
+        const order = await getOrderById(orderId);
+        if (!order) continue;
+
+        if (order.event?._id !== eventId) {
+          foundOrderForAnotherEvent = true;
+          continue;
         }
-        
+
         await recordAttendance({
           orderId,
           eventId,
@@ -280,6 +373,11 @@ export default function QRScannerPage({
         });
 
         setOrderData(order);
+        return;
+      }
+
+      if (foundOrderForAnotherEvent) {
+        setError(t('notBelong'));
       } else {
         setError(t('notFound'));
       }
