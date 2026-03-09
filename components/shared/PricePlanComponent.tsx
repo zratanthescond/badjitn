@@ -57,7 +57,7 @@ export default function PricePlanComponent({
     const newErrors = { description: "", price: "", places: "" };
     let isValid = true;
 
-    if (planDescription.trim().length < 10) {
+    if (planDescription.trim().length === 0) {
       newErrors.description = t("form.errors.descriptionRequired");
       isValid = false;
     }
