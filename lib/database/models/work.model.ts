@@ -1,11 +1,25 @@
 import mongoose from "mongoose";
 
+export interface IClientInfo {
+  firstName?: string;
+  lastName?: string;
+  jobTitle?: string;
+  republic?: string;
+  city?: string;
+  village?: string;
+}
+
 interface IEventWork extends mongoose.Document {
   _id: mongoose.Schema.Types.ObjectId;
   eventId: mongoose.Schema.Types.ObjectId;
   userId: mongoose.Schema.Types.ObjectId;
-  fileUrls: string[];
+  title?: string;
+  clientInfo?: IClientInfo;
   note?: string;
+  summaryStatus: "draft" | "submitted" | "approved";
+  submittedAt?: Date;
+  approvedAt?: Date;
+  fileUrls: string[];
   createdAt: Date;
 }
 
@@ -24,13 +38,29 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
     ref: "User",
     required: true,
   },
+  title: { type: String, required: false },
+  clientInfo: {
+    type: {
+      firstName: String,
+      lastName: String,
+      jobTitle: String,
+      republic: String,
+      city: String,
+      village: String,
+    },
+    required: false,
+  },
+  note: { type: String, required: false },
+  summaryStatus: {
+    type: String,
+    enum: ["draft", "submitted", "approved"],
+    default: "draft",
+  },
+  submittedAt: { type: Date, required: false },
+  approvedAt: { type: Date, required: false },
   fileUrls: {
     type: [String],
-    required: true,
-  },
-  note: {
-    type: String,
-    required: false,
+    default: [],
   },
   createdAt: {
     type: Date,

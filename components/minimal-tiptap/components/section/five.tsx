@@ -56,19 +56,26 @@ interface SectionFiveProps extends VariantProps<typeof toggleVariants> {
   editor: Editor;
   activeActions?: InsertElementAction[];
   mainActionCount?: number;
+  /** When true, hides link and image insert buttons (text-only mode). */
+  hideAttachments?: boolean;
 }
 
 export const SectionFive: React.FC<SectionFiveProps> = ({
   editor,
   activeActions = formatActions.map((action) => action.value),
   mainActionCount = 0,
+  hideAttachments = false,
   size,
   variant,
 }) => {
   return (
     <>
-      <LinkEditPopover editor={editor} size={size} variant={variant} />
-      <ImageEditDialog editor={editor} size={size} variant={variant} />
+      {!hideAttachments && (
+        <>
+          <LinkEditPopover editor={editor} size={size} variant={variant} />
+          <ImageEditDialog editor={editor} size={size} variant={variant} />
+        </>
+      )}
       <ToolbarSection
         editor={editor}
         actions={formatActions}

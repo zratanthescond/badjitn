@@ -31,6 +31,8 @@ export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
   throttleDelay?: number
   onUpdate?: (content: Content) => void
   onBlur?: (content: Content) => void
+  /** When true, disables images, links, and file attachments (text + formatting only). */
+  textOnly?: boolean
 }
 
 const createExtensions = (placeholder: string) => [
@@ -140,6 +142,30 @@ const createExtensions = (placeholder: string) => [
   Placeholder.configure({ placeholder: () => placeholder })
 ]
 
+const createTextOnlyExtensions = (placeholder: string) => [
+  StarterKit.configure({
+    horizontalRule: false,
+    codeBlock: false,
+    paragraph: { HTMLAttributes: { class: 'text-node' } },
+    heading: { HTMLAttributes: { class: 'heading-node' } },
+    blockquote: { HTMLAttributes: { class: 'block-node' } },
+    bulletList: { HTMLAttributes: { class: 'list-node' } },
+    orderedList: { HTMLAttributes: { class: 'list-node' } },
+    code: { HTMLAttributes: { class: 'inline', spellcheck: 'false' } },
+    dropcursor: { width: 2, class: 'ProseMirror-dropcursor border' }
+  }),
+  Underline,
+  Color,
+  TextStyle,
+  Selection,
+  Typography,
+  UnsetAllMarks,
+  HorizontalRule,
+  ResetMarksOnEnter,
+  CodeBlockLowlight,
+  Placeholder.configure({ placeholder: () => placeholder })
+]
+
 export const useMinimalTiptapEditor = ({
   value,
   output = 'html',
@@ -148,6 +174,7 @@ export const useMinimalTiptapEditor = ({
   throttleDelay = 0,
   onUpdate,
   onBlur,
+  textOnly = false,
   ...props
 }: UseMinimalTiptapEditorProps) => {
   const throttledSetValue = useThrottle((value: Content) => onUpdate?.(value), throttleDelay)
@@ -169,7 +196,7 @@ export const useMinimalTiptapEditor = ({
   const handleBlur = React.useCallback((editor: Editor) => onBlur?.(getOutput(editor, output)), [output, onBlur])
 
   const editor = useEditor({
-    extensions: createExtensions(placeholder),
+    extensions: textOnly ? createTextOnlyExtensions(placeholder) : createExtensions(placeholder),
     editorProps: {
       attributes: {
         autocomplete: 'off',
