@@ -256,32 +256,53 @@
   },
   "WorkUploader": {
     "actions": {
-      "saveNotes": "Sauvegarder les Notes",
-      "savingNotes": "Sauvegarde des Notes...",
-      "uploadFile": "Télécharger le Fichier",
-      "uploadingFile": "Téléchargement du Fichier..."
+      "saveNotes": "Soumettre le résumé",
+      "savingNotes": "Envoi en cours...",
+      "uploadFile": "Télécharger l'image",
+      "uploadingFile": "Téléchargement..."
     },
-    "description": "Téléchargez vos fichiers et ajoutez des notes pour révision",
+    "description": "Soumettez le résumé de votre travail ; après approbation, vous pourrez déposer une image de soumission.",
     "messages": {
       "uploadSuccess": "Succès ! 🎉",
-      "uploadSuccessDescription": "Votre travail a été téléchargé avec succès."
+      "uploadSuccessDescription": "Votre image de soumission a été enregistrée.",
+      "summarySubmitted": "Résumé soumis",
+      "summarySubmittedDescription": "Votre résumé a été envoyé. Vous serez notifié lorsque le créateur l'aura approuvé.",
+      "waitingApproval": "Résumé en attente d'approbation par l'organisateur.",
+      "error": "Erreur"
     },
     "notes": {
-      "description": "Rédigez un contexte ou des descriptions supplémentaires",
+      "description": "Rédigez votre résumé (texte et mise en forme, sans pièces jointes).",
       "placeholder": "Partagez vos réflexions, méthodologie, ou tout contexte supplémentaire...",
-      "title": "Ajoutez Vos Notes"
+      "title": "Résumé"
+    },
+    "summary": {
+      "title": "Soumission du résumé de travail",
+      "description": "Titre, informations client (modifiables) et résumé.",
+      "fields": {
+        "title": "Titre",
+        "clientInfo": "Informations du client",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "jobTitle": "Fonction / Spécialité",
+        "republic": "République",
+        "city": "Ville",
+        "village": "Village"
+      },
+      "placeholderTitle": "Titre du travail"
     },
     "title": "Portail de Soumission de Travaux",
     "upload": {
-      "description": "Documents PDF et Word pris en charge",
-      "dragDrop": "Glissez-déposez les fichiers ici",
-      "dropHere": "Déposez vos fichiers ici !",
+      "description": "Image de soumission travail (JPG, PNG, WEBP). Disponible après approbation du résumé.",
+      "dragDrop": "Glissez-déposez l'image ici",
+      "dropHere": "Déposez l'image ici !",
       "noPreview": "Aucun fichier sélectionné pour l'aperçu",
       "orClick": "ou cliquez pour parcourir",
-      "preview": "Aperçu du Fichier :",
-      "previousFiles": "Fichiers Précédemment Téléchargés :",
+      "preview": "Aperçu",
+      "previousFiles": "Images déjà téléchargées",
       "processing": "Traitement...",
-      "title": "Télécharger des Fichiers"
+      "title": "Image « Soumission travail »",
+      "unlockMessage": "Débloqué après approbation",
+      "unlockHint": "Soumettez d'abord votre résumé ; une fois approuvé par l'organisateur, vous pourrez déposer une image ici."
     }
   },
   "about": {
@@ -3186,6 +3207,7 @@
       "totalWorks": "Total Works"
     },
     "status": {
+      "approved": "Approuvé",
       "pending": "En Attente d'Examen",
       "pendingReview": "Pending Review",
       "rejected": "Rejected",
@@ -3231,6 +3253,20 @@
     "workIdLabel": "ID de Travail"
   },
   "workDetailsDialog": {
+    "approve": {
+      "button": "Approuver",
+      "toastTitle": "Résumé approuvé",
+      "toastDescription": "Le client peut maintenant télécharger l'image de soumission.",
+      "toastErrorTitle": "Échec de l'approbation"
+    },
+    "clientInfo": {
+      "title": "Informations du client",
+      "description": "Rempli depuis le profil, modifiable par le client.",
+      "name": "Nom",
+      "jobTitle": "Fonction",
+      "republic": "République",
+      "location": "Lieu"
+    },
     "description": "Examiner la soumission complète du travail incluant les notes et fichiers téléchargés",
     "downloadButton": "Télécharger",
     "emptyState": {
@@ -3238,13 +3274,15 @@
       "title": "Aucun Contenu Disponible"
     },
     "filePreview": {
-      "error": "Impossible de prévisualiser ce type de fichier. Veuillez télécharger pour voir."
+      "error": "Impossible de prévisualiser ce type de fichier. Veuillez télécharger pour voir.",
+      "unsupported": "Aperçu non pris en charge pour ce type de fichier."
     },
     "markAsSeen": "Marquer comme Vu",
     "status": {
       "pending": "En Attente d'Examen",
       "reviewed": "Examiné",
-      "submitted": "Soumis"
+      "submitted": "Soumis",
+      "approved": "Approuvé"
     },
     "submittedOn": "Soumis le",
     "title": "Détails de Soumission de Travail",
@@ -3255,7 +3293,7 @@
     "viewButton": "Voir les Détails",
     "writtenNote": {
       "description": "Contenu textuel fourni par le participant",
-      "title": "Soumission Écrite"
+      "title": "Résumé / Soumission Écrite"
     }
   },
   "Card": {

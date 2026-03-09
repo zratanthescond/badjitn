@@ -23,7 +23,7 @@ export interface MinimalTiptapProps
   editorContentClassName?: string;
 }
 
-const Toolbar = ({ editor }: { editor: Editor }) => (
+const Toolbar = ({ editor, textOnly }: { editor: Editor; textOnly?: boolean }) => (
   <div className="shrink-0 overflow-x-auto border-b rounded-t-3xl glass border-border p-2">
     <div className="flex w-max items-center gap-px">
       <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5, 6]} />
@@ -61,6 +61,7 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
         editor={editor}
         activeActions={["codeBlock", "blockquote", "horizontalRule"]}
         mainActionCount={0}
+        hideAttachments={textOnly}
       />
     </div>
   </div>
@@ -69,14 +70,13 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
 export const MinimalTiptapEditor = React.forwardRef<
   HTMLDivElement,
   MinimalTiptapProps
->(({ value, onChange, className, editorContentClassName, ...props }, ref) => {
+>(({ value, onChange, className, editorContentClassName, textOnly, ...props }, ref) => {
   const editor = useMinimalTiptapEditor({
     value,
     onUpdate: onChange,
+    textOnly,
     ...props,
   });
-
-
 
   return (
     editor && (
@@ -89,12 +89,12 @@ export const MinimalTiptapEditor = React.forwardRef<
           className
         )}
       >
-        <Toolbar editor={editor} />
+        <Toolbar editor={editor} textOnly={textOnly} />
         <EditorContent
           editor={editor}
           className={cn("minimal-tiptap-editor", editorContentClassName)}
         />
-        <LinkBubbleMenu editor={editor} />
+        {!textOnly && <LinkBubbleMenu editor={editor} />}
       </MeasuredContainer>
     )
   );

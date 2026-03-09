@@ -10,7 +10,7 @@ import Report from "@/lib/database/models/report.model";
 import { handleError } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs";
 import { CreateUserParams, UpdateUserParams } from "@/types";
-import EventWork from "../database/models/work.model";
+import EventWork, { IClientInfo } from "../database/models/work.model";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { ObjectId } from "mongodb";
@@ -204,41 +204,132 @@ export async function reportEvent(
     handleError(error);
   }
 }
-export async function uploadWork({
-  fileUrl,
+export async function submitWorkSummary({
   eventId,
   userId,
+  title,
+  clientInfo,
   note,
 }: {
-  fileUrl: string;
   eventId: string;
   userId: string;
+  title: string;
+  clientInfo: IClientInfo;
   note: string;
 }) {
   try {
     await connectToDatabase();
     const event = await Event.findById(eventId);
-
     if (!event) throw new Error("Event not found");
     const user = await User.findById(userId);
-
     if (!user) throw new Error("User not found");
-    const work = await EventWork.findOne({ eventId: eventId, userId: userId });
-    if (work) {
-      if (fileUrl && fileUrl.length > 0) {
-        work.fileUrls.push(fileUrl);
-      }
-      if (note && note.length > 0) {
-        work.note = note;
-      }
 
+    const work = await EventWork.findOne({ eventId, userId });
+    if (work) {
+      work.title = title?.trim();
+      work.clientInfo = clientInfo;
+      work.note = note;
+      work.summaryStatus = "submitted";
+      work.submittedAt = new Date();
       await work.save();
     } else {
       const newWork = new EventWork({
-        eventId: eventId,
-        userId: userId,
-        fileUrls: [fileUrl],
-        note: note,
+        eventId,
+        userId,
+        title: title?.trim(),
+        clientInfo,
+        note,
+        summaryStatus: "submitted",
+        submittedAt: new Date(),
+        fileUrls: [],
+      });
+      await newWork.save();
+    }
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function approveWork(workId: string) {
+  try {
+    await connectToDatabase();
+    const work = await EventWork.findById(workId);
+    if (!work) throw new Error("Work not found");
+    work.summaryStatus = "approved";
+    work.approvedAt = new Date();
+    await work.save();
+    return JSON.parse(JSON.stringify(work));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+/** Append image URL to work; only allowed when summaryStatus is "approved". */
+export async function appendWorkSubmissionImage({
+  eventId,
+  userId,
+  fileUrl,
+}: {
+  eventId: string;
+  userId: string;
+  fileUrl: string;
+}) {
+  try {
+    await connectToDatabase();
+    const work = await EventWork.findOne({ eventId, userId });
+    if (!work) throw new Error("Work not found");
+    if (work.summaryStatus && work.summaryStatus !== "approved") {
+      throw new Error("Work summary must be approved before uploading submission image");
+    }
+    work.fileUrls = work.fileUrls || [];
+    work.fileUrls.push(fileUrl);
+    await work.save();
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function uploadWork({
+  fileUrl,
+  eventId,
+  userId,
+  note,
+  title,
+  clientInfo,
+}: {
+  fileUrl: string;
+  eventId: string;
+  userId: string;
+  note?: string;
+  title?: string;
+  clientInfo?: IClientInfo;
+}) {
+  try {
+    await connectToDatabase();
+    const event = await Event.findById(eventId);
+    if (!event) throw new Error("Event not found");
+    const user = await User.findById(userId);
+    if (!user) throw new Error("User not found");
+
+    const work = await EventWork.findOne({ eventId, userId });
+    if (work) {
+      if (fileUrl && fileUrl.length > 0) {
+        work.fileUrls = work.fileUrls || [];
+        work.fileUrls.push(fileUrl);
+      }
+      if (note != null && note.length > 0) work.note = note;
+      if (title != null) work.title = title.trim();
+      if (clientInfo != null) work.clientInfo = clientInfo;
+      await work.save();
+    } else {
+      const newWork = new EventWork({
+        eventId,
+        userId,
+        fileUrls: fileUrl ? [fileUrl] : [],
+        note: note ?? "",
+        title: title?.trim(),
+        clientInfo,
+        summaryStatus: "draft",
       });
       await newWork.save();
     }
@@ -299,16 +390,24 @@ export async function getUserWorkByEventId({
       {
         $project: {
           _id: 1,
-
           createdAt: 1,
           eventTitle: "$event.title",
           eventId: "$event._id",
           buyer: {
-            $concat: ["$buyer.firstName", " ", "$buyer.lastName"],
+            $concat: [
+              { $ifNull: ["$buyer.firstName", ""] },
+              " ",
+              { $ifNull: ["$buyer.lastName", ""] },
+            ],
           },
-
+          title: 1,
+          clientInfo: 1,
           fileUrls: 1,
           note: 1,
+          summaryStatus: 1,
+          submittedAt: 1,
+          approvedAt: 1,
+          status: "$summaryStatus",
         },
       },
       {

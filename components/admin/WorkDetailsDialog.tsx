@@ -7,6 +7,8 @@ import {
   FileText,
   Upload,
   Sparkles,
+  User,
+  ThumbsUp,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -24,20 +26,25 @@ import { Badge } from "../ui/badge";
 import { extractFileDetails } from "@/lib/utils";
 import { FaFilePdf, FaFileWord, FaFileImage, FaFile } from "react-icons/fa";
 import Link from "next/link";
-
 import { useTranslations, useLocale } from "next-intl";
-import { useState, useRef, useEffect } from "react"; // Import useRef and useEffect
+import { useState, useRef, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
 
 const FileViewer = dynamic(() => import("react-file-viewer"), {
-  ssr: false, // This is critical
+  ssr: false,
 });
+
 export function WorkDetailsDialog({ value }: { value: any }) {
   const t = useTranslations("workDetailsDialog");
   const locale = useLocale();
   const isRTL = locale === "ar";
-  const [isMarkingAsSeen, setIsMarkingAsSeen] = useState(false);
-  const fileViewerRef = useRef(null); // Ref to the FileViewer container
+  const [isApproving, setIsApproving] = useState(false);
+  const fileViewerRef = useRef(null);
+  const queryClient = useQueryClient();
+  const summaryStatus = value?.summaryStatus ?? value?.status ?? "submitted";
+  const isApproved = summaryStatus === "approved";
 
   if (!value) {
     return null;
@@ -60,12 +67,40 @@ export function WorkDetailsDialog({ value }: { value: any }) {
     }
   };
 
-  const handleMarkAsSeen = async () => {
-    setIsMarkingAsSeen(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsMarkingAsSeen(false);
-    }, 1000);
+  const handleApprove = async () => {
+    if (!value._id) return;
+    setIsApproving(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/work/approve`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ workId: value._id }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        queryClient.invalidateQueries({ queryKey: ["works"] });
+        toast({
+          title: t("approve.toastTitle"),
+          description: t("approve.toastDescription"),
+        });
+      } else {
+        toast({
+          title: t("approve.toastErrorTitle"),
+          description: data.error || "",
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({
+        title: t("approve.toastErrorTitle"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsApproving(false);
+    }
   };
 
   // Function to try and force scrollbar visibility and ensure height
@@ -104,20 +139,28 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
   return (
     <div className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleMarkAsSeen}
-        disabled={isMarkingAsSeen}
-        className="glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300 hover:bg-green-500/20 rounded-full transition-all duration-200 hover:scale-105"
-      >
-        {isMarkingAsSeen ? (
-          <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mr-2" />
-        ) : (
-          <CheckCheck className="w-4 h-4 text-green-500 mr-2" />
-        )}
-        <span className={isRTL ? "font-arabic" : ""}>{t("markAsSeen")}</span>
-      </Button>
+      {!isApproved && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleApprove}
+          disabled={isApproving}
+          className="glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300 hover:bg-green-500/20 rounded-full transition-all duration-200 hover:scale-105"
+        >
+          {isApproving ? (
+            <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mr-2" />
+          ) : (
+            <ThumbsUp className="w-4 h-4 text-green-500 mr-2" />
+          )}
+          <span className={isRTL ? "font-arabic" : ""}>{t("approve.button")}</span>
+        </Button>
+      )}
+      {isApproved && (
+        <Badge className="glass bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 rounded-full">
+          <CheckCheck className="w-3 h-3 mr-1" />
+          {t("status.approved")}
+        </Badge>
+      )}
 
       <Dialog>
         <DialogTrigger asChild>
@@ -166,17 +209,21 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
             {/* Work Status Badge */}
             <div
-              className={`flex items-center gap-3 ${
+              className={`flex items-center gap-3 flex-wrap ${
                 isRTL ? "flex-row-reverse" : ""
               }`}
             >
               <Badge
                 variant="outline"
-                className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/30 text-blue-700 dark:text-blue-300"
+                className={
+                  isApproved
+                    ? "glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300"
+                    : "glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/30 text-blue-700 dark:text-blue-300"
+                }
               >
                 <Sparkles className="h-3 w-3 mr-1" />
                 <span className={isRTL ? "font-arabic" : ""}>
-                  {t("status.submitted")}
+                  {isApproved ? t("status.approved") : t("status.submitted")}
                 </span>
               </Badge>
               {value.submittedAt && (
@@ -195,11 +242,70 @@ export function WorkDetailsDialog({ value }: { value: any }) {
           <div className="flex-1 overflow-hidden">
             <ScrollArea className="h-[70vh] pr-4">
               <div
-                className={`flex flex-col lg:flex-row gap-6 ${
+                className={`flex flex-col gap-6 ${
                   isRTL ? "lg:flex-row-reverse" : ""
                 }`}
               >
-                {/* Written Note Section */}
+                {/* Title & Client Info */}
+                {(value.title || value.clientInfo) && (
+                  <Card className="glass bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200/30 dark:border-slate-700/30">
+                    <CardHeader className="pb-2">
+                      <div
+                        className={`flex items-center gap-3 ${
+                          isRTL ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        <div className="p-2 rounded-lg bg-slate-500/20">
+                          <User className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                        </div>
+                        <div className={isRTL ? "text-right" : ""}>
+                          <CardTitle className="text-lg text-slate-800 dark:text-slate-200">
+                            {value.title || t("clientInfo.title")}
+                          </CardTitle>
+                          <p className="text-sm text-slate-600 dark:text-slate-300">
+                            {t("clientInfo.description")}
+                          </p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    {value.clientInfo && (
+                      <CardContent className="pt-0">
+                        <div
+                          className={`grid grid-cols-2 gap-2 text-sm ${
+                            isRTL ? "text-right" : ""
+                          }`}
+                        >
+                          {(value.clientInfo.firstName || value.clientInfo.lastName) && (
+                            <p>
+                              <span className="text-muted-foreground">{t("clientInfo.name")}: </span>
+                              {[value.clientInfo.firstName, value.clientInfo.lastName].filter(Boolean).join(" ").trim()}
+                            </p>
+                          )}
+                          {value.clientInfo.jobTitle && (
+                            <p>
+                              <span className="text-muted-foreground">{t("clientInfo.jobTitle")}: </span>
+                              {value.clientInfo.jobTitle}
+                            </p>
+                          )}
+                          {value.clientInfo.republic && (
+                            <p>
+                              <span className="text-muted-foreground">{t("clientInfo.republic")}: </span>
+                              {value.clientInfo.republic}
+                            </p>
+                          )}
+                          {(value.clientInfo.city || value.clientInfo.village) && (
+                            <p>
+                              <span className="text-muted-foreground">{t("clientInfo.location")}: </span>
+                              {[value.clientInfo.city, value.clientInfo.village].filter(Boolean).join(", ")}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                    )}
+                  </Card>
+                )}
+
+                {/* Written Note / Résumé Section */}
                 {value.note && value.note.length > 0 && (
                   <Card className="glass bg-gradient-to-br from-purple-50/50 to-indigo-50/50 dark:from-purple-900/20 dark:to-indigo-900/20 backdrop-blur-sm border border-purple-200/30 dark:border-purple-700/30 flex-1">
                     <CardHeader className="pb-4">

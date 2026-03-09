@@ -257,32 +257,53 @@
   },
   "WorkUploader": {
     "actions": {
-      "saveNotes": "Save Notes",
-      "savingNotes": "Saving...",
-      "uploadFile": "Upload File",
+      "saveNotes": "Submit summary",
+      "savingNotes": "Submitting...",
+      "uploadFile": "Upload image",
       "uploadingFile": "Uploading..."
     },
-    "description": "Submit your work and manage your documents for this event.",
+    "description": "Submit your work summary; after approval you can upload a submission image.",
     "messages": {
-      "uploadSuccess": "Submission successful",
-      "uploadSuccessDescription": "Your work has been saved successfully."
+      "uploadSuccess": "Success!",
+      "uploadSuccessDescription": "Your submission image has been saved.",
+      "summarySubmitted": "Summary submitted",
+      "summarySubmittedDescription": "Your summary was sent. You will be notified when the organizer approves it.",
+      "waitingApproval": "Summary pending approval by the organizer.",
+      "error": "Error"
     },
     "notes": {
-      "description": "Add detailed notes or comments to your submission.",
-      "placeholder": "Write your notes here...",
-      "title": "Notes and Reflections"
+      "description": "Write your summary (formatted text, no attachments).",
+      "placeholder": "Share your thoughts, methodology, or any additional context...",
+      "title": "Summary"
     },
-    "title": "Work Submission",
+    "summary": {
+      "title": "Work summary submission",
+      "description": "Title, client info (editable), and summary.",
+      "fields": {
+        "title": "Title",
+        "clientInfo": "Client information",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "jobTitle": "Role / Specialty",
+        "republic": "Republic",
+        "city": "City",
+        "village": "Village"
+      },
+      "placeholderTitle": "Work title"
+    },
+    "title": "Work Submission Portal",
     "upload": {
-      "description": "Upload files (PDF, DOC, DOCX) to accompany your submission.",
-      "dragDrop": "Drag and drop your file here",
-      "dropHere": "Drop the file here",
-      "noPreview": "No preview available for this file",
+      "description": "Submission image (JPG, PNG, WEBP). Available after your summary is approved.",
+      "dragDrop": "Drag and drop your image here",
+      "dropHere": "Drop the image here",
+      "noPreview": "No file selected for preview",
       "orClick": "or click to browse",
-      "preview": "Document Preview",
-      "previousFiles": "Previously submitted files",
+      "preview": "Preview",
+      "previousFiles": "Previously uploaded images",
       "processing": "Processing...",
-      "title": "Document Upload"
+      "title": "Submission image",
+      "unlockMessage": "Unlocked after approval",
+      "unlockHint": "Submit your summary first; once the organizer approves it, you can upload an image here."
     }
   },
   "about": {
@@ -3188,6 +3209,7 @@
       "totalWorks": "Total Works"
     },
     "status": {
+      "approved": "Approved",
       "pending": "Pending Review",
       "pendingReview": "Pending Review",
       "rejected": "Rejected",
@@ -3233,6 +3255,20 @@
     "workIdLabel": "Work ID"
   },
   "workDetailsDialog": {
+    "approve": {
+      "button": "Approve",
+      "toastTitle": "Summary approved",
+      "toastDescription": "The client can now upload the submission image.",
+      "toastErrorTitle": "Approval failed"
+    },
+    "clientInfo": {
+      "title": "Client information",
+      "description": "Filled from profile, editable by the client.",
+      "name": "Name",
+      "jobTitle": "Role",
+      "republic": "Republic",
+      "location": "Location"
+    },
     "description": "Review the complete work submission including notes and uploaded files",
     "downloadButton": "Download",
     "emptyState": {
@@ -3240,13 +3276,15 @@
       "title": "No Content Available"
     },
     "filePreview": {
-      "error": "Unable to preview this file type. Please download to view."
+      "error": "Unable to preview this file type. Please download to view.",
+      "unsupported": "Preview not supported for this file type."
     },
     "markAsSeen": "Mark as Seen",
     "status": {
       "pending": "Pending Review",
       "reviewed": "Reviewed",
-      "submitted": "Submitted"
+      "submitted": "Submitted",
+      "approved": "Approved"
     },
     "submittedOn": "Submitted on",
     "title": "Work Submission Details",
@@ -3257,7 +3295,7 @@
     "viewButton": "View Details",
     "writtenNote": {
       "description": "Text content provided by the participant",
-      "title": "Written Submission"
+      "title": "Summary / Written Submission"
     }
   },
   "Card": {

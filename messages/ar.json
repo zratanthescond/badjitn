@@ -256,32 +256,53 @@
   },
   "WorkUploader": {
     "actions": {
-      "saveNotes": "حفظ الملاحظات",
-      "savingNotes": "جاري الحفظ...",
-      "uploadFile": "رفع ملف",
+      "saveNotes": "إرسال الملخص",
+      "savingNotes": "جاري الإرسال...",
+      "uploadFile": "رفع الصورة",
       "uploadingFile": "جاري الرفع..."
     },
-    "description": "قم بتقديم عملك وإدارة مستنداتك لهذه الفعالية.",
+    "description": "قدّم ملخص عملك؛ بعد الموافقة يمكنك رفع صورة التقديم.",
     "messages": {
-      "uploadSuccess": "تم التقديم بنجاح",
-      "uploadSuccessDescription": "تم حفظ عملك بنجاح."
+      "uploadSuccess": "تم بنجاح",
+      "uploadSuccessDescription": "تم حفظ صورة التقديم.",
+      "summarySubmitted": "تم إرسال الملخص",
+      "summarySubmittedDescription": "تم إرسال ملخصك. سيتم إشعارك عند موافقة المنظم.",
+      "waitingApproval": "الملخص في انتظار الموافقة من المنظم.",
+      "error": "خطأ"
     },
     "notes": {
-      "description": "أضف ملاحظات تفصيلية أو تعليقات إلى تقديمك.",
-      "placeholder": "اكتب ملاحظاتك هنا...",
-      "title": "ملاحظات وتأملات"
+      "description": "اكتب ملخصك (نص منسق، بدون مرفقات).",
+      "placeholder": "شارك أفكارك أو منهجيتك أو أي سياق إضافي...",
+      "title": "الملخص"
     },
-    "title": "تقديم العمل",
+    "summary": {
+      "title": "تقديم ملخص العمل",
+      "description": "العنوان، معلومات العميل (قابلة للتعديل) والملخص.",
+      "fields": {
+        "title": "العنوان",
+        "clientInfo": "معلومات العميل",
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "jobTitle": "الدور / التخصص",
+        "republic": "الجمهورية",
+        "city": "المدينة",
+        "village": "القرية"
+      },
+      "placeholderTitle": "عنوان العمل"
+    },
+    "title": "بوابة تقديم الأعمال",
     "upload": {
-      "description": "ارفع الملفات (PDF، DOC، DOCX) لمرافقة تقديمك.",
-      "dragDrop": "اسحب وأفلت ملفك هنا",
-      "dropHere": "أفلت الملف هنا",
-      "noPreview": "لا توجد معاينة متاحة لهذا الملف",
+      "description": "صورة التقديم (JPG، PNG، WEBP). متاحة بعد الموافقة على الملخص.",
+      "dragDrop": "اسحب وأفلت الصورة هنا",
+      "dropHere": "أفلت الصورة هنا",
+      "noPreview": "لم يتم اختيار ملف للمعاينة",
       "orClick": "أو انقر للتصفح",
-      "preview": "معاينة المستند",
-      "previousFiles": "الملفات المقدمة سابقاً",
+      "preview": "معاينة",
+      "previousFiles": "الصور المرفوعة سابقاً",
       "processing": "جاري المعالجة...",
-      "title": "رفع المستندات"
+      "title": "صورة التقديم",
+      "unlockMessage": "تُفتح بعد الموافقة",
+      "unlockHint": "قدّم ملخصك أولاً؛ بعد موافقة المنظم يمكنك رفع صورة هنا."
     }
   },
   "about": {
@@ -3186,6 +3207,7 @@
       "totalWorks": "Total Works"
     },
     "status": {
+      "approved": "موافق عليه",
       "pending": "قيد المراجعة",
       "pendingReview": "Pending Review",
       "rejected": "Rejected",
@@ -3231,6 +3253,20 @@
     "workIdLabel": "رقم العمل"
   },
   "workDetailsDialog": {
+    "approve": {
+      "button": "موافقة",
+      "toastTitle": "تمت الموافقة على الملخص",
+      "toastDescription": "يمكن للعميل الآن رفع صورة التقديم.",
+      "toastErrorTitle": "فشل في الموافقة"
+    },
+    "clientInfo": {
+      "title": "معلومات العميل",
+      "description": "مملوءة من الملف الشخصي، قابلة للتعديل من العميل.",
+      "name": "الاسم",
+      "jobTitle": "الدور",
+      "republic": "الجمهورية",
+      "location": "الموقع"
+    },
     "description": "مراجعة تقديم العمل الكامل بما في ذلك الملاحظات والملفات المرفوعة",
     "downloadButton": "تحميل",
     "emptyState": {
@@ -3238,13 +3274,15 @@
       "title": "لا يوجد محتوى متاح"
     },
     "filePreview": {
-      "error": "لا يمكن معاينة هذا النوع من الملفات. يرجى التحميل للعرض."
+      "error": "لا يمكن معاينة هذا النوع من الملفات. يرجى التحميل للعرض.",
+      "unsupported": "المعاينة غير مدعومة لهذا النوع من الملفات."
     },
     "markAsSeen": "تحديد كمقروء",
     "status": {
       "pending": "قيد المراجعة",
       "reviewed": "تمت المراجعة",
-      "submitted": "مقدم"
+      "submitted": "مقدم",
+      "approved": "موافق عليه"
     },
     "submittedOn": "تم التقديم في",
     "title": "تفاصيل تقديم العمل",
@@ -3255,7 +3293,7 @@
     "viewButton": "عرض التفاصيل",
     "writtenNote": {
       "description": "المحتوى النصي المقدم من المشارك",
-      "title": "التقديم المكتوب"
+      "title": "الملخص / التقديم المكتوب"
     }
   },
   "Card": {

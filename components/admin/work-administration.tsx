@@ -50,16 +50,26 @@ export default function WorkAdministration({
   });
 
   const getStatusBadge = (status: string) => {
-    const statusConfig = {
+    const statusConfig: Record<string, { className: string; label: string }> = {
       submitted: {
         className:
           "glass bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300",
         label: t("status.submitted"),
       },
+      approved: {
+        className:
+          "glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300",
+        label: t("status.approved"),
+      },
       reviewed: {
         className:
           "glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300",
         label: t("status.reviewed"),
+      },
+      draft: {
+        className:
+          "glass bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30 text-yellow-700 dark:text-yellow-300",
+        label: t("status.pending"),
       },
       pending: {
         className:
@@ -224,10 +234,14 @@ export default function WorkAdministration({
     ? {
         total: data.length,
         submitted: data.filter(
-          (item: any) => (item.status || "submitted") === "submitted"
+          (item: any) => (item.status || item.summaryStatus || "submitted") === "submitted"
         ).length,
-        reviewed: data.filter((item: any) => item.status === "reviewed").length,
-        pending: data.filter((item: any) => item.status === "pending").length,
+        reviewed: data.filter(
+          (item: any) => item.status === "reviewed" || item.status === "approved" || item.summaryStatus === "approved"
+        ).length,
+        pending: data.filter(
+          (item: any) => item.status === "pending" || item.summaryStatus === "draft"
+        ).length,
       }
     : { total: 0, submitted: 0, reviewed: 0, pending: 0 };
 
