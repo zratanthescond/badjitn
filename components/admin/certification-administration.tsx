@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import DataTable from "@/components/shared/data-table";
 import { Badge } from "../ui/badge";
 import Search from "../shared/Search";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import {
   approveCertification,
   getCertificationByEventId,
@@ -34,6 +34,12 @@ import {
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { toast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function CertificationAdministration({
   eventId,
@@ -47,6 +53,7 @@ export default function CertificationAdministration({
   const isRTL = locale === "ar";
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isPending, startTransition] = useTransition();
+  const [isExporting, setIsExporting] = useState(false);
 
   const {
     isPending: isLoading,
@@ -141,6 +148,16 @@ export default function CertificationAdministration({
         <span className="ml-1">{config.label}</span>
       </Badge>
     );
+  };
+
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      pending: t("status.pending"),
+      approved: t("status.approved"),
+      rejected: t("status.rejected"),
+    };
+
+    return labels[status] || labels.pending;
   };
 
   const columns = [
@@ -331,6 +348,171 @@ export default function CertificationAdministration({
       }
     : { total: 0, pending: 0, approved: 0, rejected: 0 };
 
+  type ExportFormat = "csv" | "xlsx" | "word" | "pdf";
+
+  const getExportPayload = () => {
+    const headers = [
+      t("table.headers.id"),
+      t("table.headers.eventTitle"),
+      t("table.headers.applicant"),
+      t("table.headers.status"),
+      t("table.headers.submitted"),
+    ];
+
+    const rows = (data || []).map((cert: any) => [
+      cert?._id ?? "",
+      cert?.eventTitle ?? "",
+      cert?.buyer ?? "",
+      getStatusLabel(cert?.status || "pending"),
+      cert?.createdAt ? formatDateTime(cert.createdAt).dateTime : "",
+    ]);
+
+    return { headers, rows };
+  };
+
+  const handleExportCertifications = async (format: ExportFormat) => {
+    if (!data || data.length === 0) {
+      toast({
+        title: "Export",
+        description: t("export.noData"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const safeDate = new Date().toISOString().slice(0, 10);
+    const safeEventTitle = String(data[0]?.eventTitle || "certifications")
+      .trim()
+      .replace(/[^a-zA-Z0-9-_ ]/g, "")
+      .replace(/\s+/g, "_");
+    const baseFileName = `${safeEventTitle || "certifications"}_${safeDate}`;
+    const { headers, rows } = getExportPayload();
+
+    const downloadBlob = (blob: Blob, fileName: string) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
+    try {
+      setIsExporting(true);
+
+      if (format === "csv") {
+        const delimiter = locale === "fr" || locale === "ar" ? ";" : ",";
+        const escapeCell = (value: unknown) => {
+          const text = value == null ? "" : String(value);
+          return `"${text.replace(/"/g, '""')}"`;
+        };
+        const csvContent = [
+          headers.map(escapeCell).join(delimiter),
+          ...rows.map((row) => row.map(escapeCell).join(delimiter)),
+        ].join("\n");
+        const blob = new Blob(["\uFEFF" + csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        downloadBlob(blob, `${baseFileName}.csv`);
+      }
+
+      if (format === "xlsx") {
+        const xlsxModule = await import("xlsx");
+        const XLSX: any = (xlsxModule as any).default ?? xlsxModule;
+        const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Certifications");
+        const binary = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "binary",
+        });
+
+        const toArrayBuffer = (s: string) => {
+          const buffer = new ArrayBuffer(s.length);
+          const view = new Uint8Array(buffer);
+          for (let i = 0; i < s.length; i += 1) {
+            view[i] = s.charCodeAt(i) & 0xff;
+          }
+          return buffer;
+        };
+
+        const xlsxBlob = new Blob([toArrayBuffer(binary)], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
+      }
+
+      if (format === "word") {
+        const headerHtml = headers
+          .map(
+            (h) =>
+              `<th style="border:1px solid #ccc;padding:8px;background:#f5f5f5;">${h}</th>`
+          )
+          .join("");
+        const rowsHtml = rows
+          .map(
+            (row) =>
+              `<tr>${row
+                .map(
+                  (cell) =>
+                    `<td style="border:1px solid #ccc;padding:8px;">${String(
+                      cell
+                    )}</td>`
+                )
+                .join("")}</tr>`
+          )
+          .join("");
+
+        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>Certifications Export</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
+        const blob = new Blob(["\uFEFF" + htmlDoc], {
+          type: "application/msword;charset=utf-8",
+        });
+        downloadBlob(blob, `${baseFileName}.doc`);
+      }
+
+      if (format === "pdf") {
+        const { jsPDF } = await import("jspdf");
+        const doc = new jsPDF({ unit: "pt", format: "a4" });
+        let y = 40;
+        doc.setFontSize(14);
+        doc.text("Certifications Export", 40, y);
+        y += 22;
+        doc.setFontSize(9);
+        doc.text(headers.join(" | "), 40, y);
+        y += 16;
+
+        rows.forEach((row) => {
+          const line = row.join(" | ");
+          const wrapped = doc.splitTextToSize(line, 515);
+          if (y > 780) {
+            doc.addPage();
+            y = 40;
+          }
+          doc.text(wrapped, 40, y);
+          y += wrapped.length * 12 + 4;
+        });
+
+        doc.save(`${baseFileName}.pdf`);
+      }
+
+      toast({
+        title: "Export",
+        description: t("export.success", { count: data.length, format }),
+      });
+    } catch (exportError) {
+      console.error("Export failed", exportError);
+      toast({
+        title: "Export",
+        description: t("export.error"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className={`space-y-6 ${isRTL ? "rtl" : "ltr"}`}>
       {/* Header Section */}
@@ -367,30 +549,59 @@ export default function CertificationAdministration({
           </div>
 
           <div
-            className={`flex items-center gap-3 ${
+            className={`w-full lg:w-auto flex flex-wrap items-center gap-2 sm:gap-3 ${
               isRTL ? "flex-row-reverse" : ""
             }`}
           >
             <Search
               placeholder={t("searchPlaceholder")}
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50"
+              className="w-full sm:w-auto glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50"
             />
             <Button
               variant="outline"
               size="icon"
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
+              className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
               title={t("actions.filter")}
             >
               <Filter className="h-4 w-4" />
             </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
-              title={t("actions.export")}
-            >
-              <Download className="h-4 w-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  disabled={
+                    isExporting || isLoading || !data || data.length === 0
+                  }
+                  className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
+                  title={t("actions.export")}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align={isRTL ? "start" : "end"}>
+                <DropdownMenuItem
+                  onClick={() => handleExportCertifications("xlsx")}
+                >
+                  Export XLSX
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleExportCertifications("word")}
+                >
+                  Export Word
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleExportCertifications("pdf")}
+                >
+                  Export PDF
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleExportCertifications("csv")}
+                >
+                  Export CSV
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
