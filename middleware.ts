@@ -53,6 +53,7 @@ export default authMiddleware({
     "/banned",
     "/organisations",
     "/organisations/:slug",
+    "/forms/:formSlug",
   ],
   ignoredRoutes: [
     "/api/webhook/clerk",

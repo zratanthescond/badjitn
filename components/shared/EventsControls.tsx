@@ -65,23 +65,20 @@ export const EventControls = ({ event }: { event: IEvent }) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className={`glass backdrop-blur-md bg-black/80 border border-white/10 ${
-            isRTL ? "font-arabic" : ""
-          }`}
+          className={`glass backdrop-blur-md bg-black/80 border border-white/10 ${isRTL ? "font-arabic" : ""
+            }`}
           align={isRTL ? "end" : "start"}
         >
           {/* Order Details */}
           <DropdownMenuItem className="focus:bg-white/10 transition-colors">
             <Link
               href={`/orders?eventId=${event._id}`}
-              className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all hover:bg-white/5 ${
-                isRTL ? "flex-row-reverse" : "flex-row"
-              }`}
+              className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all hover:bg-white/5 ${isRTL ? "flex-row-reverse" : "flex-row"
+                }`}
             >
               <span
-                className={`text-white font-medium ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-white font-medium ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("orderDetails")}
               </span>
@@ -100,14 +97,12 @@ export const EventControls = ({ event }: { event: IEvent }) => {
             className="focus:bg-white/10 transition-colors cursor-pointer"
           >
             <div
-              className={`flex items-center gap-3 w-full p-2 ${
-                isRTL ? "flex-row-reverse" : "flex-row"
-              }`}
+              className={`flex items-center gap-3 w-full p-2 ${isRTL ? "flex-row-reverse" : "flex-row"
+                }`}
             >
               <span
-                className={`text-white font-medium ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-white font-medium ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("hostContributor")}
               </span>
@@ -124,14 +119,12 @@ export const EventControls = ({ event }: { event: IEvent }) => {
             className="focus:bg-white/10 transition-colors cursor-pointer"
           >
             <div
-              className={`flex items-center gap-3 w-full p-2 ${
-                isRTL ? "flex-row-reverse" : "flex-row"
-              }`}
+              className={`flex items-center gap-3 w-full p-2 ${isRTL ? "flex-row-reverse" : "flex-row"
+                }`}
             >
               <span
-                className={`text-white font-medium ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-white font-medium ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("sponsor")}
               </span>
@@ -145,14 +138,12 @@ export const EventControls = ({ event }: { event: IEvent }) => {
           <DropdownMenuItem className="focus:bg-white/10 transition-colors">
             <Link
               href={`/events/${event._id}/update`}
-              className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all hover:bg-white/5 ${
-                isRTL ? "flex-row-reverse" : "flex-row"
-              }`}
+              className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all hover:bg-white/5 ${isRTL ? "flex-row-reverse" : "flex-row"
+                }`}
             >
               <span
-                className={`text-white font-medium ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-white font-medium ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("modify")}
               </span>
@@ -169,14 +160,12 @@ export const EventControls = ({ event }: { event: IEvent }) => {
             className="focus:bg-red-500/20 hover:bg-red-500/20 transition-colors cursor-pointer"
           >
             <div
-              className={`flex items-center gap-3 w-full p-2 ${
-                isRTL ? "flex-row-reverse" : "flex-row"
-              }`}
+              className={`flex items-center gap-3 w-full p-2 ${isRTL ? "flex-row-reverse" : "flex-row"
+                }`}
             >
               <span
-                className={`text-red-400 font-medium ${
-                  isRTL ? "font-arabic" : ""
-                }`}
+                className={`text-red-400 font-medium ${isRTL ? "font-arabic" : ""
+                  }`}
               >
                 {t("delete")}
               </span>
@@ -208,9 +197,8 @@ export const EventControls = ({ event }: { event: IEvent }) => {
               <div className="flex items-center gap-3">
                 <Users className="h-6 w-6 text-primary" />
                 <h2
-                  className={`text-xl font-semibold ${
-                    isRTL ? "font-arabic" : ""
-                  }`}
+                  className={`text-xl font-semibold ${isRTL ? "font-arabic" : ""
+                    }`}
                 >
                   {t("hostContributor")}
                 </h2>
@@ -219,9 +207,8 @@ export const EventControls = ({ event }: { event: IEvent }) => {
               <ContributorSelection event={event} />
 
               <div
-                className={`flex justify-end ${
-                  isRTL ? "flex-row-reverse" : ""
-                }`}
+                className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""
+                  }`}
               >
                 <AlertDialogAction className={`${isRTL ? "font-arabic" : ""}`}>
                   {t("return")}
@@ -248,9 +235,8 @@ export const EventControls = ({ event }: { event: IEvent }) => {
               <div className="flex items-center gap-3">
                 <DollarSign className="h-6 w-6 text-primary" />
                 <h2
-                  className={`text-xl font-semibold ${
-                    isRTL ? "font-arabic" : ""
-                  }`}
+                  className={`text-xl font-semibold ${isRTL ? "font-arabic" : ""
+                    }`}
                 >
                   {t("sponsor")}
                 </h2>
@@ -259,9 +245,8 @@ export const EventControls = ({ event }: { event: IEvent }) => {
               <SponsorComponent event={event} />
 
               <div
-                className={`flex justify-end ${
-                  isRTL ? "flex-row-reverse" : ""
-                }`}
+                className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""
+                  }`}
               >
                 <AlertDialogAction className={`${isRTL ? "font-arabic" : ""}`}>
                   {t("return")}

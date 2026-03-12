@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -16,6 +16,12 @@ import {
     CheckCircle,
     Check,
     ChevronsUpDown,
+    FileText,
+    ExternalLink,
+    Users,
+    Loader2,
+    Pencil,
+    Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,9 +29,12 @@ import { Label } from "@/components/ui/label";
 import {
     Dialog,
     DialogContent,
+    DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import Collection from "@/components/shared/Collection";
 import SponsorForm from "@/components/shared/AddSponsorComponenet";
 import HexGridSponsor from "@/components/shared/HexSponsor";
@@ -47,8 +56,11 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { countryGovernorates } from "@/constants/country-governorates";
+import EventFormBuilder from "@/components/shared/EventFormBuilder";
+import InviteDialog from "@/components/shared/InviteDialog";
+import { getFormsByCreator, deleteEventForm } from "@/lib/actions/eventform.actions";
 
-type TabKey = "overview" | "profileSettings" | "tickets" | "events" | "organisations" | "sponsors" | "fields";
+type TabKey = "overview" | "profileSettings" | "tickets" | "events" | "organisations" | "sponsors" | "fields" | "forms";
 
 interface TranslationStrings {
     myTickets: string;
@@ -106,6 +118,7 @@ const sidebarItems: { key: TabKey; icon: any; labelKey: string }[] = [
     { key: "tickets", icon: Ticket, labelKey: "My Tickets" },
     { key: "events", icon: CalendarDays, labelKey: "Events Organized" },
     { key: "organisations", icon: Building2, labelKey: "Organisations" },
+    { key: "forms", icon: FileText, labelKey: "Custom Forms" },
     { key: "sponsors", icon: Megaphone, labelKey: "Sponsors" },
     { key: "fields", icon: ClipboardList, labelKey: "Custom Fields" },
 ];
@@ -183,6 +196,42 @@ export default function ProfileDashboard({
             setIsSavingProfile(false);
         }
     };
+
+    const [userForms, setUserForms] = useState<any[]>([]);
+    const [formsLoading, setFormsLoading] = useState(false);
+    const [showFormBuilder, setShowFormBuilder] = useState(false);
+    const [editingForm, setEditingForm] = useState<any | null>(null);
+    const [deletingFormId, setDeletingFormId] = useState<string | null>(null);
+
+    const handleDeleteForm = async (formId: string) => {
+        if (!confirm("Are you sure you want to delete this form? All submissions will be lost.")) return;
+        setDeletingFormId(formId);
+        const result = await deleteEventForm(formId);
+        if (result.success) {
+            setUserForms((prev) => prev.filter((f) => f._id !== formId));
+            toast({ title: "Deleted", description: "Form deleted successfully" });
+        } else {
+            toast({ title: "Error", description: result.message, variant: "destructive" });
+        }
+        setDeletingFormId(null);
+    };
+
+    const loadForms = () => {
+        setFormsLoading(true);
+        getFormsByCreator(userId).then((result) => {
+            if (result.success) {
+                setUserForms(result.data);
+            }
+            setFormsLoading(false);
+        });
+    };
+
+    // Load forms when forms tab is activated
+    useEffect(() => {
+        if (activeTab === "forms") {
+            loadForms();
+        }
+    }, [activeTab, userId]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-slate-950 dark:via-indigo-950/10 dark:to-purple-950/10">
@@ -711,6 +760,176 @@ export default function ProfileDashboard({
                                 </Dialog>
                             </div>
                             <HexGridSponsor userId={userId} />
+                        </div>
+                    )}
+
+                    {/* Custom Forms Tab */}
+                    {activeTab === "forms" && (
+                        <div className="space-y-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-2xl font-bold">Custom Event Forms</h2>
+                                    <p className="text-muted-foreground text-sm mt-1">
+                                        Build custom registration forms and invite attendees
+                                    </p>
+                                </div>
+                                <Dialog open={showFormBuilder} onOpenChange={(open) => { setShowFormBuilder(open); if (!open) setEditingForm(null); }}>
+                                    <DialogTrigger asChild>
+                                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full">
+                                            <Plus className="h-4 w-4 mr-2" />
+                                            Create Form
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-3xl max-h-[90vh] p-0 bg-card" onInteractOutside={(e) => e.preventDefault()}>
+                                        <DialogTitle className="sr-only">
+                                            {editingForm ? "Edit Custom Event Form" : "Create Custom Event Form"}
+                                        </DialogTitle>
+                                        <ScrollArea className="max-h-[85vh] p-6">
+                                            <EventFormBuilder
+                                                userId={userId}
+                                                organisations={organisations}
+                                                editForm={editingForm || undefined}
+                                                onFormCreated={() => {
+                                                    setShowFormBuilder(false);
+                                                    setEditingForm(null);
+                                                    loadForms();
+                                                }}
+                                                onFormUpdated={() => {
+                                                    setShowFormBuilder(false);
+                                                    setEditingForm(null);
+                                                    loadForms();
+                                                }}
+                                            />
+                                            <ScrollBar orientation="vertical" />
+                                        </ScrollArea>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+
+                            {/* Info banner */}
+                            <div className="glass bg-gradient-to-r from-indigo-50/70 to-purple-50/70 dark:from-indigo-950/20 dark:to-purple-950/20 backdrop-blur-md border border-indigo-200/30 dark:border-indigo-700/30 rounded-2xl p-5">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2.5 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20">
+                                        <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-sm">How Custom Forms Work</h3>
+                                        <p className="text-xs text-muted-foreground">
+                                            Create a custom event form with your own fields, then invite attendees via email. They&apos;ll receive a link to register.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {formsLoading ? (
+                                <div className="flex items-center justify-center py-12">
+                                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                </div>
+                            ) : userForms.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-4">
+                                    {userForms.map((form: any) => (
+                                        <Card
+                                            key={form._id}
+                                            className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 hover:shadow-lg transition-shadow"
+                                        >
+                                            <CardContent className="p-5">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="p-2.5 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 shrink-0">
+                                                        <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="font-semibold truncate">{form.title}</h3>
+                                                        {form.description && (
+                                                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                                                                {form.description}
+                                                            </p>
+                                                        )}
+                                                        {form.organisation && (
+                                                            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                                                                <Building2 className="h-3 w-3" />
+                                                                {form.organisation.name}
+                                                            </p>
+                                                        )}
+                                                        <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                                            <Badge
+                                                                variant={form.isActive ? "default" : "secondary"}
+                                                                className={form.isActive ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : ""}
+                                                            >
+                                                                {form.isActive ? "Active" : "Inactive"}
+                                                            </Badge>
+                                                            <span className="text-xs text-muted-foreground">
+                                                                {form.fields?.length || 0} fields
+                                                            </span>
+                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                                                <Users className="h-3 w-3" />
+                                                                {form.invitedEmails?.length || 0} invited
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 shrink-0">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="rounded-full text-xs"
+                                                            onClick={() => {
+                                                                setEditingForm(form);
+                                                                setShowFormBuilder(true);
+                                                            }}
+                                                        >
+                                                            <Pencil className="h-3 w-3 mr-1" />
+                                                            Edit
+                                                        </Button>
+                                                        <InviteDialog
+                                                            formId={form._id}
+                                                            formTitle={form.title}
+                                                            formSlug={form.slug}
+                                                            onInvited={loadForms}
+                                                        />
+                                                        <Link href={`/forms/${form.slug}`} target="_blank">
+                                                            <Button variant="outline" size="sm" className="rounded-full text-xs">
+                                                                <ExternalLink className="h-3 w-3 mr-1" />
+                                                                Open
+                                                            </Button>
+                                                        </Link>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="rounded-full text-xs text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+                                                            disabled={deletingFormId === form._id}
+                                                            onClick={() => handleDeleteForm(form._id)}
+                                                        >
+                                                            {deletingFormId === form._id ? (
+                                                                <Loader2 className="h-3 w-3 animate-spin" />
+                                                            ) : (
+                                                                <Trash2 className="h-3 w-3" />
+                                                            )}
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-3xl p-12 text-center">
+                                    <div className="max-w-md mx-auto">
+                                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-6">
+                                            <FileText className="h-10 w-10 text-indigo-500" />
+                                        </div>
+                                        <h3 className="text-xl font-semibold mb-2">No custom forms yet</h3>
+                                        <p className="text-muted-foreground mb-6">
+                                            Create your first custom event form to start collecting registrations.
+                                        </p>
+                                        <Button
+                                            onClick={() => setShowFormBuilder(true)}
+                                            className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full px-8"
+                                        >
+                                            <Plus className="h-5 w-5 mr-2" />
+                                            Create Your First Form
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
