@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 export const dynamic = "force-dynamic";
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { file: string } },
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ file: string }> }) {
+  const params = await props.params;
   if (!params.file) {
     return new NextResponse("Bad Request", { status: 400 });
   }

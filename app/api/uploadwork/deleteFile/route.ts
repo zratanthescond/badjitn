@@ -4,7 +4,7 @@ import EventWork from "@/lib/database/models/work.model";
 import { handleError } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request, res: NextResponse) {
+export async function POST(req: Request) {
   const body = await req.json();
   const { fileUrl } = body;
   if (!fileUrl)

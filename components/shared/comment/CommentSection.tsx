@@ -71,7 +71,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
   // Add a new comment
   const handleAddComment = async (content: Content) => {
     try {
-      const newComment = await addComment(postId, content);
+      const newComment = await addComment(postId, content as string);
       setComments((prev) => [newComment, ...prev]);
     } catch (error) {
       toast({
@@ -139,7 +139,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
         {user ? (
           <Avatar className="h-8 w-8 mt-1 border-2 border-card-foreground">
             <AvatarImage src={user.photo} alt="Current User" />
-            <AvatarFallback>{user.firstName.slice(0, 2)}</AvatarFallback>
+            <AvatarFallback>{user?.firstName?.slice(0, 2) || "U"}</AvatarFallback>
           </Avatar>
         ) : (
           <Skeleton className="h-8 w-8 rounded-full" />
@@ -160,7 +160,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
             comments={comments}
             postId={postId}
             onAddReply={handleAddReply}
-            currentUser={user}
+            currentUser={user as any}
           />
         </div>
       )}

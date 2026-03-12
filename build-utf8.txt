@@ -1,0 +1,2285 @@
+﻿yarn run v1.22.22
+$ next build
+node.exe : ÔÜá Warning: 
+Next.js inferred your 
+workspace root, but it may 
+not be correct.
+Au caractère 
+C:\nvm4w\nodejs\yarn.ps1:16 : 
+5
++     & "$basedir/node$exe"  "
+$basedir/node_modules/yarn/bin
+/yarn.js" $ ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (ÔÜá Warni  
+  ng: Ne...not be correct.:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+ We detected multiple 
+lockfiles and selected the 
+directory of C:\Users\honco\pa
+ckage-lock.json as the root 
+directory.
+ To silence this warning, set 
+`turbopack.root` in your 
+Next.js config, or consider 
+removing one of the lockfiles 
+if it's not needed.
+   See https://nextjs.org/docs
+/app/api-reference/config/next
+-config-js/turbopack#root-dire
+ctory for more information.
+ Detected additional 
+lockfiles: 
+   * C:\Users\honco\OneDrive\B
+ureau\event_platform\yarn.lock
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  ┬À serverActions
+
+ÔÜá The "middleware" file 
+convention is deprecated. 
+Please use "proxy" instead. 
+Learn more: https://nextjs.org
+/docs/messages/middleware-to-p
+roxy
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed 
+with 16 errors:
+./OneDrive/Bureau/event_platfo
+rm/components/ReelDetails.tsx:
+20:1
+Export SignedIn doesn't exist 
+in target module
+[0m [90m 18 |[39m 
+[36mimport[39m { 
+enUS[33m,[39m es[33m,[39m 
+fr[33m,[39m de[33m,[39m 
+ar } [36mfrom[39m [32m"date
+-fns/locale"[39m[33m;[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+useTranslations[33m,[39m 
+useLocale } [36mfrom[39m [3
+2m"next-intl"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 20 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m 21 |[39m 
+[36mimport[39m { 
+useRouter[33m,[39m 
+usePathname } [36mfrom[39m 
+[32m"next/navigation"[39m[33
+m;[39m
+ [90m 22 |[39m 
+[36mimport[39m {
+ [90m 23 |[39m   [33mCalend
+arDays[39m[33m,[39m[0m
+
+The export SignedIn was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-client] 
+(ecmascript).
+Did you mean to import SignIn?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/ReelDetails.tsx:
+20:1
+Export SignedIn doesn't exist 
+in target module
+[0m [90m 18 |[39m 
+[36mimport[39m { 
+enUS[33m,[39m es[33m,[39m 
+fr[33m,[39m de[33m,[39m 
+ar } [36mfrom[39m [32m"date
+-fns/locale"[39m[33m;[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+useTranslations[33m,[39m 
+useLocale } [36mfrom[39m [3
+2m"next-intl"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 20 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m 21 |[39m 
+[36mimport[39m { 
+useRouter[33m,[39m 
+usePathname } [36mfrom[39m 
+[32m"next/navigation"[39m[33
+m;[39m
+ [90m 22 |[39m 
+[36mimport[39m {
+ [90m 23 |[39m   [33mCalend
+arDays[39m[33m,[39m[0m
+
+The export SignedIn was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-ssr] 
+(ecmascript).
+Did you mean to import SignIn?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/CheckoutB
+utton.tsx:4:1
+Export SignedIn doesn't exist 
+in target module
+[0m [90m 2 |[39m
+ [90m 3 |[39m 
+[36mimport[39m { 
+[33mIEvent[39m } 
+[36mfrom[39m [32m"@/lib/dat
+abase/models/event.model"[39m
+[33m;[39m
+[31m[1m>[22m[39m[90m 4 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m
+ [90m 5 |[39m 
+[36mimport[39m 
+[33mLink[39m [36mfrom[39m 
+[32m"next/link"[39m[33m;[3
+9m
+ [90m 6 |[39m 
+[36mimport[39m 
+[33mReact[39m 
+[36mfrom[39m 
+[32m"react"[39m[33m;[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+[33mButton[39m } 
+[36mfrom[39m [32m"../ui/but
+ton"[39m[33m;[39m[0m
+
+The export SignedIn was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-client] 
+(ecmascript).
+Did you mean to import SignIn?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Check
+outButton.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Check
+outButton.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/CheckoutB
+utton.tsx:4:1
+Export SignedIn doesn't exist 
+in target module
+[0m [90m 2 |[39m
+ [90m 3 |[39m 
+[36mimport[39m { 
+[33mIEvent[39m } 
+[36mfrom[39m [32m"@/lib/dat
+abase/models/event.model"[39m
+[33m;[39m
+[31m[1m>[22m[39m[90m 4 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m
+ [90m 5 |[39m 
+[36mimport[39m 
+[33mLink[39m [36mfrom[39m 
+[32m"next/link"[39m[33m;[3
+9m
+ [90m 6 |[39m 
+[36mimport[39m 
+[33mReact[39m 
+[36mfrom[39m 
+[32m"react"[39m[33m;[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+[33mButton[39m } 
+[36mfrom[39m [32m"../ui/but
+ton"[39m[33m;[39m[0m
+
+The export SignedIn was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-ssr] 
+(ecmascript).
+Did you mean to import SignIn?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Check
+outButton.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Check
+outButton.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/EventPric
+eComponent.tsx:16:1
+Export SignedIn doesn't exist 
+in target module
+[0m [90m 14 |[39m 
+[36mimport[39m { v4 
+[36mas[39m uuidv4 } 
+[36mfrom[39m 
+[32m"uuid"[39m[33m;[39m
+ [90m 15 |[39m 
+[36mimport[39m { 
+useTranslations } 
+[36mfrom[39m [32m"next-intl
+"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 16 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m[33m,[39m
+ useAuth } [36mfrom[39m [32
+m"@clerk/nextjs"[39m[33m;[3
+9m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m 17 |[39m 
+[36mimport[39m { 
+[33mBankTransferModal[39m } 
+[36mfrom[39m [32m"./bank-tr
+ansfer-modal"[39m[33m;[39m
+ [90m 18 |[39m 
+[36mimport[39m { useRouter 
+} [36mfrom[39m [32m"next/na
+vigation"[39m[33m;[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+[33mBadge[39m } 
+[36mfrom[39m [32m"../ui/bad
+ge"[39m[33m;[39m[0m
+
+The export SignedIn was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-client] 
+(ecmascript).
+Did you mean to import SignIn?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/EventPric
+eComponent.tsx:16:1
+Export SignedIn doesn't exist 
+in target module
+[0m [90m 14 |[39m 
+[36mimport[39m { v4 
+[36mas[39m uuidv4 } 
+[36mfrom[39m 
+[32m"uuid"[39m[33m;[39m
+ [90m 15 |[39m 
+[36mimport[39m { 
+useTranslations } 
+[36mfrom[39m [32m"next-intl
+"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 16 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m[33m,[39m
+ useAuth } [36mfrom[39m [32
+m"@clerk/nextjs"[39m[33m;[3
+9m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m 17 |[39m 
+[36mimport[39m { 
+[33mBankTransferModal[39m } 
+[36mfrom[39m [32m"./bank-tr
+ansfer-modal"[39m[33m;[39m
+ [90m 18 |[39m 
+[36mimport[39m { useRouter 
+} [36mfrom[39m [32m"next/na
+vigation"[39m[33m;[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+[33mBadge[39m } 
+[36mfrom[39m [32m"../ui/bad
+ge"[39m[33m;[39m[0m
+
+The export SignedIn was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-ssr] 
+(ecmascript).
+Did you mean to import SignIn?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/Header.ts
+x:8:1
+Export SignedIn doesn't exist 
+in target module
+[0m [90m  6 |[39m 
+[36mimport[39m 
+[33mMobileNav[39m 
+[36mfrom[39m [32m"./MobileN
+av"[39m[33m;[39m
+ [90m  7 |[39m 
+[36mimport[39m { 
+[33mModeToggle[39m } 
+[36mfrom[39m [32m"../ModeTo
+ggle"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  8 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m[33m,[39m
+ [33mUserButton[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m  9 |[39m 
+[36mimport[39m 
+[33mLocaleSwitcher[39m 
+[36mfrom[39m [32m"./LocaleS
+witcher"[39m[33m;[39m
+ [90m 10 |[39m 
+[36mimport[39m { 
+useMediaQuery } 
+[36mfrom[39m [32m"@/hooks/u
+se-media-query"[39m[33m;[39
+m
+ [90m 11 |[39m 
+[36mimport[39m { 
+useTranslations } 
+[36mfrom[39m [32m"next-intl
+"[39m[33m;[39m[0m
+
+The export SignedIn was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-client] 
+(ecmascript).
+Did you mean to import SignIn?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import trace:
+  Server Component:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Heade
+r.tsx
+    ./OneDrive/Bureau/event_pl
+atform/app/(root)/layout.tsx
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/Header.ts
+x:8:1
+Export SignedIn doesn't exist 
+in target module
+[0m [90m  6 |[39m 
+[36mimport[39m 
+[33mMobileNav[39m 
+[36mfrom[39m [32m"./MobileN
+av"[39m[33m;[39m
+ [90m  7 |[39m 
+[36mimport[39m { 
+[33mModeToggle[39m } 
+[36mfrom[39m [32m"../ModeTo
+ggle"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  8 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m[33m,[39m
+ [33mUserButton[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m  9 |[39m 
+[36mimport[39m 
+[33mLocaleSwitcher[39m 
+[36mfrom[39m [32m"./LocaleS
+witcher"[39m[33m;[39m
+ [90m 10 |[39m 
+[36mimport[39m { 
+useMediaQuery } 
+[36mfrom[39m [32m"@/hooks/u
+se-media-query"[39m[33m;[39
+m
+ [90m 11 |[39m 
+[36mimport[39m { 
+useTranslations } 
+[36mfrom[39m [32m"next-intl
+"[39m[33m;[39m[0m
+
+The export SignedIn was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-ssr] 
+(ecmascript).
+Did you mean to import SignIn?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import trace:
+  Server Component:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Heade
+r.tsx
+    ./OneDrive/Bureau/event_pl
+atform/app/(root)/layout.tsx
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/ReelDetails.tsx:
+20:1
+Export SignedOut doesn't 
+exist in target module
+[0m [90m 18 |[39m 
+[36mimport[39m { 
+enUS[33m,[39m es[33m,[39m 
+fr[33m,[39m de[33m,[39m 
+ar } [36mfrom[39m [32m"date
+-fns/locale"[39m[33m;[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+useTranslations[33m,[39m 
+useLocale } [36mfrom[39m [3
+2m"next-intl"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 20 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m 21 |[39m 
+[36mimport[39m { 
+useRouter[33m,[39m 
+usePathname } [36mfrom[39m 
+[32m"next/navigation"[39m[33
+m;[39m
+ [90m 22 |[39m 
+[36mimport[39m {
+ [90m 23 |[39m   [33mCalend
+arDays[39m[33m,[39m[0m
+
+The export SignedOut was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-client] 
+(ecmascript).
+Did you mean to import 
+SignOutButton?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/ReelDetails.tsx:
+20:1
+Export SignedOut doesn't 
+exist in target module
+[0m [90m 18 |[39m 
+[36mimport[39m { 
+enUS[33m,[39m es[33m,[39m 
+fr[33m,[39m de[33m,[39m 
+ar } [36mfrom[39m [32m"date
+-fns/locale"[39m[33m;[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+useTranslations[33m,[39m 
+useLocale } [36mfrom[39m [3
+2m"next-intl"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 20 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m 21 |[39m 
+[36mimport[39m { 
+useRouter[33m,[39m 
+usePathname } [36mfrom[39m 
+[32m"next/navigation"[39m[33
+m;[39m
+ [90m 22 |[39m 
+[36mimport[39m {
+ [90m 23 |[39m   [33mCalend
+arDays[39m[33m,[39m[0m
+
+The export SignedOut was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-ssr] 
+(ecmascript).
+Did you mean to import 
+SignOutButton?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/CheckoutB
+utton.tsx:4:1
+Export SignedOut doesn't 
+exist in target module
+[0m [90m 2 |[39m
+ [90m 3 |[39m 
+[36mimport[39m { 
+[33mIEvent[39m } 
+[36mfrom[39m [32m"@/lib/dat
+abase/models/event.model"[39m
+[33m;[39m
+[31m[1m>[22m[39m[90m 4 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m
+ [90m 5 |[39m 
+[36mimport[39m 
+[33mLink[39m [36mfrom[39m 
+[32m"next/link"[39m[33m;[3
+9m
+ [90m 6 |[39m 
+[36mimport[39m 
+[33mReact[39m 
+[36mfrom[39m 
+[32m"react"[39m[33m;[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+[33mButton[39m } 
+[36mfrom[39m [32m"../ui/but
+ton"[39m[33m;[39m[0m
+
+The export SignedOut was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-client] 
+(ecmascript).
+Did you mean to import 
+SignOutButton?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Check
+outButton.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Check
+outButton.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/CheckoutB
+utton.tsx:4:1
+Export SignedOut doesn't 
+exist in target module
+[0m [90m 2 |[39m
+ [90m 3 |[39m 
+[36mimport[39m { 
+[33mIEvent[39m } 
+[36mfrom[39m [32m"@/lib/dat
+abase/models/event.model"[39m
+[33m;[39m
+[31m[1m>[22m[39m[90m 4 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22
+m[39m
+ [90m 5 |[39m 
+[36mimport[39m 
+[33mLink[39m [36mfrom[39m 
+[32m"next/link"[39m[33m;[3
+9m
+ [90m 6 |[39m 
+[36mimport[39m 
+[33mReact[39m 
+[36mfrom[39m 
+[32m"react"[39m[33m;[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+[33mButton[39m } 
+[36mfrom[39m [32m"../ui/but
+ton"[39m[33m;[39m[0m
+
+The export SignedOut was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-ssr] 
+(ecmascript).
+Did you mean to import 
+SignOutButton?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Check
+outButton.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Check
+outButton.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/EventPric
+eComponent.tsx:16:1
+Export SignedOut doesn't 
+exist in target module
+[0m [90m 14 |[39m 
+[36mimport[39m { v4 
+[36mas[39m uuidv4 } 
+[36mfrom[39m 
+[32m"uuid"[39m[33m;[39m
+ [90m 15 |[39m 
+[36mimport[39m { 
+useTranslations } 
+[36mfrom[39m [32m"next-intl
+"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 16 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m[33m,[39m
+ useAuth } [36mfrom[39m [32
+m"@clerk/nextjs"[39m[33m;[3
+9m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m 17 |[39m 
+[36mimport[39m { 
+[33mBankTransferModal[39m } 
+[36mfrom[39m [32m"./bank-tr
+ansfer-modal"[39m[33m;[39m
+ [90m 18 |[39m 
+[36mimport[39m { useRouter 
+} [36mfrom[39m [32m"next/na
+vigation"[39m[33m;[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+[33mBadge[39m } 
+[36mfrom[39m [32m"../ui/bad
+ge"[39m[33m;[39m[0m
+
+The export SignedOut was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-client] 
+(ecmascript).
+Did you mean to import 
+SignOutButton?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/EventPric
+eComponent.tsx:16:1
+Export SignedOut doesn't 
+exist in target module
+[0m [90m 14 |[39m 
+[36mimport[39m { v4 
+[36mas[39m uuidv4 } 
+[36mfrom[39m 
+[32m"uuid"[39m[33m;[39m
+ [90m 15 |[39m 
+[36mimport[39m { 
+useTranslations } 
+[36mfrom[39m [32m"next-intl
+"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 16 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m[33m,[39m
+ useAuth } [36mfrom[39m [32
+m"@clerk/nextjs"[39m[33m;[3
+9m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m 17 |[39m 
+[36mimport[39m { 
+[33mBankTransferModal[39m } 
+[36mfrom[39m [32m"./bank-tr
+ansfer-modal"[39m[33m;[39m
+ [90m 18 |[39m 
+[36mimport[39m { useRouter 
+} [36mfrom[39m [32m"next/na
+vigation"[39m[33m;[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+[33mBadge[39m } 
+[36mfrom[39m [32m"../ui/bad
+ge"[39m[33m;[39m[0m
+
+The export SignedOut was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-ssr] 
+(ecmascript).
+Did you mean to import 
+SignOutButton?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import traces:
+  Client Component Browser:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component Browser]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+  Client Component SSR:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Event
+PriceComponent.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/ReelDetails.
+tsx [Client Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-details-panel.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/video
+-item.tsx [Client Component 
+SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Client 
+Component SSR]
+    ./OneDrive/Bureau/event_pl
+atform/components/shorts/short
+s-scroll.tsx [Server 
+Component]
+    ./OneDrive/Bureau/event_pl
+atform/app/(reel)/events/[id]/
+page.tsx [Server Component]
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/Header.ts
+x:8:1
+Export SignedOut doesn't 
+exist in target module
+[0m [90m  6 |[39m 
+[36mimport[39m 
+[33mMobileNav[39m 
+[36mfrom[39m [32m"./MobileN
+av"[39m[33m;[39m
+ [90m  7 |[39m 
+[36mimport[39m { 
+[33mModeToggle[39m } 
+[36mfrom[39m [32m"../ModeTo
+ggle"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  8 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m[33m,[39m
+ [33mUserButton[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m  9 |[39m 
+[36mimport[39m 
+[33mLocaleSwitcher[39m 
+[36mfrom[39m [32m"./LocaleS
+witcher"[39m[33m;[39m
+ [90m 10 |[39m 
+[36mimport[39m { 
+useMediaQuery } 
+[36mfrom[39m [32m"@/hooks/u
+se-media-query"[39m[33m;[39
+m
+ [90m 11 |[39m 
+[36mimport[39m { 
+useTranslations } 
+[36mfrom[39m [32m"next-intl
+"[39m[33m;[39m[0m
+
+The export SignedOut was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-client] 
+(ecmascript).
+Did you mean to import 
+SignOutButton?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import trace:
+  Server Component:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Heade
+r.tsx
+    ./OneDrive/Bureau/event_pl
+atform/app/(root)/layout.tsx
+
+
+./OneDrive/Bureau/event_platfo
+rm/components/shared/Header.ts
+x:8:1
+Export SignedOut doesn't 
+exist in target module
+[0m [90m  6 |[39m 
+[36mimport[39m 
+[33mMobileNav[39m 
+[36mfrom[39m [32m"./MobileN
+av"[39m[33m;[39m
+ [90m  7 |[39m 
+[36mimport[39m { 
+[33mModeToggle[39m } 
+[36mfrom[39m [32m"../ModeTo
+ggle"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  8 
+|[39m [36mimport[39m { 
+[33mSignedIn[39m[33m,[39m 
+[33mSignedOut[39m[33m,[39m
+ [33mUserButton[39m } 
+[36mfrom[39m [32m"@clerk/ne
+xtjs"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31m[1m^[2
+2m[39m
+ [90m  9 |[39m 
+[36mimport[39m 
+[33mLocaleSwitcher[39m 
+[36mfrom[39m [32m"./LocaleS
+witcher"[39m[33m;[39m
+ [90m 10 |[39m 
+[36mimport[39m { 
+useMediaQuery } 
+[36mfrom[39m [32m"@/hooks/u
+se-media-query"[39m[33m;[39
+m
+ [90m 11 |[39m 
+[36mimport[39m { 
+useTranslations } 
+[36mfrom[39m [32m"next-intl
+"[39m[33m;[39m[0m
+
+The export SignedOut was not 
+found in module [project]/OneD
+rive/Bureau/event_platform/nod
+e_modules/@clerk/nextjs/dist/e
+sm/index.js [app-ssr] 
+(ecmascript).
+Did you mean to import 
+SignOutButton?
+All exports of the module are 
+statically known (It doesn't 
+have dynamic exports). So 
+it's known statically that 
+the requested export doesn't 
+exist.
+
+Import trace:
+  Server Component:
+    ./OneDrive/Bureau/event_pl
+atform/components/shared/Heade
+r.tsx
+    ./OneDrive/Bureau/event_pl
+atform/app/(root)/layout.tsx
+
+
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/ReelDetails.tsx:20:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/ReelDetails.tsx:20:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/CheckoutButton.tsx:4:
+1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/CheckoutButton.tsx:4:
+1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/EventPriceComponent.t
+sx:16:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/EventPriceComponent.t
+sx:16:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/Header.tsx:8:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/Header.tsx:8:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/ReelDetails.tsx:20:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/ReelDetails.tsx:20:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/CheckoutButton.tsx:4:
+1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/CheckoutButton.tsx:4:
+1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/EventPriceComponent.t
+sx:16:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/EventPriceComponent.t
+sx:16:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/Header.tsx:8:1)
+    at <unknown> (./OneDrive/B
+ureau/event_platform/component
+s/shared/Header.tsx:8:1)
+error Command failed with 
+exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

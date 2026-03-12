@@ -14,6 +14,13 @@ const Waveform = ({
   vDuration,
   selectedTime,
   setSelectedTime,
+}: {
+  src: string;
+  data: any;
+  isPlaying: boolean;
+  vDuration: number;
+  selectedTime: number;
+  setSelectedTime: (time: number) => void;
 }) => {
   console.log(data);
   const waveformRef = useRef(null);
@@ -25,7 +32,7 @@ const Waveform = ({
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(src);
-      hls.attachMedia(audioRef.current);
+      hls.attachMedia(audioRef.current!);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         //  setDuration(audioRef.current.duration);
@@ -34,10 +41,10 @@ const Waveform = ({
       return () => {
         hls.destroy();
       };
-    } else if (audioRef?.current.canPlayType("application/vnd.apple.mpegurl")) {
+    } else if (audioRef?.current?.canPlayType("application/vnd.apple.mpegurl")) {
       // For Safari support
-      audioRef.current.src = src;
-      audioRef.current.addEventListener("loadedmetadata", () => {
+      audioRef.current!.src = src;
+      audioRef.current!.addEventListener("loadedmetadata", () => {
         // setDuration(audioRef.current.duration);
       });
     }
@@ -48,9 +55,9 @@ const Waveform = ({
       audioRef.current?.play();
     } else {
       console.log("selectedTime", selectedTime);
-      console.log("currentTime", audioRef.current.currentTime);
-      if (Math.ceil(audioRef.current.currentTime) - selectedTime >= vDuration) {
-        audioRef.current.currentTime = selectedTime;
+      console.log("currentTime", audioRef.current!.currentTime);
+      if (Math.ceil(audioRef.current!.currentTime) - selectedTime >= vDuration) {
+        audioRef.current!.currentTime = selectedTime;
       }
       audioRef.current?.pause();
     }
@@ -63,13 +70,14 @@ const Waveform = ({
   }, [isPlaying]);
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const { scrollLeft, scrollWidth, clientWidth } = event.target;
+    const target = event.target as HTMLDivElement;
+    const { scrollLeft, scrollWidth, clientWidth } = target;
     const scrolled = (scrollLeft / (scrollWidth - clientWidth)) * 100;
 
     setSelectedTime(Math.ceil((Math.ceil(scrolled) * duration) / 100));
   };
   useEffect(() => {
-    audioRef.current.currentTime = selectedTime;
+    audioRef.current!.currentTime = selectedTime;
   }, [selectedTime]);
   const waveImage = process.env.NEXT_PUBLIC_FILE_SERVER_URL + data.wave;
   const scrollWidth = vDuration * 18 + 4.5;
@@ -110,7 +118,7 @@ const Waveform = ({
 
           <audio
             ref={audioRef}
-            onLoadedData={() => setDuration(audioRef.current.duration)}
+            onLoadedData={() => setDuration(audioRef.current!.duration)}
           />
         </div>
         <div className="absolute  right-0 z-10 w-11 h-full bg-pink-500"></div>

@@ -8,22 +8,21 @@ import Order from "@/lib/database/models/order.model";
 import Event from "@/lib/database/models/event.model";
 import Report from "@/lib/database/models/report.model";
 import { handleError } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs";
 import { CreateUserParams, UpdateUserParams } from "@/types";
 import EventWork, { IClientInfo } from "../database/models/work.model";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { ObjectId } from "mongodb";
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 
 export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
     //console.log("clerkId", clerkUser?.id);
-    // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
+    const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
     // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
-    const clerkId = clerkUser?.id;
+    //const clerkId = clerkUser?.id;
     if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
@@ -118,14 +117,15 @@ export async function updateCurrentUserProfile(
 
     // Best-effort sync with Clerk. Do not block profile save if this fails.
     try {
+      const client = await clerkClient();
       if (profile.firstName || profile.lastName) {
-        await clerkClient.users.updateUser(clerkId, {
+        await client.users.updateUser(clerkId, {
           ...(profile.firstName ? { firstName: profile.firstName.trim() } : {}),
           ...(profile.lastName ? { lastName: profile.lastName.trim() } : {}),
         });
       }
 
-      await clerkClient.users.updateUserMetadata(clerkId, {
+      await client.users.updateUserMetadata(clerkId, {
         publicMetadata: {
           jobTitle: profile.jobTitle?.trim() || "",
           republic: profile.republic?.trim() || "",

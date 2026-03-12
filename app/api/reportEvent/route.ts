@@ -1,7 +1,7 @@
 import { getEventById } from "@/lib/actions/event.actions";
 import { getUserById, reportEvent } from "@/lib/actions/user.actions";
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   const data = await req.json();
   console.log(data);
   const event = getEventById(data.eventId);

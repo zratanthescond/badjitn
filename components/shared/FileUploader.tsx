@@ -7,7 +7,7 @@ import {
   useState,
   useEffect,
 } from "react";
-import { signIn, useSession } from "next-auth/react";
+
 import { useDropzone } from "react-dropzone";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 import Image from "next/image";

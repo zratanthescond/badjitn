@@ -7,6 +7,12 @@ export const MusicWave = ({
   vDuration,
   selectedTime,
   setSelectedTime,
+}: {
+  usedTrack: any;
+  isPlaying: boolean;
+  vDuration: number;
+  selectedTime: number;
+  setSelectedTime: (time: number) => void;
 }) => {
   return (
     <div className="w-full h-12 flex items-center justify-start  bg-indigo-500 my-2 rounded-lg ">

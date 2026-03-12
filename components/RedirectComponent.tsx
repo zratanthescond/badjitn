@@ -9,7 +9,7 @@ export default async function RedirectComponent({
   children: React.ReactNode;
 }) {
   const user = await useUser();
-  const heads = headers();
+  const heads = await headers();
 
   const pathname = heads.get("referer");
   const location = pathname?.split("/").pop();

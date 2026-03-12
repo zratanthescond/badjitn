@@ -167,6 +167,10 @@ export type Event = {
     logo: string;
     isVerified?: boolean;
   };
+  sponsors?: string[];
+  country?: string;
+  Sponsors?: string[];
+  attendees?: string[];
 };
 
 // ====== CATEGORY PARAMS
@@ -190,6 +194,10 @@ export type CreateOrderParams = {
   buyerId: string;
   totalAmount: string;
   createdAt: Date;
+  type?: string;
+  details?: any[];
+  requiredUserInfo?: any[];
+  discountInfo?: any;
 };
 
 export type GetOrdersByEventParams = {
@@ -216,6 +224,6 @@ export type RemoveUrlQueryParams = {
 };
 
 export type SearchParamProps = {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };

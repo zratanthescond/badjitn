@@ -1,0 +1,359 @@
+﻿yarn run v1.22.22
+$ C:\Users\honco\OneDrive\Bureau\event_platform\node_modules\.bin\tsc
+.next/dev/types/validator.ts(387,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/contrebuters/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/contrebuters">'.
+  Types of property 'GET' are incompatible.
+    Type '(req: NextRequest, res: NextApiResponse) => Promise<NextResponse<{ message: string; }> | NextResponse<{ contributors: any[]; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is not assignable to type 'NextApiResponse'.
+          Type '{ params: Promise<{}>; }' is missing the following properties from type 'ServerResponse<IncomingMessage>': statusCode, statusMessage, strictContentLength, assignSocket, and 61 more.
+.next/dev/types/validator.ts(405,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/hostcontributor/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/hostcontributor">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: Request, res: Response) => Promise<NextResponse<{ data: string; }> | NextResponse<{ error: string; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 11 more.
+.next/dev/types/validator.ts(414,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/music/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/music">'.
+  Types of property 'GET' are incompatible.
+    Type '(req: Request, res: Response) => Promise<Response>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 11 more.
+.next/dev/types/validator.ts(423,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/reportEvent/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/reportEvent">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: Request, res: Response) => Promise<Response>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 11 more.
+.next/dev/types/validator.ts(459,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/uploadwork/deleteFile/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/uploadwork/deleteFile">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: Request, res: NextResponse<unknown>) => Promise<NextResponse<{ error: string; }> | NextResponse<{ message: string; }> | undefined>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'NextResponse<unknown>': cookies, [INTERNALS], headers, ok, and 13 more.
+.next/dev/types/validator.ts(513,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/webhook/fileServer/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/webhook/fileServer">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: NextRequest, res: NextResponse<unknown>) => Promise<Response>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'NextResponse<unknown>': cookies, [INTERNALS], headers, ok, and 13 more.
+.next/types/validator.ts(387,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/contrebuters/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/contrebuters">'.
+  Types of property 'GET' are incompatible.
+    Type '(req: NextRequest, res: NextApiResponse) => Promise<NextResponse<{ message: string; }> | NextResponse<{ contributors: any[]; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is not assignable to type 'NextApiResponse'.
+          Type '{ params: Promise<{}>; }' is missing the following properties from type 'ServerResponse<IncomingMessage>': statusCode, statusMessage, strictContentLength, assignSocket, and 61 more.
+.next/types/validator.ts(405,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/hostcontributor/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/hostcontributor">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: Request, res: Response) => Promise<NextResponse<{ data: string; }> | NextResponse<{ error: string; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 11 more.
+.next/types/validator.ts(414,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/music/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/music">'.
+  Types of property 'GET' are incompatible.
+    Type '(req: Request, res: Response) => Promise<Response>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 11 more.
+.next/types/validator.ts(423,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/reportEvent/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/reportEvent">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: Request, res: Response) => Promise<Response>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 11 more.
+.next/types/validator.ts(459,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/uploadwork/deleteFile/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/uploadwork/deleteFile">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: Request, res: NextResponse<unknown>) => Promise<NextResponse<{ error: string; }> | NextResponse<{ message: string; }> | undefined>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'NextResponse<unknown>': cookies, [INTERNALS], headers, ok, and 13 more.
+.next/types/validator.ts(513,31): error TS2344: Type 'typeof import("C:/Users/honco/OneDrive/Bureau/event_platform/app/api/webhook/fileServer/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/webhook/fileServer">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: NextRequest, res: NextResponse<unknown>) => Promise<Response>' is not assignable to type '(request: NextRequest, context: { params: Promise<{}>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters 'res' and 'context' are incompatible.
+        Type '{ params: Promise<{}>; }' is missing the following properties from type 'NextResponse<unknown>': cookies, [INTERNALS], headers, ok, and 13 more.
+app/(root)/cockpit/page.tsx(16,28): error TS2345: Argument of type '{ [key: string]: string | string[] | undefined; }' is not assignable to parameter of type 'Usable<unknown>'.
+  Type '{ [key: string]: string | string[] | undefined; }' is missing the following properties from type 'Context<unknown>': Provider, Consumer, $$typeof
+app/(root)/cockpit/page.tsx(17,34): error TS2339: Property 'eventId' does not exist on type '{}'.
+app/(root)/cockpit/page.tsx(18,37): error TS2339: Property 'query' does not exist on type '{}'.
+app/api/hostcontributor/route.ts(12,9): error TS7034: Variable 'details' implicitly has type 'any[]' in some locations where its type cannot be determined.
+app/api/hostcontributor/route.ts(18,15): error TS7005: Variable 'details' implicitly has an 'any[]' type.
+app/api/hostcontributor/route.ts(26,7): error TS2353: Object literal may only specify known properties, and 'type' does not exist in type 'CreateOrderParams'.
+app/api/hostcontributor/route.ts(27,16): error TS7005: Variable 'details' implicitly has an 'any[]' type.
+app/api/webhook/get-database-stats/route.ts(41,35): error TS2339: Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-database-stats/route.ts(41,70): error TS2339: Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-database-stats/route.ts(45,35): error TS2339: Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-database-stats/route.ts(45,70): error TS2339: Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-database-stats/route.ts(56,31): error TS2339: Property 'title' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'title' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-database-stats/route.ts(57,35): error TS2339: Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-database-stats/route.ts(62,31): error TS2339: Property 'title' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'title' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-database-stats/route.ts(63,35): error TS2339: Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(49,19): error TS2339: Property '_id' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property '_id' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(50,22): error TS2339: Property 'title' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'title' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(51,28): error TS2339: Property 'description' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'description' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(52,26): error TS2339: Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(53,26): error TS2339: Property 'updatedAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'updatedAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(54,25): error TS2339: Property 'photoUrl' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'photoUrl' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(60,19): error TS2339: Property '_id' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property '_id' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(61,22): error TS2339: Property 'title' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'title' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(62,23): error TS2339: Property 'artist' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'artist' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(63,22): error TS2339: Property 'album' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'album' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(64,21): error TS2339: Property 'path' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'path' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(65,22): error TS2339: Property 'image' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'image' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(66,21): error TS2339: Property 'wave' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'wave' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(67,26): error TS2339: Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'createdAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/get-file-metadata/route.ts(68,26): error TS2339: Property 'updatedAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[] | (FlattenMaps<any> & Required<{ _id: unknown; }>)'.
+  Property 'updatedAt' does not exist on type '(FlattenMaps<any> & Required<{ _id: unknown; }>)[]'.
+app/api/webhook/stripe/publisher/route.ts(19,17): error TS18046: 'err' is of type 'unknown'.
+app/api/webhook/stripe/route.ts(19,17): error TS18046: 'err' is of type 'unknown'.
+components/admin/admin-alert-dialog.tsx(82,50): error TS2339: Property '_id' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/admin-alert-dialog.tsx(85,46): error TS2339: Property '_id' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/admin-alert-dialog.tsx(132,40): error TS2339: Property 'photo' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/admin-alert-dialog.tsx(133,40): error TS2339: Property 'firstName' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/admin-alert-dialog.tsx(133,64): error TS2339: Property 'lastName' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/admin-alert-dialog.tsx(136,37): error TS2339: Property 'firstName' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/admin-alert-dialog.tsx(141,36): error TS2339: Property 'firstName' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/admin-alert-dialog.tsx(141,60): error TS2339: Property 'lastName' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/admin-alert-dialog.tsx(157,59): error TS2339: Property 'createdAt' does not exist on type '{ id: string; name: string; email: string; avatar?: string | undefined; joinDate: string; isBanned: boolean; }'.
+components/admin/bank-transfer-administration.tsx(388,24): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/bank-transfer-administration.tsx(431,14): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/bank-transfer-administration.tsx(434,20): error TS7006: Parameter 'cell' implicitly has an 'any' type.
+components/admin/bank-transfer-administration.tsx(461,23): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/CategorieAdministration.tsx(256,20): error TS2322: Type '({ header: string; accessor: string; cell?: undefined; align?: undefined; } | { header: string; accessor: string; cell: (value: string) => Element; align?: undefined; } | { header: string; accessor: string; align: string; cell: (value: any) => Element; })[]' is not assignable to type 'Column[]'.
+  Type '{ header: string; accessor: string; cell?: undefined; align?: undefined; } | { header: string; accessor: string; cell: (value: string) => Element; align?: undefined; } | { header: string; accessor: string; align: string; cell: (value: any) => Element; }' is not assignable to type 'Column'.
+    Type '{ header: string; accessor: string; align: string; cell: (value: any) => JSX.Element; }' is not assignable to type 'Column'.
+      Types of property 'align' are incompatible.
+        Type 'string' is not assignable to type '"left" | "right" | undefined'.
+components/admin/certification-administration.tsx(413,24): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/certification-administration.tsx(456,14): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/certification-administration.tsx(459,20): error TS7006: Parameter 'cell' implicitly has an 'any' type.
+components/admin/certification-administration.tsx(486,23): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/order-administration.tsx(313,24): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/order-administration.tsx(353,14): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/order-administration.tsx(355,23): error TS7006: Parameter 'cell' implicitly has an 'any' type.
+components/admin/order-administration.tsx(378,23): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/report-alert-dialog.tsx(76,35): error TS2339: Property '_id' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(91,32): error TS2339: Property 'eventId' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(111,33): error TS2339: Property 'eventId' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(203,33): error TS2339: Property 'eventId' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(207,54): error TS2339: Property 'createdAt' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(222,35): error TS2339: Property 'eventId' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(223,35): error TS2339: Property 'eventId' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(236,69): error TS2339: Property 'cause' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(247,35): error TS2339: Property 'userId' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(247,62): error TS2339: Property 'userId' does not exist on type 'ReportedEvent'.
+components/admin/report-alert-dialog.tsx(259,50): error TS2339: Property 'createdAt' does not exist on type 'ReportedEvent'.
+components/admin/ReportsAdminstration.tsx(18,3): error TS2305: Module '"@/lib/actions/user.actions"' has no exported member 'approvePublisher'.
+components/admin/ReportsAdminstration.tsx(19,3): error TS2305: Module '"@/lib/actions/user.actions"' has no exported member 'rejectPublisher'.
+components/admin/ReportsAdminstration.tsx(89,12): error TS2739: Type '{ onDiscardReport: (reportId: string) => Promise<void>; refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<any, Error>>; event: any; onHideEvent: (eventId: string) => Promise<...>; onBanCreator: (eventId: string) => Promise<...>; }' is missing the following properties from type 'ReportAlertDialogProps': isOpen, onClose
+components/admin/ReportsAdminstration.tsx(162,10): error TS2739: Type '{ onDiscardReport: (reportId: string) => Promise<void>; refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<any, Error>>; event: any; onHideEvent: (eventId: string) => Promise<...>; onBanCreator: (eventId: string) => Promise<...>; }' is missing the following properties from type 'ReportAlertDialogProps': isOpen, onClose
+components/admin/ReportsAdminstration.tsx(194,20): error TS2322: Type '({ header: string; accessor: string; cell?: undefined; align?: undefined; } | { header: string; accessor: string; cell: (value: string) => Element; align?: undefined; } | { header: string; accessor: string; cell: (value: Date) => Element; align?: undefined; } | { ...; })[]' is not assignable to type 'Column[]'.
+  Type '{ header: string; accessor: string; cell?: undefined; align?: undefined; } | { header: string; accessor: string; cell: (value: string) => Element; align?: undefined; } | { header: string; accessor: string; cell: (value: Date) => Element; align?: undefined; } | { ...; }' is not assignable to type 'Column'.
+    Type '{ header: string; accessor: string; align: string; cell: (value: string) => JSX.Element; }' is not assignable to type 'Column'.
+      Types of property 'align' are incompatible.
+        Type 'string' is not assignable to type '"left" | "right" | undefined'.
+components/admin/work-administration.tsx(332,24): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/work-administration.tsx(375,14): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/work-administration.tsx(378,20): error TS7006: Parameter 'cell' implicitly has an 'any' type.
+components/admin/work-administration.tsx(405,23): error TS7006: Parameter 'row' implicitly has an 'any' type.
+components/admin/WorkDetailsDialog.tsx(35,41): error TS7016: Could not find a declaration file for module 'react-file-viewer'. 'C:/Users/honco/OneDrive/Bureau/event_platform/node_modules/react-file-viewer/dist/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react-file-viewer` if it exists or add a new declaration (.d.ts) file containing `declare module 'react-file-viewer';`
+components/admin/WorkDetailsDialog.tsx(117,19): error TS2339: Property 'querySelector' does not exist on type 'never'.
+components/admin/WorkDetailsDialog.tsx(118,19): error TS2339: Property 'querySelector' does not exist on type 'never'.
+components/admin/WorkDetailsDialog.tsx(129,17): error TS2339: Property 'style' does not exist on type 'never'.
+components/admin/WorkDetailsDialog.tsx(433,35): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: {}, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type '{ key: string; fileType: string; filePath: string; className: string; onError: () => Element; }' is not assignable to type 'IntrinsicAttributes'.
+      Property 'fileType' does not exist on type 'IntrinsicAttributes'.
+  Overload 2 of 2, '(props: {}): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type '{ key: string; fileType: string; filePath: string; className: string; onError: () => Element; }' is not assignable to type 'IntrinsicAttributes'.
+      Property 'fileType' does not exist on type 'IntrinsicAttributes'.
+components/auth/LoginForm.tsx(46,34): error TS2304: Cannot find name 'Icons'.
+components/auth/LoginForm.tsx(49,36): error TS2304: Cannot find name 'Icons'.
+components/auth/LoginForm.tsx(67,34): error TS2304: Cannot find name 'Icons'.
+components/auth/LoginForm.tsx(70,36): error TS2304: Cannot find name 'Icons'.
+components/auth/LoginForm.tsx(99,34): error TS2304: Cannot find name 'Icons'.
+components/auth/LoginForm.tsx(154,34): error TS2304: Cannot find name 'Icons'.
+components/auth/LoginForm.tsx(197,36): error TS2304: Cannot find name 'Icons'.
+components/auth/LoginForm.tsx(278,36): error TS2304: Cannot find name 'Icons'.
+components/auth/SignUpForm.tsx(31,28): error TS2307: Cannot find module '@/app/actions' or its corresponding type declarations.
+components/auth/SignUpForm.tsx(43,7): error TS2353: Object literal may only specify known properties, and 'firstName' does not exist in type 'AsyncDefaultValues<{ email: string; password: string; confirmPassword: string; username: string; phoneNumber: string; }> | { email?: string | undefined; password?: string | undefined; confirmPassword?: string | undefined; username?: string | undefined; phoneNumber?: string | undefined; }'.
+components/auth/SocialLogin.tsx(2,31): error TS2307: Cannot find module '@/app/actions' or its corresponding type declarations.
+components/auth/SocialLogin.tsx(11,6): error TS2740: Type '{ children: Element; }' is missing the following properties from type 'UseFormReturn<FieldValues, any, undefined>': watch, getValues, getFieldState, setError, and 11 more.
+components/PublisherCard.tsx(32,3): error TS2305: Module '"@/lib/actions/user.actions"' has no exported member 'checkoutPublisherRequest'.
+components/PublisherCard.tsx(33,3): error TS2305: Module '"@/lib/actions/user.actions"' has no exported member 'requestPublisherBadge'.
+components/ReelDetails.tsx(138,22): error TS2339: Property 'attendees' does not exist on type 'Event'.
+components/ReelDetails.tsx(142,52): error TS2339: Property 'attendees' does not exist on type 'Event'.
+components/ReelDetails.tsx(296,37): error TS2740: Type 'Event' is missing the following properties from type 'IEvent': createdAt, discount, restricted, $assertPopulated, and 50 more.
+components/shared/AddSponsorComponenet.tsx(83,7): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidType<unknown>> | undefined; message?: string | undefined; } | undefined): ZodString', gave the following error.
+    Object literal may only specify known properties, and 'required_error' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidType<unknown>> | undefined; message?: string | undefined; }'.
+  Overload 2 of 2, '(params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidType<unknown>> | undefined; message?: string | undefined; } | undefined): $ZodType<...>', gave the following error.
+    Object literal may only specify known properties, and 'required_error' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidType<unknown>> | undefined; message?: string | undefined; }'.
+components/shared/comment/CommentList.tsx(37,26): error TS2345: Argument of type 'Content' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+components/shared/comment/CommentSection.tsx(74,51): error TS2345: Argument of type 'Content' is not assignable to parameter of type 'string'.
+components/shared/comment/CommentSection.tsx(163,13): error TS2322: Type 'IUser | null' is not assignable to type 'IUser'.
+  Type 'null' is not assignable to type 'IUser'.
+components/shared/DateFilter.tsx(61,54): error TS2345: Argument of type 'RefObject<HTMLButtonElement | null>' is not assignable to parameter of type 'RefObject<HTMLButtonElement>'.
+  Type 'HTMLButtonElement | null' is not assignable to type 'HTMLButtonElement'.
+    Type 'null' is not assignable to type 'HTMLButtonElement'.
+components/shared/EventFormManager.tsx(120,33): error TS2322: Type '{ userId: string; organisationId: string | undefined; onFormCreated: () => void; }' is not assignable to type 'IntrinsicAttributes & EventFormBuilderProps'.
+  Property 'organisationId' does not exist on type 'IntrinsicAttributes & EventFormBuilderProps'. Did you mean 'organisations'?
+components/shared/eventLocationComponent.tsx(179,9): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: LoadScriptProps): LoadScript', gave the following error.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 2, '(props: LoadScriptProps, context: any): LoadScript', gave the following error.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+components/shared/EventPriceComponent.tsx(112,9): error TS2322: Type 'string | null | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+components/shared/EventsControls.tsx(207,37): error TS2322: Type 'IEvent' is not assignable to type 'Event'.
+  Types of property 'description' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+components/shared/EventsControls.tsx(245,33): error TS2322: Type 'IEvent' is not assignable to type 'Event'.
+components/shared/GoogleMap.tsx(44,31): error TS7006: Parameter 'adr' implicitly has an 'any' type.
+components/shared/GoogleMapsSearchBox.tsx(56,16): error TS2345: Argument of type 'PlaceResult | null' is not assignable to parameter of type 'PlaceDetails'.
+  Type 'null' is not assignable to type 'PlaceDetails'.
+components/shared/phone/AudioWaveFrom.tsx(11,3): error TS7031: Binding element 'src' implicitly has an 'any' type.
+components/shared/phone/AudioWaveFrom.tsx(12,3): error TS7031: Binding element 'data' implicitly has an 'any' type.
+components/shared/phone/AudioWaveFrom.tsx(13,3): error TS7031: Binding element 'isPlaying' implicitly has an 'any' type.
+components/shared/phone/AudioWaveFrom.tsx(14,3): error TS7031: Binding element 'vDuration' implicitly has an 'any' type.
+components/shared/phone/AudioWaveFrom.tsx(15,3): error TS7031: Binding element 'selectedTime' implicitly has an 'any' type.
+components/shared/phone/AudioWaveFrom.tsx(16,3): error TS7031: Binding element 'setSelectedTime' implicitly has an 'any' type.
+components/shared/phone/AudioWaveFrom.tsx(28,23): error TS2345: Argument of type 'HTMLMediaElement | null' is not assignable to parameter of type 'HTMLMediaElement | MediaAttachingData'.
+  Type 'null' is not assignable to type 'HTMLMediaElement | MediaAttachingData'.
+components/shared/phone/AudioWaveFrom.tsx(37,16): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudioWaveFrom.tsx(39,7): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudioWaveFrom.tsx(40,7): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudioWaveFrom.tsx(51,34): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudioWaveFrom.tsx(52,21): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudioWaveFrom.tsx(53,9): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudioWaveFrom.tsx(66,13): error TS2339: Property 'scrollLeft' does not exist on type 'EventTarget'.
+components/shared/phone/AudioWaveFrom.tsx(66,25): error TS2339: Property 'scrollWidth' does not exist on type 'EventTarget'.
+components/shared/phone/AudioWaveFrom.tsx(66,38): error TS2339: Property 'clientWidth' does not exist on type 'EventTarget'.
+components/shared/phone/AudioWaveFrom.tsx(72,5): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudioWaveFrom.tsx(113,45): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudoPlayer.tsx(12,3): error TS7031: Binding element 'data' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(13,3): error TS7031: Binding element 'id' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(14,3): error TS7031: Binding element 'isActive' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(15,3): error TS7031: Binding element 'onPlay' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(16,3): error TS7031: Binding element 'onStop' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(17,3): error TS7031: Binding element 'setUsedTrack' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(27,23): error TS2345: Argument of type 'null' is not assignable to parameter of type 'HTMLMediaElement | MediaAttachingData'.
+components/shared/phone/AudoPlayer.tsx(36,16): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudoPlayer.tsx(38,7): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudoPlayer.tsx(39,7): error TS18047: 'audioRef.current' is possibly 'null'.
+components/shared/phone/AudoPlayer.tsx(51,25): error TS2339: Property 'pause' does not exist on type 'never'.
+components/shared/phone/AudoPlayer.tsx(55,25): error TS2339: Property 'play' does not exist on type 'never'.
+components/shared/phone/AudoPlayer.tsx(62,36): error TS2339: Property 'duration' does not exist on type 'never'.
+components/shared/phone/AudoPlayer.tsx(68,27): error TS2339: Property 'play' does not exist on type 'never'.
+components/shared/phone/AudoPlayer.tsx(70,27): error TS2339: Property 'pause' does not exist on type 'never'.
+components/shared/phone/AudoPlayer.tsx(122,35): error TS7031: Binding element 'players' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(122,44): error TS7031: Binding element 'setUsedTrack' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(126,23): error TS7006: Parameter 'id' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(131,23): error TS7006: Parameter 'id' implicitly has an 'any' type.
+components/shared/phone/AudoPlayer.tsx(140,22): error TS7006: Parameter 'player' implicitly has an 'any' type.
+components/shared/phone/Mixer.tsx(27,25): error TS2554: Expected 1 arguments, but got 0.
+components/shared/phone/Mixer.tsx(29,36): error TS2345: Argument of type 'RefObject<unknown>' is not assignable to parameter of type 'RefObject<HTMLElement>'.
+  Type 'unknown' is not assignable to type 'HTMLElement'.
+components/shared/phone/Mixer.tsx(86,36): error TS2322: Type 'RefObject<unknown>' is not assignable to type 'Ref<HTMLDivElement> | undefined'.
+  Type 'RefObject<unknown>' is not assignable to type 'RefObject<HTMLDivElement | null>'.
+    Type 'unknown' is not assignable to type 'HTMLDivElement | null'.
+components/shared/phone/ModifyVideo.tsx(80,31): error TS7006: Parameter 'e' implicitly has an 'any' type.
+components/shared/phone/ModifyVideo.tsx(86,33): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(name: string, value: string | Blob): void', gave the following error.
+    Argument of type 'number' is not assignable to parameter of type 'string | Blob'.
+  Overload 2 of 3, '(name: string, value: string): void', gave the following error.
+    Argument of type 'number' is not assignable to parameter of type 'string'.
+  Overload 3 of 3, '(name: string, blobValue: Blob, filename?: string | undefined): void', gave the following error.
+    Argument of type 'number' is not assignable to parameter of type 'Blob'.
+components/shared/phone/ModifyVideo.tsx(89,18): error TS2345: Argument of type 'FormData' is not assignable to parameter of type 'void'.
+components/shared/phone/ModifyVideo.tsx(153,20): error TS2741: Property 'isActive' is missing in type '{ manifest: any; ref: RefObject<HTMLVideoElement | null>; onLoadedMetadata: () => void; className: string; autoPlay: false; loop: false; }' but required in type 'Omit<Props, "ref">'.
+components/shared/phone/ModifyVideo.tsx(169,15): error TS2322: Type 'RefObject<HTMLVideoElement | null>' is not assignable to type 'RefObject<HTMLVideoElement>'.
+  Type 'HTMLVideoElement | null' is not assignable to type 'HTMLVideoElement'.
+    Type 'null' is not assignable to type 'HTMLVideoElement'.
+components/shared/phone/MusicUploader.tsx(39,5): error TS2345: Argument of type 'File | undefined' is not assignable to parameter of type 'File'.
+  Type 'undefined' is not assignable to type 'File'.
+components/shared/phone/MusicWave.tsx(5,3): error TS7031: Binding element 'usedTrack' implicitly has an 'any' type.
+components/shared/phone/MusicWave.tsx(6,3): error TS7031: Binding element 'isPlaying' implicitly has an 'any' type.
+components/shared/phone/MusicWave.tsx(7,3): error TS7031: Binding element 'vDuration' implicitly has an 'any' type.
+components/shared/phone/MusicWave.tsx(8,3): error TS7031: Binding element 'selectedTime' implicitly has an 'any' type.
+components/shared/phone/MusicWave.tsx(9,3): error TS7031: Binding element 'setSelectedTime' implicitly has an 'any' type.
+components/shared/phone/PhoneIcons.tsx(14,12): error TS2532: Object is possibly 'undefined'.
+components/shared/phone/PhoneIcons.tsx(15,13): error TS2532: Object is possibly 'undefined'.
+components/shared/phone/TimeStep.tsx(11,19): error TS7031: Binding element 'time' implicitly has an 'any' type.
+components/shared/phone/VideoEditor.tsx(36,62): error TS2345: Argument of type 'string | File' is not assignable to parameter of type 'File'.
+  Type 'string' is not assignable to type 'File'.
+components/shared/phone/VideoEditor.tsx(61,13): error TS2345: Argument of type 'string | File' is not assignable to parameter of type 'SetStateAction<string>'.
+  Type 'File' is not assignable to type 'SetStateAction<string>'.
+components/shared/phone/VideoEditor.tsx(69,9): error TS2322: Type 'string | File' is not assignable to type 'string'.
+  Type 'File' is not assignable to type 'string'.
+components/shared/ScrollShorts.tsx(160,21): error TS2322: Type '(el: HTMLVideoElement | null) => HTMLVideoElement | null' is not assignable to type 'Ref<HTMLVideoElement> | undefined'.
+  Type '(el: HTMLVideoElement | null) => HTMLVideoElement | null' is not assignable to type '(instance: HTMLVideoElement | null) => void | (() => VoidOrUndefinedOnly)'.
+    Type 'HTMLVideoElement | null' is not assignable to type 'void | (() => VoidOrUndefinedOnly)'.
+      Type 'null' is not assignable to type 'void | (() => VoidOrUndefinedOnly)'.
+components/shared/ScrollShorts.tsx(293,30): error TS2339: Property 'sponsors' does not exist on type 'Event'.
+components/shared/ScrollShorts.tsx(293,48): error TS2339: Property 'sponsors' does not exist on type 'Event'.
+components/shared/ScrollShorts.tsx(294,61): error TS2339: Property 'sponsors' does not exist on type 'Event'.
+components/shared/SponsorSection.tsx(145,7): error TS2322: Type '{ hidden: { opacity: number; y: number; scale: number; }; visible: { opacity: number; y: number; scale: number; transition: { duration: number; delay: number; ease: number[]; }; }; }' is not assignable to type 'Variants'.
+  Property 'visible' is incompatible with index signature.
+    Type '{ opacity: number; y: number; scale: number; transition: { duration: number; delay: number; ease: number[]; }; }' is not assignable to type 'Variant'.
+      Type '{ opacity: number; y: number; scale: number; transition: { duration: number; delay: number; ease: number[]; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ opacity: number; y: number; scale: number; transition: { duration: number; delay: number; ease: number[]; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; delay: number; ease: number[]; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; delay: number; ease: number[]; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; delay: number; ease: number[]; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'number[]' is not assignable to type 'Easing | Easing[] | undefined'.
+                      Type 'number[]' is not assignable to type 'EasingFunction | Easing[]'.
+                        Type 'number[]' is not assignable to type 'Easing[]'.
+                          Type 'number' is not assignable to type 'Easing'.
+components/shared/SponsorSection.tsx(165,9): error TS2322: Type '{ initial: { scale: number; }; pulse: { scale: number[]; transition: { duration: number; repeat: number; repeatType: "reverse"; ease: string; }; }; }' is not assignable to type 'Variants'.
+  Property 'pulse' is incompatible with index signature.
+    Type '{ scale: number[]; transition: { duration: number; repeat: number; repeatType: "reverse"; ease: string; }; }' is not assignable to type 'Variant'.
+      Type '{ scale: number[]; transition: { duration: number; repeat: number; repeatType: "reverse"; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ scale: number[]; transition: { duration: number; repeat: number; repeatType: "reverse"; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; repeat: number; repeatType: "reverse"; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; repeat: number; repeatType: "reverse"; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; repeat: number; repeatType: "reverse"; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+components/shared/SponsorSection.tsx(341,15): error TS2322: Type '{ hidden: { opacity: number; y: number; }; visible: { opacity: number; y: number; transition: { duration: number; ease: number[]; }; }; }' is not assignable to type 'Variants'.
+  Property 'visible' is incompatible with index signature.
+    Type '{ opacity: number; y: number; transition: { duration: number; ease: number[]; }; }' is not assignable to type 'Variant'.
+      Type '{ opacity: number; y: number; transition: { duration: number; ease: number[]; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ opacity: number; y: number; transition: { duration: number; ease: number[]; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; ease: number[]; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; ease: number[]; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; ease: number[]; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'number[]' is not assignable to type 'Easing | Easing[] | undefined'.
+components/shared/SponsorSection.tsx(395,37): error TS7006: Parameter 'sponsor' implicitly has an 'any' type.
+components/shared/SponsorSection.tsx(395,46): error TS7006: Parameter 'index' implicitly has an 'any' type.
+components/shared/TiketComponent.tsx(269,60): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+components/shared/UploadedFileController.tsx(65,34): error TS2554: Expected 2 arguments, but got 1.
+components/shared/WorkUploader.tsx(41,41): error TS7016: Could not find a declaration file for module 'react-file-viewer'. 'C:/Users/honco/OneDrive/Bureau/event_platform/node_modules/react-file-viewer/dist/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react-file-viewer` if it exists or add a new declaration (.d.ts) file containing `declare module 'react-file-viewer';`
+components/shorts/share-dialog.tsx(98,17): error TS2304: Cannot find name 'toast'.
+components/shorts/video-details-panel.tsx(85,20): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+components/shorts/video-details-panel.tsx(110,26): error TS2740: Type 'Event' is missing the following properties from type 'Event': description, price, isFree, location, and 4 more.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

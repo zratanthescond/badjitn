@@ -19,7 +19,7 @@ interface CommentListProps {
   postId: string;
   onAddReply: (parentId: string, content: string) => void;
   isNested?: boolean;
-  currentUser: IUser;
+  currentUser: IUser | null;
 }
 
 export function CommentList({
@@ -34,7 +34,7 @@ export function CommentList({
   const { toast } = useToast();
   console.log(comments);
   const handleReply = (parentId: string, content: Content) => {
-    onAddReply(parentId, content);
+    onAddReply(parentId, content as string);
     setReplyingTo(null);
   };
   const t = useTranslations("comments");

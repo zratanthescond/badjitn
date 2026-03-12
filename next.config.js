@@ -26,7 +26,6 @@ const nextConfig = {
     ignoreBuildErrors: true, // Skip TypeScript checks during the build
   },
   images: {
-    domains: ["utfs.io"],
     remotePatterns: [
       {
         protocol: "https",

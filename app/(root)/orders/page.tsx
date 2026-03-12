@@ -8,7 +8,8 @@ import BankTransferAdministration from "@/components/admin/bank-transfer-adminis
 import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@clerk/nextjs/server";
 
-const Orders = async ({ searchParams }: SearchParamProps) => {
+const Orders = async (props: SearchParamProps) => {
+  const searchParams = await props.searchParams;
   const t = await getTranslations("orders");
   const locale = await getLocale();
   const isRTL = locale === "ar";

@@ -33,18 +33,33 @@ import { cn, formatDateTime } from "@/lib/utils";
 
 // This would come from your database
 interface ReportedEvent {
-  id: string;
-  title: string;
-  creatorId: string;
-  creatorName: string;
-  date: string;
-  reportReason: string;
-  reportedBy: string;
-  reportedAt: string;
+  _id: string;
+  id?: string;
+  title?: string;
+  eventId?: {
+    _id: string;
+    title: string;
+    organizer?: {
+      firstName: string;
+      lastName: string;
+    };
+  };
+  userId?: {
+    firstName: string;
+    lastName: string;
+  };
+  cause?: string;
+  creatorId?: string;
+  creatorName?: string;
+  date?: string;
+  reportReason?: string;
+  reportedBy?: string;
+  reportedAt?: string;
+  createdAt?: Date | string;
   severity?: "low" | "medium" | "high";
 }
 
-interface ReportAlertDialogProps {
+export interface ReportAlertDialogProps {
   event: ReportedEvent;
   isOpen: boolean;
   onClose: () => void;
@@ -88,7 +103,7 @@ export function ReportAlertDialog({
     setIsLoading(true);
     setActiveAction("hide");
     try {
-      await onHideEvent(event?.eventId?._id);
+      await onHideEvent(event?.eventId?._id || '');
       refetch();
       onClose();
     } catch (error) {
@@ -108,7 +123,7 @@ export function ReportAlertDialog({
     setIsLoading(true);
     setActiveAction("ban");
     try {
-      await onBanCreator(event?.eventId?._id);
+      await onBanCreator(event?.eventId?._id || '');
       refetch();
       onClose();
     } catch (error) {
@@ -204,7 +219,7 @@ export function ReportAlertDialog({
                       </h3>
                       <div className="flex items-center text-sm text-muted-foreground gap-1.5 mt-1.5">
                         <CalendarIcon className="h-4 w-4 text-indigo-600 flex-shrink-0" />
-                        <span>{formatDateTime(event?.createdAt).dateTime}</span>
+                        <span>{formatDateTime(new Date(event?.createdAt || new Date())).dateTime}</span>
                       </div>
                     </div>
                   </div>
@@ -256,7 +271,7 @@ export function ReportAlertDialog({
                       <div>
                         <div className="text-sm font-medium ">Reported at</div>
                         <div className="text-sm ">
-                          {formatDateTime(event?.createdAt).dateTime}
+                          {formatDateTime(new Date(event?.createdAt || new Date())).dateTime}
                         </div>
                       </div>
                     </div>

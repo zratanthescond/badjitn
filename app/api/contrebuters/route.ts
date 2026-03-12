@@ -5,7 +5,7 @@ import { handleError } from "@/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 export const revalidate = 0;
-export async function GET(req: NextRequest, res: NextApiResponse) {
+export async function GET(req: NextRequest) {
   const query = req.nextUrl.searchParams.get("query") as string;
   console.log(req);
 

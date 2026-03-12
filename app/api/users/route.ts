@@ -1,8 +1,15 @@
 import { connectToDatabase } from "@/lib/database";
 import User from "@/lib/database/models/user.model";
 import { NextRequest } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET(req: NextRequest) {
+  const { userId: authId } = await auth();
+  
+  if (!authId) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+  }
+
   const clerkId = req.nextUrl.searchParams.get("clerkId");
   const userId = req.nextUrl.searchParams.get("userId");
 

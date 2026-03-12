@@ -1,7 +1,6 @@
 "use client";
 import { IEvent } from "@/lib/database/models/event.model";
 import { formatDateTime, getLastTwoWords } from "@/lib/utils";
-import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";

@@ -1,14 +1,15 @@
 import React from "react";
-import { doSocialLogin } from "@/app/actions";
 import { FaGoogle } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaFacebook, FaUser, FaPhone } from "react-icons/fa";
 import { Button } from "../ui/button";
-import { Form } from "../ui/form";
 
-export default function SocialLogin(): JSX.Element {
+export default function SocialLogin() {
+  const doSocialLogin = async (formData: FormData) => {
+    // Social login action placeholder
+  };
   return (
-    <Form>
+    <div>
       <form action={doSocialLogin}>
         <div className="card-actions flex  flex-col justify-around sm:flex-row items-center gap-4 ">
           <Button
@@ -40,6 +41,6 @@ export default function SocialLogin(): JSX.Element {
           </Button>
         </div>
       </form>
-    </Form>
+    </div>
   );
 }

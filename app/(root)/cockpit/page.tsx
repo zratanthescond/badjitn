@@ -7,12 +7,13 @@ import { Flag, Shapes, Users, Building2 } from "lucide-react";
 
 import UsersAdministration from "@/components/admin/UsersAdministration";
 import ReportsAdminstration from "@/components/admin/ReportsAdminstration";
-import React from "react";
+import React, { use } from "react";
 import CategoryFilter from "@/components/shared/CategoryFilter";
 import CategorieAdministration from "@/components/admin/CategorieAdministration";
 import OrganisationsAdministration from "@/components/admin/OrganisationsAdministration";
 
-const Orders = ({ searchParams }: SearchParamProps) => {
+const Orders = (props: SearchParamProps) => {
+  const searchParams = use(props.searchParams);
   const eventId = (searchParams?.eventId as string) || "";
   const searchText = (searchParams?.query as string) || "";
   const [value, setValue] = React.useState("users");

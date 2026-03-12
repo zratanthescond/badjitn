@@ -36,7 +36,7 @@ const MusicUploader = ({
   const [duration, setDuration] = useState<number>(0);
 
   const { data, isPending, error, mutate, isSuccess } = useUploadMusic(
-    uploadedFiles,
+    uploadedFiles!,
     userId
   );
 

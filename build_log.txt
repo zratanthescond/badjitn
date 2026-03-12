@@ -1,0 +1,132 @@
+﻿node.exe : ⚠ Warning: Next.js 
+inferred your workspace root, 
+but it may not be correct.
+Au caractère Ligne:1 : 1
++ & 
+"C:\nvm4w\nodejs/node.exe" "C:
+\nvm4w\nodejs/node_modules/npm
+/bin/np ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (⚠ Warning  
+  : Next...not be correct.:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+ We detected multiple 
+lockfiles and selected the 
+directory of C:\Users\honco\pa
+ckage-lock.json as the root 
+directory.
+ To silence this warning, set 
+`turbopack.root` in your 
+Next.js config, or consider 
+removing one of the lockfiles 
+if it's not needed.
+   See https://nextjs.org/docs
+/app/api-reference/config/next
+-config-js/turbopack#root-dire
+ctory for more information.
+ Detected additional 
+lockfiles: 
+   * C:\Users\honco\OneDrive\B
+ureau\event_platform\yarn.lock
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  · serverActions
+
+⚠ The "middleware" file 
+convention is deprecated. 
+Please use "proxy" instead. 
+Learn more: https://nextjs.org
+/docs/messages/middleware-to-p
+roxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 44s
+  Skipping validation of types
+  Collecting page data using 7 workers ...
+⚠ Using edge runtime on a 
+page currently disables 
+static generation for that 
+page
+  Generating static pages using 7 workers (0/43) ...
+  Generating static pages using 7 workers (10/43) 
+  Generating static pages using 7 workers (21/43) 
+  Generating static pages using 7 workers (32/43) 
+✓ Generating static pages using 7 workers (43/43) in 1050.0ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /about
+├ ƒ /ai-tools
+├ ƒ /api/chat
+├ ƒ /api/contrebuters
+├ ƒ /api/events
+├ ƒ /api/hostcontributor
+├ ƒ /api/music
+├ ƒ /api/reportEvent
+├ ƒ /api/upload-bank-transfer
+├ ƒ /api/uploads/[file]
+├ ƒ /api/uploadthing
+├ ƒ /api/uploadwork
+├ ƒ /api/uploadwork/deleteFile
+├ ƒ /api/users
+├ ƒ /api/webhook/check-file-exists
+├ ƒ /api/webhook/cleanup-orphaned-refs
+├ ƒ /api/webhook/clerk
+├ ƒ /api/webhook/fileServer
+├ ƒ /api/webhook/get-database-stats
+├ ƒ /api/webhook/get-file-metadata
+├ ƒ /api/webhook/get-valid-files
+├ ƒ /api/webhook/health-check
+├ ƒ /api/webhook/mark-file-deleted
+├ ƒ /api/webhook/stripe
+├ ƒ /api/webhook/stripe/publisher
+├ ƒ /api/work/approve
+├ ƒ /banned
+├ ƒ /blog
+├ ƒ /careers
+├ ƒ /cockpit
+├ ƒ /cockpit/server
+├ ƒ /community
+├ ƒ /contact
+├ ƒ /cookies
+├ ƒ /documentation
+├ ƒ /events/[id]
+├ ƒ /events/[id]/badge
+├ ƒ /events/[id]/forms
+├ ƒ /events/[id]/scan
+├ ƒ /events/[id]/update
+├ ƒ /events/create
+├ ƒ /features
+├ ƒ /forms/[formSlug]
+├ ƒ /gdpr
+├ ƒ /help
+├ ƒ /help/[category]
+├ ƒ /orders
+├ ƒ /organisations
+├ ƒ /organisations/[slug]
+├ ƒ /organisations/[slug]/settings
+├ ƒ /organisations/create
+├ ƒ /pricing
+├ ƒ /privacy
+├ ƒ /profile
+├ ƒ /sign-in/[[...sign-in]]
+├ ƒ /sign-up/[[...sign-up]]
+├ ƒ /status
+├ ƒ /support
+└ ƒ /terms
+
+
+ƒ Proxy (Middleware)
+
+ƒ  (Dynamic)  server-rendered on demand
+

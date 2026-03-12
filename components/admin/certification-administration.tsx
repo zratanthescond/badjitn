@@ -410,7 +410,7 @@ export default function CertificationAdministration({
         };
         const csvContent = [
           headers.map(escapeCell).join(delimiter),
-          ...rows.map((row) => row.map(escapeCell).join(delimiter)),
+          ...rows.map((row: any) => row.map(escapeCell).join(delimiter)),
         ].join("\n");
         const blob = new Blob(["\uFEFF" + csvContent], {
           type: "text/csv;charset=utf-8;",
@@ -453,10 +453,10 @@ export default function CertificationAdministration({
           .join("");
         const rowsHtml = rows
           .map(
-            (row) =>
+            (row: any) =>
               `<tr>${row
                 .map(
-                  (cell) =>
+                  (cell: any) =>
                     `<td style="border:1px solid #ccc;padding:8px;">${String(
                       cell
                     )}</td>`
@@ -483,7 +483,7 @@ export default function CertificationAdministration({
         doc.text(headers.join(" | "), 40, y);
         y += 16;
 
-        rows.forEach((row) => {
+        rows.forEach((row: any) => {
           const line = row.join(" | ");
           const wrapped = doc.splitTextToSize(line, 515);
           if (y > 780) {

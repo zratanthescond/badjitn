@@ -1,5 +1,5 @@
 import ReactQueryProvider from "@/components/contexts/ReactQueryProvider";
-import { SessionProvider } from "next-auth/react";
+
 
 export default function EventLayout({
   children,
@@ -8,7 +8,7 @@ export default function EventLayout({
 }) {
   return (
     <ReactQueryProvider>
-      <SessionProvider>{children}</SessionProvider>
+      {children}
     </ReactQueryProvider>
   );
 }

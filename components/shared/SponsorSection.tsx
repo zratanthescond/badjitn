@@ -7,6 +7,7 @@ import {
   useAnimation,
   useInView,
   AnimatePresence,
+  type Variants,
 } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Star, Sparkles, Award, Shield } from "lucide-react";
@@ -110,7 +111,7 @@ const Sponsor = ({
     },
   };
 
-  const variants = {
+  const variants: Variants = {
     hidden: { opacity: 0, y: 50, scale: 0.9 },
     visible: {
       opacity: 1,
@@ -124,7 +125,7 @@ const Sponsor = ({
     },
   };
 
-  const pulseVariants = {
+  const pulseVariants: Variants = {
     initial: { scale: 1 },
     pulse: {
       scale: [1, 1.05, 1],
@@ -256,7 +257,7 @@ export default function SponsorsSection({
     }
   }, [isInView, titleControls]);
 
-  const titleVariants = {
+  const titleVariants: Variants = {
     hidden: { opacity: 0, y: -30 },
     visible: {
       opacity: 1,
@@ -392,7 +393,7 @@ export default function SponsorsSection({
                 }`}
             >
               {sponsors &&
-                sponsors?.data.map((sponsor, index) => (
+                sponsors?.data.map((sponsor: SponsorProps, index: number) => (
                   <Sponsor key={index} {...sponsor} />
                 ))}
             </div>

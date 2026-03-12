@@ -15,17 +15,15 @@ import { CardSkeleton } from "./CardSkeleton";
 import {
   adminDiscardReport,
   admingetReports,
-  approvePublisher,
-  rejectPublisher,
 } from "@/lib/actions/user.actions";
 import UserAlertDialog from "./admin-alert-dialog";
 import { ReportAlertDialog } from "./report-alert-dialog";
-import { tr } from "date-fns/locale";
+
 import {
   adminBanEventCreator,
   restrictEvent,
 } from "@/lib/actions/event.actions";
-import { on } from "events";
+
 import { useEffect } from "react";
 
 export default function ReportsAdminstration() {
@@ -87,6 +85,8 @@ export default function ReportsAdminstration() {
             {formatDateTime(item?.createdAt).dateTime}
           </span>
           <ReportAlertDialog
+            isOpen={false}
+            onClose={() => {}}
             onDiscardReport={onDiscardReport}
             refetch={refetch}
             event={item}
@@ -160,6 +160,8 @@ export default function ReportsAdminstration() {
       align: "right",
       cell: (value: any) => (
         <ReportAlertDialog
+          isOpen={false}
+          onClose={() => {}}
           onDiscardReport={onDiscardReport}
           refetch={refetch}
           event={value}

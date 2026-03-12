@@ -6,10 +6,10 @@ import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   const data = await req.json();
   // console.log(data);
-  const details = [];
+  const details: any[] = [];
   if (data.checkPlan && data.checkPlan.length > 0) {
     data.checkPlan.map((plan: number) => {
       details.push(data.event.pricePlan[plan]);

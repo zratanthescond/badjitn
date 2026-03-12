@@ -8,7 +8,7 @@ export const TimeStep = ({
   currentTime: number;
 }) => {
   const blocks = Array.from(Array(duration).keys());
-  const Step = ({ time }) => {
+  const Step = ({ time }: { time: number }) => {
     return (
       <div className=" flex w-72 h-8 time-step">{formatSeconds(time)}</div>
     );

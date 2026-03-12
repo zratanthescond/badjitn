@@ -99,9 +99,11 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
     }
   }, []);
 
-  const form = useForm<z.infer<typeof eventFormSchema>>({
-    resolver: zodResolver(eventFormSchema),
-    defaultValues: initialValues,
+  type EventFormValues = z.infer<typeof eventFormSchema>;
+
+  const form = useForm<EventFormValues, any, EventFormValues>({
+    resolver: zodResolver(eventFormSchema) as any,
+    defaultValues: initialValues as any,
   });
 
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {

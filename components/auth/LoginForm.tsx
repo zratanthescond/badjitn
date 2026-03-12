@@ -15,6 +15,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
+
+const Icons = {
+  spinner: Loader2,
+  gitHub: FaGithub,
+  google: FaGoogle,
+};
 
 export default function SignInPage() {
   return (

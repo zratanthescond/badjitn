@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         { photoUrl: `/${filePath}` },
         { photoUrl: `http://localhost:4000/${filePath}` },
       ],
-    }).lean()
+    }).lean() as any
 
     const music = await Music.findOne({
       $or: [
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         { image: filePath },
         { wave: filePath },
       ],
-    }).lean()
+    }).lean() as any
 
     let metadata = null
 

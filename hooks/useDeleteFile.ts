@@ -10,7 +10,18 @@ const deleteFile = async (fileUrl: string, workId: string) => {
   return video.data;
 };
 
-const useDeleteFile = (file: string, userId: string) => {
-  return useMutation({ mutationFn: () => deleteFile(file, userId) });
+interface UseDeleteFileProps {
+  workId: string;
+  fileUrl: string;
+  onSuccess?: () => void;
+  onError?: (error: any) => void;
+}
+
+const useDeleteFile = ({ workId, fileUrl, onSuccess, onError }: UseDeleteFileProps) => {
+  return useMutation({
+    mutationFn: () => deleteFile(fileUrl, workId),
+    onSuccess,
+    onError,
+  });
 };
 export { useDeleteFile, deleteFile };

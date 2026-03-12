@@ -10,7 +10,8 @@ import ProfileDashboard from "@/components/shared/ProfileDashboard";
 
 export const dynamic = "force-dynamic";
 
-const ProfilePage = async ({ searchParams }: SearchParamProps) => {
+const ProfilePage = async (props: SearchParamProps) => {
+  const searchParams = await props.searchParams;
   const user = await useUser();
   if (!user) {
     return redirect("/sign-in");
@@ -22,7 +23,7 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   const orders = await getOrdersByUser({ userId, page: ordersPage });
   const orderedEvents = orders?.data.map((order: IOrder) => order.event) || [];
   const organizedEvents = await getEventsByUser({ userId, page: eventsPage });
-  const organisations = await getOrganisationsByUser(userId) || [];
+  const organisations = (await getOrganisationsByUser(userId)) || [];
   const t = await getTranslations("profile");
 
   // Pre-resolve all translation strings to pass as plain data

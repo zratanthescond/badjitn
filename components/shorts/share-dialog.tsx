@@ -11,6 +11,7 @@ import {
 import { Facebook, Twitter, Instagram } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 interface ShareDialogProps {
   isOpen: boolean;
@@ -95,10 +96,7 @@ export function ShareDialog({ isOpen, onClose, videoId }: ShareDialogProps) {
               className="rounded-full px-6 bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() => {
                 navigator.clipboard.writeText(shareUrl);
-                toast({
-                  title: t("share.copied"),
-                  duration: 2000,
-                });
+                toast(t("share.copied"));
               }}
             >
               {t("share.copyLink")}

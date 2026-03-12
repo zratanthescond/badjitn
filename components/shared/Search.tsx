@@ -65,15 +65,17 @@ const Search = ({
             <>
               <SearchIcon className="md:w-4 md:h-4  " />
               <div className="flex-center w-4 h-4 md:w-5 md:h-5 mr-2">
-                <Button
-                  variant="ghost"
-                  size={"icon"}
-                  onClick={() => {
+                <div
+                  role="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
                     setQuery("");
                   }}
+                  className="p-1 rounded-md hover:bg-black/10 transition cursor-pointer"
                 >
                   <X />
-                </Button>
+                </div>
               </div>
               {query}
             </>

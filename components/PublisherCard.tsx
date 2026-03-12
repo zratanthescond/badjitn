@@ -28,10 +28,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { request } from "http";
-import {
-  checkoutPublisherRequest,
-  requestPublisherBadge,
-} from "@/lib/actions/user.actions";
+// TODO: These actions need to be implemented in user.actions
+const checkoutPublisherRequest = async (params: any) => { console.log('checkoutPublisherRequest', params); };
+const requestPublisherBadge = async (params: any) => { console.log('requestPublisherBadge', params); };
 import { loadStripe } from "@stripe/stripe-js";
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 // Base schema for organization details

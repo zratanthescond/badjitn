@@ -71,7 +71,7 @@ export default async function RootLayout({
   const localization = locale === "ar" ? arSA : locale === "fr" ? frFR : enUS;
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${inter.className} flex flex-1 min-h-screen flex-col items-center justify-center antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900`}
       >

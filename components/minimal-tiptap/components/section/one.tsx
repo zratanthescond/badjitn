@@ -23,7 +23,7 @@ interface TextStyle
     FormatAction,
     "value" | "icon" | "action" | "isActive" | "canExecute"
   > {
-  element: keyof JSX.IntrinsicElements;
+  element: keyof React.JSX.IntrinsicElements;
   level?: Level;
   className: string;
 }
@@ -117,7 +117,7 @@ export const SectionOne: React.FC<SectionOneProps> = React.memo(
           })}
           aria-label={label}
         >
-          <Element className={className}>{label}</Element>
+          {React.createElement(Element, { className }, label)}
           <ShortcutKey keys={shortcuts} />
         </DropdownMenuItem>
       ),

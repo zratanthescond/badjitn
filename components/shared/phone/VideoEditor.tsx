@@ -33,7 +33,7 @@ export default function VideoEditor({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [open, setOpen] = useState(true);
   const [videoUrl, setVideoUrl] = useState<string | File>("");
-  const { data, isPending, mutate, error } = useVideoProcess(url);
+  const { data, isPending, mutate, error } = useVideoProcess(url as File);
   const [video, setVideo] = useState<HTMLVideoElement | null>(null);
   const t = useTranslations("fileUploader");
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function VideoEditor({
   }, [url]);
 
   useEffect(() => {
-    setReel(videoUrl);
+    setReel(videoUrl as string);
   }, [videoUrl]);
   return data || videoUrl ? (
     <div className="flex z-10 flex-col items-center justify-center h-full w-full">
@@ -66,7 +66,8 @@ export default function VideoEditor({
 
       <HLSPlayer
         className="rounded-lg w-full h-full aspect-video object-fill relative "
-        manifest={videoUrl}
+        manifest={videoUrl as string}
+        isActive={true}
         ref={setVideo}
         controls
       />

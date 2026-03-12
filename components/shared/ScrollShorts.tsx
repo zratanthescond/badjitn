@@ -157,7 +157,8 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                 <div className="flex h-full w-full md:w-[450px] lg:w-[500px] relative shadow-2xl">
                   <HLSPlayer
                     manifest={video.imageUrl}
-                    ref={(el) => (videoRefs.current[virtualItem.index] = el)}
+                    ref={(el) => { videoRefs.current[virtualItem.index] = el; }}
+                    isActive={true}
                     autoPlay
                     loop
                     muted

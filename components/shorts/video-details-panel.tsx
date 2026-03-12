@@ -82,7 +82,7 @@ export function VideoDetailsPanel({
           <div className="flex flex-row items-center justify-between gap-4 flex-wrap">
             <div className="flex gap-2">
               <Badge className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white border-0 transition-all duration-200">
-                {c(video?.category?.name) || t("allCategories")}
+                {c(video?.category?.name || "all") || t("allCategories")}
               </Badge>
             </div>
 
@@ -107,7 +107,7 @@ export function VideoDetailsPanel({
 
           {/* Event Details */}
           <div className="bg-foreground/5 rounded-2xl p-4 backdrop-blur-sm border border-foreground/5">
-            <ReelDetails event={video} />
+            <ReelDetails event={video as any} />
           </div>
         </div>
         <ScrollBar orientation="vertical" className="bg-muted/50" />

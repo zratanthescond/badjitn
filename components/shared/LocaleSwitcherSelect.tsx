@@ -5,7 +5,6 @@ import { CheckIcon, Languages } from "lucide-react";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -49,13 +48,13 @@ export default function LocaleSwitcherSelect({
         </SelectTrigger>
 
         <SelectContent align="end" className="min-w-[8rem]">
-          <SelectGroup>
-            {items.map((item) => (
-              <SelectItem key={item.value} value={item.value}>
-                <span>{item.label}</span>
-              </SelectItem>
-            ))}
-          </SelectGroup>
+
+          {items.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              <span>{item.label}</span>
+            </SelectItem>
+          ))}
+
         </SelectContent>
       </Select>
     </div>

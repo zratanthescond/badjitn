@@ -57,7 +57,7 @@ const CalendarDay = ({
   modifiers, 
   getEventCountForDate 
 }: any) => {
-  const calendarRef = React.useRef<HTMLButtonElement>(null);
+  const calendarRef = React.useRef<HTMLButtonElement>(null) as React.RefObject<HTMLButtonElement>;
   const dayRender = useDayRender(date, displayMonth, calendarRef);
 
   if (dayRender.isHidden) return null;
@@ -135,7 +135,7 @@ export function DatePickerWithPresets() {
 
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
           variant={"ghost"}
           className="glass min-h-[54px] rounded-full flex-1 md:w-52 w-full "
@@ -143,17 +143,17 @@ export function DatePickerWithPresets() {
           <CalendarIcon className="mr-2 h-4 w-4 " />
           {date ? (
             <>
-              <Button
-                variant="ghost"
-                size={"icon"}
+              <div
+                role="button"
                 onClick={(e) => {
                   e.stopPropagation();
+                  e.preventDefault();
                   setDate(undefined);
                 }}
-                className="mr-0.5"
+                className="mr-0.5 p-2 rounded-md hover:bg-black/10 transition cursor-pointer"
               >
                 <X className="h-4 w-4" />
-              </Button>{" "}
+              </div>{" "}
               <span>{format(date, "PPP")}</span>
             </>
           ) : (

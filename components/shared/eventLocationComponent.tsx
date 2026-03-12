@@ -176,7 +176,7 @@ export default function EventLocationComponent({ event }: { event: Event }) {
       </div>
 
       <LoadScript
-        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
       >
         <GoogleMap
           mapContainerStyle={containerStyle}
@@ -185,7 +185,9 @@ export default function EventLocationComponent({ event }: { event: Event }) {
           onLoad={handleLoad}
           options={mapOptions}
         >
-          <Marker position={markerPosition} />
+          <>
+            <Marker position={markerPosition} />
+          </>
         </GoogleMap>
       </LoadScript>
     </div>

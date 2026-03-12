@@ -1,0 +1,1156 @@
+﻿yarn check v1.22.22
+node.exe : warning Workspaces 
+can only be enabled in 
+private projects.
+Au caractère 
+C:\nvm4w\nodejs\yarn.ps1:16 : 
+5
++     & "$basedir/node$exe"  "
+$basedir/node_modules/yarn/bin
+/yarn.js" $ ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (warning W  
+  orkspa...ivate projects.:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+warning "rimraf#glob@^7.1.3" 
+could be deduped from "7.2.3" 
+to "glob@7.2.3"
+warning "@clerk/elements##@rad
+ix-ui/react-slot@^1.1.0" 
+could be deduped from "1.2.4" 
+to 
+"@radix-ui\\react-slot@1.2.4"
+error "@clerk/elements##next@^
+13.5.4 || ^14.0.3 || ^15" 
+doesn't satisfy found match 
+of "next@16.1.6"
+error 
+"@clerk/nextjs##react@^17.0.2 
+|| ^18.0.0-0" doesn't satisfy 
+found match of "react@19.2.4"
+error "@clerk/nextjs##react-do
+m@^17.0.2 || ^18.0.0-0" 
+doesn't satisfy found match 
+of "react-dom@19.2.4"
+error "@radix-ui/react-alert-d
+ialog##@radix-ui/primitive@1.1
+.3" doesn't satisfy found 
+match of "@radix-ui\\react-ale
+rt-dialog#@radix-ui\\primitive
+@1.0.1"
+error "@radix-ui/react-alert-d
+ialog##@radix-ui/react-context
+@1.1.2" doesn't satisfy found 
+match of "@radix-ui\\react-ale
+rt-dialog#@radix-ui\\react-con
+text@1.0.1"
+error "@radix-ui/react-alert-d
+ialog##@radix-ui/react-dialog@
+1.1.15" doesn't satisfy found 
+match of "@radix-ui\\react-ale
+rt-dialog#@radix-ui\\react-dia
+log@1.0.5"
+error "@radix-ui/react-alert-d
+ialog##@radix-ui/react-primiti
+ve@2.1.3" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-alert-dialog#@radix-ui\\rea
+ct-primitive@1.0.3"
+error "@radix-ui/react-alert-d
+ialog##@radix-ui/react-compose
+-refs@1.1.2" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-alert-dialog#@radix-ui\\rea
+ct-compose-refs@1.0.1"
+error "@radix-ui/react-avatar#
+#@radix-ui/react-use-callback-
+ref@1.1.1" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-avatar#@radix-ui\\react-use
+-callback-ref@1.1.0"
+error "@radix-ui/react-avatar#
+#@radix-ui/react-use-layout-ef
+fect@1.1.1" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-avatar#@radix-ui\\react-use
+-layout-effect@1.1.0"
+error "@radix-ui/react-dialog#
+#@radix-ui/primitive@1.1.3" 
+doesn't satisfy found match 
+of "@radix-ui\\react-dialog#@r
+adix-ui\\primitive@1.1.1"
+error "@radix-ui/react-dialog#
+#@radix-ui/react-compose-refs@
+1.1.2" doesn't satisfy found 
+match of "@radix-ui\\react-dia
+log#@radix-ui\\react-compose-r
+efs@1.1.1"
+warning "@radix-ui/react-dialo
+g##@radix-ui/react-dismissable
+-layer@1.1.11" could be 
+deduped from "1.1.11" to "@rad
+ix-ui\\react-dismissable-layer
+@1.1.11"
+warning "@radix-ui/react-dialo
+g##@radix-ui/react-focus-scope
+@1.1.7" could be deduped from 
+"1.1.7" to "@radix-ui\\react-f
+ocus-scope@1.1.7"
+warning "@radix-ui/react-dialo
+g##@radix-ui/react-focus-guard
+s@1.1.3" could be deduped 
+from "1.1.3" to "@radix-ui\\re
+act-focus-guards@1.1.3"
+error "@radix-ui/react-dialog#
+#@radix-ui/react-context@1.1.2
+" doesn't satisfy found match 
+of "@radix-ui\\react-dialog#@r
+adix-ui\\react-context@1.1.1"
+warning "@radix-ui/react-dialo
+g##@radix-ui/react-portal@1.1.
+9" could be deduped from 
+"1.1.9" to "@radix-ui\\react-p
+ortal@1.1.9"
+error "@radix-ui/react-dialog#
+#@radix-ui/react-presence@1.1.
+5" doesn't satisfy found 
+match of "@radix-ui\\react-dia
+log#@radix-ui\\react-presence@
+1.1.2"
+error "@radix-ui/react-dialog#
+#@radix-ui/react-primitive@2.1
+.3" doesn't satisfy found 
+match of "@radix-ui\\react-dia
+log#@radix-ui\\react-primitive
+@2.0.1"
+error "@radix-ui/react-popover
+##@radix-ui/primitive@1.1.3" 
+doesn't satisfy found match 
+of "@radix-ui\\react-popover#@
+radix-ui\\primitive@1.1.0"
+error "@radix-ui/react-popover
+##@radix-ui/react-compose-refs
+@1.1.2" doesn't satisfy found 
+match of "@radix-ui\\react-pop
+over#@radix-ui\\react-compose-
+refs@1.1.0"
+error "@radix-ui/react-popover
+##@radix-ui/react-dismissable-
+layer@1.1.11" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-popover#@radix-ui\\react-di
+smissable-layer@1.1.1"
+error "@radix-ui/react-popover
+##@radix-ui/react-focus-guards
+@1.1.3" doesn't satisfy found 
+match of "@radix-ui\\react-pop
+over#@radix-ui\\react-focus-gu
+ards@1.1.1"
+error "@radix-ui/react-popover
+##@radix-ui/react-focus-scope@
+1.1.7" doesn't satisfy found 
+match of "@radix-ui\\react-pop
+over#@radix-ui\\react-focus-sc
+ope@1.1.0"
+error "@radix-ui/react-popover
+##@radix-ui/react-id@1.1.1" 
+doesn't satisfy found match 
+of "@radix-ui\\react-popover#@
+radix-ui\\react-id@1.1.0"
+error "@radix-ui/react-popover
+##@radix-ui/react-context@1.1.
+2" doesn't satisfy found 
+match of "@radix-ui\\react-pop
+over#@radix-ui\\react-context@
+1.1.1"
+error "@radix-ui/react-popover
+##@radix-ui/react-presence@1.1
+.5" doesn't satisfy found 
+match of "@radix-ui\\react-pop
+over#@radix-ui\\react-presence
+@1.1.1"
+error "@radix-ui/react-popover
+##@radix-ui/react-portal@1.1.9
+" doesn't satisfy found match 
+of "@radix-ui\\react-popover#@
+radix-ui\\react-portal@1.1.2"
+error "@radix-ui/react-popover
+##@radix-ui/react-popper@1.2.8
+" doesn't satisfy found match 
+of "@radix-ui\\react-popover#@
+radix-ui\\react-popper@1.2.0"
+error "@radix-ui/react-popover
+##@radix-ui/react-primitive@2.
+1.3" doesn't satisfy found 
+match of "@radix-ui\\react-pop
+over#@radix-ui\\react-primitiv
+e@2.0.0"
+error "@radix-ui/react-popover
+##@radix-ui/react-use-controll
+able-state@1.2.2" doesn't 
+satisfy found match of "@radix
+-ui\\react-popover#@radix-ui\\
+react-use-controllable-state@1
+.1.0"
+warning "@radix-ui/react-selec
+t##@radix-ui/number@1.1.1" 
+could be deduped from "1.1.1" 
+to "@radix-ui\\number@1.1.1"
+error "@radix-ui/react-select#
+#@radix-ui/primitive@1.1.3" 
+doesn't satisfy found match 
+of "@radix-ui\\react-select#@r
+adix-ui\\primitive@1.0.1"
+error "@radix-ui/react-select#
+#@radix-ui/react-context@1.1.2
+" doesn't satisfy found match 
+of "@radix-ui\\react-select#@r
+adix-ui\\react-context@1.0.1"
+error "@radix-ui/react-select#
+#@radix-ui/react-compose-refs@
+1.1.2" doesn't satisfy found 
+match of "@radix-ui\\react-sel
+ect#@radix-ui\\react-compose-r
+efs@1.0.1"
+error "@radix-ui/react-select#
+#@radix-ui/react-direction@1.1
+.1" doesn't satisfy found 
+match of "@radix-ui\\react-sel
+ect#@radix-ui\\react-direction
+@1.0.1"
+error "@radix-ui/react-select#
+#@radix-ui/react-dismissable-l
+ayer@1.1.11" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-select#@radix-ui\\react-dis
+missable-layer@1.0.5"
+error "@radix-ui/react-select#
+#@radix-ui/react-id@1.1.1" 
+doesn't satisfy found match 
+of "@radix-ui\\react-select#@r
+adix-ui\\react-id@1.0.1"
+error "@radix-ui/react-select#
+#@radix-ui/react-use-callback-
+ref@1.1.1" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-select#@radix-ui\\react-use
+-callback-ref@1.0.1"
+error "@radix-ui/react-select#
+#@radix-ui/react-primitive@2.1
+.3" doesn't satisfy found 
+match of "@radix-ui\\react-sel
+ect#@radix-ui\\react-primitive
+@1.0.3"
+error "@radix-ui/react-select#
+#@radix-ui/react-use-controlla
+ble-state@1.2.2" doesn't 
+satisfy found match of "@radix
+-ui\\react-select#@radix-ui\\r
+eact-use-controllable-state@1.
+0.1"
+error "@radix-ui/react-select#
+#@radix-ui/react-use-layout-ef
+fect@1.1.1" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-select#@radix-ui\\react-use
+-layout-effect@1.0.1"
+error "@radix-ui/react-select#
+#@radix-ui/react-use-previous@
+1.1.1" doesn't satisfy found 
+match of "@radix-ui\\react-sel
+ect#@radix-ui\\react-use-previ
+ous@1.0.1"
+warning "@radix-ui/react-selec
+t##@radix-ui/react-visually-hi
+dden@1.2.3" could be deduped 
+from "1.2.3" to "@radix-ui\\re
+act-visually-hidden@1.2.3"
+error "@radix-ui/react-tooltip
+##@radix-ui/primitive@1.1.3" 
+doesn't satisfy found match 
+of "@radix-ui\\react-tooltip#@
+radix-ui\\primitive@1.1.0"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-compose-refs
+@1.1.2" doesn't satisfy found 
+match of "@radix-ui\\react-too
+ltip#@radix-ui\\react-compose-
+refs@1.1.0"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-context@1.1.
+2" doesn't satisfy found 
+match of "@radix-ui\\react-too
+ltip#@radix-ui\\react-context@
+1.1.1"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-dismissable-
+layer@1.1.11" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-tooltip#@radix-ui\\react-di
+smissable-layer@1.1.1"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-id@1.1.1" 
+doesn't satisfy found match 
+of "@radix-ui\\react-tooltip#@
+radix-ui\\react-id@1.1.0"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-popper@1.2.8
+" doesn't satisfy found match 
+of "@radix-ui\\react-tooltip#@
+radix-ui\\react-popper@1.2.0"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-portal@1.1.9
+" doesn't satisfy found match 
+of "@radix-ui\\react-tooltip#@
+radix-ui\\react-portal@1.1.2"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-presence@1.1
+.5" doesn't satisfy found 
+match of "@radix-ui\\react-too
+ltip#@radix-ui\\react-presence
+@1.1.1"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-primitive@2.
+1.3" doesn't satisfy found 
+match of "@radix-ui\\react-too
+ltip#@radix-ui\\react-primitiv
+e@2.0.0"
+error "@radix-ui/react-tooltip
+##@radix-ui/react-use-controll
+able-state@1.2.2" doesn't 
+satisfy found match of "@radix
+-ui\\react-tooltip#@radix-ui\\
+react-use-controllable-state@1
+.1.0"
+error "@react-google-maps/api#
+#react@^16.8 || ^17 || ^18" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error "@react-google-maps/api#
+#react-dom@^16.8 || ^17 || 
+^18" doesn't satisfy found 
+match of "react-dom@19.2.4"
+error 
+"@tiptap/react##react@^17.0.0 
+|| ^18.0.0" doesn't satisfy 
+found match of "react@19.2.4"
+error "@tiptap/react##react-do
+m@^17.0.0 || ^18.0.0" doesn't 
+satisfy found match of 
+"react-dom@19.2.4"
+error "@uploadthing/react##rea
+ct@^17.0.2 || ^18.0.0" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error "cmdk#react@^18.0.0" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error 
+"cmdk#react-dom@^18.0.0" 
+doesn't satisfy found match 
+of "react-dom@19.2.4"
+error "mongodb#socks@^2.7.1" 
+doesn't satisfy found match 
+of "socks@1.1.10"
+error 
+"next-auth#next@^14.0.0-0 || 
+^15.0.0-0" doesn't satisfy 
+found match of "next@16.1.6"
+error 
+"next-themes#react@^16.8 || 
+^17 || ^18" doesn't satisfy 
+found match of "react@19.2.4"
+error 
+"next-themes#react-dom@^16.8 
+|| ^17 || ^18" doesn't 
+satisfy found match of 
+"react-dom@19.2.4"
+warning "npx#npm@5.1.0" could 
+be deduped from "5.1.0" to 
+"npm@5.1.0"
+warning "npx#libnpx@10.2.2" 
+could be deduped from 
+"10.2.2" to "libnpx@10.2.2"
+error "react-datepicker#react@
+^16.9.0 || ^17 || ^18" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error "react-datepicker#react-
+dom@^16.9.0 || ^17 || ^18" 
+doesn't satisfy found match 
+of "react-dom@19.2.4"
+error "react-day-picker#react@
+^16.8.0 || ^17.0.0 || 
+^18.0.0" doesn't satisfy 
+found match of "react@19.2.4"
+error "react-file-viewer#react
+@^16.6.3" doesn't satisfy 
+found match of "react@19.2.4"
+error "react-file-viewer#react
+-dom@^16.6.3" doesn't satisfy 
+found match of 
+"react-dom@19.2.4"
+error "react-medium-image-zoom
+#react@^16.8.0 || ^17.0.0 || 
+^18.0.0" doesn't satisfy 
+found match of "react@19.2.4"
+error "react-medium-image-zoom
+#react-dom@^16.8.0 || ^17.0.0 
+|| ^18.0.0" doesn't satisfy 
+found match of 
+"react-dom@19.2.4"
+warning "@types/react-datepick
+er##@types/react@*" could be 
+deduped from "19.2.14" to 
+"@types\\react@19.2.14"
+warning "autoprefixer#browsers
+list#baseline-browser-mapping@
+^2.9.0" could be deduped from 
+"2.10.0" to "baseline-browser-
+mapping@2.10.0"
+warning 
+"npx#npm#JSONStream@~1.3.1" 
+could be deduped from "1.3.5" 
+to "JSONStream@1.3.5"
+warning 
+"npx#npm#abbrev@~1.1.0" could 
+be deduped from "1.1.1" to 
+"abbrev@1.1.1"
+warning 
+"npx#npm#ansicolors@~0.3.2" 
+could be deduped from "0.3.2" 
+to "ansicolors@0.3.2"
+warning 
+"npx#npm#ansistyles@~0.1.3" 
+could be deduped from "0.1.3" 
+to "ansistyles@0.1.3"
+warning 
+"npx#npm#archy@~1.0.0" could 
+be deduped from "1.0.0" to 
+"archy@1.0.0"
+warning 
+"npx#npm#cacache@~9.2.9" 
+could be deduped from "9.2.9" 
+to "cacache@9.2.9"
+warning 
+"npx#npm#call-limit@~1.1.0" 
+could be deduped from "1.1.1" 
+to "call-limit@1.1.1"
+warning 
+"npx#npm#cmd-shim@~2.0.2" 
+could be deduped from "2.0.2" 
+to "cmd-shim@2.0.2"
+warning 
+"npx#npm#columnify@~1.5.4" 
+could be deduped from "1.5.4" 
+to "columnify@1.5.4"
+warning "npx#npm#config-chain@
+~1.1.11" could be deduped 
+from "1.1.13" to 
+"config-chain@1.1.13"
+warning "npx#npm#detect-indent
+@~5.0.0" could be deduped 
+from "5.0.0" to 
+"detect-indent@5.0.0"
+warning 
+"npx#npm#dezalgo@~1.0.3" 
+could be deduped from "1.0.4" 
+to "dezalgo@1.0.4"
+warning 
+"npx#npm#editor@~1.0.0" could 
+be deduped from "1.0.0" to 
+"editor@1.0.0"
+warning 
+"npx#npm#fs-vacuum@~1.2.10" 
+could be deduped from 
+"1.2.10" to "fs-vacuum@1.2.10"
+warning "npx#npm#fs-write-stre
+am-atomic@~1.0.10" could be 
+deduped from "1.0.10" to "fs-w
+rite-stream-atomic@1.0.10"
+warning 
+"npx#npm#fstream@~1.0.11" 
+could be deduped from 
+"1.0.12" to "fstream@1.0.12"
+warning 
+"npx#npm#fstream-npm@~1.2.1" 
+could be deduped from "1.2.1" 
+to "fstream-npm@1.2.1"
+warning 
+"npx#npm#has-unicode@~2.0.1" 
+could be deduped from "2.0.1" 
+to "has-unicode@2.0.1"
+warning 
+"npx#npm#iferr@~0.1.5" could 
+be deduped from "0.1.5" to 
+"iferr@0.1.5"
+warning 
+"npx#npm#inflight@~1.0.6" 
+could be deduped from "1.0.6" 
+to "inflight@1.0.6"
+warning 
+"npx#npm#inherits@~2.0.3" 
+could be deduped from "2.0.4" 
+to "inherits@2.0.4"
+warning "npx#npm#ini@~1.3.4" 
+could be deduped from "1.3.8" 
+to "ini@1.3.8"
+warning "npx#npm#init-package-
+json@~1.10.1" could be 
+deduped from "1.10.3" to 
+"init-package-json@1.10.3"
+warning "npx#npm#lazy-property
+@~1.0.0" could be deduped 
+from "1.0.0" to 
+"lazy-property@1.0.0"
+warning 
+"npx#npm#lockfile@~1.0.3" 
+could be deduped from "1.0.4" 
+to "lockfile@1.0.4"
+warning "npx#npm#lodash._baseu
+niq@~4.6.0" could be deduped 
+from "4.6.0" to 
+"lodash._baseuniq@4.6.0"
+warning "npx#npm#lodash.cloned
+eep@~4.5.0" could be deduped 
+from "4.5.0" to 
+"lodash.clonedeep@4.5.0"
+warning 
+"npx#npm#lodash.union@~4.6.0" 
+could be deduped from "4.6.0" 
+to "lodash.union@4.6.0"
+warning 
+"npx#npm#lodash.uniq@~4.5.0" 
+could be deduped from "4.5.0" 
+to "lodash.uniq@4.5.0"
+warning "npx#npm#lodash.withou
+t@~4.4.0" could be deduped 
+from "4.4.0" to 
+"lodash.without@4.4.0"
+warning 
+"npx#npm#lru-cache@~4.1.1" 
+could be deduped from "4.1.5" 
+to "lru-cache@4.1.5"
+warning 
+"npx#npm#mississippi@~1.3.0" 
+could be deduped from "1.3.1" 
+to "mississippi@1.3.1"
+warning 
+"npx#npm#mkdirp@~0.5.1" could 
+be deduped from "0.5.6" to 
+"mkdirp@0.5.6"
+warning "npx#npm#move-concurre
+ntly@~1.0.1" could be deduped 
+from "1.0.1" to 
+"move-concurrently@1.0.1"
+warning 
+"npx#npm#node-gyp@~3.6.2" 
+could be deduped from "3.6.3" 
+to "node-gyp@3.6.3"
+warning "npx#npm#nopt@~4.0.1" 
+could be deduped from "4.0.3" 
+to "nopt@4.0.3"
+warning "npx#npm#npm-cache-fil
+ename@~1.0.2" could be 
+deduped from "1.0.2" to 
+"npm-cache-filename@1.0.2"
+warning "npx#npm#npm-install-c
+hecks@~3.0.0" could be 
+deduped from "3.0.2" to 
+"npm-install-checks@3.0.2"
+warning "npx#npm#npm-package-a
+rg@~5.1.2" could be deduped 
+from "5.1.2" to 
+"npm-package-arg@5.1.2"
+warning "npx#npm#npm-registry-
+client@~8.4.0" could be 
+deduped from "8.4.0" to 
+"npm-registry-client@8.4.0"
+warning "npx#npm#npm-user-vali
+date@~1.0.0" could be deduped 
+from "1.0.1" to 
+"npm-user-validate@1.0.1"
+warning 
+"npx#npm#npmlog@~4.1.2" could 
+be deduped from "4.1.2" to 
+"npmlog@4.1.2"
+warning "npx#npm#once@~1.4.0" 
+could be deduped from "1.4.0" 
+to "once@1.4.0"
+warning 
+"npx#npm#opener@~1.4.3" could 
+be deduped from "1.4.3" to 
+"opener@1.4.3"
+warning 
+"npx#npm#osenv@~0.1.4" could 
+be deduped from "0.1.5" to 
+"osenv@0.1.5"
+warning 
+"npx#npm#pacote@~2.7.38" 
+could be deduped from 
+"2.7.38" to "pacote@2.7.38"
+warning "npx#npm#path-is-insid
+e@~1.0.2" could be deduped 
+from "1.0.2" to 
+"path-is-inside@1.0.2"
+warning "npx#npm#promise-infli
+ght@~1.0.1" could be deduped 
+from "1.0.1" to 
+"promise-inflight@1.0.1"
+warning "npx#npm#read@~1.0.7" 
+could be deduped from "1.0.7" 
+to "read@1.0.7"
+warning "npx#npm#read-cmd-shim
+@~1.0.1" could be deduped 
+from "1.0.5" to 
+"read-cmd-shim@1.0.5"
+warning "npx#npm#read-installe
+d@~4.0.3" could be deduped 
+from "4.0.3" to 
+"read-installed@4.0.3"
+warning "npx#npm#read-package-
+tree@~5.1.6" could be deduped 
+from "5.1.6" to 
+"read-package-tree@5.1.6"
+warning "npx#npm#readable-stre
+am@~2.3.2" could be deduped 
+from "2.3.8" to 
+"readable-stream@2.3.8"
+warning 
+"npx#npm#request@~2.81.0" 
+could be deduped from 
+"2.81.0" to "request@2.81.0"
+warning 
+"npx#npm#retry@~0.10.1" could 
+be deduped from "0.10.1" to 
+"retry@0.10.1"
+warning 
+"npx#npm#semver@~5.3.0" could 
+be deduped from "5.3.0" to 
+"semver@5.3.0"
+warning "npx#npm#sha@~2.0.1" 
+could be deduped from "2.0.1" 
+to "sha@2.0.1"
+warning 
+"npx#npm#slide@~1.1.6" could 
+be deduped from "1.1.6" to 
+"slide@1.1.6"
+warning "npx#npm#sorted-object
+@~2.0.1" could be deduped 
+from "2.0.1" to 
+"sorted-object@2.0.1"
+warning "npx#npm#sorted-union-
+stream@~2.1.3" could be 
+deduped from "2.1.3" to 
+"sorted-union-stream@2.1.3"
+warning "npx#npm#ssri@~4.1.6" 
+could be deduped from "4.1.6" 
+to "ssri@4.1.6"
+warning "npx#npm#tar@~2.2.1" 
+could be deduped from "2.2.2" 
+to "tar@2.2.2"
+warning 
+"npx#npm#text-table@~0.2.0" 
+could be deduped from "0.2.0" 
+to "text-table@0.2.0"
+warning 
+"npx#npm#uid-number@0.0.6" 
+could be deduped from "0.0.6" 
+to "uid-number@0.0.6"
+warning 
+"npx#npm#umask@~1.1.0" could 
+be deduped from "1.1.0" to 
+"umask@1.1.0"
+warning "npx#npm#unique-filena
+me@~1.1.0" could be deduped 
+from "1.1.1" to 
+"unique-filename@1.1.1"
+warning 
+"npx#npm#unpipe@~1.0.0" could 
+be deduped from "1.0.0" to 
+"unpipe@1.0.0"
+warning "npx#npm#validate-npm-
+package-name@~3.0.0" could be 
+deduped from "3.0.0" to "valid
+ate-npm-package-name@3.0.0"
+warning 
+"npx#npm#worker-farm@~1.3.1" 
+could be deduped from "1.3.1" 
+to "worker-farm@1.3.1"
+warning 
+"npx#npm#wrappy@~1.0.2" could 
+be deduped from "1.0.2" to 
+"wrappy@1.0.2"
+warning "npx#npm#write-file-at
+omic@~2.1.0" could be deduped 
+from "2.1.0" to 
+"write-file-atomic@2.1.0"
+error "@radix-ui/react-accordi
+on#@radix-ui/react-collection#
+#@radix-ui/react-compose-refs@
+1.1.2" doesn't satisfy found 
+match of "@radix-ui\\react-col
+lection#@radix-ui\\react-compo
+se-refs@1.0.1"
+error "@radix-ui/react-accordi
+on#@radix-ui/react-collection#
+#@radix-ui/react-context@1.1.2
+" doesn't satisfy found match 
+of "@radix-ui\\react-collectio
+n#@radix-ui\\react-context@1.0
+.1"
+error "@radix-ui/react-accordi
+on#@radix-ui/react-collection#
+#@radix-ui/react-primitive@2.1
+.3" doesn't satisfy found 
+match of "@radix-ui\\react-col
+lection#@radix-ui\\react-primi
+tive@1.0.3"
+error "cmdk#@radix-ui/react-di
+alog##react@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog##react-dom@^16.8 || 
+^17.0 || ^18.0" doesn't 
+satisfy found match of 
+"react-dom@19.2.4"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/primitive@1.1.3" 
+doesn't satisfy found match 
+of "@radix-ui\\react-menu#@rad
+ix-ui\\primitive@1.0.1"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-compose-refs@1.
+1.2" doesn't satisfy found 
+match of "@radix-ui\\react-men
+u#@radix-ui\\react-compose-ref
+s@1.0.1"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-context@1.1.2" 
+doesn't satisfy found match 
+of "@radix-ui\\react-menu#@rad
+ix-ui\\react-context@1.0.1"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-dismissable-lay
+er@1.1.11" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-menu#@radix-ui\\react-dismi
+ssable-layer@1.0.5"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-direction@1.1.1
+" doesn't satisfy found match 
+of "@radix-ui\\react-menu#@rad
+ix-ui\\react-direction@1.0.1"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-id@1.1.1" 
+doesn't satisfy found match 
+of "@radix-ui\\react-menu#@rad
+ix-ui\\react-id@1.0.1"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-presence@1.1.5"
+ doesn't satisfy found match 
+of "@radix-ui\\react-menu#@rad
+ix-ui\\react-presence@1.0.1"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-primitive@2.1.3
+" doesn't satisfy found match 
+of "@radix-ui\\react-menu#@rad
+ix-ui\\react-primitive@1.0.3"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-roving-focus@1.
+1.11" doesn't satisfy found 
+match of "@radix-ui\\react-men
+u#@radix-ui\\react-roving-focu
+s@1.0.4"
+error "@radix-ui/react-dropdow
+n-menu#@radix-ui/react-menu##@
+radix-ui/react-use-callback-re
+f@1.1.1" doesn't satisfy 
+found match of "@radix-ui\\rea
+ct-menu#@radix-ui\\react-use-c
+allback-ref@1.0.1"
+error "cmdk#@radix-ui/react-pr
+imitive##react@^16.8 || ^17.0 
+|| ^18.0" doesn't satisfy 
+found match of "react@19.2.4"
+error "cmdk#@radix-ui/react-pr
+imitive##react-dom@^16.8 || 
+^17.0 || ^18.0" doesn't 
+satisfy found match of 
+"react-dom@19.2.4"
+warning "@radix-ui/react-aspec
+t-ratio#@radix-ui/react-primit
+ive##@radix-ui/react-slot@1.2.
+4" could be deduped from 
+"1.2.4" to 
+"@radix-ui\\react-slot@1.2.4"
+warning "@radix-ui/react-avata
+r#@radix-ui/react-primitive##@
+radix-ui/react-slot@1.2.4" 
+could be deduped from "1.2.4" 
+to 
+"@radix-ui\\react-slot@1.2.4"
+warning "@radix-ui/react-label
+#@radix-ui/react-primitive##@r
+adix-ui/react-slot@1.2.4" 
+could be deduped from "1.2.4" 
+to 
+"@radix-ui\\react-slot@1.2.4"
+warning "@radix-ui/react-progr
+ess#@radix-ui/react-primitive#
+#@radix-ui/react-slot@1.2.4" 
+could be deduped from "1.2.4" 
+to 
+"@radix-ui\\react-slot@1.2.4"
+warning "@radix-ui/react-separ
+ator#@radix-ui/react-primitive
+##@radix-ui/react-slot@1.2.4" 
+could be deduped from "1.2.4" 
+to 
+"@radix-ui\\react-slot@1.2.4"
+error "@radix-ui/react-alert-d
+ialog#@radix-ui/react-slot##@r
+adix-ui/react-compose-refs@1.1
+.2" doesn't satisfy found 
+match of "@radix-ui\\react-ale
+rt-dialog#@radix-ui\\react-com
+pose-refs@1.0.1"
+error "@radix-ui/react-dialog#
+@radix-ui/react-slot##@radix-u
+i/react-compose-refs@1.1.2" 
+doesn't satisfy found match 
+of "@radix-ui\\react-dialog#@r
+adix-ui\\react-compose-refs@1.
+1.1"
+error "@radix-ui/react-popover
+#@radix-ui/react-slot##@radix-
+ui/react-compose-refs@1.1.2" 
+doesn't satisfy found match 
+of "@radix-ui\\react-popover#@
+radix-ui\\react-compose-refs@1
+.1.0"
+error "@radix-ui/react-select#
+@radix-ui/react-slot##@radix-u
+i/react-compose-refs@1.1.2" 
+doesn't satisfy found match 
+of "@radix-ui\\react-select#@r
+adix-ui\\react-compose-refs@1.
+0.1"
+error "@radix-ui/react-tooltip
+#@radix-ui/react-slot##@radix-
+ui/react-compose-refs@1.1.2" 
+doesn't satisfy found match 
+of "@radix-ui\\react-tooltip#@
+radix-ui\\react-compose-refs@1
+.1.0"
+error "next-intl#@swc/core##@s
+wc/helpers@>=0.5.17" doesn't 
+satisfy found match of 
+"@swc\\helpers@0.5.15"
+error "@clerk/elements#@xstate
+/react##react@^16.8.0 || 
+^17.0.0 || ^18.0.0" doesn't 
+satisfy found match of 
+"react@19.2.4"
+error "mongoose#mongodb#socks@
+^2.7.1" doesn't satisfy found 
+match of "socks@1.1.10"
+error "react-file-viewer#react
+-data-grid#react@^15.0.0 || 
+^16.0.0" doesn't satisfy 
+found match of "react@19.2.4"
+error "react-file-viewer#react
+-data-grid#react-dom@^15.0.0 
+|| ^16.0.0" doesn't satisfy 
+found match of 
+"react-dom@19.2.4"
+error "react-datepicker#react-
+onclickoutside#react@^15.5.x 
+|| ^16.x || ^17.x || ^18.x" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error "react-datepicker#react-
+onclickoutside#react-dom@^15.5
+.x || ^16.x || ^17.x || 
+^18.x" doesn't satisfy found 
+match of "react-dom@19.2.4"
+error "@types/react-datepicker
+#react-popper#react@^16.8.0 
+|| ^17 || ^18" doesn't 
+satisfy found match of 
+"react@19.2.4"
+error "@types/react-datepicker
+#react-popper#react-dom@^16.8.
+0 || ^17 || ^18" doesn't 
+satisfy found match of 
+"react-dom@19.2.4"
+error "@clerk/shared#swr##reac
+t@^16.11.0 || ^17.0.0 || 
+^18.0.0" doesn't satisfy 
+found match of "react@19.2.4"
+warning "shadcn#zod-to-json-sc
+hema#zod@^3.25 || ^4" could 
+be deduped from "4.3.6" to 
+"zod@4.3.6"
+warning 
+"npm#glob#fs.realpath@^1.0.0" 
+could be deduped from "1.0.0" 
+to "fs.realpath@1.0.0"
+warning 
+"npm#glob#inflight@^1.0.4" 
+could be deduped from "1.0.6" 
+to "inflight@1.0.6"
+warning "npm#glob#inherits@2" 
+could be deduped from "2.0.4" 
+to "inherits@2.0.4"
+warning 
+"npm#glob#minimatch@^3.0.4" 
+could be deduped from "3.1.2" 
+to "minimatch@3.1.2"
+warning 
+"npm#glob#once@^1.3.0" could 
+be deduped from "1.4.0" to 
+"once@1.4.0"
+warning "npm#glob#path-is-abso
+lute@^1.0.0" could be deduped 
+from "1.0.1" to 
+"path-is-absolute@1.0.1"
+warning "npm#normalize-package
+-data#is-builtin-module@^1.0.0
+" could be deduped from 
+"1.0.0" to 
+"is-builtin-module@1.0.0"
+warning "npm#normalize-package
+-data#semver@2 || 3 || 4 || 
+5" could be deduped from 
+"5.3.0" to "semver@5.3.0"
+warning "npm#normalize-package
+-data#validate-npm-package-lic
+ense@^3.0.1" could be deduped 
+from "3.0.4" to "validate-npm-
+package-license@3.0.4"
+warning 
+"npm#rimraf#glob@^7.1.3" 
+could be deduped from "7.1.7" 
+to "npm#glob@7.1.7"
+warning "npm#strip-ansi#ansi-r
+egex@^3.0.0" could be deduped 
+from "3.0.1" to 
+"npm#ansi-regex@3.0.1"
+warning "npm#update-notifier#b
+oxen@^1.0.0" could be deduped 
+from "1.3.0" to "boxen@1.3.0"
+warning "npm#update-notifier#c
+halk@^1.0.0" could be deduped 
+from "1.1.3" to 
+"npm#chalk@1.1.3"
+warning "npm#update-notifier#c
+onfigstore@^3.0.0" could be 
+deduped from "3.1.5" to 
+"configstore@3.1.5"
+warning "npm#update-notifier#i
+mport-lazy@^2.1.0" could be 
+deduped from "2.1.0" to 
+"import-lazy@2.1.0"
+warning "npm#update-notifier#i
+s-npm@^1.0.0" could be 
+deduped from "1.0.0" to 
+"is-npm@1.0.0"
+warning "npm#update-notifier#l
+atest-version@^3.0.0" could 
+be deduped from "3.1.0" to 
+"latest-version@3.1.0"
+warning "npm#update-notifier#s
+emver-diff@^2.0.0" could be 
+deduped from "2.1.0" to 
+"semver-diff@2.1.0"
+warning "npm#update-notifier#x
+dg-basedir@^3.0.0" could be 
+deduped from "3.0.0" to 
+"xdg-basedir@3.0.0"
+warning 
+"npm#which#isexe@^2.0.0" 
+could be deduped from "2.0.0" 
+to "isexe@2.0.0"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-compose-r
+efs##react@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-context##
+react@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-dismissab
+le-layer##react@^16.8 || 
+^17.0 || ^18.0" doesn't 
+satisfy found match of 
+"react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-dismissab
+le-layer##react-dom@^16.8 || 
+^17.0 || ^18.0" doesn't 
+satisfy found match of 
+"react-dom@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-focus-gua
+rds##react@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-focus-sco
+pe##react@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-focus-sco
+pe##react-dom@^16.8 || ^17.0 
+|| ^18.0" doesn't satisfy 
+found match of 
+"react-dom@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-id##react
+@^16.8 || ^17.0 || ^18.0" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-portal##r
+eact@^16.8 || ^17.0 || ^18.0" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-portal##r
+eact-dom@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react-dom@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-presence#
+#react@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-presence#
+#react-dom@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react-dom@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-slot##rea
+ct@^16.8 || ^17.0 || ^18.0" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error "@radix-ui/react-collect
+ion#@radix-ui/react-slot##@rad
+ix-ui/react-compose-refs@1.1.2
+" doesn't satisfy found match 
+of "@radix-ui\\react-collectio
+n#@radix-ui\\react-compose-ref
+s@1.0.1"
+error "@radix-ui/react-menu#@r
+adix-ui/react-slot##@radix-ui/
+react-compose-refs@1.1.2" 
+doesn't satisfy found match 
+of "@radix-ui\\react-menu#@rad
+ix-ui\\react-compose-refs@1.0.
+1"
+error "cmdk#@radix-ui/react-di
+alog#@radix-ui/react-use-contr
+ollable-state##react@^16.8 || 
+^17.0 || ^18.0" doesn't 
+satisfy found match of 
+"react@19.2.4"
+error "cmdk#@radix-ui/react-di
+alog#react-remove-scroll#@type
+s/react@^16.8.0 || ^17.0.0 || 
+^18.0.0" doesn't satisfy 
+found match of 
+"@types\\react@19.2.14"
+error "cmdk#@radix-ui/react-di
+alog#react-remove-scroll#react
+@^16.8.0 || ^17.0.0 || 
+^18.0.0" doesn't satisfy 
+found match of "react@19.2.4"
+warning Optional dependency 
+"react-pdf#pdfjs-dist#canvas" 
+not installed
+warning "npm#read-package-json
+#glob#inflight@^1.0.4" could 
+be deduped from "1.0.6" to 
+"inflight@1.0.6"
+warning "npm#read-package-json
+#glob#inherits@2" could be 
+deduped from "2.0.4" to 
+"inherits@2.0.4"
+warning "npm#read-package-json
+#glob#once@^1.3.0" could be 
+deduped from "1.4.0" to 
+"once@1.4.0"
+warning "npm#rimraf#glob#infli
+ght@^1.0.4" could be deduped 
+from "1.0.6" to 
+"inflight@1.0.6"
+warning 
+"npm#rimraf#glob#inherits@2" 
+could be deduped from "2.0.4" 
+to "inherits@2.0.4"
+warning 
+"npm#rimraf#glob#once@^1.3.0" 
+could be deduped from "1.4.0" 
+to "once@1.4.0"
+warning "npm#read-package-json
+#normalize-package-data#semver
+@2 || 3 || 4 || 5" could be 
+deduped from "5.3.0" to 
+"semver@5.3.0"
+warning "npm#read-package-json
+#normalize-package-data#valida
+te-npm-package-license@^3.0.1"
+ could be deduped from 
+"3.0.4" to "validate-npm-packa
+ge-license@3.0.4"
+error "cmdk#@radix-ui/react-di
+smissable-layer#@radix-ui/reac
+t-use-callback-ref##react@^16.
+8 || ^17.0 || ^18.0" doesn't 
+satisfy found match of 
+"react@19.2.4"
+error "cmdk#@radix-ui/react-di
+smissable-layer#@radix-ui/reac
+t-use-escape-keydown##react@^1
+6.8 || ^17.0 || ^18.0" 
+doesn't satisfy found match 
+of "react@19.2.4"
+error "cmdk#@radix-ui/react-id
+#@radix-ui/react-use-layout-ef
+fect##react@^16.8 || ^17.0 || 
+^18.0" doesn't satisfy found 
+match of "react@19.2.4"
+warning "@zkochan/rimraf#rimra
+f##glob@^7.1.3" could be 
+deduped from "7.2.3" to 
+"glob@7.2.3"
+warning "@mapbox/node-pre-gyp#
+rimraf##glob@^7.1.3" could be 
+deduped from "7.2.3" to 
+"glob@7.2.3"
+info Found 119 warnings.
+error Found 119 errors.
+info Visit https://yarnpkg.com/en/docs/cli/check for documentation about this command.

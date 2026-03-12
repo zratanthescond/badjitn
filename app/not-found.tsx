@@ -6,7 +6,7 @@ import { AlertTriangle, Home, ArrowLeft, HelpCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 
-export default function NotFound(): JSX.Element {
+export default function NotFound() {
   const t = useTranslations("notFound");
 
   const handleGoBack = (): void => {

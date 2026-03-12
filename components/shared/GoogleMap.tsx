@@ -41,7 +41,7 @@ export default function GoogleMapComponent({
     [latitude, longitude]
   );
 
-  const handlePlaceChanged = (adr) => {
+  const handlePlaceChanged = (adr: any) => {
     const place = adr;
     if (place.geometry?.location) {
       setAddress(place.formatted_address || "");

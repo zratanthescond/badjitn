@@ -4,7 +4,7 @@ import { handleError } from "@/lib/utils";
 
 export const revalidate = 0;
 
-export async function GET(req: Request, res: Response) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
   const page = searchParams.get("page")

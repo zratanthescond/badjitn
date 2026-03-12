@@ -266,7 +266,7 @@ export default function TicketComponent({
                               key={index}
                               className={isRTL ? "font-arabic" : ""}
                             >
-                              • {plan.name} - {formatPrice(plan?.price, "TND")}
+                              • {plan.name} - {formatPrice(String(plan?.price), "TND")}
                             </li>
                           )
                         )}

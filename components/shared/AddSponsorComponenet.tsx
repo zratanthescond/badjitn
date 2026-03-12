@@ -74,13 +74,13 @@ export default function SponsorForm({ userId }: SponsorFormProps) {
         (file) => ["image/png", "image/jpeg", "image/jpg"].includes(file.type),
         t("validation.fileType")
       )
-      .optional(),
+      .optional() as any,
     website: z
       .string()
       .min(1, { message: t("validation.urlRequired") })
       .url({ message: t("validation.urlInvalid") }),
-    tier: z.string({
-      required_error: t("validation.tierRequired"),
+    tier: z.string().min(1, {
+      message: t("validation.tierRequired"),
     }),
   });
 

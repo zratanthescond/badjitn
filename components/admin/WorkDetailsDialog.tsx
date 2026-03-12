@@ -41,7 +41,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   const locale = useLocale();
   const isRTL = locale === "ar";
   const [isApproving, setIsApproving] = useState(false);
-  const fileViewerRef = useRef(null);
+  const fileViewerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const summaryStatus = value?.summaryStatus ?? value?.status ?? "submitted";
   const isApproved = summaryStatus === "approved";

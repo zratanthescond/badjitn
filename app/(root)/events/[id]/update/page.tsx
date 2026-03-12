@@ -5,12 +5,18 @@ import { checkOrgPermission } from "@/lib/actions/organisation.actions";
 import { notFound, redirect } from "next/navigation";
 
 type UpdateEventProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-const UpdateEvent = async ({ params: { id } }: UpdateEventProps) => {
+const UpdateEvent = async (props: UpdateEventProps) => {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
+
   const user = await useUser();
   if (!user) {
     return redirect("/sign-in");

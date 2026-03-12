@@ -1,7 +1,7 @@
 "use client";
 
 import { IEvent } from "@/lib/database/models/event.model";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "./AuthWrappers";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";

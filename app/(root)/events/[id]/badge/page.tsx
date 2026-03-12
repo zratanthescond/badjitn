@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { getEventById } from "@/lib/actions/event.actions";
 import { IntegratedBadgeSystem } from "@/components/shared/badge/integrated-badge-system";
 import { redirect } from "next/navigation";
@@ -8,12 +8,18 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/actions/user.actions";
 
 type BadgePageProps = {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 };
 
-export default async function BadgePage({ params: { id } }: BadgePageProps) {
+export default async function BadgePage(props: BadgePageProps) {
+    const params = await props.params;
+
+    const {
+        id
+    } = params;
+
     const user = await useUser();
     if (!user) {
         return redirect("/sign-in");

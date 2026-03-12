@@ -13,7 +13,8 @@ import { useUser } from "@/lib/actions/user.actions";
 import { createOrder } from "@/lib/actions/order.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslations } from "next-intl";
-import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "./AuthWrappers";
 import { BankTransferModal } from "./bank-transfer-modal";
 import { useRouter } from "next/navigation";
 import { Badge } from "../ui/badge";
@@ -109,8 +110,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         ...(hasDiscount && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
         ...(hasDiscount && Number(discountInfo?.value) > 0 ? { discountInfo } : {}),
         details: details,
-        buyerId: userId,
+        buyerId: userId || "",
         stripeId: `${uuidv4()}`,
+        createdAt: new Date(),
       });
       if (order) {
         toast({

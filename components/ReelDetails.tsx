@@ -17,7 +17,7 @@ import { useState, useCallback, useMemo } from "react";
 import { differenceInDays, format } from "date-fns";
 import { enUS, es, fr, de, ar } from "date-fns/locale";
 import { useTranslations, useLocale } from "next-intl";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "./shared/AuthWrappers";
 import { useRouter, usePathname } from "next/navigation";
 import {
   CalendarDays,
@@ -291,9 +291,9 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
       case "date":
         return <DateComponent />;
       case "location":
-        return <EventLocationComponent event={event} />;
+        return <EventLocationComponent event={event as any} />;
       case "price":
-        return <EventPriceComponent event={event} />;
+        return <EventPriceComponent event={event as any} />;
       case "feedback":
         return <FeedBackComponent eventId={event._id.toString()} />;
       default:

@@ -1,4 +1,4 @@
-"use sever";
+
 
 import { connectToDatabase } from "@/lib/database";
 import Music from "@/lib/database/models/music.model";
@@ -6,7 +6,7 @@ import { IUser } from "@/lib/database/models/user.model";
 import mongoose, { Mongoose } from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const body = await req.json();
 
   const data = body.metadata;

@@ -24,9 +24,9 @@ export function Mixer({
   selectedTime,
   setSelectedTime,
 }: MixerProps) {
-  const controllerRef = useRef();
-  const [scrollAreaWidth, setScrollAreaWidth] = useState();
-  const dimensions = useDimensions(controllerRef);
+  const controllerRef = useRef<HTMLDivElement>(null);
+  const [scrollAreaWidth, setScrollAreaWidth] = useState<any>();
+  const dimensions = useDimensions(controllerRef as any);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
@@ -34,7 +34,7 @@ export function Mixer({
     const video = videoRef.current;
 
     const handleTimeUpdate = () => {
-      setCurrentTime(video.currentTime);
+      setCurrentTime(video!.currentTime);
     };
     const handleVideoFinish = () => {
       // alert("Video finished successfully  ");
@@ -62,7 +62,7 @@ export function Mixer({
               color="white"
               fill="white"
               onClick={() => {
-                videoRef?.current.pause();
+                videoRef?.current?.pause();
                 setIsPlaying(false);
               }}
             />
@@ -74,7 +74,7 @@ export function Mixer({
               color="white"
               fill="white"
               onClick={() => {
-                videoRef?.current.play();
+                videoRef?.current?.play();
                 setIsPlaying(true);
               }}
             />

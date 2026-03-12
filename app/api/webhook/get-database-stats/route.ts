@@ -21,19 +21,19 @@ export async function GET(request: NextRequest) {
         Event.findOne({ deleted: { $ne: true } })
           .sort({ createdAt: 1 })
           .select("createdAt title")
-          .lean(),
+          .lean() as any,
         Event.findOne({ deleted: { $ne: true } })
           .sort({ createdAt: -1 })
           .select("createdAt title")
-          .lean(),
+          .lean() as any,
         Music.findOne({ deleted: { $ne: true } })
           .sort({ createdAt: 1 })
           .select("createdAt title")
-          .lean(),
+          .lean() as any,
         Music.findOne({ deleted: { $ne: true } })
           .sort({ createdAt: -1 })
           .select("createdAt title")
-          .lean(),
+          .lean() as any,
       ])
 
     const oldestFile = [oldestEvent, oldestMusic]

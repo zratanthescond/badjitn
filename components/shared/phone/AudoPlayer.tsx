@@ -15,8 +15,15 @@ const HLSAudioPlayer = ({
   onPlay,
   onStop,
   setUsedTrack,
+}: {
+  data: any;
+  id: any;
+  isActive: boolean;
+  onPlay: (id: any) => void;
+  onStop: (id: any) => void;
+  setUsedTrack: (track: any) => void;
 }) => {
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   // State to manage the play/pause status
   const [duration, setDuration] = useState<number>(0); // State to manage the duration of the track
   const audiSrc = process.env.NEXT_PUBLIC_FILE_SERVER_URL + data.path;
@@ -24,7 +31,7 @@ const HLSAudioPlayer = ({
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(audiSrc);
-      hls.attachMedia(audioRef.current);
+      hls.attachMedia(audioRef.current!);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         // audioRef.current.play();
@@ -33,10 +40,10 @@ const HLSAudioPlayer = ({
       return () => {
         hls.destroy();
       };
-    } else if (audioRef.current.canPlayType("application/vnd.apple.mpegurl")) {
+    } else if (audioRef.current?.canPlayType("application/vnd.apple.mpegurl")) {
       // For Safari support
-      audioRef.current.src = audiSrc;
-      audioRef.current.addEventListener("loadedmetadata", () => {
+      audioRef.current!.src = audiSrc;
+      audioRef.current!.addEventListener("loadedmetadata", () => {
         //audioRef.current.play();
       });
     }
@@ -59,7 +66,7 @@ const HLSAudioPlayer = ({
   };
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
-      setDuration(audioRef.current.duration);
+      setDuration(audioRef.current!.duration);
     }
   };
   useEffect(() => {
@@ -119,16 +126,16 @@ const HLSAudioPlayer = ({
   );
 };
 
-export const AudioPlayerList = ({ players, setUsedTrack }) => {
-  const [activePlayer, setActivePlayer] = useState(null);
+export const AudioPlayerList = ({ players, setUsedTrack }: { players: any[]; setUsedTrack: (track: any) => void }) => {
+  const [activePlayer, setActivePlayer] = useState<any>(null);
 
   // Play a player and stop the others
-  const handlePlay = (id) => {
+  const handlePlay = (id: any) => {
     setActivePlayer(id); // Set the current player as active
   };
 
   // Stop the current active player
-  const handleStop = (id) => {
+  const handleStop = (id: any) => {
     if (activePlayer === id) {
       setActivePlayer(null); // Reset if this player was playing
     }
@@ -137,7 +144,7 @@ export const AudioPlayerList = ({ players, setUsedTrack }) => {
   return (
     <div className="flex flex-col items-center w-full rounded-lg ">
       {players &&
-        players.map((player) => (
+        players.map((player: any) => (
           <>
             <HLSAudioPlayer
               key={player._id}

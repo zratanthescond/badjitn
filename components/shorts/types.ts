@@ -1,8 +1,20 @@
+import type { pricePlan } from "@/types";
+
 export interface Event {
   _id: string
   title: string
+  description: string
+  price: string
+  isFree: boolean
   imageUrl: string
-  url?: string
+  location: {
+    name: string
+    lon: number
+    lat: number
+  }
+  startDateTime: Date
+  endDateTime: Date
+  url: string
   category?: {
     name: string
   }
@@ -12,6 +24,8 @@ export interface Event {
     photo: string
     username: string
   }
+  pricePlan: pricePlan[]
+  isOnline: boolean
   organisation?: {
     _id: string
     name: string
@@ -20,6 +34,9 @@ export interface Event {
     isVerified?: boolean
   }
   sponsors?: string[]
+  country?: string
+  Sponsors?: string[]
+  attendees?: string[]
 }
 
 export interface ShortsData {

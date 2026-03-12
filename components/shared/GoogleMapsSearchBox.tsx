@@ -53,7 +53,7 @@ const getPlaceDetails = (
   );
   service.getDetails({ placeId }, (place, status) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      onSelect(place);
+      onSelect(place as PlaceDetails);
     }
   });
 };

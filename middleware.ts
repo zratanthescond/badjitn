@@ -1,70 +1,59 @@
-import { authMiddleware } from "@clerk/nextjs";
-import { connectToDatabase } from "./lib/database";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-import mongoose from "mongoose";
 import axios from "axios";
 
-export default authMiddleware({
-  async afterAuth(auth, req: NextRequest) {
-    console.log(auth.userId, "User ID from auth middleware");
-    try {
-      const userId = auth.userId;
-      if (!userId) {
-        return NextResponse.next();
-      }
-      const user = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users?clerkId=${userId}`
-      );
-      const location = req.nextUrl.pathname.match(/\/([^/]+)/)?.[0] || "";
-      if (user.data && user.data.isBanned && location !== "banned") {
-        if (location !== "sign-in")
-          return NextResponse.redirect(
-            process.env.NEXT_PUBLIC_SERVER_URL + "/banned"
-          );
-      }
-      console.log("User data:", user.data);
-      console.log("Location:", location);
-      console.log(
-        "pathname:",
-        req.nextUrl.pathname.split("/") || "No pathname"
-      );
-      if (
-        (user.data !== null &&
-          user.data.role !== "admin" &&
-          location === "/cockpit") ||
-        (user.data == null && location === "/cockpit")
-      ) {
-        console.log("Unauthorized access attempt to cockpit");
-        return NextResponse.redirect(process.env.NEXT_PUBLIC_SERVER_URL + "/");
-      }
-      return NextResponse.next();
-    } catch (error) {
-      console.log(error);
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/events(.*)",
+  "/api/webhook/clerk(.*)",
+  "/api/webhook/fileServer(.*)",
+  "/api/webhook/stripe(.*)",
+  "/api/uploadthing(.*)",
+  "/api/upload-bank-transfer(.*)",
+  "/banned(.*)",
+  "/organisations(.*)",
+  "/forms(.*)",
+  "/api/users(.*)",
+  "/api/events(.*)",
+  "/sign-in(.*)"
+]);
+
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+  if (!isPublicRoute(req)) {
+    await auth.protect();
+  }
+
+  try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.next();
+
+    const user = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users?clerkId=${userId}`
+    );
+    const location = req.nextUrl.pathname.match(/\/([^/]+)/)?.[0] || "";
+    if (user.data && user.data.isBanned && location !== "/banned") {
+      if (location !== "/sign-in")
+        return NextResponse.redirect(
+          process.env.NEXT_PUBLIC_SERVER_URL + "/banned"
+        );
     }
-  },
-  publicRoutes: [
-    "/",
-    "/events/:id",
-    "/api/webhook/clerk",
-    "/api/webhook/fileServer",
-    "/api/webhook/stripe",
-    "/api/uploadthing",
-    "/api/upload-bank-transfer",
-    "/banned",
-    "/organisations",
-    "/organisations/:slug",
-    "/forms/:formSlug",
-  ],
-  ignoredRoutes: [
-    "/api/webhook/clerk",
-    "/api/webhook/stripe",
-    "/api/webhook/fileServer",
-    "/api/uploadthing",
-    "/api/upload-bank-transfer",
-    "/api/users",
-  ],
+
+    if (
+      (user.data !== null &&
+        user.data.role !== "admin" &&
+        location === "/cockpit") ||
+      (user.data == null && location === "/cockpit")
+    ) {
+      console.log("Unauthorized access attempt to cockpit");
+      return NextResponse.redirect(process.env.NEXT_PUBLIC_SERVER_URL + "/");
+    }
+    return NextResponse.next();
+  } catch (error) {
+    console.log(error);
+    return NextResponse.next();
+  }
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };

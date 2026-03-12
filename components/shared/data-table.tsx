@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
-interface Column {
+export interface Column {
   header: string;
   accessor: string;
-  align?: "left" | "right";
+  align?: string;
   cell?: (value: any) => ReactNode;
 }
 

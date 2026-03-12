@@ -1,0 +1,132 @@
+﻿yarn run v1.22.22
+$ next build
+node.exe : ÔÜá Warning: 
+Next.js inferred your 
+workspace root, but it may 
+not be correct.
+Au caractère 
+C:\nvm4w\nodejs\yarn.ps1:16 : 
+5
++     & "$basedir/node$exe"  "
+$basedir/node_modules/yarn/bin
+/yarn.js" $ ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (ÔÜá Warni  
+  ng: Ne...not be correct.:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+ We detected multiple 
+lockfiles and selected the 
+directory of C:\Users\honco\pa
+ckage-lock.json as the root 
+directory.
+ To silence this warning, set 
+`turbopack.root` in your 
+Next.js config, or consider 
+removing one of the lockfiles 
+if it's not needed.
+   See https://nextjs.org/docs
+/app/api-reference/config/next
+-config-js/turbopack#root-dire
+ctory for more information.
+ Detected additional 
+lockfiles: 
+   * C:\Users\honco\OneDrive\B
+ureau\event_platform\package-l
+ock.json
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  ┬À serverActions
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 46s
+  Skipping validation of types
+  Collecting page data using 7 workers ...
+ÔÜá Using edge runtime on a 
+page currently disables 
+static generation for that 
+page
+  Generating static pages using 7 workers (0/43) ...
+  Generating static pages using 7 workers (10/43) 
+  Generating static pages using 7 workers (21/43) 
+  Generating static pages using 7 workers (32/43) 
+Ô£ô Generating static pages using 7 workers (43/43) in 1118.6ms
+  Finalizing page optimization ...
+
+Route (app)
+Ôöî ãÆ /
+Ôö£ ãÆ /_not-found
+Ôö£ ãÆ /about
+Ôö£ ãÆ /ai-tools
+Ôö£ ãÆ /api/chat
+Ôö£ ãÆ /api/contrebuters
+Ôö£ ãÆ /api/events
+Ôö£ ãÆ /api/hostcontributor
+Ôö£ ãÆ /api/music
+Ôö£ ãÆ /api/reportEvent
+Ôö£ ãÆ /api/upload-bank-transfer
+Ôö£ ãÆ /api/uploads/[file]
+Ôö£ ãÆ /api/uploadthing
+Ôö£ ãÆ /api/uploadwork
+Ôö£ ãÆ /api/uploadwork/deleteFile
+Ôö£ ãÆ /api/users
+Ôö£ ãÆ /api/webhook/check-file-exists
+Ôö£ ãÆ /api/webhook/cleanup-orphaned-refs
+Ôö£ ãÆ /api/webhook/clerk
+Ôö£ ãÆ /api/webhook/fileServer
+Ôö£ ãÆ /api/webhook/get-database-stats
+Ôö£ ãÆ /api/webhook/get-file-metadata
+Ôö£ ãÆ /api/webhook/get-valid-files
+Ôö£ ãÆ /api/webhook/health-check
+Ôö£ ãÆ /api/webhook/mark-file-deleted
+Ôö£ ãÆ /api/webhook/stripe
+Ôö£ ãÆ /api/webhook/stripe/publisher
+Ôö£ ãÆ /api/work/approve
+Ôö£ ãÆ /banned
+Ôö£ ãÆ /blog
+Ôö£ ãÆ /careers
+Ôö£ ãÆ /cockpit
+Ôö£ ãÆ /cockpit/server
+Ôö£ ãÆ /community
+Ôö£ ãÆ /contact
+Ôö£ ãÆ /cookies
+Ôö£ ãÆ /documentation
+Ôö£ ãÆ /events/[id]
+Ôö£ ãÆ /events/[id]/badge
+Ôö£ ãÆ /events/[id]/forms
+Ôö£ ãÆ /events/[id]/scan
+Ôö£ ãÆ /events/[id]/update
+Ôö£ ãÆ /events/create
+Ôö£ ãÆ /features
+Ôö£ ãÆ /forms/[formSlug]
+Ôö£ ãÆ /gdpr
+Ôö£ ãÆ /help
+Ôö£ ãÆ /help/[category]
+Ôö£ ãÆ /orders
+Ôö£ ãÆ /organisations
+Ôö£ ãÆ /organisations/[slug]
+Ôö£ ãÆ /organisations/[slug]/settings
+Ôö£ ãÆ /organisations/create
+Ôö£ ãÆ /pricing
+Ôö£ ãÆ /privacy
+Ôö£ ãÆ /profile
+Ôö£ ãÆ /sign-in/[[...sign-in]]
+Ôö£ ãÆ /sign-up/[[...sign-up]]
+Ôö£ ãÆ /status
+Ôö£ ãÆ /support
+Ôöö ãÆ /terms
+
+
+ãÆ Proxy (Middleware)
+
+ãÆ  (Dynamic)  server-rendered on demand
+
+Done in 57.57s.

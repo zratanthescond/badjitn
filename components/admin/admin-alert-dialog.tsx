@@ -50,11 +50,16 @@ const scrollbarStyles = `
 
 interface UserAlertDialogProps {
   user: {
-    id: string;
-    name: string;
+    _id: string;
+    id?: string;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
+    photo?: string;
     avatar?: string;
-    joinDate: string;
+    joinDate?: string;
+    createdAt?: Date | string;
     isBanned: boolean;
   };
   onBanUser?: (userId: string) => Promise<void>;
@@ -154,7 +159,7 @@ export default function UserAlertDialog({
                   </CardHeader>
                   <CardContent className="text-sm">
                     <p className="text-muted-foreground mb-4">
-                      Member since: {formatDateTime(value.createdAt).dateTime}
+                      Member since: {formatDateTime(new Date(value.createdAt || value.joinDate || new Date())).dateTime}
                     </p>
 
                     <Button

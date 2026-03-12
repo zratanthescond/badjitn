@@ -54,13 +54,14 @@ async function getOrganisationEvents(orgId: string, page: number = 1, limit: num
     };
 }
 
-export default async function OrganisationPage({
-    params,
-    searchParams,
-}: {
-    params: { slug: string };
-    searchParams: { page?: string };
-}) {
+export default async function OrganisationPage(
+    props: {
+        params: Promise<{ slug: string }>;
+        searchParams: Promise<{ page?: string }>;
+    }
+) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     let organisation;
     try {
         organisation = await getOrganisationBySlug(params.slug);
@@ -239,7 +240,6 @@ export default async function OrganisationPage({
                     </div>
                 </div>
             </div>
-
             {/* Events Section */}
             <div className="container mx-auto px-4 max-w-5xl pb-12">
                 <div className="mb-6">
@@ -267,11 +267,12 @@ export default async function OrganisationPage({
     );
 }
 
-export async function generateMetadata({
-    params,
-}: {
-    params: { slug: string };
-}) {
+export async function generateMetadata(
+    props: {
+        params: Promise<{ slug: string }>;
+    }
+) {
+    const params = await props.params;
     try {
         const organisation = await getOrganisationBySlug(params.slug);
         return {

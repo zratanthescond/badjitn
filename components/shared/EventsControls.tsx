@@ -204,7 +204,7 @@ export const EventControls = ({ event }: { event: IEvent }) => {
                 </h2>
               </div>
 
-              <ContributorSelection event={event} />
+              <ContributorSelection event={event as any} />
 
               <div
                 className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""
@@ -242,7 +242,7 @@ export const EventControls = ({ event }: { event: IEvent }) => {
                 </h2>
               </div>
 
-              <SponsorComponent event={event} />
+              <SponsorComponent event={event as any} />
 
               <div
                 className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""

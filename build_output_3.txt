@@ -1,0 +1,9 @@
+﻿yarn run v1.22.22
+$ next build
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  ┬À serverActions
+
+  Creating an optimized production build ...
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

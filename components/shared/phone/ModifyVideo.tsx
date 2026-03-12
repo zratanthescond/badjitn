@@ -77,16 +77,16 @@ export function ModifyVideo({ video, setVideo, userId }: any) {
       setDuration(videoRef.current.duration);
     }
   };
-  const processVideo = async (e) => {
+  const processVideo = async (e: any) => {
     e.preventDefault();
 
     const data = new FormData();
     data.append("video", video);
     data.append("usedTrack", JSON.stringify(usedTrack));
-    data.append("selectedTime", selectedTime as number);
+    data.append("selectedTime", String(selectedTime));
     setVideoData(data);
     try {
-      reelMutate(data);
+      (reelMutate as any)(data);
     } catch (error) {
       toast({
         title: "Error",
@@ -152,7 +152,8 @@ export function ModifyVideo({ video, setVideo, userId }: any) {
                 <div className="rounded-lg flex flex-wrap md:w-48">
                   <HLSPlayer
                     manifest={video}
-                    ref={videoRef}
+                    ref={videoRef as any}
+                    isActive={false}
                     onLoadedMetadata={handleMetadataLoaded}
                     className="rounded-lg"
                     autoPlay={false}
@@ -166,7 +167,7 @@ export function ModifyVideo({ video, setVideo, userId }: any) {
               setSelectedTime={setSelectedTime}
               src={video}
               usedTrack={usedTrack}
-              videoRef={videoRef}
+              videoRef={videoRef as any}
               duration={duration}
             />
             <AlertDialogFooter className="px-6 ">

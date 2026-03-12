@@ -1,10 +1,16 @@
 import QRScannerPage from "@/components/admin/QRScannerPage";
 import { getEventById } from "@/lib/actions/event.actions";
 import { SearchParamProps } from "@/types";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
-export default async function ScanPage({ params: { id } }: SearchParamProps) {
-  const { sessionClaims } = auth();
+export default async function ScanPage(props: SearchParamProps) {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
+
+  const { sessionClaims } = await auth();
   const userId = sessionClaims?.userId as string;
 
   const event = await getEventById(id);
