@@ -90,6 +90,7 @@
     "ar": "العربية",
     "en": "English",
     "fr": "Français",
+    "es": "إسبانية",
     "label": "اللغة"
   },
   "Navbar": {
@@ -97,7 +98,8 @@
     "createEvent": "إنشاء حدث",
     "home": "الرئيسية",
     "login": "تسجيل الدخول",
-    "myProfile": "الملف الشخصي"
+    "myProfile": "الملف الشخصي",
+    "organisations": "المنظمات"
   },
   "QRScanner": {
     "accessGranted": "تم السماح بالدخول",
@@ -2696,7 +2698,9 @@
     "addSponsor": "اعضافة رعة",
     "allSponsors": "جميع الرعات",
     "createNewEvent": "إنشاء حدث جديد",
+    "eventsTabDescription": "إدارة وعرض جميع الفعاليات التي نظمتها",
     "customRequiredInfo": "معلومات مطلوبة مخصصة",
+    "customFieldsDescription": "إدارة المعلومات المطلوبة لفعالياتك",
     "emptyEventsCreated": {
       "description": "لم تقم بإنشاء أي فعاليات بعد. ابدأ بإنشاء فعاليتك الأولى لجذب الحضور وإدارة الفعاليات بسهولة.",
       "title": "لا توجد فعاليات حتى الآن"
@@ -2711,7 +2715,8 @@
     },
     "eventsOrganized": "الأحداث المنظمة",
     "exploreMoreEvents": "استكشاف المزيد من الأحداث",
-    "mySponsors": "رعاتي",
+    "mySponsors": "الرعاة الخاصين بي",
+    "sponsorsDescription": "إدارة رواة الحدث الخاص بك ورؤيتهم",
     "myTickets": "تذاكري",
     "settings": {
       "title": "إعدادات الملف الشخصي",
@@ -2738,7 +2743,87 @@
         "errorTitle": "فشل التحديث",
         "errorDescription": "تعذر حفظ إعدادات الملف الشخصي."
       }
+    },
+    "allTickets": "كل التذاكر",
+    "dashboard": "لوحة القيادة",
+    "welcomeBack": "مرحباً بعودتك، {name}! إليك نظرة عامة.",
+    "stats": {
+      "tickets": "تذاكر",
+      "events": "فعاليات",
+      "organisations": "منظمات",
+      "verifiedOrgs": "منظمات موثقة"
+    },
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "createEvent": "إنشاء فعالية",
+      "newOrganisation": "منظمة جديدة",
+      "viewTickets": "عرض التذاكر"
+    },
+    "recentEvents": {
+      "title": "الفعاليات الأخيرة",
+      "viewAll": "عرض الكل"
+    },
+    "myOrganisations": {
+      "title": "منظماتي",
+      "description": "إدارة منظماتك وأحداثها",
+      "viewAll": "مشاهدة الكل",
+      "empty": {
+        "title": "لا توجد منظمات بعد",
+        "description": "أنشئ منظمتك الأولى للبدء في نشر الفعاليات وبناء مجتمعك.",
+        "button": "إنشاء منظمة"
+      },
+      "verification": {
+        "title": "توثيق المنظمة",
+        "description": "يمكن للمنظمات الموثقة نشر فعاليات مع شارة ثقة. يتم الموافقة على التوثيق من قبل مسؤول المنصة."
+      }
+    },
+    "forms": {
+      "title": "نماذج فعاليات مخصصة",
+      "description": "قم ببناء نماذج تسجيل مخصصة ودعوة الحاضرين",
+      "createButton": "إنشاء نموذج",
+      "info": {
+        "title": "كيف تعمل النماذج المخصصة",
+        "description": "أنشئ نموذجًا، واربطه بمنظمة، واستخدمه لجمع بيانات محددة من الحاضرين."
+      },
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "fields": "حقول",
+        "invited": "مدعوين"
+      },
+      "actions": {
+        "edit": "تعديل",
+        "open": "فتح"
+      },
+      "empty": {
+        "title": "لا توجد نماذج بعد",
+        "description": "اجمع كل المعلومات التي تحتاجها من الحاضرين.",
+        "button": "إنشاء نموذج"
+      },
+      "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا النموذج؟ ستفقد جميع المشاركات.",
+      "messages": {
+        "deletedTitle": "تم الحذف",
+        "deletedDescription": "تم حذف النموذج بنجاح",
+        "errorTitle": "خطأ"
+      }
+    },
+    "sidebar": {
+      "overview": "نظرة عامة",
+      "profileSettings": "إعدادات الملف الشخصي",
+      "myTickets": "تذاكري",
+      "eventsOrganized": "الفعاليات المنظمة",
+      "organisations": "المنظمات",
+      "customForms": "نماذج مخصصة",
+      "sponsors": "الرعاة",
+      "customFields": "حقول مخصصة"
     }
+  },
+  "organisationCard": {
+    "noDescription": "لا يوجد وصف بعد",
+    "member": "عضو",
+    "members": "أعضاء",
+    "owner": "المالك",
+    "admin": "مسؤول"
   },
   "publisherCard": {
     "description": "تحتاج إلى مراجعة إدارية لتصبح ناشرًا وتفتح ميزات ومحتوى حصريًا. اطلب أن تصبح ناشرًا أو اشترِ شارة ناشر مباشرة.",

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Building2, Plus } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,15 @@ export default async function OrganisationsPage() {
     if (!user) {
         return redirect("/sign-in");
     }
+
+    const t = await getTranslations("profile");
+    const orgCardT = {
+        noDescription: t("organisationCard.noDescription"),
+        member: t("organisationCard.member"),
+        members: t("organisationCard.members"),
+        owner: t("organisationCard.owner"),
+        admin: t("organisationCard.admin"),
+    };
 
     const organisations = await getOrganisationsByUser(user._id);
 
@@ -27,10 +37,10 @@ export default async function OrganisationsPage() {
                         </div>
                         <div>
                             <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                                My Organisations
+                                {t("myOrganisations.title")}
                             </h1>
                             <p className="text-muted-foreground mt-1">
-                                Manage your organisations and their events
+                                {t("myOrganisations.description")}
                             </p>
                         </div>
                     </div>
@@ -40,7 +50,7 @@ export default async function OrganisationsPage() {
                     >
                         <Link href="/organisations/create">
                             <Plus className="h-5 w-5 mr-2" />
-                            New Organisation
+                            {t("quickActions.newOrganisation")}
                         </Link>
                     </Button>
                 </div>
@@ -53,6 +63,7 @@ export default async function OrganisationsPage() {
                                 key={org._id}
                                 organisation={org}
                                 isCreator={org.creator?._id === user._id}
+                                translations={orgCardT}
                             />
                         ))}
                     </div>
@@ -63,11 +74,10 @@ export default async function OrganisationsPage() {
                                 <Building2 className="h-10 w-10 text-indigo-500" />
                             </div>
                             <h3 className="text-xl font-semibold mb-2">
-                                No organisations yet
+                                {t("myOrganisations.empty.title")}
                             </h3>
                             <p className="text-muted-foreground mb-6">
-                                Create your first organisation to start publishing events and
-                                build your community.
+                                {t("myOrganisations.empty.description")}
                             </p>
                             <Button
                                 asChild
@@ -75,7 +85,7 @@ export default async function OrganisationsPage() {
                             >
                                 <Link href="/organisations/create">
                                     <Plus className="h-5 w-5 mr-2" />
-                                    Create Organisation
+                                    {t("myOrganisations.empty.button")}
                                 </Link>
                             </Button>
                         </div>

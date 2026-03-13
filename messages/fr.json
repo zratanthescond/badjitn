@@ -90,6 +90,7 @@
     "ar": "العربية",
     "en": "English",
     "fr": "Français",
+    "es": "Español",
     "label": "Langue"
   },
   "Navbar": {
@@ -97,7 +98,8 @@
     "createEvent": "Créer un événement",
     "home": "Accueil",
     "login": "Connexion",
-    "myProfile": "Mon profil"
+    "myProfile": "Mon profil",
+    "organisations": "Organisations"
   },
   "QRScanner": {
     "accessGranted": "Accès Autorisé",
@@ -2696,7 +2698,9 @@
     "addSponsor": "Ajouter un Sponsor",
     "allSponsors": "Tous les Sponsors",
     "createNewEvent": "Créer un nouvel événement",
+    "eventsTabDescription": "Gérez et voyez tous vos événements organisés",
     "customRequiredInfo": "Informations requises personnalisées",
+    "customFieldsDescription": "Gérez les informations requises pour vos événements",
     "emptyEventsCreated": {
       "description": "Vous n'avez pas encore créé d'événements. Commencez à organiser vos événements dès aujourd'hui et atteignez un public mondial avec Badji.net.",
       "title": "Aucun événement créé"
@@ -2712,6 +2716,7 @@
     "eventsOrganized": "Événements organisés",
     "exploreMoreEvents": "Explorer plus d'événements",
     "mySponsors": "Mes Sponsors",
+    "sponsorsDescription": "Gérez vos sponsors d'événements et leur visibilité",
     "myTickets": "Mes Tickets",
     "settings": {
       "title": "Paramètres du profil",
@@ -2738,7 +2743,87 @@
         "errorTitle": "Échec de la mise à jour",
         "errorDescription": "Impossible d'enregistrer les paramètres du profil."
       }
+    },
+    "allTickets": "Tous les billets",
+    "dashboard": "Tableau de bord",
+    "welcomeBack": "Bon retour, {name} ! Voici votre aperçu.",
+    "stats": {
+      "tickets": "Tickets",
+      "events": "Événements",
+      "organisations": "Organisations",
+      "verifiedOrgs": "Orgs vérifiées"
+    },
+    "quickActions": {
+      "title": "Actions rapides",
+      "createEvent": "Créer un événement",
+      "newOrganisation": "Nouvelle organisation",
+      "viewTickets": "Voir les tickets"
+    },
+    "recentEvents": {
+      "title": "Événements récents",
+      "viewAll": "Tout voir"
+    },
+    "myOrganisations": {
+      "title": "Mes Organisations",
+      "description": "Gérez vos organisations et leurs événements",
+      "viewAll": "Tout voir",
+      "empty": {
+        "title": "Aucune organisation pour le moment",
+        "description": "Créez votre première organisation pour commencer à publier des événements et construire votre communauté.",
+        "button": "Créer une organisation"
+      },
+      "verification": {
+        "title": "Vérification de l'organisation",
+        "description": "Les organisations vérifiées peuvent publier des événements avec un badge de confiance. La vérification est approuvée par l'administrateur de la plateforme."
+      }
+    },
+    "forms": {
+      "title": "Formulaires d'événement personnalisés",
+      "description": "Créez des formulaires d'inscription personnalisés et invitez des participants",
+      "createButton": "Créer un formulaire",
+      "info": {
+        "title": "Comment fonctionnent les formulaires personnalisés",
+        "description": "Créez un formulaire, liez-le à une organisation et utilisez-le pour collecter des données spécifiques auprès des participants."
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif",
+        "fields": "champs",
+        "invited": "invités"
+      },
+      "actions": {
+        "edit": "Modifier",
+        "open": "Ouvrir"
+      },
+      "empty": {
+        "title": "Aucun formulaire pour le moment",
+        "description": "Capturez toutes les informations dont vous avez besoin auprès de vos participants.",
+        "button": "Créer un formulaire"
+      },
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce formulaire ? Toutes les soumissions seront perdues.",
+      "messages": {
+        "deletedTitle": "Supprimé",
+        "deletedDescription": "Formulaire supprimé avec succès",
+        "errorTitle": "Erreur"
+      }
+    },
+    "sidebar": {
+      "overview": "Aperçu",
+      "profileSettings": "Paramètres du profil",
+      "myTickets": "Mes Tickets",
+      "eventsOrganized": "Événements organisés",
+      "organisations": "Organisations",
+      "customForms": "Formulaires personnalisés",
+      "sponsors": "Sponsors",
+      "customFields": "Champs personnalisés"
     }
+  },
+  "organisationCard": {
+    "noDescription": "Pas encore de description",
+    "member": "membre",
+    "members": "membres",
+    "owner": "Propriétaire",
+    "admin": "Admin"
   },
   "publisherCard": {
     "description": "Vous avez besoin d'une vérification administrative pour devenir éditeur et débloquer des fonctionnalités et du contenu exclusifs. Demandez à devenir éditeur ou achetez directement un badge d'éditeur.",

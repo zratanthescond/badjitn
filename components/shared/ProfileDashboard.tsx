@@ -65,38 +65,128 @@ type TabKey = "overview" | "profileSettings" | "tickets" | "events" | "organisat
 interface TranslationStrings {
     myTickets: string;
     exploreMoreEvents: string;
-    emptyTicketsTitle: string;
-    emptyTicketsDescription: string;
+    emptyTickets: {
+        title: string;
+        description: string;
+    };
     eventsOrganized: string;
+    eventsTabDescription: string;
     createNewEvent: string;
-    emptyEventsCreatedTitle: string;
-    emptyEventsCreatedDescription: string;
+    emptyEventsCreated: {
+        title: string;
+        description: string;
+    };
     mySponsors: string;
+    sponsorsDescription: string;
     addSponsor: string;
     customRequiredInfo: string;
+    customFieldsDescription: string;
     addCustomRequiredInfo: string;
-    profileSettings: string;
-    profileSettingsDescription: string;
-    saveProfile: string;
-    saving: string;
-    fields: {
-        firstName: string;
-        lastName: string;
-        jobTitle: string;
-        republic: string;
-        city: string;
-        village: string;
+    settings: {
+        title: string;
+        description: string;
+        saveProfile: string;
+        saving: string;
+        fields: {
+            firstName: string;
+            lastName: string;
+            jobTitle: string;
+            republic: string;
+            city: string;
+            village: string;
+        };
+        messages: {
+            updatedTitle: string;
+            updatedDescription: string;
+            errorTitle: string;
+            errorDescription: string;
+        };
+        worldExceptIsrael: string;
+        countryPlaceholder: string;
+        cityPlaceholder: string;
+        cityNoOptions: string;
+        citySearchPlaceholder: string;
+        cityNoMatch: string;
     };
-    profileUpdatedTitle: string;
-    profileUpdatedDescription: string;
-    profileUpdateErrorTitle: string;
-    profileUpdateErrorDescription: string;
-    worldExceptIsrael: string;
-    countryPlaceholder: string;
-    cityPlaceholder: string;
-    cityNoOptions: string;
-    citySearchPlaceholder: string;
-    cityNoMatch: string;
+    dashboard: string;
+    welcomeBack: string;
+    stats: {
+        tickets: string;
+        events: string;
+        organisations: string;
+        verifiedOrgs: string;
+    };
+    quickActions: {
+        title: string;
+        createEvent: string;
+        newOrganisation: string;
+        viewTickets: string;
+    };
+    recentEvents: {
+        title: string;
+        viewAll: string;
+    };
+    myOrganisations: {
+        title: string;
+        description: string;
+        viewAll: string;
+        empty: {
+            title: string;
+            description: string;
+            button: string;
+        };
+        verification: {
+            title: string;
+            description: string;
+        };
+    };
+    forms: {
+        title: string;
+        description: string;
+        createButton: string;
+        info: {
+            title: string;
+            description: string;
+        };
+        status: {
+            active: string;
+            inactive: string;
+            fields: string;
+            invited: string;
+        };
+        actions: {
+            edit: string;
+            open: string;
+        };
+        empty: {
+            title: string;
+            description: string;
+            button: string;
+        };
+        deleteConfirm: string;
+        messages: {
+            deletedTitle: string;
+            deletedDescription: string;
+            errorTitle: string;
+        };
+    };
+    sidebar: {
+        overview: string;
+        profileSettings: string;
+        myTickets: string;
+        eventsOrganized: string;
+        organisations: string;
+        customForms: string;
+        sponsors: string;
+        customFields: string;
+    };
+    organisationCard: {
+        noDescription: string;
+        member: string;
+        members: string;
+        owner: string;
+        admin: string;
+    };
 }
 
 interface ProfileDashboardProps {
@@ -112,16 +202,7 @@ interface ProfileDashboardProps {
     translations: TranslationStrings;
 }
 
-const sidebarItems: { key: TabKey; icon: any; labelKey: string }[] = [
-    { key: "overview", icon: LayoutDashboard, labelKey: "Overview" },
-    { key: "profileSettings", icon: CheckCircle, labelKey: "Profile Settings" },
-    { key: "tickets", icon: Ticket, labelKey: "My Tickets" },
-    { key: "events", icon: CalendarDays, labelKey: "Events Organized" },
-    { key: "organisations", icon: Building2, labelKey: "Organisations" },
-    { key: "forms", icon: FileText, labelKey: "Custom Forms" },
-    { key: "sponsors", icon: Megaphone, labelKey: "Sponsors" },
-    { key: "fields", icon: ClipboardList, labelKey: "Custom Fields" },
-];
+
 
 export default function ProfileDashboard({
     userId,
@@ -135,6 +216,16 @@ export default function ProfileDashboard({
     organisations,
     translations,
 }: ProfileDashboardProps) {
+    const sidebarItems: { key: TabKey; icon: any; label: string }[] = [
+        { key: "overview", icon: LayoutDashboard, label: translations.sidebar.overview },
+        { key: "profileSettings", icon: CheckCircle, label: translations.sidebar.profileSettings },
+        { key: "tickets", icon: Ticket, label: translations.sidebar.myTickets },
+        { key: "events", icon: CalendarDays, label: translations.sidebar.eventsOrganized },
+        { key: "organisations", icon: Building2, label: translations.sidebar.organisations },
+        { key: "forms", icon: FileText, label: translations.sidebar.customForms },
+        { key: "sponsors", icon: Megaphone, label: translations.sidebar.sponsors },
+        { key: "fields", icon: ClipboardList, label: translations.sidebar.customFields },
+    ];
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<TabKey>("overview");
     const [cityOpen, setCityOpen] = useState(false);
@@ -182,14 +273,14 @@ export default function ProfileDashboard({
         try {
             await updateCurrentUserProfile(profileForm);
             toast({
-                title: translations.profileUpdatedTitle,
-                description: translations.profileUpdatedDescription,
+                title: translations.settings.messages.updatedTitle,
+                description: translations.settings.messages.updatedDescription,
             });
             router.refresh();
         } catch {
             toast({
-                title: translations.profileUpdateErrorTitle,
-                description: translations.profileUpdateErrorDescription,
+                title: translations.settings.messages.errorTitle,
+                description: translations.settings.messages.errorDescription,
                 variant: "destructive",
             });
         } finally {
@@ -204,14 +295,21 @@ export default function ProfileDashboard({
     const [deletingFormId, setDeletingFormId] = useState<string | null>(null);
 
     const handleDeleteForm = async (formId: string) => {
-        if (!confirm("Are you sure you want to delete this form? All submissions will be lost.")) return;
+        if (!confirm(translations.forms.deleteConfirm)) return;
         setDeletingFormId(formId);
         const result = await deleteEventForm(formId);
         if (result.success) {
             setUserForms((prev) => prev.filter((f) => f._id !== formId));
-            toast({ title: "Deleted", description: "Form deleted successfully" });
+            toast({
+                title: translations.forms.messages.deletedTitle,
+                description: translations.forms.messages.deletedDescription,
+            });
         } else {
-            toast({ title: "Error", description: result.message, variant: "destructive" });
+            toast({
+                title: translations.forms.messages.errorTitle,
+                description: result.message,
+                variant: "destructive",
+            });
         }
         setDeletingFormId(null);
     };
@@ -277,7 +375,7 @@ export default function ProfileDashboard({
                                         }`}
                                 >
                                     <Icon className="h-4 w-4 flex-shrink-0" />
-                                    <span>{item.labelKey}</span>
+                                    <span>{item.label}</span>
                                     {item.key === "organisations" && organisations.length > 0 && (
                                         <span
                                             className={`ml-auto text-xs px-2 py-0.5 rounded-full ${isActive
@@ -323,10 +421,10 @@ export default function ProfileDashboard({
                         <div className="space-y-6">
                             <div>
                                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                                    Dashboard
+                                    {translations.dashboard}
                                 </h1>
                                 <p className="text-muted-foreground mt-1">
-                                    Welcome back, {user?.firstName}! Here&apos;s your overview.
+                                    {translations.welcomeBack.replace("{name}", user?.firstName || "")}
                                 </p>
                             </div>
 
@@ -334,28 +432,28 @@ export default function ProfileDashboard({
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <StatCard
                                     icon={Ticket}
-                                    label="Tickets"
+                                    label={translations.stats.tickets}
                                     value={orderedEvents.length}
                                     color="from-blue-500 to-cyan-500"
                                     onClick={() => setActiveTab("tickets")}
                                 />
                                 <StatCard
                                     icon={CalendarDays}
-                                    label="Events"
+                                    label={translations.stats.events}
                                     value={organizedEvents.length}
                                     color="from-emerald-500 to-teal-500"
                                     onClick={() => setActiveTab("events")}
                                 />
                                 <StatCard
                                     icon={Building2}
-                                    label="Organisations"
+                                    label={translations.stats.organisations}
                                     value={organisations.length}
                                     color="from-indigo-500 to-purple-500"
                                     onClick={() => setActiveTab("organisations")}
                                 />
                                 <StatCard
                                     icon={CheckCircle}
-                                    label="Verified Orgs"
+                                    label={translations.stats.verifiedOrgs}
                                     value={organisations.filter((o: any) => o.isVerified).length}
                                     color="from-amber-500 to-orange-500"
                                     onClick={() => setActiveTab("organisations")}
@@ -366,7 +464,7 @@ export default function ProfileDashboard({
                             <div className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-2xl p-5">
                                 <h3 className="font-semibold mb-4 flex items-center gap-2">
                                     <ChevronRight className="h-4 w-4 text-indigo-500" />
-                                    Quick Actions
+                                    {translations.quickActions.title}
                                 </h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <Link
@@ -377,7 +475,7 @@ export default function ProfileDashboard({
                                             <CalendarPlus className="h-4 w-4" />
                                         </div>
                                         <span className="text-sm font-medium group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                            Create Event
+                                            {translations.quickActions.createEvent}
                                         </span>
                                     </Link>
                                     <Link
@@ -388,7 +486,7 @@ export default function ProfileDashboard({
                                             <Building2 className="h-4 w-4" />
                                         </div>
                                         <span className="text-sm font-medium group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                            New Organisation
+                                            {translations.quickActions.newOrganisation}
                                         </span>
                                     </Link>
                                     <button
@@ -399,7 +497,7 @@ export default function ProfileDashboard({
                                             <Ticket className="h-4 w-4" />
                                         </div>
                                         <span className="text-sm font-medium group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                            View Tickets
+                                            {translations.quickActions.viewTickets}
                                         </span>
                                     </button>
                                 </div>
@@ -411,13 +509,13 @@ export default function ProfileDashboard({
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="font-semibold flex items-center gap-2">
                                             <CalendarDays className="h-4 w-4 text-indigo-500" />
-                                            Recent Events
+                                            {translations.recentEvents.title}
                                         </h3>
                                         <button
                                             onClick={() => setActiveTab("events")}
                                             className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
                                         >
-                                            View all <ChevronRight className="h-3 w-3" />
+                                            {translations.recentEvents.viewAll} <ChevronRight className="h-3 w-3" />
                                         </button>
                                     </div>
                                     <Collection
@@ -438,13 +536,13 @@ export default function ProfileDashboard({
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="font-semibold flex items-center gap-2">
                                             <Building2 className="h-4 w-4 text-indigo-500" />
-                                            My Organisations
+                                            {translations.myOrganisations.title}
                                         </h3>
                                         <button
                                             onClick={() => setActiveTab("organisations")}
                                             className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
                                         >
-                                            View all <ChevronRight className="h-3 w-3" />
+                                            {translations.myOrganisations.viewAll} <ChevronRight className="h-3 w-3" />
                                         </button>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -453,6 +551,7 @@ export default function ProfileDashboard({
                                                 key={org._id}
                                                 organisation={org}
                                                 isCreator={org.creator?._id === userId}
+                                                translations={translations.organisationCard}
                                             />
                                         ))}
                                     </div>
@@ -465,9 +564,9 @@ export default function ProfileDashboard({
                     {activeTab === "profileSettings" && (
                         <div className="space-y-6">
                             <div>
-                                <h2 className="text-2xl font-bold">{translations.profileSettings}</h2>
+                                <h2 className="text-2xl font-bold">{translations.settings.title}</h2>
                                 <p className="text-muted-foreground text-sm mt-1">
-                                    {translations.profileSettingsDescription}
+                                    {translations.settings.description}
                                 </p>
                             </div>
 
@@ -477,7 +576,7 @@ export default function ProfileDashboard({
                             >
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="firstName">{translations.fields.firstName}</Label>
+                                        <Label htmlFor="firstName">{translations.settings.fields.firstName}</Label>
                                         <Input
                                             id="firstName"
                                             value={profileForm.firstName}
@@ -488,7 +587,7 @@ export default function ProfileDashboard({
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="lastName">{translations.fields.lastName}</Label>
+                                        <Label htmlFor="lastName">{translations.settings.fields.lastName}</Label>
                                         <Input
                                             id="lastName"
                                             value={profileForm.lastName}
@@ -499,7 +598,7 @@ export default function ProfileDashboard({
                                         />
                                     </div>
                                     <div className="space-y-2 md:col-span-2">
-                                        <Label htmlFor="jobTitle">{translations.fields.jobTitle}</Label>
+                                        <Label htmlFor="jobTitle">{translations.settings.fields.jobTitle}</Label>
                                         <Input
                                             id="jobTitle"
                                             value={profileForm.jobTitle}
@@ -509,11 +608,11 @@ export default function ProfileDashboard({
                                         />
                                     </div>
                                     <div className="space-y-2 md:col-span-2">
-                                        <Label>{translations.fields.republic}</Label>
+                                        <Label>{translations.settings.fields.republic}</Label>
                                         <CountryDropdown
                                             options={allowedCountries as Country[]}
                                             defaultValue={profileForm.republic}
-                                            placeholder={translations.countryPlaceholder}
+                                            placeholder={translations.settings.countryPlaceholder}
                                             onChange={(country) =>
                                                 setProfileForm((prev) => ({
                                                     ...prev,
@@ -523,11 +622,11 @@ export default function ProfileDashboard({
                                             }
                                         />
                                         <p className="text-xs text-muted-foreground">
-                                            {translations.worldExceptIsrael}
+                                            {translations.settings.worldExceptIsrael}
                                         </p>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="city">{translations.fields.city}</Label>
+                                        <Label htmlFor="city">{translations.settings.fields.city}</Label>
                                         <Popover open={cityOpen} onOpenChange={setCityOpen}>
                                             <PopoverTrigger asChild>
                                                 <Button
@@ -540,19 +639,19 @@ export default function ProfileDashboard({
                                                     className="w-full justify-between font-normal"
                                                 >
                                                     <span className="truncate text-left">
-                                                        {profileForm.city || translations.cityPlaceholder}
+                                                        {profileForm.city || translations.settings.cityPlaceholder}
                                                     </span>
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
                                                 <Command>
-                                                    <CommandInput placeholder={translations.citySearchPlaceholder} />
+                                                    <CommandInput placeholder={translations.settings.citySearchPlaceholder} />
                                                     <CommandList>
                                                         <CommandEmpty>
                                                             {cityOptionsWithCurrent.length === 0
-                                                                ? translations.cityNoOptions
-                                                                : translations.cityNoMatch}
+                                                                ? translations.settings.cityNoOptions
+                                                                : translations.settings.cityNoMatch}
                                                         </CommandEmpty>
                                                         <CommandGroup>
                                                             {cityOptionsWithCurrent.map((city) => (
@@ -580,7 +679,7 @@ export default function ProfileDashboard({
                                         </Popover>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="village">{translations.fields.village}</Label>
+                                        <Label htmlFor="village">{translations.settings.fields.village}</Label>
                                         <Input
                                             id="village"
                                             value={profileForm.village}
@@ -596,7 +695,7 @@ export default function ProfileDashboard({
                                     className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full"
                                     disabled={isSavingProfile}
                                 >
-                                    {isSavingProfile ? translations.saving : translations.saveProfile}
+                                    {isSavingProfile ? translations.settings.saving : translations.settings.saveProfile}
                                 </Button>
                             </form>
                         </div>
@@ -609,7 +708,7 @@ export default function ProfileDashboard({
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.myTickets}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
-                                        All your purchased event tickets
+                                        {translations.exploreMoreEvents}
                                     </p>
                                 </div>
                                 <Button asChild variant="outline" className="rounded-full">
@@ -618,8 +717,8 @@ export default function ProfileDashboard({
                             </div>
                             <Collection
                                 data={orderedEvents}
-                                emptyTitle={translations.emptyTicketsTitle}
-                                emptyStateSubtext={translations.emptyTicketsDescription}
+                                emptyTitle={translations.emptyTickets.title}
+                                emptyStateSubtext={translations.emptyTickets.description}
                                 collectionType="My_Tickets"
                                 limit={3}
                                 page={ordersPage}
@@ -636,7 +735,7 @@ export default function ProfileDashboard({
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.eventsOrganized}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
-                                        Events you&apos;ve created and organized
+                                        {translations.eventsTabDescription}
                                     </p>
                                 </div>
                                 <Button asChild className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 rounded-full">
@@ -648,8 +747,8 @@ export default function ProfileDashboard({
                             </div>
                             <Collection
                                 data={organizedEvents}
-                                emptyTitle={translations.emptyEventsCreatedTitle}
-                                emptyStateSubtext={translations.emptyEventsCreatedDescription}
+                                emptyTitle={translations.emptyEventsCreated.title}
+                                emptyStateSubtext={translations.emptyEventsCreated.description}
                                 collectionType="Events_Organized"
                                 limit={3}
                                 page={eventsPage}
@@ -664,9 +763,9 @@ export default function ProfileDashboard({
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-bold">My Organisations</h2>
+                                    <h2 className="text-2xl font-bold">{translations.myOrganisations.title}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
-                                        Manage your organisations and their events
+                                        {translations.myOrganisations.description}
                                     </p>
                                 </div>
                                 <Button
@@ -675,7 +774,7 @@ export default function ProfileDashboard({
                                 >
                                     <Link href="/organisations/create">
                                         <Plus className="h-4 w-4 mr-2" />
-                                        New Organisation
+                                        {translations.quickActions.newOrganisation}
                                     </Link>
                                 </Button>
                             </div>
@@ -687,9 +786,9 @@ export default function ProfileDashboard({
                                         <CheckCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-sm">Organisation Verification</h3>
+                                        <h3 className="font-semibold text-sm">{translations.myOrganisations.verification.title}</h3>
                                         <p className="text-xs text-muted-foreground">
-                                            Verified organisations can publish events with a trusted badge. Verification is approved by the platform admin.
+                                            {translations.myOrganisations.verification.description}
                                         </p>
                                     </div>
                                 </div>
@@ -703,6 +802,7 @@ export default function ProfileDashboard({
                                             key={org._id}
                                             organisation={org}
                                             isCreator={org.creator?._id === userId}
+                                            translations={translations.organisationCard}
                                         />
                                     ))}
                                 </div>
@@ -713,11 +813,10 @@ export default function ProfileDashboard({
                                             <Building2 className="h-10 w-10 text-indigo-500" />
                                         </div>
                                         <h3 className="text-xl font-semibold mb-2">
-                                            No organisations yet
+                                            {translations.myOrganisations.empty.title}
                                         </h3>
                                         <p className="text-muted-foreground mb-6">
-                                            Create your first organisation to start publishing events
-                                            and build your community.
+                                            {translations.myOrganisations.empty.description}
                                         </p>
                                         <Button
                                             asChild
@@ -725,7 +824,7 @@ export default function ProfileDashboard({
                                         >
                                             <Link href="/organisations/create">
                                                 <Plus className="h-5 w-5 mr-2" />
-                                                Create Organisation
+                                                {translations.myOrganisations.empty.button}
                                             </Link>
                                         </Button>
                                     </div>
@@ -741,7 +840,7 @@ export default function ProfileDashboard({
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.mySponsors}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
-                                        Manage your event sponsors
+                                        {translations.sponsorsDescription}
                                     </p>
                                 </div>
                                 <Dialog>
@@ -768,16 +867,16 @@ export default function ProfileDashboard({
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-bold">Custom Event Forms</h2>
+                                    <h2 className="text-2xl font-bold">{translations.forms.title}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
-                                        Build custom registration forms and invite attendees
+                                        {translations.forms.description}
                                     </p>
                                 </div>
                                 <Dialog open={showFormBuilder} onOpenChange={(open) => { setShowFormBuilder(open); if (!open) setEditingForm(null); }}>
                                     <DialogTrigger asChild>
                                         <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full">
                                             <Plus className="h-4 w-4 mr-2" />
-                                            Create Form
+                                            {translations.forms.createButton}
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent className="max-w-3xl max-h-[90vh] p-0 bg-card" onInteractOutside={(e) => e.preventDefault()}>
@@ -813,9 +912,9 @@ export default function ProfileDashboard({
                                         <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-sm">How Custom Forms Work</h3>
+                                        <h3 className="font-semibold text-sm">{translations.forms.info.title}</h3>
                                         <p className="text-xs text-muted-foreground">
-                                            Create a custom event form with your own fields, then invite attendees via email. They&apos;ll receive a link to register.
+                                            {translations.forms.info.description}
                                         </p>
                                     </div>
                                 </div>
@@ -855,14 +954,14 @@ export default function ProfileDashboard({
                                                                 variant={form.isActive ? "default" : "secondary"}
                                                                 className={form.isActive ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : ""}
                                                             >
-                                                                {form.isActive ? "Active" : "Inactive"}
+                                                                {form.isActive ? translations.forms.status.active : translations.forms.status.inactive}
                                                             </Badge>
                                                             <span className="text-xs text-muted-foreground">
-                                                                {form.fields?.length || 0} fields
+                                                                {form.fields?.length || 0} {translations.forms.status.fields}
                                                             </span>
                                                             <span className="text-xs text-muted-foreground flex items-center gap-1">
                                                                 <Users className="h-3 w-3" />
-                                                                {form.invitedEmails?.length || 0} invited
+                                                                {form.invitedEmails?.length || 0} {translations.forms.status.invited}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -877,7 +976,7 @@ export default function ProfileDashboard({
                                                             }}
                                                         >
                                                             <Pencil className="h-3 w-3 mr-1" />
-                                                            Edit
+                                                            {translations.forms.actions.edit}
                                                         </Button>
                                                         <InviteDialog
                                                             formId={form._id}
@@ -888,7 +987,7 @@ export default function ProfileDashboard({
                                                         <Link href={`/forms/${form.slug}`} target="_blank">
                                                             <Button variant="outline" size="sm" className="rounded-full text-xs">
                                                                 <ExternalLink className="h-3 w-3 mr-1" />
-                                                                Open
+                                                                {translations.forms.actions.open}
                                                             </Button>
                                                         </Link>
                                                         <Button
@@ -916,16 +1015,16 @@ export default function ProfileDashboard({
                                         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-6">
                                             <FileText className="h-10 w-10 text-indigo-500" />
                                         </div>
-                                        <h3 className="text-xl font-semibold mb-2">No custom forms yet</h3>
+                                        <h3 className="text-xl font-semibold mb-2">{translations.forms.empty.title}</h3>
                                         <p className="text-muted-foreground mb-6">
-                                            Create your first custom event form to start collecting registrations.
+                                            {translations.forms.empty.description}
                                         </p>
                                         <Button
                                             onClick={() => setShowFormBuilder(true)}
                                             className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full px-8"
                                         >
                                             <Plus className="h-5 w-5 mr-2" />
-                                            Create Your First Form
+                                            {translations.forms.empty.button}
                                         </Button>
                                     </div>
                                 </div>
@@ -940,7 +1039,7 @@ export default function ProfileDashboard({
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.customRequiredInfo}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
-                                        Custom fields required for event registration
+                                        {translations.customFieldsDescription}
                                     </p>
                                 </div>
                                 <Dialog>

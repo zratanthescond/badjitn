@@ -30,12 +30,27 @@ interface OrganisationCardProps {
         createdAt: string;
     };
     isCreator?: boolean;
+    translations?: {
+        noDescription: string;
+        member: string;
+        members: string;
+        owner: string;
+        admin: string;
+    };
 }
 
 export default function OrganisationCard({
     organisation,
     isCreator,
+    translations,
 }: OrganisationCardProps) {
+    const t = translations || {
+        noDescription: "No description yet",
+        member: "member",
+        members: "members",
+        owner: "Owner",
+        admin: "Admin",
+    };
     return (
         <Link href={`/organisations/${organisation.slug}`}>
             <div className="group glass bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-indigo-300/50 dark:hover:border-indigo-600/50 cursor-pointer">
@@ -71,7 +86,7 @@ export default function OrganisationCard({
                             </div>
 
                             <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                                {organisation.description || "No description yet"}
+                                {organisation.description || t.noDescription}
                             </p>
 
                             {/* Meta info */}
@@ -80,7 +95,7 @@ export default function OrganisationCard({
                                     <Users className="h-3.5 w-3.5" />
                                     <span>
                                         {organisation.admins?.length || 1}{" "}
-                                        {organisation.admins?.length === 1 ? "member" : "members"}
+                                        {organisation.admins?.length === 1 ? t.member : t.members}
                                     </span>
                                 </div>
                                 {organisation.website && (
@@ -98,11 +113,11 @@ export default function OrganisationCard({
                         <div className="flex flex-col items-end gap-2 flex-shrink-0">
                             {isCreator ? (
                                 <Badge className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-700 dark:text-amber-300 border-amber-500/30 text-xs">
-                                    Owner
+                                    {t.owner}
                                 </Badge>
                             ) : (
                                 <Badge className="bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30 text-xs">
-                                    Admin
+                                    {t.admin}
                                 </Badge>
                             )}
                             <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />

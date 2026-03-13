@@ -90,6 +90,7 @@
     "ar": "Arabic",
     "en": "English",
     "fr": "Français",
+    "es": "Spanish",
     "label": "Language"
   },
   "Navbar": {
@@ -2699,6 +2700,7 @@
     "allTickets": "All Tickets",
     "createNewEvent": "Create New Event",
     "customRequiredInfo": "Custom Required Information",
+    "customFieldsDescription": "Manage the required information for your events",
     "emptyEventsCreated": {
       "description": "You haven't created any events yet. Start organizing your first event now!",
       "title": "No events created yet"
@@ -2712,8 +2714,10 @@
       "title": "No event tickets purchased yet"
     },
     "eventsOrganized": "Events Organized",
+    "eventsTabDescription": "Manage and view all your organized events",
     "exploreMoreEvents": "Explore more events",
     "mySponsors": "My Sponsors",
+    "sponsorsDescription": "Manage your event sponsors and their visibility",
     "myTickets": "My Tickets",
     "settings": {
       "title": "Profile Settings",
@@ -2740,7 +2744,71 @@
         "errorTitle": "Update failed",
         "errorDescription": "Unable to save your profile settings."
       }
+    },
+    "dashboard": "Dashboard",
+    "welcomeBack": "Welcome back, {name}! Here's your overview.",
+    "stats": {
+      "tickets": "Tickets",
+      "events": "Events",
+      "organisations": "Organisations",
+      "verifiedOrgs": "Verified Orgs"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "createEvent": "Create Event",
+      "newOrganisation": "New Organisation",
+      "viewTickets": "View Tickets"
+    },
+    "recentEvents": {
+      "title": "Recent Events",
+      "viewAll": "View all"
+    },
+    "myOrganisations": {
+      "title": "My Organisations",
+      "description": "Manage your organisations and their events",
+      "viewAll": "View all",
+      "empty": {
+        "title": "No organisations yet",
+        "description": "Create your first organisation to start publishing events and build your community.",
+        "button": "Create Organisation"
+      },
+      "verification": {
+        "title": "Organisation Verification",
+        "description": "Verified organisations can publish events with a trusted badge. Verification is approved by the platform admin."
+      }
+    },
+    "forms": {
+      "title": "Custom Event Forms",
+      "description": "Build custom registration forms and invite attendees",
+      "createButton": "Create Form",
+      "empty": {
+        "title": "No forms yet",
+        "description": "Capture all the information you need from your attendees."
+      },
+      "deleteConfirm": "Are you sure you want to delete this form? All submissions will be lost.",
+      "messages": {
+        "deletedTitle": "Deleted",
+        "deletedDescription": "Form deleted successfully",
+        "errorTitle": "Error"
+      }
+    },
+    "sidebar": {
+      "overview": "Overview",
+      "profileSettings": "Profile Settings",
+      "myTickets": "My Tickets",
+      "eventsOrganized": "Events Organized",
+      "organisations": "Organisations",
+      "customForms": "Custom Forms",
+      "sponsors": "Sponsors",
+      "customFields": "Custom Fields"
     }
+  },
+  "organisationCard": {
+    "noDescription": "No description yet",
+    "member": "member",
+    "members": "members",
+    "owner": "Owner",
+    "admin": "Admin"
   },
   "publisherCard": {
     "description": "You need an admin check to become a publisher and unlock exclusive features and content. Request to become a publisher or purchase a publisher badge directly.",
@@ -3243,15 +3311,15 @@
     },
     "users": {
       "table": {
-        "details": "Détails",
-        "email": "E-mail",
+        "details": "Details",
+        "email": "Email",
         "id": "ID",
-        "memberSince": "Membre depuis",
-        "publisher": "Éditeur",
-        "role": "Rôle",
-        "username": "Nom d'utilisateur"
+        "memberSince": "Member Since",
+        "publisher": "Publisher",
+        "role": "Role",
+        "username": "Username"
       },
-      "title": "Administration des Utilisateurs"
+      "title": "User Administration"
     },
     "workIdLabel": "Work ID"
   },
@@ -3304,3 +3372,4 @@
     "noEventDetails": "No event details"
   }
 }
+

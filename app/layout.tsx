@@ -16,6 +16,8 @@ import React from "react";
 import localFont from "next/font/local";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { useUser } from "@/lib/actions/user.actions";
+import { redirect } from "next/navigation";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -70,8 +72,14 @@ export default async function RootLayout({
   const messages = await getMessages();
   const localization = locale === "ar" ? arSA : locale === "fr" ? frFR : enUS;
 
+  // Efficiency: Get the user once at the root layout
+  const user = await useUser();
+  if (user?.isBanned) {
+      return redirect("/banned");
+  }
+
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} suppressHydrationWarning>
       <body
         className={`${inter.className} flex flex-1 min-h-screen flex-col items-center justify-center antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900`}
       >

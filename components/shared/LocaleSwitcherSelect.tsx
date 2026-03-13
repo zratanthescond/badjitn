@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { CheckIcon, Languages } from "lucide-react";
 import {
   Select,
@@ -24,6 +25,7 @@ export default function LocaleSwitcherSelect({
   items,
   label,
 }: Props) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const onChange = (value: string) => {
@@ -31,6 +33,7 @@ export default function LocaleSwitcherSelect({
     // alert(locale);
     startTransition(() => {
       setUserLocale(locale);
+      router.refresh();
     });
   };
 

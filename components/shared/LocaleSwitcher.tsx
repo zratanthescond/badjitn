@@ -22,6 +22,10 @@ export default function LocaleSwitcher() {
           value: "ar",
           label: t("ar"),
         },
+        {
+          value: "es",
+          label: t("es"),
+        },
       ]}
       label={t("label")}
     />
