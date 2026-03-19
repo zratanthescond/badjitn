@@ -8,8 +8,20 @@ import { CalendarDays, CalendarPlus, User, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { useQuery } from "@tanstack/react-query";
-import { getAIToolConfig } from "@/lib/actions/ai-tool.actions";
 import { useUser } from "@clerk/nextjs";
+
+const getAIToolConfig = async () => {
+  const response = await fetch("/api/ai-tools/config", {
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch AI tool config");
+  }
+
+  return response.json();
+};
 
 const NavItems = () => {
   const t = useTranslations("Navbar");
@@ -23,6 +35,7 @@ const NavItems = () => {
   const { data: config } = useQuery({
     queryKey: ["aiToolConfig"],
     queryFn: () => getAIToolConfig(),
+    staleTime: 60_000,
   });
 
   const getIcon = (link: string) => {

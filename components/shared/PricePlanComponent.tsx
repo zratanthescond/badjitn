@@ -30,14 +30,17 @@ interface PricePlanComponentProps {
   pricePlan: PricePlan[];
   setPricePlan: React.Dispatch<React.SetStateAction<PricePlan[]>>;
   setIsPricePlan: React.Dispatch<React.SetStateAction<boolean>>;
+  currencyCode: string;
 }
 
 export default function PricePlanComponent({
   pricePlan,
   setPricePlan,
   setIsPricePlan,
+  currencyCode,
 }: PricePlanComponentProps) {
   const t = useTranslations("pricePlan");
+  const priceLabel = t("form.labels.price").replace(/\s*\([^)]*\)\s*$/, "");
 
   const [planDescription, setPlanDescription] = useState<string>("");
   const [planPrice, setPlanPrice] = useState<string>("");
@@ -172,7 +175,7 @@ export default function PricePlanComponent({
 
             <div>
               <Label htmlFor="price" className="text-sm font-medium">
-                {t("form.labels.price")}
+                {priceLabel} ({currencyCode})
               </Label>
               <Input
                 id="price"
@@ -287,7 +290,7 @@ export default function PricePlanComponent({
                           variant="outline"
                           className="font-semibold rounded-full"
                         >
-                          {plan.price} {t("list.currency")}
+                          {plan.price} {currencyCode}
                         </Badge>
                         {plan.places && (
                           <Badge

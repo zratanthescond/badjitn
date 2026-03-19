@@ -2499,7 +2499,8 @@
       "doorpay": "Pago en puerta",
       "free": "Entrada gratuita",
       "hosted": "Entrada alojada",
-      "paid": "Entrada pagada"
+      "paid": "Entrada pagada",
+      "bankTransfer": "Transferencia Bancaria"
     },
     "title": "Gestión de pedidos"
   },
@@ -3428,5 +3429,20 @@
   "Card": {
     "sponsored": "Patrocinado",
     "noEventDetails": "Sin detalles del evento"
+  },
+  "selectPills": {
+    "placeholder": "Buscar y seleccionar...",
+    "actions": {
+      "remove": "Eliminar"
+    },
+    "messages": {
+      "noResults": "No se encontraron resultados"
+    },
+    "ariaLabels": {
+      "selectedItems": "Elementos seleccionados",
+      "searchInput": "Buscar opciones",
+      "pillOptions": "Opciones disponibles",
+      "removePill": "Eliminar {name}"
+    }
   }
 }

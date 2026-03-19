@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { getEventReportData } from "@/lib/actions/event.actions";
-import { formatDateTime } from "@/lib/utils";
+import { formatDateTime, getCurrencyCodeByCountry } from "@/lib/utils";
 import { Download, FileText, Loader2, Mail, Printer } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
 import { useReactToPrint } from "react-to-print";
@@ -78,10 +78,10 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
     () =>
       new Intl.NumberFormat(locale, {
         style: "currency",
-        currency: "EUR",
+        currency: getCurrencyCodeByCountry(event?.country, event?.location),
         maximumFractionDigits: 2,
       }),
-    [locale]
+    [event?.country, locale]
   );
 
   const totalScanEntries = useMemo(

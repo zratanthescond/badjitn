@@ -80,6 +80,15 @@ export function ModifyVideo({ video, setVideo, userId }: any) {
   const processVideo = async (e: any) => {
     e.preventDefault();
 
+    if (!usedTrack) {
+      toast({
+        title: "Error",
+        description: "Aucune musique n'est attachee a la video pour le moment.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const data = new FormData();
     data.append("video", video);
     data.append("usedTrack", JSON.stringify(usedTrack));

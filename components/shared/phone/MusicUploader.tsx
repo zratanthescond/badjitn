@@ -10,7 +10,6 @@ import {
   Pause,
   Play,
   Trash,
-  Trash2,
   UploadCloud,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -107,6 +106,7 @@ const MusicUploader = ({
       }
     }, 1000);
   };
+
   return (
     <div className="flex flex-col items-center w-full rounded-lg ">
       {uploadedFiles ? (

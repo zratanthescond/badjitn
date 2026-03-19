@@ -35,7 +35,7 @@ export const eventDefaultValues = {
   url: null as string | null,
   sponsors: [] as string[],
   requiredInfo: [] as string[],
-  country: "",
+  country: "TUN",
   discount: null as { field: string; value: string; discount: number } | null,
   places: 0,
   scanPoints: [] as string[],

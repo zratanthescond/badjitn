@@ -2499,7 +2499,8 @@
       "doorpay": "Door Pay Ticket",
       "free": "Free Ticket",
       "hosted": "Hosted Ticket",
-      "paid": "Paid Ticket"
+      "paid": "Paid Ticket",
+      "bankTransfer": "Bank Transfer"
     },
     "title": "Order Management"
   },
@@ -3413,5 +3414,20 @@
   "Card": {
     "sponsored": "Sponsored",
     "noEventDetails": "No event details"
+  },
+  "selectPills": {
+    "placeholder": "Search and select...",
+    "actions": {
+      "remove": "Remove"
+    },
+    "messages": {
+      "noResults": "No results found"
+    },
+    "ariaLabels": {
+      "selectedItems": "Selected items",
+      "searchInput": "Search options",
+      "pillOptions": "Available options",
+      "removePill": "Remove {name}"
+    }
   }
 }

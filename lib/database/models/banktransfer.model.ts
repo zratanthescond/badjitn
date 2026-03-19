@@ -2,6 +2,7 @@ import { Schema, model, models, Document } from "mongoose";
 
 export interface IBankTransfer extends Document {
     orderId: string;
+    eventId: string;
     transferId: string | null;
     screenshotUrl: string | null;
     status: "pending" | "approved" | "rejected";
@@ -18,6 +19,11 @@ export interface IBankTransfer extends Document {
 const BankTransferSchema = new Schema<IBankTransfer>(
     {
         orderId: {
+            type: String,
+            required: true,
+            index: true,
+        },
+        eventId: {
             type: String,
             required: true,
             index: true,
@@ -69,6 +75,7 @@ const BankTransferSchema = new Schema<IBankTransfer>(
 
 // Indexes for efficient queries
 BankTransferSchema.index({ orderId: 1, status: 1 });
+BankTransferSchema.index({ eventId: 1, status: 1 });
 BankTransferSchema.index({ createdAt: -1 });
 
 const BankTransfer =

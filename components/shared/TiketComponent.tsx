@@ -10,7 +10,7 @@ import { Skeleton } from "../ui/skeleton";
 import {
   formatDateRange,
   formatDateTime,
-  formatPrice,
+  formatPriceByCountry,
   parseAddressManual,
 } from "@/lib/utils";
 import { QRCode } from "react-qrcode-logo";
@@ -266,7 +266,7 @@ export default function TicketComponent({
                               key={index}
                               className={isRTL ? "font-arabic" : ""}
                             >
-                              • {plan.name} - {formatPrice(String(plan?.price), "TND")}
+                              • {plan.name} - {formatPriceByCountry(String(plan?.price), order?.event?.country, locale)}
                             </li>
                           )
                         )}
@@ -285,14 +285,15 @@ export default function TicketComponent({
               <span className="font-mono text-lg font-bold text-primary">
                 {order?.event.isFree && t("price.free")}
                 {Number.parseFloat(order?.event.price) > 0 &&
-                  formatPrice(order?.event.price, "TND")}
+                  formatPriceByCountry(order?.event.price, order?.event?.country, locale)}
                 {order?.event.pricePlan.length > 0 &&
-                  formatPrice(
+                  formatPriceByCountry(
                     order?.event.pricePlan.reduce(
                       (sum: number, plan: pricePlan) => sum + plan.price,
                       0
                     ),
-                    "TND"
+                    order?.event?.country,
+                    locale
                   )}
               </span>
               {isPending ? (

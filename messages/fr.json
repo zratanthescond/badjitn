@@ -2499,7 +2499,8 @@
       "doorpay": "Billet de Porte",
       "free": "Billet Gratuit",
       "hosted": "Billet Hébergé",
-      "paid": "Billet Payant"
+      "paid": "Billet Payant",
+      "bankTransfer": "Virement Bancaire"
     },
     "title": "Gestion des Commandes"
   },
@@ -3428,5 +3429,20 @@
   "Card": {
     "sponsored": "Sponsorisé",
     "noEventDetails": "Aucun détail sur l'événement"
+  },
+  "selectPills": {
+    "placeholder": "Rechercher et selectionner...",
+    "actions": {
+      "remove": "Retirer"
+    },
+    "messages": {
+      "noResults": "Aucun resultat trouve"
+    },
+    "ariaLabels": {
+      "selectedItems": "Elements selectionnes",
+      "searchInput": "Rechercher des options",
+      "pillOptions": "Options disponibles",
+      "removePill": "Retirer {name}"
+    }
   }
 }

@@ -18,6 +18,7 @@ import { SignedIn, SignedOut } from "./AuthWrappers";
 import { BankTransferModal } from "./bank-transfer-modal";
 import { useRouter } from "next/navigation";
 import { Badge } from "../ui/badge";
+import { formatPriceByCountry, getCurrencyCodeByCountry } from "@/lib/utils";
 export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [checkPlan, setCheckedPlan] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -46,6 +47,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const t = useTranslations("eventPrice");
   const { userId } = useAuth();
   const router = useRouter();
+  const currencyCode = getCurrencyCodeByCountry(event.country, event.location);
 
   // Check if the event actually has a discount configured
   const hasDiscount = !!(event.discount && event.discount.field && event.discount.discount > 0);
@@ -135,9 +137,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     if (discountInfo && Number.parseFloat(String(discountInfo.value)) > 0) {
       const discountValue = Number.parseFloat(String(discountInfo.value));
       finalPrice = price - (price * discountValue) / 100;
-      return `${finalPrice.toFixed(2)} Tnd ${discountInfo.value} % Off`;
+      return `${formatPriceByCountry(finalPrice, event.country, "en-US", event.location)} ${discountInfo.value} % Off`;
     }
-    return `${finalPrice.toFixed(2)} Tnd`;
+    return formatPriceByCountry(finalPrice, event.country, "en-US", event.location);
   };
 
   useEffect(() => {
@@ -173,15 +175,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 {Number(discountInfo?.value) > 0 ? (
                   <div className="flex flex-col items-end">
                     <span className="text-sm text-destructive font-medium line-through opacity-80">
-                      {price} TND
+                      {formatPriceByCountry(price, event.country, "en-US", event.location)}
                     </span>
                     <span className="text-3xl font-black text-primary animate-in fade-in zoom-in duration-300">
-                      {calculatePriceAsNumber(price)} TND
+                      {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
                     </span>
                   </div>
                 ) : (
                   <span className="text-3xl font-black text-foreground">
-                    {price} TND
+                    {formatPriceByCountry(price, event.country, "en-US", event.location)}
                   </span>
                 )}
               </div>
@@ -236,7 +238,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                               : ""
                               }`}
                           >
-                            {plan.price} TND
+                            {formatPriceByCountry(plan.price, event.country, "en-US", event.location)}
                           </Badge>
                         </motion.div>
                         {plan.note && (
@@ -308,7 +310,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                               <ShoppingBag size={16} className="text-white" />
                             </div>
                             <span>
-                              {t("payInDoor")} {calculatePriceAsNumber(price)} TND
+                              {t("payInDoor")} {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
                             </span>
                             <ArrowRight
                               size={16}
@@ -338,7 +340,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           <ShoppingBag size={16} className="text-white" />
                         </div>
                         <span>
-                          {t("payInDoor")} {calculatePriceAsNumber(price)} TND
+                          {t("payInDoor")} {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
                         </span>
                         <ArrowRight size={16} />
                       </div>
@@ -364,7 +366,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                     eventId={event._id}
                     buyerId={userId || ""}
                     amount={Number(calculatePriceAsNumber(price))}
-                    currency="TND"
+                    currency={currencyCode}
                     details={event.pricePlan?.filter((item) => checkPlan.includes(item._id!)).map(item => ({
                       name: item.name,
                       price: item.price.toString()
@@ -385,7 +387,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
                     >
                       <Landmark className="mr-2 h-5 w-5" />
-                      Virement Bancaire {calculatePriceAsNumber(price)} TND
+                      Virement Bancaire {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
                     </Button>
                   </motion.div>
                 </SignedOut>

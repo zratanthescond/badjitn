@@ -132,6 +132,7 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
     // 4. Create bank transfer record linked to the new order
     const bankTransfer = await BankTransfer.create({
       orderId: newOrder._id.toString(),
+      eventId: eventId,
       transferId: transferId || null,
       screenshotUrl: screenshotUrl || null,
       status: 'pending',

@@ -6,6 +6,7 @@ import { handleError } from "../utils";
 import { revalidatePath } from "next/cache";
 
 export interface GetBankTransfersParams {
+    eventId?: string;
     eventTitle?: string;
     status?: "pending" | "approved" | "rejected" | "all";
     searchString?: string;
@@ -22,6 +23,7 @@ export interface VerifyBankTransferParams {
 
 // Get all bank transfers with optional filtering
 export async function getBankTransfers({
+    eventId,
     eventTitle,
     status = "all",
     searchString = "",
@@ -34,7 +36,11 @@ export async function getBankTransfers({
         const query: any = {};
 
         // Filter by event if provided
-        if (eventTitle) {
+        if (eventId && eventTitle) {
+            query.$or = [{ eventId }, { eventTitle }];
+        } else if (eventId) {
+            query.eventId = eventId;
+        } else if (eventTitle) {
             query.eventTitle = eventTitle;
         }
 
@@ -45,10 +51,17 @@ export async function getBankTransfers({
 
         // Search by buyer name or transfer ID
         if (searchString) {
-            query.$or = [
+            const searchConditions = [
                 { buyerName: { $regex: searchString, $options: "i" } },
                 { transferId: { $regex: searchString, $options: "i" } },
             ];
+
+            if (query.$or) {
+                query.$and = [{ $or: query.$or }, { $or: searchConditions }];
+                delete query.$or;
+            } else {
+                query.$or = searchConditions;
+            }
         }
 
         const skipAmount = (page - 1) * limit;

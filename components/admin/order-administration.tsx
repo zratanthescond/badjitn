@@ -6,7 +6,7 @@ import DataTable from "@/components/shared/data-table";
 import { Badge } from "../ui/badge";
 import Search from "../shared/Search";
 import { getOrdersByEvent } from "@/lib/actions/order.actions";
-import { formatDateTime } from "@/lib/utils";
+import { formatDateTime, formatPriceByCountry } from "@/lib/utils";
 import TableSkeleton from "../shared/table-skeleton";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -45,9 +45,13 @@ import {
 export default function OrderAdministration({
   eventId,
   searchString,
+  eventCountry,
+  eventLocation,
 }: {
   eventId: string;
   searchString: string;
+  eventCountry?: string;
+  eventLocation?: { name?: string; lat?: number; lon?: number };
 }) {
   const t = useTranslations("orderAdministration");
   const locale = useLocale();
@@ -64,6 +68,19 @@ export default function OrderAdministration({
       return orders;
     },
   });
+
+  const ticketTypeLabels: Record<string, string> = {
+    paid: t("ticketTypes.paid"),
+    free: t("ticketTypes.free"),
+    hosted: t("ticketTypes.hosted"),
+    doorpay: t("ticketTypes.doorpay"),
+    bank_transfer: t("ticketTypes.bankTransfer"),
+  };
+
+  const getTicketTypeLabel = (value?: string) => {
+    if (!value) return "";
+    return ticketTypeLabels[value] || value;
+  };
 
   const columns = [
     {
@@ -107,7 +124,7 @@ export default function OrderAdministration({
           variant="secondary"
           className="glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300"
         >
-          {value !== undefined ? t(`ticketTypes.${value}`) : value}
+          {getTicketTypeLabel(value)}
         </Badge>
       ),
     },
@@ -140,7 +157,12 @@ export default function OrderAdministration({
         >
           <CreditCard className="h-4 w-4 text-green-600" />
           <span className="font-semibold text-green-600 dark:text-green-400">
-            {value.toFixed(2)}
+            {formatPriceByCountry(
+              value,
+              eventCountry || data?.[0]?.eventCountry,
+              locale,
+              eventLocation
+            )}
           </span>
         </div>
       ),
@@ -170,9 +192,7 @@ export default function OrderAdministration({
             variant="secondary"
             className="glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300"
           >
-            {item.type !== undefined
-              ? t(`ticketTypes.${item.type}`)
-              : item.type}
+            {getTicketTypeLabel(item.type)}
           </Badge>
         </div>
         <CardDescription
@@ -217,7 +237,12 @@ export default function OrderAdministration({
               className={`font-semibold text-green-600 dark:text-green-400 ${isRTL ? "font-arabic" : ""
                 }`}
             >
-              ${item.totalAmount.toFixed(2)}
+              {formatPriceByCountry(
+                item.totalAmount,
+                eventCountry || item.eventCountry,
+                locale,
+                eventLocation
+              )}
             </span>
           </div>
 
@@ -260,7 +285,7 @@ export default function OrderAdministration({
       order?._id ?? "",
       order?.eventTitle ?? "",
       order?.buyer ?? "",
-      order?.type !== undefined ? t(`ticketTypes.${order.type}`) : "",
+      getTicketTypeLabel(order?.type),
       order?.createdAt ? formatDateTime(order.createdAt).dateTime : "",
       typeof order?.totalAmount === "number"
         ? order.totalAmount.toFixed(2)
@@ -555,14 +580,15 @@ export default function OrderAdministration({
                     className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
                       }`}
                   >
-                    $
-                    {data
-                      .reduce(
-                        (sum: number, order: any) =>
-                          sum + (order.totalAmount || 0),
+                    {formatPriceByCountry(
+                      data.reduce(
+                        (sum: number, order: any) => sum + (order.totalAmount || 0),
                         0
-                      )
-                      ?.toFixed(2)}
+                      ),
+                      eventCountry || data[0]?.eventCountry,
+                      locale,
+                      eventLocation
+                    )}
                   </p>
                   <p
                     className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""

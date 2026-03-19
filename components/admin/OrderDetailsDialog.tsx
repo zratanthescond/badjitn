@@ -24,6 +24,7 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { useTranslations, useLocale } from "next-intl";
+import { formatPriceByCountry } from "@/lib/utils";
 
 const OrderDetailsDialog = ({ value }: { value: any }) => {
   const t = useTranslations("orderDetailsDialog");
@@ -148,7 +149,7 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                         variant="outline"
                         className="glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300 font-semibold"
                       >
-                        ${detail.price}
+                        {formatPriceByCountry(detail.price, value?.eventCountry, locale)}
                       </Badge>
                     </div>
                   ))
@@ -198,7 +199,7 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                         variant="outline"
                         className="glass bg-green-500/20 border-green-500/50 text-green-700 dark:text-green-300 text-lg font-bold px-4 py-2"
                       >
-                        ${totalAmount.toFixed(2)}
+                        {formatPriceByCountry(totalAmount, value?.eventCountry, locale)}
                       </Badge>
                     </div>
 
@@ -217,11 +218,11 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                             {value.type === "paid"
                               ? t("payment.cashPaid")
                               : t("payment.toPay")}
-                            : $
-                            {(
-                              (totalAmount / 100) *
-                              value.discountInfo.value
-                            ).toFixed(2)}
+                            : {formatPriceByCountry(
+                              (totalAmount / 100) * value.discountInfo.value,
+                              value?.eventCountry,
+                              locale
+                            )}
                           </Badge>
                         </div>
                       </div>

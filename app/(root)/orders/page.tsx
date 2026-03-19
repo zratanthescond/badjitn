@@ -9,6 +9,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@clerk/nextjs/server";
 
 import { getOrdersByEvent } from "@/lib/actions/order.actions";
+import { getEventById } from "@/lib/actions/event.actions";
 import { getCertificationByEventId } from "@/lib/actions/certification.actions";
 import { getUserWorkByEventId } from "@/lib/actions/user.actions";
 import OrdersEvolutionChart from "@/components/admin/OrdersEvolutionChart";
@@ -28,6 +29,7 @@ const Orders = async (props: SearchParamProps) => {
 
   // Fetch actual stats data
   const ordersData = await getOrdersByEvent({ eventId, searchString: "" });
+  const eventData = eventId ? await getEventById(eventId) : null;
   const certificationsData = await getCertificationByEventId({ eventId, searchString: "" });
   const worksData = await getUserWorkByEventId({ eventId, searchString: "" });
 
@@ -205,6 +207,8 @@ const Orders = async (props: SearchParamProps) => {
                 <OrderAdministration
                   eventId={eventId}
                   searchString={searchText}
+                  eventCountry={eventData?.country || ""}
+                  eventLocation={eventData?.location}
                 />
               </div>
             </TabsContent>
@@ -272,9 +276,12 @@ const Orders = async (props: SearchParamProps) => {
                   </h2>
                 </div>
                 <BankTransferAdministration
-                  eventTitle={eventId}
+                  eventId={eventId}
+                  eventTitle={eventData?.title || ""}
                   searchString={searchText}
                   userId={currentUserId}
+                  eventCountry={eventData?.country || ""}
+                  eventLocation={eventData?.location}
                 />
               </div>
             </TabsContent>

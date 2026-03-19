@@ -7,7 +7,7 @@ import Event from "@/lib/database/models/event.model";
 import User from "@/lib/database/models/user.model";
 import Category from "@/lib/database/models/category.model";
 import Organisation from "@/lib/database/models/organisation.model";
-import { handleError } from "@/lib/utils";
+import { formatPriceByCountry, handleError } from "@/lib/utils";
 
 import {
   CreateEventParams,
@@ -636,7 +636,7 @@ export async function getEventReportData(eventId: string) {
         `${totalOrders} commandes générées pour ${uniqueBuyers} participants uniques.`
       );
       highlights.push(
-        `Panier moyen estimé: ${averageOrderValue.toFixed(2)} EUR par commande.`
+        `Panier moyen estimé: ${formatPriceByCountry(averageOrderValue, event.country)} par commande.`
       );
       highlights.push(
         `Taux de présence scannée: ${attendanceRate}% (${uniqueScannedAttendees} participants scannés).`

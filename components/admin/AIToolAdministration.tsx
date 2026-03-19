@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAIToolConfig, updateAIToolConfig } from "@/lib/actions/ai-tool.actions";
+import { updateAIToolConfig } from "@/lib/actions/ai-tool.actions";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,19 @@ import { Input } from "@/components/ui/input";
 import { Sparkles, Save, Loader2, Users, Plus, Trash2, ChevronDown, ChevronUp, Mail, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+
+const getAIToolConfig = async () => {
+  const response = await fetch("/api/ai-tools/config", {
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch AI tool config");
+  }
+
+  return response.json();
+};
 
 const ALL_TOOLS = [
   { id: "googleIA", name: "Google IA Pro" },
@@ -46,6 +59,7 @@ export default function AIToolAdministration() {
   const { data: config, isLoading } = useQuery({
     queryKey: ["aiToolConfig"],
     queryFn: () => getAIToolConfig(),
+    staleTime: 60_000,
   });
 
   const [isRouteEnabled, setIsRouteEnabled] = React.useState(true);

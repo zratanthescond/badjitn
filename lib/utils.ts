@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 
 import { twMerge } from "tailwind-merge";
 import qs from "query-string";
+import { countries, currencies } from "country-data-list";
 
 import { UrlQueryParams, RemoveUrlQueryParams } from "@/types";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
@@ -66,6 +67,104 @@ export const formatPrice = (price: string, currency: string | null) => {
   }).format(amount);
 
   return formattedPrice;
+};
+
+type EventLocationLike = {
+  name?: string | null;
+  lat?: number | null;
+  lon?: number | null;
+};
+
+export const inferCountryCodeFromLocation = (location?: EventLocationLike | null) => {
+  if (!location) return "";
+
+  const normalizedName = String(location.name || "").trim().toUpperCase();
+  if (
+    normalizedName.includes("TUNISIA") ||
+    normalizedName.includes("TUNISIE") ||
+    normalizedName.includes("TUNIS") ||
+    normalizedName.includes("TUNISIE") ||
+    normalizedName.includes("TUNISIA") ||
+    normalizedName.includes("TUN")
+  ) {
+    return "TUN";
+  }
+
+  const lat = Number(location.lat);
+  const lon = Number(location.lon);
+  const isTunisia =
+    Number.isFinite(lat) &&
+    Number.isFinite(lon) &&
+    lat >= 30 &&
+    lat <= 38 &&
+    lon >= 7 &&
+    lon <= 12.5;
+
+  return isTunisia ? "TUN" : "";
+};
+
+export const getCurrencyCodeByCountry = (
+  countryCode?: string | null,
+  location?: EventLocationLike | null
+) => {
+  const currencyMap = currencies as Record<string, { symbol?: string }>;
+  const resolvedCountry = String(countryCode || "").trim() || inferCountryCodeFromLocation(location);
+  if (!resolvedCountry) return "USD";
+
+  const normalizedCode = resolvedCountry.trim().toUpperCase();
+  const countryAliases: Record<string, string> = {
+    TN: "TND",
+    TUN: "TND",
+    TUNISIA: "TND",
+    TUNISIE: "TND",
+    TUNIS: "TND",
+    TUNISIEN: "TND",
+    TUNISIENNE: "TND",
+  };
+
+  if (countryAliases[normalizedCode]) {
+    return countryAliases[normalizedCode];
+  }
+
+  const country =
+    countries.all.find(
+      (item) =>
+        item.alpha3?.toUpperCase() === normalizedCode ||
+        item.alpha2?.toUpperCase() === normalizedCode ||
+        item.name?.trim().toUpperCase() === normalizedCode
+    ) || null;
+
+  const currencyCode = country?.currencies?.[0];
+  if (currencyCode && currencyMap[currencyCode]) {
+    return currencyCode;
+  }
+
+  if (currencyMap[normalizedCode]) return normalizedCode;
+  return "USD";
+};
+
+export const getCurrencySymbolByCountry = (countryCode?: string | null) => {
+  const currencyMap = currencies as Record<string, { symbol?: string }>;
+  const currencyCode = getCurrencyCodeByCountry(countryCode);
+  return currencyMap[currencyCode]?.symbol || currencyCode;
+};
+
+export const formatPriceByCountry = (
+  price: string | number,
+  countryCode?: string | null,
+  locale = "en-US",
+  location?: EventLocationLike | null
+) => {
+  const amount =
+    typeof price === "number" ? price : Number.parseFloat(String(price || 0));
+  const safeAmount = Number.isFinite(amount) ? amount : 0;
+  const currencyCode = getCurrencyCodeByCountry(countryCode, location);
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currencyCode,
+    maximumFractionDigits: 2,
+  }).format(safeAmount);
 };
 
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {

@@ -8,6 +8,7 @@ import { Detail } from "@/lib/database/models/order.model";
 import { motion } from "framer-motion";
 import { Ticket } from "lucide-react";
 import { json } from "stream/consumers";
+import { formatPriceByCountry } from "@/lib/utils";
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 const Checkout = ({
@@ -103,7 +104,7 @@ const Checkout = ({
               <Ticket size={16} className="text-primary-foreground" />
             </div>
             <span>
-              {event.isFree ? "Get Free Ticket" : `Pay now  ${price.toFixed(2)} TND`}
+              {event.isFree ? "Get Free Ticket" : `Pay now ${formatPriceByCountry(price, event.country)}`}
             </span>
           </div>
         </Button>

@@ -31,7 +31,7 @@ import {
   getBankTransfers,
   verifyBankTransfer,
 } from "@/lib/actions/banktransfer.actions";
-import { formatDateTime } from "@/lib/utils";
+import { formatDateTime, formatPriceByCountry } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import {
   Landmark,
@@ -59,15 +59,21 @@ import {
 import { useLocale } from "next-intl";
 
 interface BankTransferAdministrationProps {
+    eventId?: string;
     eventTitle: string;
     searchString: string;
     userId: string;
+    eventCountry?: string;
+    eventLocation?: { name?: string; lat?: number; lon?: number };
 }
 
 export default function BankTransferAdministration({
+    eventId,
     eventTitle,
     searchString,
     userId,
+    eventCountry,
+    eventLocation,
 }: BankTransferAdministrationProps) {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "pending" | "approved" | "rejected"
@@ -82,9 +88,10 @@ export default function BankTransferAdministration({
 
   // Fetch bank transfers
   const { isPending, data, error } = useQuery({
-    queryKey: ["bankTransfers", eventTitle, statusFilter, searchString],
+    queryKey: ["bankTransfers", eventId, eventTitle, statusFilter, searchString],
     queryFn: () =>
       getBankTransfers({
+        eventId,
         eventTitle,
         status: statusFilter,
         searchString,
@@ -219,7 +226,7 @@ export default function BankTransferAdministration({
         <div className="flex items-center gap-2">
           <CreditCard className="h-4 w-4 text-green-600" />
           <span className="font-semibold text-green-600">
-            €{value.toFixed(2)}
+{formatPriceByCountry(value, eventCountry, locale, eventLocation)}
           </span>
         </div>
       ),
@@ -288,7 +295,7 @@ export default function BankTransferAdministration({
           <div className="flex items-center gap-2">
             <CreditCard className="h-4 w-4 text-green-600" />
             <span className="font-semibold text-green-600">
-              €{item.amount.toFixed(2)}
+{formatPriceByCountry(item.amount, eventCountry, locale, eventLocation)}
             </span>
           </div>
           {item.transferId && (
@@ -660,13 +667,13 @@ export default function BankTransferAdministration({
         open={!!selectedTransfer}
         onOpenChange={() => setSelectedTransfer(null)}
       >
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto border border-slate-200 bg-white text-slate-950 shadow-2xl shadow-black/30 sm:rounded-3xl dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50">
+          <DialogHeader className="rounded-2xl border border-pink-100 bg-gradient-to-r from-pink-50 to-rose-50 p-5 dark:border-pink-900/50 dark:from-pink-950/40 dark:to-rose-950/40">
+            <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-slate-900 dark:text-slate-100">
               <Landmark className="h-5 w-5 text-pink-600" />
               Bank Transfer Details
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-base text-slate-600 dark:text-slate-300">
               Review and verify this bank transfer payment
             </DialogDescription>
           </DialogHeader>
@@ -674,35 +681,35 @@ export default function BankTransferAdministration({
           {selectedTransfer && (
             <div className="space-y-6">
               {/* Status */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Status:</span>
+              <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Status</span>
                 {getStatusBadge(selectedTransfer.status)}
               </div>
 
               {/* Order Information */}
-              <div className="space-y-3">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
+              <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  <FileText className="h-4 w-4 text-pink-600" />
                   Order Information
                 </h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Buyer:</span>
-                    <p className="font-medium">{selectedTransfer.buyerName}</p>
+                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                  <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/80">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Buyer</span>
+                    <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{selectedTransfer.buyerName}</p>
                   </div>
-                  <div>
-                    <span className="text-muted-foreground">Amount:</span>
-                    <p className="font-semibold text-green-600">
-                      €{selectedTransfer.amount.toFixed(2)}
+                  <div className="rounded-xl bg-green-50 p-4 dark:bg-green-950/30">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Amount</span>
+                    <p className="mt-1 text-xl font-bold text-green-600 dark:text-green-400">
+{formatPriceByCountry(selectedTransfer.amount, eventCountry, locale, eventLocation)}
                     </p>
                   </div>
-                  <div>
-                    <span className="text-muted-foreground">Event:</span>
-                    <p className="font-medium">{selectedTransfer.eventTitle}</p>
+                  <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/80">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Event</span>
+                    <p className="mt-1 break-words font-semibold text-slate-900 dark:text-slate-100">{selectedTransfer.eventTitle}</p>
                   </div>
-                  <div>
-                    <span className="text-muted-foreground">Date:</span>
-                    <p className="font-medium">
+                  <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/80">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Date</span>
+                    <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">
                       {formatDateTime(selectedTransfer.createdAt).dateTime}
                     </p>
                   </div>
@@ -711,10 +718,10 @@ export default function BankTransferAdministration({
 
               {/* Transfer ID */}
               {selectedTransfer.transferId && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Transfer ID</h3>
-                  <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                    <code className="text-sm font-mono">
+                <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Transfer ID</h3>
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+                    <code className="text-sm font-mono text-slate-800 dark:text-slate-100">
                       {selectedTransfer.transferId}
                     </code>
                   </div>
@@ -723,17 +730,17 @@ export default function BankTransferAdministration({
 
               {/* Screenshot */}
               {selectedTransfer.screenshotUrl && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <ImageIcon className="h-4 w-4" />
+                <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                  <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
+                    <ImageIcon className="h-4 w-4 text-pink-600" />
                     Transfer Screenshot
                   </h3>
-                  <div className="border rounded-lg overflow-hidden">
+                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
                     <Zoom>
                       <img
                         src={selectedTransfer.screenshotUrl}
                         alt="Bank transfer screenshot"
-                        className="w-full h-auto"
+                        className="max-h-[28rem] w-full object-contain"
                       />
                     </Zoom>
                   </div>
@@ -743,12 +750,12 @@ export default function BankTransferAdministration({
               {/* Rejection Reason (if rejected) */}
               {selectedTransfer.status === "rejected" &&
                 selectedTransfer.rejectionReason && (
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-red-600">
+                  <div className="space-y-3 rounded-2xl border border-red-200 bg-red-50 p-5 shadow-sm dark:border-red-900/60 dark:bg-red-950/20">
+                    <h3 className="text-lg font-semibold text-red-600 dark:text-red-400">
                       Rejection Reason
                     </h3>
-                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                      <p className="text-sm">
+                    <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-800 dark:bg-slate-900">
+                      <p className="text-sm text-slate-700 dark:text-slate-200">
                         {selectedTransfer.rejectionReason}
                       </p>
                     </div>
@@ -757,9 +764,9 @@ export default function BankTransferAdministration({
 
               {/* Rejection Reason Input (for pending) */}
               {selectedTransfer.status === "pending" && (
-                <div className="space-y-2">
-                  <Label htmlFor="rejection-reason">
-                    Rejection Reason (optional)
+                <div className="space-y-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/20">
+                  <Label htmlFor="rejection-reason" className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                    Rejection Reason
                   </Label>
                   <Textarea
                     id="rejection-reason"
@@ -767,25 +774,29 @@ export default function BankTransferAdministration({
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
                     rows={3}
+                    className="min-h-[120px] rounded-2xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-pink-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   />
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Required only if you reject this payment.
+                  </p>
                 </div>
               )}
             </div>
           )}
 
-          <DialogFooter>
+          <DialogFooter className="mt-2 border-t border-slate-200 pt-4 dark:border-slate-800">
             {selectedTransfer?.status === "pending" ? (
-              <div className="flex gap-2 w-full">
+              <div className="flex w-full flex-col gap-3 sm:flex-row">
                 <Button
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 rounded-2xl border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
                   onClick={() => setSelectedTransfer(null)}
                 >
                   Cancel
                 </Button>
                 <Button
                   variant="destructive"
-                  className="flex-1"
+                  className="flex-1 rounded-2xl"
                   onClick={handleReject}
                   disabled={verifyMutation.isPending}
                 >
@@ -793,7 +804,7 @@ export default function BankTransferAdministration({
                   Reject
                 </Button>
                 <Button
-                  className="flex-1 bg-green-600 hover:bg-green-700"
+                  className="flex-1 rounded-2xl bg-green-600 hover:bg-green-700"
                   onClick={handleApprove}
                   disabled={verifyMutation.isPending}
                 >
@@ -802,7 +813,7 @@ export default function BankTransferAdministration({
                 </Button>
               </div>
             ) : (
-              <Button onClick={() => setSelectedTransfer(null)}>Close</Button>
+              <Button className="rounded-2xl" onClick={() => setSelectedTransfer(null)}>Close</Button>
             )}
           </DialogFooter>
         </DialogContent>

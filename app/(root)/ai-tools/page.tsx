@@ -21,9 +21,21 @@ import Link from "next/link";
 import AIChatWindow from "@/components/shared/AIChatWindow";
 
 import { useQuery } from "@tanstack/react-query";
-import { getAIToolConfig } from "@/lib/actions/ai-tool.actions";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+
+const getAIToolConfig = async () => {
+  const response = await fetch("/api/ai-tools/config", {
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch AI tool config");
+  }
+
+  return response.json();
+};
 
 const aiTools = [
   {
@@ -84,6 +96,7 @@ const AIToolsPage = () => {
   const { data: config, isLoading: isConfigLoading } = useQuery({
     queryKey: ["aiToolConfig"],
     queryFn: () => getAIToolConfig(),
+    staleTime: 60_000,
   });
 
   // Find the current user's access entry

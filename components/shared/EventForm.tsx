@@ -55,6 +55,7 @@ import DiscountDialog from "./DiscountDialogComponenet";
 import { useLocale, useTranslations } from "next-intl";
 import { useLoadScript } from "@react-google-maps/api";
 import ScanPointsConfig from "./ScanPointsConfig";
+import { getCurrencyCodeByCountry } from "@/lib/utils";
 
 type EventFormProps = {
   userId: string;
@@ -85,6 +86,7 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
     event && type === "Update"
       ? {
         ...event,
+        country: event.country || "TUN",
 
         startDateTime: new Date(event.startDateTime),
         endDateTime: new Date(event.endDateTime),
@@ -106,13 +108,26 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
     defaultValues: initialValues as any,
   });
 
+  useEffect(() => {
+    if (!form.getValues("country")) {
+      form.setValue("country", "TUN", {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: false,
+      });
+    }
+  }, [form]);
+
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
     console.log(values);
+    const resolvedCountry = values.country || form.getValues("country") || "TUN";
+
     if (type === "Create") {
       try {
         const newEvent = await createEvent({
           event: {
             ...values,
+            country: resolvedCountry,
             pricePlan: pricePlan,
             location: { name: address, lon: longitude, lat: latitude },
             imageUrl: reel,
@@ -143,6 +158,7 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
           userId,
           event: {
             ...values,
+            country: resolvedCountry,
             pricePlan: pricePlan,
             location: { name: address, lon: longitude, lat: latitude },
             imageUrl: values.imageUrl,
@@ -179,6 +195,9 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
   const t = useTranslations("eventForm");
   const editorPlaceholder = t("eventDescriptionPlaceholder");
   const locale = useLocale();
+  const selectedCountry = form.watch("country") || "TUN";
+  const currencyCode = getCurrencyCodeByCountry(selectedCountry);
+  const pricePlaceholderLabel = t("price").replace(/\s*\([^)]*\)\s*$/, "");
   return (
     <Form {...form}>
       <form
@@ -401,6 +420,7 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
                 setPricePlan={setPricePlan}
                 pricePlan={pricePlan}
                 setIsPricePlan={handleSetIsPricePlan}
+                currencyCode={currencyCode}
               />
             ) : (
               <FormField
@@ -420,7 +440,7 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
                         <Input
                           type="number"
                           disabled={form.getValues("isFree")}
-                          placeholder={t("price")}
+                          placeholder={`${pricePlaceholderLabel} (${currencyCode})`}
                           {...field}
                           className="p-regular-16 border-0 glass rounded-full  outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                         />

@@ -19,8 +19,8 @@ const MusicSchema = new Schema({
   path: { type: String, required: true },
   image: { type: String, required: true },
   wave: { type: String },
-  createAt: { type: Date, default: Date.now() },
   addedBy: { type: Schema.Types.ObjectId, ref: "User" },
+  createAt: { type: Date, default: Date.now() },
 });
 
 const Music = models.Music || model("Music", MusicSchema);
