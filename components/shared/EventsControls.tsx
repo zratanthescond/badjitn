@@ -73,22 +73,22 @@ export const EventControls = ({ event }: { event: IEvent }) => {
           <DropdownMenuItem className="focus:bg-white/10 transition-colors">
             <Link
               href={`/orders?eventId=${event._id}`}
-              className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all hover:bg-white/5 ${isRTL ? "flex-row-reverse" : "flex-row"
+              className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all hover:bg-slate-100 dark:hover:bg-white/5 ${isRTL ? "flex-row-reverse" : "flex-row"
                 }`}
             >
               <span
-                className={`text-white font-medium ${isRTL ? "font-arabic" : ""
+                className={`text-slate-800 dark:text-white font-medium ${isRTL ? "font-arabic" : ""
                   }`}
               >
                 {t("orderDetails")}
               </span>
               <ArrowRight
-                className={`h-4 w-4 text-white/70 ${isRTL ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-slate-500 dark:text-white/70 ${isRTL ? "rotate-180" : ""}`}
               />
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuSeparator className="bg-white/10" />
+          <DropdownMenuSeparator className="bg-slate-200 dark:bg-white/10" />
 
           {/* Host Contributor */}
           <DropdownMenuItem
@@ -101,16 +101,16 @@ export const EventControls = ({ event }: { event: IEvent }) => {
                 }`}
             >
               <span
-                className={`text-white font-medium ${isRTL ? "font-arabic" : ""
+                className={`text-slate-800 dark:text-white font-medium ${isRTL ? "font-arabic" : ""
                   }`}
               >
                 {t("hostContributor")}
               </span>
-              <FaHandshake className="h-5 w-5 text-white/70" />
+              <FaHandshake className="h-5 w-5 text-slate-500 dark:text-white/70" />
             </div>
           </DropdownMenuItem>
 
-          <DropdownMenuSeparator className="bg-white/10" />
+          <DropdownMenuSeparator className="bg-slate-200 dark:bg-white/10" />
 
           {/* Sponsor */}
           <DropdownMenuItem
@@ -123,31 +123,31 @@ export const EventControls = ({ event }: { event: IEvent }) => {
                 }`}
             >
               <span
-                className={`text-white font-medium ${isRTL ? "font-arabic" : ""
+                className={`text-slate-800 dark:text-white font-medium ${isRTL ? "font-arabic" : ""
                   }`}
               >
                 {t("sponsor")}
               </span>
-              <PiHandCoins className="h-5 w-5 text-white/70" />
+              <PiHandCoins className="h-5 w-5 text-slate-500 dark:text-white/70" />
             </div>
           </DropdownMenuItem>
 
-          <DropdownMenuSeparator className="bg-white/10" />
+          <DropdownMenuSeparator className="bg-slate-200 dark:bg-white/10" />
 
           {/* Modify */}
           <DropdownMenuItem className="focus:bg-white/10 transition-colors">
             <Link
               href={`/events/${event._id}/update`}
-              className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all hover:bg-white/5 ${isRTL ? "flex-row-reverse" : "flex-row"
+              className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all hover:bg-slate-100 dark:hover:bg-white/5 ${isRTL ? "flex-row-reverse" : "flex-row"
                 }`}
             >
               <span
-                className={`text-white font-medium ${isRTL ? "font-arabic" : ""
+                className={`text-slate-800 dark:text-white font-medium ${isRTL ? "font-arabic" : ""
                   }`}
               >
                 {t("modify")}
               </span>
-              <Edit className="h-4 w-4 text-white/70" />
+              <Edit className="h-4 w-4 text-slate-500 dark:text-white/70" />
             </Link>
           </DropdownMenuItem>
 

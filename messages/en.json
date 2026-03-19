@@ -364,7 +364,14 @@
   "aiToolsPage": {
     "badjiAI": "Badji AI Chat",
     "capcut": "CapCut",
-    "chatgpt": "ChatGPT Go",
+    "chatgpt": "ChatGPT Pro",
+    "chatgptDesc": "Leading conversational AI for text, code, and analysis.",
+    "googleIADesc": "Google's smart assistant for search and creation.",
+    "perplexityDesc": "AI search engine providing answers with verified sources.",
+    "xmindDesc": "Brainstorming tool to organize your ideas.",
+    "capcutDesc": "Simple and powerful video editor for all your needs.",
+    "deeplDesc": "World reference for AI-powered text translation.",
+    "gensparkDesc": "Agentic search engine for ultra-relevant results.",
     "deepl": "DeepL",
     "gemini": "Google Gemini",
     "genspark": "Genspark",
@@ -375,7 +382,43 @@
     "subtitle": "Access all your favorite AI tools in one single place.",
     "title": "Badji AI Tool Hub",
     "visit": "Visit",
-    "xmind": "Xmind"
+    "xmind": "Xmind",
+    "activatedOn": "Activated on",
+    "expiresOn": "Expires on",
+    "statusExpired": "Expired",
+    "statusPending": "Coming soon",
+    "chatAssistantStatus": "Badji assistant online",
+    "chatModelFast": "Fast",
+    "chatModelAdvanced": "Advanced",
+    "chatClear": "Clear chat",
+    "chatClearConfirm": "Do you really want to clear the whole conversation?",
+    "chatIntro": "Ask only about Badji, its offers, event management, tickets, and available events.",
+    "chatPlaceholder": "Ask about the platform, offers, or events...",
+    "chatPoweredBy": "Powered by Badji AI",
+    "chatErrorTitle": "Sorry, an error occurred:",
+    "chatErrorFallback": "AI connection error. Please verify your API keys."
+  },
+  "aiToolsAdmin": {
+    "title": "AI Tools Administration",
+    "subtitle": "Manage visibility and access to the AI tools center",
+    "routeEnabled": "Enable /ai-tools route",
+    "routeEnabledHint": "Show or completely hide the \"AI Tools\" tab",
+    "selectTools": "Enabled tools",
+    "save": "Save configuration",
+    "success": "Configuration updated successfully",
+    "error": "Error during update",
+    "userAccess": "User access management",
+    "usersConfigured": "user(s) configured",
+    "addEmailPlaceholder": "Enter an email to add a user...",
+    "addUser": "Add",
+    "userAccessHint": "Add emails to grant access to AI tools. Each user can have their own enabled tools.",
+    "noUsers": "No users configured",
+    "noUsersHint": "Add an email to get started",
+    "toolsEnabled": "tools enabled",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "activationDate": "Activation date",
+    "expirationDate": "Expiration date"
   },
   "bannedPage": {
     "accountInfo": {
@@ -3372,4 +3415,3 @@
     "noEventDetails": "No event details"
   }
 }
-

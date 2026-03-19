@@ -548,57 +548,57 @@ export default function BankTransferAdministration({
 
         {/* Stats Row */}
         {data && (
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mt-6">
-            <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-500/20">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6">
+            <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-3 md:p-4">
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
+                <div className="p-2 rounded-lg bg-blue-500/20 shrink-0">
                   <Landmark className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{data.totalCount}</p>
-                  <p className="text-sm text-muted-foreground">Total</p>
+                  <p className="text-xl md:text-2xl font-bold">{data.totalCount}</p>
+                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">Total</p>
                 </div>
               </div>
             </div>
 
-            <div className="glass bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-yellow-500/20">
+            <div className="glass bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-xl p-3 md:p-4">
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
+                <div className="p-2 rounded-lg bg-yellow-500/20 shrink-0">
                   <Clock className="h-5 w-5 text-yellow-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xl md:text-2xl font-bold">
                     {data.data.filter((t: any) => t.status === "pending").length}
                   </p>
-                  <p className="text-sm text-muted-foreground">Pending</p>
+                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">Pending</p>
                 </div>
               </div>
             </div>
 
-            <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-500/20">
+            <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-3 md:p-4">
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
+                <div className="p-2 rounded-lg bg-green-500/20 shrink-0">
                   <CheckCircle2 className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xl md:text-2xl font-bold">
                     {data.data.filter((t: any) => t.status === "approved").length}
                   </p>
-                  <p className="text-sm text-muted-foreground">Approved</p>
+                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">Approved</p>
                 </div>
               </div>
             </div>
 
-            <div className="glass bg-gradient-to-r from-red-500/10 to-rose-500/10 backdrop-blur-sm border border-red-500/20 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-red-500/20">
+            <div className="glass bg-gradient-to-r from-red-500/10 to-rose-500/10 backdrop-blur-sm border border-red-500/20 rounded-xl p-3 md:p-4">
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
+                <div className="p-2 rounded-lg bg-red-500/20 shrink-0">
                   <XCircle className="h-5 w-5 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xl md:text-2xl font-bold">
                     {data.data.filter((t: any) => t.status === "rejected").length}
                   </p>
-                  <p className="text-sm text-muted-foreground">Rejected</p>
+                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">Rejected</p>
                 </div>
               </div>
             </div>

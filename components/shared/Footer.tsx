@@ -9,7 +9,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   Mail,
   Phone,
-  MapPin,
   Facebook,
   Twitter,
   Instagram,
@@ -20,11 +19,11 @@ import {
   HelpCircle,
   Users,
   Calendar,
-  CreditCard,
   ExternalLink,
 } from "lucide-react";
 import { setUserLocale } from "@/services/locale";
 import { Locale } from "@/i18n/config";
+import { localeOptions } from "@/lib/constants/locale-options";
 
 const Footer = () => {
   const t = useTranslations("footer");
@@ -54,7 +53,6 @@ const Footer = () => {
     ],
     product: [
       { key: "events", href: "/events", icon: Calendar },
-      // { key: "pricing", href: "/pricing", icon: CreditCard },
       { key: "features", href: "/features", icon: FileText },
       { key: "integrations", href: "/integrations", icon: ExternalLink },
     ],
@@ -84,7 +82,6 @@ const Footer = () => {
 
   return (
     <footer className={`relative mt-20 font-outfit ${isRTL ? "rtl" : "ltr"}`}>
-      {/* GDPR Banner */}
       <div className="glass-panel py-4 px-4 bg-primary/5 border-t border-white/5">
         <div className="wrapper flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -106,10 +103,8 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Main Footer */}
       <div className="glass-panel border-t border-white/10 bg-white/5 dark:bg-elite-charcoal/40 backdrop-blur-3xl">
         <div className="wrapper py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12">
-          {/* Brand Section */}
           <div className="lg:col-span-2 space-y-6">
             <Link href="/" className="inline-block transition-transform hover:scale-105 active:scale-95">
               <Image
@@ -147,7 +142,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Nav Links Column */}
           {[
             { title: "company", links: footerLinks.company },
             { title: "support", links: footerLinks.support },
@@ -175,12 +169,10 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* Global Divider */}
         <div className="wrapper">
           <Separator className="bg-white/10" />
         </div>
 
-        {/* Bottom Section */}
         <div className="wrapper py-8 flex flex-col md:flex-row items-center justify-between gap-8 text-sm">
           <p className="text-slate-500 font-medium">
             {t("copyright", { year: currentYear })}
@@ -212,18 +204,25 @@ const Footer = () => {
               {t("language")}
             </span>
             <div className="flex items-center gap-1.5 glass-panel p-1 border border-white/5 rounded-2xl">
-              {["en", "fr", "ar"].map((l) => (
+              {localeOptions.map((item) => (
                 <button
-                  key={l}
-                  className={`px-3 py-1 text-[10px] font-bold rounded-xl transition-all duration-300 ${
-                    locale === l 
-                      ? "bg-primary text-white shadow-elite-glow" 
-                      : "text-slate-500 hover:text-white hover:bg-white/5"
+                  key={item.value}
+                  className={`flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold rounded-xl transition-all duration-300 ${
+                    locale === item.value
+                      ? "bg-primary text-white shadow-elite-glow"
+                      : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/5 dark:hover:text-white"
                   }`}
                   disabled={isPending}
-                  onClick={() => handleLocaleChange(l)}
+                  onClick={() => handleLocaleChange(item.value)}
                 >
-                  {l.toUpperCase()}
+                  <Image
+                    src={item.flagSrc}
+                    alt={item.flagAlt}
+                    width={18}
+                    height={12}
+                    className="h-3 w-[18px] rounded-[2px] object-cover"
+                  />
+                  <span>{item.shortLabel}</span>
                 </button>
               ))}
             </div>
@@ -231,7 +230,6 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-
   );
 };
 

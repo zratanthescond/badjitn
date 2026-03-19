@@ -2,7 +2,8 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CheckIcon, Languages } from "lucide-react";
+import Image from "next/image";
+import { Languages } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,7 +17,12 @@ import { Locale } from "../../i18n/config";
 
 type Props = {
   defaultValue: string;
-  items: Array<{ value: string; label: string }>;
+  items: Array<{
+    value: string;
+    label: string;
+    flagSrc: string;
+    flagAlt: string;
+  }>;
   label: string;
 };
 
@@ -50,11 +56,20 @@ export default function LocaleSwitcherSelect({
           <Languages className="" />
         </SelectTrigger>
 
-        <SelectContent align="end" className="min-w-[8rem]">
+        <SelectContent align="end" className="min-w-[11rem]">
 
           {items.map((item) => (
             <SelectItem key={item.value} value={item.value}>
-              <span>{item.label}</span>
+              <span className="flex items-center gap-2">
+                <Image
+                  src={item.flagSrc}
+                  alt={item.flagAlt}
+                  width={18}
+                  height={12}
+                  className="h-3 w-[18px] rounded-[2px] object-cover"
+                />
+                <span>{item.label}</span>
+              </span>
             </SelectItem>
           ))}
 

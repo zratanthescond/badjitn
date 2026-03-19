@@ -138,14 +138,14 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   }, [value.fileUrls]); // Re-run effect when fileUrls (and thus selected file) changes
 
   return (
-    <div className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+    <div className={`flex w-full items-center justify-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
       {!isApproved && (
         <Button
           variant="outline"
           size="sm"
           onClick={handleApprove}
           disabled={isApproving}
-          className="glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300 hover:bg-green-500/20 rounded-full transition-all duration-200 hover:scale-105"
+          className="bg-green-500/10 hover:bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 rounded-full transition-all duration-200 hover:scale-105"
         >
           {isApproving ? (
             <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mr-2" />
@@ -156,8 +156,8 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         </Button>
       )}
       {isApproved && (
-        <Badge className="glass bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 rounded-full">
-          <CheckCheck className="w-3 h-3 mr-1" />
+        <Badge className="bg-green-500/20 border border-green-500/30 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-semibold">
+          <CheckCheck className="w-3.5 h-3.5 mr-1" />
           {t("status.approved")}
         </Badge>
       )}
@@ -166,7 +166,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         <DialogTrigger asChild>
           <Button
             size="sm"
-            className={`glass bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0 rounded-full transition-all duration-200 hover:scale-105 ${
+            className={`bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md border-0 rounded-full py-1.5 px-4 transition-all duration-200 hover:scale-105 hover:shadow-lg ${
               isRTL ? "font-arabic" : ""
             }`}
           >

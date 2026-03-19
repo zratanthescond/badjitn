@@ -8,6 +8,11 @@ import BankTransferAdministration from "@/components/admin/bank-transfer-adminis
 import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@clerk/nextjs/server";
 
+import { getOrdersByEvent } from "@/lib/actions/order.actions";
+import { getCertificationByEventId } from "@/lib/actions/certification.actions";
+import { getUserWorkByEventId } from "@/lib/actions/user.actions";
+import OrdersEvolutionChart from "@/components/admin/OrdersEvolutionChart";
+
 const Orders = async (props: SearchParamProps) => {
   const searchParams = await props.searchParams;
   const t = await getTranslations("orders");
@@ -20,6 +25,15 @@ const Orders = async (props: SearchParamProps) => {
   // Get user ID for verification tracking
   const { userId } = await auth();
   const currentUserId = userId || "";
+
+  // Fetch actual stats data
+  const ordersData = await getOrdersByEvent({ eventId, searchString: "" });
+  const certificationsData = await getCertificationByEventId({ eventId, searchString: "" });
+  const worksData = await getUserWorkByEventId({ eventId, searchString: "" });
+
+  const totalOrders = ordersData ? ordersData.length : 0;
+  const totalCertifications = certificationsData ? certificationsData.length : 0;
+  const totalWorks = worksData ? worksData.length : 0;
 
   return (
     <div
@@ -69,7 +83,7 @@ const Orders = async (props: SearchParamProps) => {
                   >
                     {t("stats.totalOrders")}
                   </p>
-                  <p className="text-2xl font-bold">--</p>
+                  <p className="text-2xl font-bold">{totalOrders}</p>
                 </div>
               </div>
             </div>
@@ -89,7 +103,7 @@ const Orders = async (props: SearchParamProps) => {
                   >
                     {t("stats.certifications")}
                   </p>
-                  <p className="text-2xl font-bold">--</p>
+                  <p className="text-2xl font-bold">{totalCertifications}</p>
                 </div>
               </div>
             </div>
@@ -109,26 +123,28 @@ const Orders = async (props: SearchParamProps) => {
                   >
                     {t("stats.works")}
                   </p>
-                  <p className="text-2xl font-bold">--</p>
+                  <p className="text-2xl font-bold">{totalWorks}</p>
                 </div>
               </div>
             </div>
           </div>
+          
+          <OrdersEvolutionChart orders={ordersData || []} />
         </div>
 
         {/* Main Content */}
         <div className="glass bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-3xl p-6 sm:p-8 shadow-xl">
           <Tabs defaultValue="orders" className="w-full">
             <TabsList
-              className={`grid w-full grid-cols-4 mb-6 sm:mb-8 glass bg-slate-100/80 dark:bg-slate-700/80 backdrop-blur-sm border border-white/20 dark:border-slate-600/50 rounded-2xl p-2 ${isRTL ? "font-arabic" : ""
+              className={`flex justify-start md:justify-center overflow-x-auto h-auto min-h-[4rem] items-center md:grid w-full md:grid-cols-4 mb-6 sm:mb-8 glass bg-slate-100/80 dark:bg-slate-700/80 backdrop-blur-sm border border-white/20 dark:border-slate-600/50 rounded-2xl p-1 sm:p-2 scroll-smooth scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 ${isRTL ? "font-arabic flex-row-reverse" : ""
                 }`}
             >
               <TabsTrigger
                 value="orders"
-                className={`flex items-center gap-2 text-sm sm:text-base font-medium data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105 ${isRTL ? "flex-row-reverse font-arabic" : ""
+                className={`flex flex-row items-center justify-center gap-2 text-sm sm:text-base font-medium whitespace-nowrap shrink-0 px-4 py-2 my-1 data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-md rounded-xl transition-all duration-300 ${isRTL ? "flex-row-reverse font-arabic" : ""
                   }`}
               >
-                <Ticket className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Ticket className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
                 <span className="hidden sm:inline">
                   {t("tabs.orderAdministration")}
                 </span>
@@ -137,10 +153,10 @@ const Orders = async (props: SearchParamProps) => {
 
               <TabsTrigger
                 value="certifications"
-                className={`flex items-center gap-2 text-sm sm:text-base font-medium data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105 ${isRTL ? "flex-row-reverse font-arabic" : ""
+                className={`flex flex-row items-center justify-center gap-2 text-sm sm:text-base font-medium whitespace-nowrap shrink-0 px-4 py-2 my-1 data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-md rounded-xl transition-all duration-300 ${isRTL ? "flex-row-reverse font-arabic" : ""
                   }`}
               >
-                <Award className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Award className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
                 <span className="hidden sm:inline">
                   {t("tabs.certificationAdministration")}
                 </span>
@@ -149,10 +165,10 @@ const Orders = async (props: SearchParamProps) => {
 
               <TabsTrigger
                 value="works"
-                className={`flex items-center gap-2 text-sm sm:text-base font-medium data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105 ${isRTL ? "flex-row-reverse font-arabic" : ""
+                className={`flex flex-row items-center justify-center gap-2 text-sm sm:text-base font-medium whitespace-nowrap shrink-0 px-4 py-2 my-1 data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-md rounded-xl transition-all duration-300 ${isRTL ? "flex-row-reverse font-arabic" : ""
                   }`}
               >
-                <Briefcase className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
                 <span className="hidden sm:inline">
                   {t("tabs.workAdministration")}
                 </span>
@@ -161,10 +177,10 @@ const Orders = async (props: SearchParamProps) => {
 
               <TabsTrigger
                 value="bank-transfers"
-                className={`flex items-center gap-2 text-sm sm:text-base font-medium data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105 ${isRTL ? "flex-row-reverse font-arabic" : ""
+                className={`flex flex-row items-center justify-center gap-2 text-sm sm:text-base font-medium whitespace-nowrap shrink-0 px-4 py-2 my-1 data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-md rounded-xl transition-all duration-300 ${isRTL ? "flex-row-reverse font-arabic" : ""
                   }`}
               >
-                <Landmark className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Landmark className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
                 <span className="hidden sm:inline">Bank Transfers</span>
                 <span className="sm:hidden">Transfers</span>
               </TabsTrigger>

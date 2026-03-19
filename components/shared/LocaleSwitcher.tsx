@@ -1,5 +1,7 @@
-"use client"
+"use client";
+
 import { useLocale, useTranslations } from "next-intl";
+import { localeOptions } from "@/lib/constants/locale-options";
 import LocaleSwitcherSelect from "./LocaleSwitcherSelect";
 
 export default function LocaleSwitcher() {
@@ -9,24 +11,19 @@ export default function LocaleSwitcher() {
   return (
     <LocaleSwitcherSelect
       defaultValue={locale}
-      items={[
-        {
-          value: "en",
-          label: t("en"),
-        },
-        {
-          value: "fr",
-          label: t("fr"),
-        },
-        {
-          value: "ar",
-          label: t("ar"),
-        },
-        {
-          value: "es",
-          label: t("es"),
-        },
-      ]}
+      items={localeOptions.map((item) => ({
+        value: item.value,
+        label:
+          item.value === "en"
+            ? t("en")
+            : item.value === "fr"
+              ? t("fr")
+              : item.value === "ar"
+                ? t("ar")
+                : t("es"),
+        flagSrc: item.flagSrc,
+        flagAlt: item.flagAlt,
+      }))}
       label={t("label")}
     />
   );

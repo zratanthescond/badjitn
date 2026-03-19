@@ -244,7 +244,7 @@ export default function WorkAdministration({
       </CardContent>
 
       <CardFooter
-        className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""}`}
+        className={`flex justify-center w-full mt-2 pt-4 pb-4 border-t border-slate-100 dark:border-slate-800 ${isRTL ? "flex-row-reverse" : ""}`}
       >
         <WorkDetailsDialog value={item} />
       </CardFooter>
@@ -515,24 +515,24 @@ export default function WorkAdministration({
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-          <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6">
+          <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-3 md:p-4">
             <div
-              className={`flex items-center gap-3 ${
-                isRTL ? "flex-row-reverse" : ""
+              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left ${
+                isRTL ? "sm:flex-row-reverse sm:text-right" : ""
               }`}
             >
-              <div className="p-2 rounded-lg bg-blue-500/20">
+              <div className="p-2 rounded-lg bg-blue-500/20 shrink-0">
                 <Briefcase className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <div className={isRTL ? "text-right" : ""}>
+              <div>
                 <p
-                  className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
+                  className={`text-xl md:text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
                 >
                   {stats.total}
                 </p>
                 <p
-                  className={`text-sm text-muted-foreground ${
+                  className={`text-xs md:text-sm text-balance leading-tight text-muted-foreground ${
                     isRTL ? "font-arabic" : ""
                   }`}
                 >
@@ -542,23 +542,23 @@ export default function WorkAdministration({
             </div>
           </div>
 
-          <div className="glass bg-gradient-to-r from-orange-500/10 to-red-500/10 backdrop-blur-sm border border-orange-500/20 rounded-xl p-4">
+          <div className="glass bg-gradient-to-r from-orange-500/10 to-red-500/10 backdrop-blur-sm border border-orange-500/20 rounded-xl p-3 md:p-4">
             <div
-              className={`flex items-center gap-3 ${
-                isRTL ? "flex-row-reverse" : ""
+              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left ${
+                isRTL ? "sm:flex-row-reverse sm:text-right" : ""
               }`}
             >
-              <div className="p-2 rounded-lg bg-orange-500/20">
+              <div className="p-2 rounded-lg bg-orange-500/20 shrink-0">
                 <FileText className="h-5 w-5 text-orange-600 dark:text-orange-400" />
               </div>
-              <div className={isRTL ? "text-right" : ""}>
+              <div>
                 <p
-                  className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
+                  className={`text-xl md:text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
                 >
                   {stats.submitted}
                 </p>
                 <p
-                  className={`text-sm text-muted-foreground ${
+                  className={`text-xs md:text-sm text-balance leading-tight text-muted-foreground ${
                     isRTL ? "font-arabic" : ""
                   }`}
                 >
@@ -568,23 +568,23 @@ export default function WorkAdministration({
             </div>
           </div>
 
-          <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-4">
+          <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-3 md:p-4">
             <div
-              className={`flex items-center gap-3 ${
-                isRTL ? "flex-row-reverse" : ""
+              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left ${
+                isRTL ? "sm:flex-row-reverse sm:text-right" : ""
               }`}
             >
-              <div className="p-2 rounded-lg bg-green-500/20">
+              <div className="p-2 rounded-lg bg-green-500/20 shrink-0">
                 <CheckCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
-              <div className={isRTL ? "text-right" : ""}>
+              <div>
                 <p
-                  className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
+                  className={`text-xl md:text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
                 >
                   {stats.reviewed}
                 </p>
                 <p
-                  className={`text-sm text-muted-foreground ${
+                  className={`text-xs md:text-sm text-balance leading-tight text-muted-foreground ${
                     isRTL ? "font-arabic" : ""
                   }`}
                 >
@@ -594,23 +594,23 @@ export default function WorkAdministration({
             </div>
           </div>
 
-          <div className="glass bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-xl p-4">
+          <div className="glass bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-xl p-3 md:p-4">
             <div
-              className={`flex items-center gap-3 ${
-                isRTL ? "flex-row-reverse" : ""
+              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left ${
+                isRTL ? "sm:flex-row-reverse sm:text-right" : ""
               }`}
             >
-              <div className="p-2 rounded-lg bg-yellow-500/20">
+              <div className="p-2 rounded-lg bg-yellow-500/20 shrink-0">
                 <Calendar className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
               </div>
-              <div className={isRTL ? "text-right" : ""}>
+              <div>
                 <p
-                  className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
+                  className={`text-xl md:text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
                 >
                   {stats.pending}
                 </p>
                 <p
-                  className={`text-sm text-muted-foreground ${
+                  className={`text-xs md:text-sm text-balance leading-tight text-muted-foreground ${
                     isRTL ? "font-arabic" : ""
                   }`}
                 >
