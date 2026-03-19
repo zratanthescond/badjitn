@@ -22,7 +22,7 @@ export const VideoItem = forwardRef<HTMLDivElement, VideoItemProps>(
         className="h-screen snap-start flex items-center justify-center gap-4 md:p-6 lg:p-8 relative"
       >
         {/* Video Player */}
-        <div className="flex h-full w-full md:w-[450px] lg:w-[500px] relative shadow-2xl">
+        <div className="flex h-full w-full md:max-w-[450px] lg:max-w-[500px] relative shadow-2xl">
           <HLSPlayer
             manifest={video.imageUrl}
             ref={videoRef}
@@ -34,8 +34,8 @@ export const VideoItem = forwardRef<HTMLDivElement, VideoItemProps>(
             className="md:rounded-2xl object-cover w-full h-full"
           />
           {/* Video Title */}
-          <div className="absolute bottom-4 left-4 right-16">
-            <h4 className="text-white font-bold text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <div className="absolute bottom-8 left-6 right-16">
+            <h4 className="text-white font-syne font-bold text-2xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] tracking-tight">
               {video.title}
             </h4>
           </div>

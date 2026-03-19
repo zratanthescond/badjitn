@@ -146,7 +146,7 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
           overflowY: "scroll",
           scrollSnapType: "y mandatory",
           position: "relative",
-          width: "100vw",
+          width: "100%",
         }}
       >
         <div className="relative w-full">

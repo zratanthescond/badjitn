@@ -13,6 +13,9 @@ export default function CountryFilter() {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
+      const currentCountry = searchParams.get("country") || "";
+      if (country === currentCountry) return; // Only push if changed
+
       let newUrl = "";
 
       if (country) {
@@ -29,7 +32,6 @@ export default function CountryFilter() {
       }
 
       router.push(newUrl, { scroll: false });
-      //alert("Country changed to: " + newUrl);
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
@@ -42,7 +44,7 @@ export default function CountryFilter() {
       }}
       slim
       defaultValue={country}
-      className="rounded-full p-2 glass   justify-center  flex w-[57px] items-center "
+      className="h-10 w-12 glass-control border-white/10 rounded-xl flex items-center justify-center transition-all duration-300 hover:shadow-elite-glow hover:scale-110 active:scale-95"
     />
   );
 }

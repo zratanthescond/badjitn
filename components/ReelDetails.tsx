@@ -93,77 +93,51 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
     }
   }, [event._id, isJoining]);
 
-  // Language Switcher Component (inline)
-  const LanguageSwitcher = () => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-          <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">{currentLanguage?.flag}</span>
-          <span className="hidden md:inline">{currentLanguage?.name}</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[150px]">
-        {languages.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-            className={`flex items-center gap-2 ${locale === language.code ? "bg-accent" : ""
-              }`}
-          >
-            <span>{language.flag}</span>
-            <span>{language.name}</span>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-
   const DetailComponent = useCallback(() => {
     return (
-      <div className="space-y-6 w-full">
+      <div className="space-y-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
         {/* Header Section */}
-        <Card className="border-0 bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20">
-          <CardContent className="p-6 text-center space-y-4">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent dark:from-pink-400 dark:via-purple-400 dark:to-indigo-400">
-                  {event.title}
-                </h1>
-              </div>
-            </div>
+        <div className="glass-panel p-4 md:p-5 text-center space-y-4 rounded-3xl overflow-hidden relative w-full max-w-full">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-elite-cyan to-elite-violet opacity-50" />
+          
+          <div className="space-y-2 w-full max-w-full">
+            <h1 className="text-2xl md:text-3xl font-syne font-extrabold tracking-tighter text-slate-900 dark:text-white leading-tight break-words max-w-full">
+              {event.title}
+            </h1>
+          </div>
 
-            {/* Event Stats */}
-            <div className="flex items-center justify-center gap-6 text-sm text-foreground/80">
-              {event.attendees && (
-                <div className="flex items-center gap-2 bg-indigo-500/10 rounded-full px-4 py-1.5 border border-indigo-500/20">
-                  <Users className="h-4 w-4 text-indigo-500" />
-                  <span className="font-semibold">
-                    {t("attendees", { count: event.attendees.length })}
-                  </span>
-                </div>
-              )}
-              <div className="flex items-center gap-2 bg-purple-500/10 rounded-full px-4 py-1.5 border border-purple-500/20">
-                <Clock className="h-4 w-4 text-purple-500" />
-                <span className="font-semibold">
-                  {format(event.startDateTime, "MMM d, yyyy", {
-                    locale: dateLocale,
-                  })}
+          {/* Event Stats */}
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 text-sm w-full">
+            {event.attendees && (
+              <div className="glass-control rounded-full px-5 py-2 flex items-center gap-2 shadow-elite-soft">
+                <Users className="h-4 w-4 text-primary" />
+                <span className="font-outfit font-bold text-slate-700 dark:text-slate-200">
+                  {t("attendees", { count: event.attendees.length })}
                 </span>
               </div>
+            )}
+            <div className="glass-control rounded-full px-5 py-2 flex items-center gap-2 shadow-elite-soft">
+              <CalendarDays className="h-4 w-4 text-elite-cyan" />
+              <span className="font-outfit font-bold text-slate-700 dark:text-slate-200">
+                {format(new Date(event.startDateTime), "MMM d, yyyy", {
+                  locale: dateLocale,
+                })}
+              </span>
             </div>
+          </div>
 
-            {/* Join Button */}
+          {/* Join Button */}
+          <div className="pt-4">
             <SignedIn>
               <Button
-                onClick={handleJoinEvent}
-                disabled={isJoining}
+                onClick={() => setSection("price")}
                 size="lg"
-                className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold min-w-32 shadow-lg hover:shadow-xl transition-all duration-200"
+                variant="elite"
+                className="rounded-2xl min-w-[200px] h-14 text-lg"
               >
                 {isJoining ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="w-5 h-5 mr-3 animate-spin" />
                     {t("joining")}
                   </>
                 ) : (
@@ -173,114 +147,113 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
             </SignedIn>
             <SignedOut>
               <Button
-                asChild
+                onClick={() => setSection("price")}
                 size="lg"
-                className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold min-w-32 shadow-lg hover:shadow-xl transition-all duration-200"
+                variant="elite"
+                className="rounded-2xl min-w-[200px] h-14 text-lg"
               >
-                <div onClick={() => router.push("/sign-in")}>
-                  {t("joinButton")}
-                </div>
+                {t("joinButton")}
               </Button>
             </SignedOut>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Description */}
-        <Card>
-          <CardContent className="p-6">
-            <TiptapRenderer content={event.description} />
-          </CardContent>
-        </Card>
+        <div className="glass-panel p-4 md:p-5 rounded-3xl w-full overflow-hidden">
+           <div className="prose prose-slate dark:prose-invert max-w-none break-all text-sm md:text-base">
+             <TiptapRenderer content={event.description} />
+           </div>
+        </div>
 
         {/* Action Button */}
-        <div className="flex justify-center">
+        <div className="flex justify-center pb-4">
           <Button
             onClick={() => setSection("price")}
-            variant="outline"
+            variant="elite"
             size="lg"
-            className="rounded-full border-pink-200 hover:bg-pink-50 dark:border-pink-800 dark:hover:bg-pink-950/20 font-semibold"
+            className="rounded-2xl font-bold h-14 min-w-[200px] shadow-elite-glow"
           >
-            <Wallet className="w-4 h-4 mr-2" />
+            <Wallet className="w-5 h-5 mr-3" />
             {t("viewPricing")}
           </Button>
         </div>
       </div>
     );
-  }, [event, handleJoinEvent, isJoining, t, dateLocale]);
+  }, [event, handleJoinEvent, isJoining, t, dateLocale, router]);
 
   const DateComponent = useCallback(() => {
-    const formatDate = (date: Date) => {
-      return format(date, "EEE, MMM d, h:mm a", { locale: dateLocale });
+    const formatDate = (date: Date | string) => {
+      const d = typeof date === "string" ? new Date(date) : date;
+      return format(d, "EEE, MMM d, h:mm a", { locale: dateLocale });
     };
 
-    const daysDifference = differenceInDays(
-      event.endDateTime,
-      event.startDateTime
-    );
+    const start = new Date(event.startDateTime);
+    const end = new Date(event.endDateTime);
+    const daysDifference = differenceInDays(end, start);
     const hasDaysDifference = daysDifference > 0;
 
     return (
-      <Card>
-        <CardContent className="p-6 space-y-6">
+      <div className="space-y-6 w-full animate-in fade-in slide-in-from-right-4 duration-500">
+        <div className="glass-panel p-6 md:p-8 rounded-3xl space-y-8">
           <div className="text-center">
-            <h3 className="text-xl font-semibold mb-2">{t("schedule")}</h3>
-            <Separator className="w-20 mx-auto" />
+            <h3 className="text-2xl font-syne font-bold text-slate-900 dark:text-white">{t("schedule")}</h3>
+            <div className="h-1 w-12 bg-primary mx-auto mt-2 rounded-full" />
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
             {/* Doors Open */}
-            <div className="flex items-center justify-between p-4 rounded-xl bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-green-100 dark:bg-green-900">
-                  <DoorOpen className="h-5 w-5 text-green-600 dark:text-green-400" />
+            <div className="glass-control p-5 rounded-2xl flex items-center justify-between group hover:border-primary/50 transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <DoorOpen className="h-6 w-6" />
                 </div>
-                <span className="font-medium">{t("doorsOpen")}</span>
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-slate-500 font-bold mb-0.5">{t("doorsOpen")}</p>
+                  <p className="font-outfit font-bold text-slate-900 dark:text-white">Check-in begins</p>
+                </div>
               </div>
-              <Badge variant="secondary" className="font-mono text-sm">
-                {format(event.startDateTime, "h:mm a", { locale: dateLocale })}
+              <Badge variant="outline" className="h-10 px-4 font-mono text-base border-primary/20 bg-primary/5 text-primary">
+                {format(start, "h:mm a", { locale: dateLocale })}
               </Badge>
             </div>
 
             {/* Start Date */}
-            <div className="flex items-center justify-between p-4 rounded-xl bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900">
-                  <CalendarIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <div className="glass-control p-5 rounded-2xl flex items-center justify-between group hover:border-elite-cyan/50 transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-elite-cyan/10 flex items-center justify-center text-elite-cyan group-hover:scale-110 transition-transform">
+                  <CalendarIcon className="h-6 w-6" />
                 </div>
-                <span className="font-medium">{t("startDate")}</span>
-              </div>
-              <div className="text-right">
-                <div className="font-medium">
-                  {formatDate(event.startDateTime)}
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-slate-500 font-bold mb-0.5">{t("startDate")}</p>
+                  <p className="font-outfit font-bold text-slate-900 dark:text-white">{formatDate(event.startDateTime)}</p>
                 </div>
               </div>
             </div>
 
             {/* End Date */}
-            <div className="flex items-center justify-between p-4 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-red-100 dark:bg-red-900">
-                  <CalendarIcon className="h-5 w-5 text-red-600 dark:text-red-400" />
+            <div className="glass-control p-5 rounded-2xl flex items-center justify-between group hover:border-destructive/50 transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-destructive/10 flex items-center justify-center text-destructive group-hover:scale-110 transition-transform">
+                  <CalendarIcon className="h-6 w-6" />
                 </div>
-                <span className="font-medium">{t("endDate")}</span>
-              </div>
-              <div className="text-right">
-                <div className="font-medium">
-                  {formatDate(event.endDateTime)}
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-slate-500 font-bold mb-0.5">{t("endDate")}</p>
+                  <p className="font-outfit font-bold text-slate-900 dark:text-white">{formatDate(event.endDateTime)}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {hasDaysDifference && (
-            <div className="text-center pt-4">
-              <Badge variant="outline" className="px-4 py-2 text-sm">
+            <div className="text-center pt-2">
+              <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-elite-gradient text-white text-sm font-bold shadow-elite-glow">
+                <Clock className="h-4 w-4" />
                 {t("duration", { days: daysDifference })}
-              </Badge>
+              </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }, [event, t, dateLocale]);
 
@@ -313,40 +286,41 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
   );
 
   return (
-    <div className="flex md:max-w-4xl md:w-full h-full bg-background items-center flex-col rounded-2xl shadow-lg border">
+    <div className="flex w-full h-full bg-transparent items-center flex-col relative">
       {/* Navigation Tabs */}
-      <Tabs
-        value={section}
-        onValueChange={(value) => setSection(value as SectionType)}
-        className="w-full rounded-t-2xl sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b"
-      >
-        <TabsList className="w-full max-w-[97vw] rounded-none bg-transparent p-2">
+      <div className="w-full sticky top-0 z-50 py-2 px-2 bg-background/95 backdrop-blur-xl border-b border-border/10">
+        <Tabs
+          value={section}
+          onValueChange={(value) => setSection(value as SectionType)}
+          className="w-full"
+        >
           <ScrollArea className="w-full">
-            <div className="flex w-full flex-row items-center justify-between gap-2 px-2">
+            <TabsList className="flex w-full h-12 items-center justify-start gap-2 bg-transparent p-0 mb-2">
               {tabItems.map(({ value, label, icon: Icon }) => (
                 <TabsTrigger key={value} value={value} asChild>
                   <Button
                     variant={section === value ? "default" : "ghost"}
                     size="sm"
-                    className={`rounded-full whitespace-nowrap transition-all duration-200 ${section === value
-                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md"
-                      : "text-foreground/70 hover:bg-pink-50 dark:hover:bg-pink-950/20"
-                      }`}
+                    className={`h-10 rounded-2xl whitespace-nowrap px-4 transition-all duration-300 font-bold tracking-tight shadow-sm ${
+                      section === value
+                        ? "bg-primary text-white shadow-elite-glow scale-105"
+                        : "glass-control text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    }`}
                   >
-                    <Icon className="h-3.5 w-3.5 mr-2" />
+                    <Icon className={`h-4 w-4 mr-2 ${section === value ? "animate-pulse" : ""}`} />
                     {label}
                   </Button>
                 </TabsTrigger>
               ))}
-            </div>
-            <ScrollBar orientation="horizontal" className="bg-transparent" />
+            </TabsList>
+            <ScrollBar orientation="horizontal" className="h-1.5 bg-slate-900/10 dark:bg-white/10" />
           </ScrollArea>
-        </TabsList>
-      </Tabs>
+        </Tabs>
+      </div>
 
       {/* Content */}
-      <div className="flex w-full p-6 min-h-[400px]">
-        <div className="w-full animate-in fade-in-50 duration-200">
+      <div className="flex w-full px-4 py-8 md:p-8 min-h-[500px]">
+        <div className="w-full">
           {RenderComponent}
         </div>
       </div>

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useGetEventDates } from "@/hooks/useGetEventDates";
 import { useDayRender, DayModifiers } from "react-day-picker";
 import {
@@ -82,13 +82,15 @@ const CalendarDay = ({
   );
 };
 
-export function DatePickerWithPresets() {
+export function DatePickerWithPresets({ slim = false }: { slim?: boolean }) {
   const searchParams = useSearchParams();
   const initalDateString = searchParams.get("date") || null;
   const initialDate = initalDateString ? new Date(initalDateString) : undefined;
   const [date, setDate] = React.useState<Date | undefined>(initialDate);
   const router = useRouter();
   const t = useTranslations("datePicker");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
 
   const { data: eventDates } = useGetEventDates();
 
@@ -112,13 +114,18 @@ export function DatePickerWithPresets() {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
+      const currentDateString = searchParams.get("date") || "";
+      const selectedDateString = date ? format(date, "yyyy-MM-dd") : "";
+
+      if (selectedDateString === currentDateString) return; // Only push if changed
+
       let newUrl = "";
 
       if (date) {
         newUrl = formUrlQuery({
           params: searchParams.toString(),
           key: "date",
-          value: format(date, "yyyy-MM-dd"),
+          value: selectedDateString,
         });
       } else {
         newUrl = removeKeysFromQuery({
@@ -138,7 +145,11 @@ export function DatePickerWithPresets() {
       <PopoverTrigger asChild>
         <Button
           variant={"ghost"}
-          className="glass min-h-[54px] rounded-full flex-1 md:w-52 w-full "
+          className={cn(
+            "glass-control border-white/10 rounded-2xl flex-items-center transition-all duration-300 hover:shadow-elite-glow hover:scale-105 active:scale-95",
+            slim ? "min-h-[46px] px-3" : "min-h-[54px] px-6",
+            "w-full md:w-auto"
+          )}
         >
           <CalendarIcon className="mr-2 h-4 w-4 " />
           {date ? (

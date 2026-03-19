@@ -31,8 +31,8 @@ export default function LocaleSwitcherSelect({
   const onChange = (value: string) => {
     const locale = value as Locale;
     // alert(locale);
-    startTransition(() => {
-      setUserLocale(locale);
+    startTransition(async () => {
+      await setUserLocale(locale);
       router.refresh();
     });
   };

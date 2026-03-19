@@ -51,56 +51,52 @@ const CategoryFilter = () => {
   };
 
   return (
-    <div className="relative flex flex-row px-2 w-full glass md:w-4/6 group rounded-full">
-      <div className="flex items-center mr-2 pr-2 border-r border-slate-200 dark:border-slate-800 my-2 z-20">
-        <CategorySearch />
-      </div>
-
+    <div className="relative flex-1 flex items-center w-full group">
       {/* Scroll Buttons */}
       <Button
         onClick={() => scrollByAmount(-200)}
-        className="absolute glass left-10 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-background shadow transition group-hover:flex"
+        className="absolute -left-2 top-1/2 z-30 hidden h-8 w-8 -translate-y-1/2 rounded-full glass-control border-white/10 shadow-elite-soft transition-all duration-300 hover:scale-110 active:scale-95 group-hover:flex"
         variant="ghost"
         size="icon"
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronLeft className="h-4 w-4 text-white" />
       </Button>
 
       <Button
         onClick={() => scrollByAmount(200)}
-        className="absolute glass right-0 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-background shadow transition group-hover:flex"
+        className="absolute right-0 top-1/2 z-30 hidden h-8 w-8 -translate-y-1/2 rounded-full glass-control border-white/10 shadow-elite-soft transition-all duration-300 hover:scale-110 active:scale-95 group-hover:flex"
         variant="ghost"
         size="icon"
       >
-        <ChevronRight className="h-4 w-4" />
+        <ChevronRight className="h-4 w-4 text-white" />
       </Button>
 
       {/* Scrollable Category Row */}
       <div
         ref={scrollRef}
-        className="flex gap-2 overflow-x-auto scroll-smooth  items-center  no-scrollbar rounded-full w-full"
+        className="flex gap-2.5 overflow-x-auto scroll-smooth items-center no-scrollbar w-full py-1"
       >
-        <div
-          className={`absolute top-0 rounded-l-full bottom-0 left-10 w-20 bg-gradient-to-r from-slate-50/90 via-slate-50/50  dark:from-gray-900/90 dark:via-gray-900/50 dark: to-transparent pointer-events-none z-10 transition-opacity duration-300 `}
-        />
-
-        {/* Right shadow */}
-        <div
-          className={`absolute top-0 rounded-r-full bottom-0 right-0 w-20 dark:bg-gradient-to-l bg-gradient-to-l from-slate-50/90 via-slate-50/50 dark:from-gray-900/90 dark:via-gray-900/50 dark:to-transparent  pointer-events-none z-10 transition-opacity duration-300 
-            opacity-100
-          `}
-        />
-        {CATEGORY_KEYS.map((key) => (
-          <Button
-            variant={currentCategory === key ? "default" : "secondary"}
-            key={key}
-            size="sm"
-            className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-all hover:scale-105"
-            onClick={() => onSelectCategory(key)}
-          >
-            {t(key)}
-          </Button>
-        ))}
+        {/* Subtle Edge Gradients handled by main pill or similar */}
+        
+        {CATEGORY_KEYS.map((key) => {
+          const isActive = currentCategory === key;
+          return (
+            <Button
+              variant={isActive ? "default" : "ghost"}
+              key={key}
+              size="sm"
+              className={clsx(
+                "rounded-xl px-5 py-2 text-xs font-bold font-outfit uppercase tracking-widest whitespace-nowrap transition-all duration-300 hover:scale-105 active:scale-95",
+                isActive 
+                  ? "bg-primary text-white shadow-elite-glow ring-1 ring-primary/20" 
+                  : "glass-control border-white/5 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+              )}
+              onClick={() => onSelectCategory(key)}
+            >
+              {t(key)}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );

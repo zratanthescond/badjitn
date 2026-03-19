@@ -6,7 +6,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
 import Checkout from "./Checkout";
-import { useSession } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/nextjs";
 import { AlertCircle, Ticket } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -19,7 +19,7 @@ const CheckoutButton = ({
   checkPlan?: string[];
   discountInfo?: any;
 }) => {
-  const { session } = useSession();
+  const { userId } = useAuth();
 
   const hasEventFinished = new Date(event.endDateTime) < new Date();
 
@@ -75,7 +75,7 @@ const CheckoutButton = ({
             <Checkout
               chekedPlans={checkPlan}
               event={event}
-              userId={session?.user?.id || ""} // Fixed: Ensure user ID is defined
+              userId={userId || ""}
               discountInfo={discountInfo}
             />
           </SignedIn>

@@ -22,35 +22,35 @@ export function VideoControls({
       {showBackButton && (
         <Button
           size="icon"
-          className="glass-control rounded-full pointer-events-auto"
+          className="bg-black/20 hover:bg-black/40 dark:bg-white/10 dark:hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full  pointer-events-auto transition-all duration-300 shadow-lg"
           onClick={() => router.push("/")}
         >
-          <ArrowLeft className="h-5 w-5 text-white" />
+          <ArrowLeft className="h-5 w-5 text-white drop-shadow-md" />
         </Button>
       )}
 
       <div className=" max-h-fit absolute top-1/3 max-w-fit self-end justify-self-end items-center pointer-events-auto justify-evenly gap-3 flex flex-col">
         <Button
           size="icon"
-          className="glass-control rounded-full"
+          className="bg-black/20 hover:bg-black/40 dark:bg-white/10 dark:hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all duration-300 shadow-lg"
           onClick={onToggleDetails}
         >
-          <List className="h-5 w-5 text-white" />
+          <List className="h-5 w-5 text-white drop-shadow-md" />
         </Button>
 
         <Button
           size="icon"
-          className="glass-control rounded-full"
+          className="bg-black/20 hover:bg-black/40 dark:bg-white/10 dark:hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all duration-300 shadow-lg"
         >
-          <Heart className="h-5 w-5 text-white" />
+          <Heart className="h-5 w-5 text-white drop-shadow-md" />
         </Button>
 
         <Button
           size="icon"
-          className="glass-control rounded-full"
+          className="bg-black/20 hover:bg-black/40 dark:bg-white/10 dark:hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all duration-300 shadow-lg"
           onClick={onShare}
         >
-          <Share2Icon className="h-5 w-5 text-white" />
+          <Share2Icon className="h-5 w-5 text-white drop-shadow-md" />
         </Button>
       </div>
     </div>

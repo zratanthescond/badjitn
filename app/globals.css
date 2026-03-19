@@ -112,12 +112,13 @@ body {
 /* ========================================== TAILWIND STYLES */
 @layer utilities {
   .glass-panel {
-    @apply backdrop-blur-[60px] border border-border/50 shadow-2xl;
-    @apply bg-white/70 dark:bg-slate-900/40; /* Theme-aware base background */
+    @apply backdrop-blur-[60px] border border-slate-200/50 dark:border-white/10 shadow-elite-soft;
+    @apply bg-white/80 dark:bg-elite-charcoal/40;
+    background-image: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent);
   }
 
   .glass-control {
-    @apply backdrop-blur-md bg-white/20 dark:bg-black/40 hover:bg-white/30 dark:hover:bg-black/50 border border-white/20 dark:border-white/10 transition-all duration-200;
+    @apply backdrop-blur-md bg-slate-100/50 dark:bg-white/5 hover:bg-slate-200/50 dark:hover:bg-white/10 border border-slate-200 dark:border-white/5 transition-all duration-300 ease-elite-spring;
   }
 
   .wrapper {
@@ -132,151 +133,68 @@ body {
     @apply flex justify-between items-center;
   }
 
-  /* TYPOGRAPHY */
-  /* 64 */
+  /* TYPOGRAPHY - MODERNIZED */
   .h1-bold {
-    @apply font-bold text-[40px] leading-[48px] lg:text-[48px] lg:leading-[60px] xl:text-[58px] xl:leading-[74px];
+    @apply font-syne font-extrabold text-[40px] leading-[1.1] lg:text-[52px] xl:text-[64px] tracking-tight text-slate-900 dark:text-white;
   }
 
-  /* 40 */
   .h2-bold {
-    @apply font-bold text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] xl:text-[40px] xl:leading-[48px];
+    @apply font-syne font-bold text-[32px] leading-[1.2] lg:text-[40px] xl:text-[48px] tracking-tight text-slate-800 dark:text-white/90;
   }
 
   .h2-medium {
-    @apply font-medium text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] xl:text-[40px] xl:leading-[48px];
+    @apply font-syne font-medium text-[32px] leading-[1.2] lg:text-[40px];
   }
 
-  /* 36 */
   .h3-bold {
-    @apply font-bold text-[28px] leading-[36px] md:text-[36px] md:leading-[44px];
+    @apply font-syne font-bold text-[28px] leading-[1.3] md:text-[36px] tracking-tight;
   }
 
-  .h3-medium {
-    @apply font-medium text-[28px] leading-[36px] md:text-[36px] md:leading-[44px];
-  }
-
-  /* 32 */
   .h4-medium {
-    @apply font-medium text-[32px] leading-[40px];
+    @apply font-outfit font-semibold text-[24px] lg:text-[32px] leading-[1.4];
   }
 
-  /* 28 */
-  .h5-bold {
-    @apply font-bold text-[28px] leading-[36px];
-  }
-
-  /* 24 */
   .p-bold-24 {
-    @apply font-bold text-[24px] leading-[36px];
-  }
-
-  .p-medium-24 {
-    @apply font-medium text-[24px] leading-[36px];
-  }
-
-  .p-regular-24 {
-    @apply font-normal text-[24px] leading-[36px];
-  }
-
-  /* 20 */
-  .p-bold-20 {
-    @apply font-bold text-[20px] leading-[30px] tracking-[2%];
-  }
-
-  .p-semibold-20 {
-    @apply text-[20px] font-semibold leading-[30px] tracking-[2%];
-  }
-
-  .p-medium-20 {
-    @apply text-[20px] font-medium leading-[30px];
-  }
-
-  .p-regular-20 {
-    @apply text-[20px] font-normal leading-[30px] tracking-[2%];
-  }
-
-  /* 18 */
-  .p-semibold-18 {
-    @apply text-[18px] font-semibold leading-[28px] tracking-[2%];
-  }
-
-  .p-medium-18 {
-    @apply text-[18px] font-medium leading-[28px];
-  }
-
-  .p-regular-18 {
-    @apply text-[18px] font-normal leading-[28px] tracking-[2%];
-  }
-
-  /* 16 */
-  .p-bold-16 {
-    @apply text-[16px] font-bold leading-[24px];
+    @apply font-outfit font-bold text-[24px] leading-[1.5];
   }
 
   .p-medium-16 {
-    @apply text-[16px] font-medium leading-[24px];
+    @apply font-outfit font-medium text-[16px] leading-[1.6];
   }
 
   .p-regular-16 {
-    @apply text-[16px] font-normal leading-[24px];
+    @apply font-outfit font-normal text-[16px] leading-[1.6] opacity-90;
   }
 
-  /* 14 */
-  .p-semibold-14 {
-    @apply text-[14px] font-semibold leading-[20px];
-  }
-
-  .p-medium-14 {
-    @apply text-[14px] font-medium leading-[20px];
-  }
-
-  .p-regular-14 {
-    @apply text-[14px] font-normal leading-[20px];
-  }
-
-  /* 12 */
-  .p-medium-12 {
-    @apply text-[12px] font-medium leading-[20px];
-  }
-
-  /* SHADCN OVERRIDES */
+  /* SHADCN OVERRIDES - GLASS STYLE */
   .select-field {
-    @apply w-full glass h-[54px] placeholder:text-grey-500 rounded-full p-regular-16 px-5 py-3 border-none focus-visible:ring-transparent focus:ring-transparent !important;
+    @apply w-full glass-control h-[54px] rounded-xl px-5 py-3 focus-visible:ring-1 focus-visible:ring-primary/50 !important;
   }
 
   .input-field {
-    @apply h-[54px] focus-visible:ring-offset-0 dark:placeholder:text-white placeholder:text-grey-500 rounded-full p-regular-16 px-4 py-3 border-none focus-visible:ring-transparent !important;
+    @apply h-[54px] glass-control focus-visible:ring-offset-0 rounded-xl px-4 py-3 focus-visible:ring-primary/50 !important;
   }
 
   .textarea {
-    @apply glass flex flex-1 placeholder:text-grey-500 p-regular-16 px-5 py-3 border-none focus-visible:ring-transparent !important;
+    @apply glass-control flex flex-1 p-regular-16 rounded-xl px-5 py-3 focus-visible:ring-primary/50 !important;
   }
 
   .button {
-    @apply rounded-full h-[54px] p-regular-16;
-  }
-
-  .select-item {
-    @apply py-3 cursor-pointer focus:bg-primary-50;
-  }
-
-  .toggle-switch {
-    @apply bg-gray-300 !important;
+    @apply rounded-xl h-[54px] font-outfit font-semibold transition-all duration-300 active:scale-[0.98] hover:shadow-elite-glow;
   }
 
   /* Global Interactive Enhancements */
   button,
   a {
-    @apply transition-all duration-200 active:scale-95;
+    @apply transition-all duration-300 ease-elite-spring;
   }
 
   .glass {
-    @apply shadow-sm;
+    @apply backdrop-blur-lg bg-white/40 dark:bg-white/5 border border-white/20 dark:border-white/10 shadow-sm transition-all duration-300;
   }
 
   .glass:hover {
-    @apply shadow-md;
+    @apply bg-white/50 dark:bg-white/10 border-white/30 dark:border-white/20 shadow-elite-soft;
   }
 }
 

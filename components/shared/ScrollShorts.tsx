@@ -168,30 +168,30 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                   <div className="flex h-screen pointer-events-none justify-between w-full absolute flex-col p-4 md:w-full">
                     <Button
                       size={"icon"}
-                      className="glass rounded-full  pointer-events-auto"
+                      className="bg-black/20 hover:bg-black/40 dark:bg-white/10 dark:hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full  pointer-events-auto transition-all duration-300 shadow-lg"
                       onClick={() => {
                         Router.push("/");
                       }}
                     >
-                      <ArrowLeft color="white" />
+                      <ArrowLeft className="text-white drop-shadow-md" />
                     </Button>
                     <div className="pr-3 max-h-fit max-w-fit self-end justify-self-end items-center pointer-events-auto justify-evenly gap-3 flex flex-col">
                       <Button
                         size={"icon"}
-                        className="glass rounded-full "
+                        className="bg-black/20 hover:bg-black/40 dark:bg-white/10 dark:hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all duration-300 shadow-lg"
                         onClick={() => {
                           setShow(!show);
                         }}
                       >
-                        <List color="white" />
+                        <List className="text-white drop-shadow-md" />
                       </Button>
-                      <Button size={"icon"} className="glass rounded-full ">
-                        <Heart color="white" />
+                      <Button size={"icon"} className="bg-black/20 hover:bg-black/40 dark:bg-white/10 dark:hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all duration-300 shadow-lg">
+                        <Heart className="text-white drop-shadow-md" />
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger>
-                          <Button size={"icon"} className="glass rounded-full ">
-                            <Share2Icon color="white" />
+                          <Button size={"icon"} className="bg-black/20 hover:bg-black/40 dark:bg-white/10 dark:hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all duration-300 shadow-lg">
+                            <Share2Icon className="text-white drop-shadow-md" />
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -233,7 +233,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                   className={`${show
                     ? "flex top-[20vh] bg-card/95 md:top-auto max-h-[80vh] md:max-h-full"
                     : "hidden md:flex"
-                    } flex-col glass fixed bottom-0 md:max-w-md md:relative rounded-t-3xl md:rounded-2xl w-full md:h-full items-center justify-start gap-4 animate-accordion-down repeat-1 shadow-2xl border-t md:border border-border/50`}
+                    } flex-col glass-panel fixed bottom-0 md:max-w-md md:relative rounded-t-3xl md:rounded-2xl w-full md:h-full items-center justify-start gap-4 animate-accordion-down repeat-1 shadow-2xl border-t md:border border-border/50`}
                 >
                   <Button
                     size={"icon"}
@@ -295,7 +295,7 @@ const ShortsScroll = ({ videos }: { videos?: Props }) => {
                         <SponsorsSection sponsorsIds={video.sponsors} />
                       )}
                     </div>
-                    <h1 className="font-semibold text-center w-full text-3xl py-4">
+                    <h1 className="font-syne font-bold text-center w-full text-3xl py-4 text-slate-900 dark:text-white tracking-tight">
                       {video.title}
                     </h1>
                     <div className="flex flex-row items-center justify-between p-2">

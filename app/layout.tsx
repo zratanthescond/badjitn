@@ -19,11 +19,26 @@ import { getLocale, getMessages } from "next-intl/server";
 import { useUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 
+import { Syne, Outfit } from "next/font/google";
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
 });
+
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-syne",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-outfit",
+});
+
 import { arSA, enUS, frFR } from "@clerk/localizations";
 import { dark } from "@clerk/themes";
 import Icon from "./favicon/favicon.ico";
@@ -81,7 +96,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} suppressHydrationWarning>
       <body
-        className={`${inter.className} flex flex-1 min-h-screen flex-col items-center justify-center antialiased text-slate-500 dark:text-slate-200 bg-white dark:bg-slate-900`}
+        className={`${inter.variable} ${poppins.variable} ${syne.variable} ${outfit.variable} font-outfit flex flex-1 min-h-screen flex-col items-center justify-center antialiased text-slate-500 underline-offset-4 selection:bg-elite-violet/30 dark:text-slate-200 bg-white dark:bg-elite-charcoal transition-colors duration-500`}
       >
         <div className="absolute z-20 top-0 inset-x-0 flex justify-center overflow-hidden pointer-events-none">
           <div className="w-full flex-none flex justify-end">

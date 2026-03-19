@@ -30,6 +30,9 @@ const Search = ({
   const t = useTranslations("homePage");
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
+      const currentQuery = searchParams.get("query") || "";
+      if (query === currentQuery) return; // Only push if changed
+
       let newUrl = "";
 
       if (query) {
@@ -55,16 +58,18 @@ const Search = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant={"ghost"}
+          variant="outline"
           className={cn(
-            " min-h-[54px] glass rounded-full md:p-4 md:mx-2",
+            "glass-control border-white/10 rounded-2xl transition-all duration-300 hover:shadow-elite-glow hover:scale-105 active:scale-95",
+            slim ? "min-h-[46px] md:px-4" : "min-h-[54px] md:px-6",
             className
           )}
         >
-          {query.length > 0 ? (
-            <>
-              <SearchIcon className="md:w-4 md:h-4  " />
-              <div className="flex-center w-4 h-4 md:w-5 md:h-5 mr-2">
+          <div className={cn("flex items-center", slim ? "gap-2" : "gap-3")}>
+            <SearchIcon className="w-4 h-4 text-primary" />
+            {query.length > 0 ? (
+              <div className="flex items-center gap-2">
+                <span className="font-outfit font-semibold text-white">{query}</span>
                 <div
                   role="button"
                   onClick={(e) => {
@@ -72,28 +77,27 @@ const Search = ({
                     e.preventDefault();
                     setQuery("");
                   }}
-                  className="p-1 rounded-md hover:bg-black/10 transition cursor-pointer"
+                  className="p-1 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  <X />
+                  <X className="w-3 h-3 text-slate-400 hover:text-white" />
                 </div>
               </div>
-              {query}
-            </>
-          ) : (
-            <>
-              <SearchIcon className="md:w-4 md:h-4  " />
-              <span className="hidden md:block">{t("search")}</span>
-            </>
-          )}
+            ) : (
+              <span className="hidden md:block font-outfit font-semibold text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                {t("search")}
+              </span>
+            )}
+          </div>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full p-1 rounded-full">
-        <div className="flex-center  w-full overflow-hidden rounded-full glass bg-card ">
+      <DropdownMenuContent className="w-[300px] p-2 glass-panel border-white/10 shadow-elite-soft animate-in zoom-in-95 duration-200">
+        <div className="flex items-center w-full overflow-hidden rounded-xl bg-white/5 border border-white/5">
           <Input
             type="text"
             placeholder={t("searchPlaceholder")}
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="p-regular-16 border-0 w-full  outline-offset-0  focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="font-outfit text-sm border-0 w-full bg-transparent text-white placeholder:text-slate-500 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
       </DropdownMenuContent>
