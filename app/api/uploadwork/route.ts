@@ -23,6 +23,7 @@ export const POST = async (req: Request) => {
   const file = (body.file as Blob) || null;
   const eventId = (body.eventId as string) || "";
   const userId = (body.userId as string) || "";
+  const workId = (body.workId as string) || "";
 
   if (file && (file as File).size > 0) {
     const fileName = (body.file as File).name;
@@ -41,6 +42,7 @@ export const POST = async (req: Request) => {
     try {
       fs.writeFileSync(path.resolve(UPLOAD_DIR, newFileName), buffer);
       await appendWorkSubmissionImage({
+        workId,
         eventId,
         userId,
         fileUrl: `/uploads/${newFileName}`,
@@ -67,14 +69,15 @@ export const POST = async (req: Request) => {
 
   if (eventId && userId && (title || note)) {
     try {
-      await submitWorkSummary({
+      const work = await submitWorkSummary({
+        workId: workId || undefined,
         eventId,
         userId,
         title: title || "Sans titre",
         clientInfo: clientInfo as { firstName?: string; lastName?: string; jobTitle?: string; republic?: string; city?: string; village?: string },
         note: note || "",
       });
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, work });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Submit failed";
       return NextResponse.json({ success: false, error: message }, { status: 400 });

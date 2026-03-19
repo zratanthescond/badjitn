@@ -21,6 +21,7 @@ interface IEventWork extends mongoose.Document {
   approvedAt?: Date;
   fileUrls: string[];
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const eventWorkSchema = new mongoose.Schema<IEventWork>({
@@ -66,7 +67,12 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
     type: Date,
     default: Date.now,
   },
+}, {
+  timestamps: true,
 });
+
+eventWorkSchema.index({ eventId: 1, userId: 1 });
+eventWorkSchema.index({ eventId: 1, userId: 1, summaryStatus: 1 });
 
 const EventWork =
   mongoose.models.EventWork ||

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +19,8 @@ import {
   Eye,
   User,
   ImageIcon,
+  PlusCircle,
+  Clock3,
 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
@@ -36,11 +38,6 @@ import { extractFileDetails } from "@/lib/utils";
 import { useDropzone } from "react-dropzone";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
-import dynamic from "next/dynamic";
-
-const FileViewer = dynamic(() => import("react-file-viewer"), {
-  ssr: false,
-});
 
 const defaultClientInfo: ClientInfo = {
   firstName: "",
@@ -55,6 +52,18 @@ function isClientInfoEmpty(info: ClientInfo) {
   return Object.values(info).every((v) => !String(v ?? "").trim());
 }
 
+type WorkRecord = {
+  _id: string;
+  title?: string;
+  clientInfo?: ClientInfo;
+  note?: string;
+  summaryStatus?: "draft" | "submitted" | "approved";
+  fileUrls?: string[];
+  createdAt?: string;
+  submittedAt?: string;
+  approvedAt?: string;
+};
+
 export default function WorkUploader({
   eventId,
   userId,
@@ -67,16 +76,21 @@ export default function WorkUploader({
   const isRTL = locale === "ar";
 
   const { data, isLoading, refetch } = useGetWork(eventId, userId);
-  const work = data?.success ? data.works : null;
-  const summaryStatus = work?.summaryStatus ?? "draft";
-  const isLegacyWork = work && work.summaryStatus === undefined;
-  const isApproved = summaryStatus === "approved" || isLegacyWork;
+  const works: WorkRecord[] =
+    data?.success && Array.isArray(data.works) ? data.works : [];
 
-  const [title, setTitle] = useState(work?.title || "");
+  const [selectedWorkId, setSelectedWorkId] = useState<string | null>(null);
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
+  const selectedWork =
+    works.find((item) => item._id === selectedWorkId) ?? null;
+  const summaryStatus = selectedWork?.summaryStatus ?? "draft";
+  const isApproved = summaryStatus === "approved";
+
+  const [title, setTitle] = useState("");
   const [clientInfo, setClientInfo] = useState<ClientInfo>(
-    work?.clientInfo || defaultClientInfo
+    defaultClientInfo
   );
-  const [note, setNote] = useState<Content>(work?.note || "");
+  const [note, setNote] = useState<Content>("");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -85,14 +99,34 @@ export default function WorkUploader({
   const [dragActive, setDragActive] = useState(false);
   const [clientInfoTouched, setClientInfoTouched] = useState(false);
 
-  const didInitFromWorkRef = useRef(false);
-  const clientInfoTouchedRef = useRef(false);
-  useEffect(() => {
-    clientInfoTouchedRef.current = clientInfoTouched;
-  }, [clientInfoTouched]);
-
   const submitSummaryMutation = useSubmitWorkSummary();
   const uploadImageMutation = useUploadWorkImage();
+
+  useEffect(() => {
+    if (!works.length) {
+      setSelectedWorkId(null);
+      return;
+    }
+
+    if (isCreatingNew) return;
+
+    const selectedStillExists = works.some((item) => item._id === selectedWorkId);
+    if (!selectedStillExists) {
+      setSelectedWorkId(works[0]._id);
+    }
+  }, [works, selectedWorkId, isCreatingNew]);
+
+  useEffect(() => {
+    setTitle(selectedWork?.title || "");
+    setClientInfo(selectedWork?.clientInfo || defaultClientInfo);
+    setNote(selectedWork?.note || "");
+    setClientInfoTouched(false);
+    setFile(null);
+    setPreviewUrl(null);
+    setFileType(null);
+    setUploadProgress(0);
+    setError(null);
+  }, [selectedWorkId, selectedWork]);
 
   useEffect(() => {
     if (!userId) return;
@@ -102,12 +136,10 @@ export default function WorkUploader({
       .then((res) => res.json())
       .then((user: Record<string, string> | null) => {
         if (!user) return;
-        // Prefill only when the user hasn't started editing.
-        if (clientInfoTouchedRef.current) return;
         setClientInfo((prev) => {
-          if (clientInfoTouchedRef.current) return prev;
+          if (selectedWorkId) return prev;
+          if (clientInfoTouched) return prev;
           if (!isClientInfoEmpty(prev)) return prev;
-          if (work?.clientInfo) return prev;
           return {
             firstName: user.firstName ?? "",
             lastName: user.lastName ?? "",
@@ -119,21 +151,7 @@ export default function WorkUploader({
         });
       })
       .catch(() => {});
-  }, [userId, work?.clientInfo]);
-
-  useEffect(() => {
-    if (!work || didInitFromWorkRef.current) return;
-    didInitFromWorkRef.current = true;
-
-    // Initialize from saved work only once, without overwriting user input.
-    if (!title.trim() && work.title) setTitle(work.title);
-    if (!clientInfoTouchedRef.current && isClientInfoEmpty(clientInfo) && work.clientInfo) {
-      setClientInfo(work.clientInfo as ClientInfo);
-    }
-    if (typeof note === "string" && !note.trim() && work.note) {
-      setNote(work.note as Content);
-    }
-  }, [work, title, clientInfo, note]);
+  }, [userId, selectedWorkId, clientInfoTouched]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const selectedFile = acceptedFiles[0];
@@ -179,6 +197,7 @@ export default function WorkUploader({
     const noteStr = getNoteAsString().trim() || "";
     submitSummaryMutation.mutate(
       {
+        workId: selectedWork?._id,
         eventId,
         userId,
         title: title.trim() || "Sans titre",
@@ -186,7 +205,11 @@ export default function WorkUploader({
         note: noteStr,
       },
       {
-        onSuccess: () => {
+        onSuccess: (response: { work?: { _id?: string } }) => {
+          setIsCreatingNew(false);
+          if (response?.work?._id) {
+            setSelectedWorkId(response.work._id);
+          }
           refetch();
           toast({
             title: t("messages.summarySubmitted"),
@@ -206,10 +229,10 @@ export default function WorkUploader({
   };
 
   const handleUploadImage = () => {
-    if (!file) return;
+    if (!file || !selectedWork?._id) return;
     setError(null);
     uploadImageMutation.mutate(
-      { file, eventId, userId },
+      { workId: selectedWork._id, file, eventId, userId },
       {
         onSuccess: () => {
           setFile(null);
@@ -244,6 +267,20 @@ export default function WorkUploader({
       default:
         return <File className="h-5 w-5 text-muted-foreground" />;
     }
+  };
+
+  const createNewSummary = () => {
+    setIsCreatingNew(true);
+    setSelectedWorkId(null);
+    setTitle("");
+    setClientInfo(defaultClientInfo);
+    setNote("");
+    setClientInfoTouched(false);
+    setFile(null);
+    setPreviewUrl(null);
+    setFileType(null);
+    setUploadProgress(0);
+    setError(null);
   };
 
   const noteContent = typeof note === "string" ? note : "";
@@ -294,6 +331,86 @@ export default function WorkUploader({
                 </div>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">
+                        Resumes disponibles
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Vous pouvez ajouter plusieurs resumes et modifier chacun a tout moment.
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="rounded-xl"
+                      onClick={createNewSummary}
+                    >
+                      <PlusCircle className="h-4 w-4 mr-2" />
+                      Nouveau resume
+                    </Button>
+                  </div>
+
+                  {works.length > 0 && (
+                    <ScrollArea className="w-full rounded-xl border bg-muted/20">
+                      <div className="flex gap-3 p-3">
+                        {works.map((item) => {
+                          const status = item.summaryStatus ?? "draft";
+                          const isSelected = item._id === selectedWorkId;
+                          const statusLabel =
+                            status === "approved"
+                              ? "Approuve"
+                              : status === "submitted"
+                              ? "En attente"
+                              : "Brouillon";
+
+                          return (
+                            <button
+                              key={item._id}
+                              type="button"
+                              onClick={() => {
+                                setIsCreatingNew(false);
+                                setSelectedWorkId(item._id);
+                              }}
+                              className={`min-w-[220px] rounded-xl border p-3 text-left transition-all ${
+                                isSelected
+                                  ? "border-primary bg-primary/10 shadow-sm"
+                                  : "border-border bg-background hover:border-primary/40"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between gap-2">
+                                <p className="truncate font-medium text-sm">
+                                  {item.title?.trim() || "Sans titre"}
+                                </p>
+                                <Badge
+                                  variant="secondary"
+                                  className={
+                                    status === "approved"
+                                      ? "bg-green-500/10 text-green-700 border-green-200"
+                                      : status === "submitted"
+                                      ? "bg-blue-500/10 text-blue-700 border-blue-200"
+                                      : "bg-yellow-500/10 text-yellow-700 border-yellow-200"
+                                  }
+                                >
+                                  {statusLabel}
+                                </Badge>
+                              </div>
+                              <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                                <Clock3 className="h-3.5 w-3.5" />
+                                {new Date(
+                                  item.submittedAt || item.createdAt || Date.now()
+                                ).toLocaleDateString(locale)}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
+                  )}
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="work-title">{t("summary.fields.title")}</Label>
                   <Input
@@ -391,7 +508,7 @@ export default function WorkUploader({
                       onChange={setNote}
                       editorContentClassName="p-4"
                       output="html"
-                      editable={!isApproved}
+                      editable
                       textOnly
                       content={note}
                       editorProps={{
@@ -413,30 +530,35 @@ export default function WorkUploader({
                   </div>
                 )}
 
-                {!isApproved && (
-                  <Button
-                    className="w-full h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
-                    disabled={!canSubmitSummary}
-                    onClick={handleSubmitSummary}
-                  >
-                    {submitSummaryMutation.isPending ? (
-                      <div className="flex items-center gap-2">
-                        <Loader className="h-5 w-5 animate-spin" />
-                        {t("actions.savingNotes")}
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5" />
-                        {t("actions.saveNotes")}
-                      </div>
-                    )}
-                  </Button>
-                )}
+                <Button
+                  className="w-full h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+                  disabled={!canSubmitSummary}
+                  onClick={handleSubmitSummary}
+                >
+                  {submitSummaryMutation.isPending ? (
+                    <div className="flex items-center gap-2">
+                      <Loader className="h-5 w-5 animate-spin" />
+                      {t("actions.savingNotes")}
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5" />
+                      {selectedWork ? "Modifier le resume" : t("actions.saveNotes")}
+                    </div>
+                  )}
+                </Button>
 
                 {summaryStatus === "submitted" && (
                   <div className="flex items-center gap-2 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-700 dark:text-blue-300 text-sm">
                     <CheckCircle className="h-5 w-5 shrink-0" />
                     {t("messages.waitingApproval")}
+                  </div>
+                )}
+
+                {summaryStatus === "approved" && selectedWork && (
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-300 text-sm">
+                    <CheckCircle className="h-5 w-5 shrink-0" />
+                    Ce resume est approuve. Si vous le modifiez, il repassera en attente d'approbation.
                   </div>
                 )}
               </CardContent>
@@ -461,7 +583,17 @@ export default function WorkUploader({
                 </div>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
-                {!isApproved ? (
+                {!selectedWork ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center rounded-xl bg-muted/30 border border-dashed">
+                    <FileText className="h-12 w-12 text-muted-foreground mb-3" />
+                    <p className="text-muted-foreground font-medium">
+                      Creez ou selectionnez d'abord un resume.
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      L'image de soumission sera rattachee au resume choisi.
+                    </p>
+                  </div>
+                ) : !isApproved ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center rounded-xl bg-muted/30 border border-dashed">
                     <FileText className="h-12 w-12 text-muted-foreground mb-3" />
                     <p className="text-muted-foreground font-medium">
@@ -537,7 +669,7 @@ export default function WorkUploader({
                       </div>
                     )}
 
-                    {work?.fileUrls && work.fileUrls.length > 0 && (
+                    {selectedWork?.fileUrls && selectedWork.fileUrls.length > 0 && (
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <File className="h-4 w-4 text-muted-foreground" />
@@ -547,13 +679,13 @@ export default function WorkUploader({
                         </div>
                         <ScrollArea className="bg-muted/30 rounded-xl p-3">
                           <div className="flex items-center gap-3">
-                            {work.fileUrls.map((fileUrl: string, index: number) => (
+                            {selectedWork.fileUrls.map((fileUrl: string, index: number) => (
                               <UploadedFileController
                                 key={index}
                                 fileUrl={fileUrl}
                                 setPreviewUrl={(v) => setPreviewUrl(v)}
                                 setFileType={(v) => setFileType(v)}
-                                workId={work._id}
+                                workId={selectedWork._id}
                                 refetch={refetch}
                               />
                             ))}
@@ -583,7 +715,7 @@ export default function WorkUploader({
                     <Button
                       className="w-full h-12 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
                       onClick={handleUploadImage}
-                      disabled={!file || uploadImageMutation.isPending}
+                      disabled={!file || !selectedWork?._id || uploadImageMutation.isPending}
                     >
                       {uploadImageMutation.isPending ? (
                         <div className="flex items-center gap-2">

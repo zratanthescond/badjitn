@@ -14,6 +14,7 @@ import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { ObjectId } from "mongodb";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import { sendWorkStatusEmail } from "../mail";
 
 export async function useUser() {
   try {
@@ -204,13 +205,62 @@ export async function reportEvent(
     handleError(error);
   }
 }
+
+function buildEventPortalUrl(eventId: string) {
+  const serverUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL ||
+    process.env.NEXTAUTH_URL ||
+    "http://localhost:3000";
+  return `${serverUrl.replace(/\/$/, "")}/events/${eventId}`;
+}
+
+async function sendWorkNotificationEmail({
+  userEmail,
+  subject,
+  title,
+  intro,
+  eventTitle,
+  summaryTitle,
+  eventId,
+  extra,
+}: {
+  userEmail?: string;
+  subject: string;
+  title: string;
+  intro: string;
+  eventTitle: string;
+  summaryTitle?: string;
+  eventId: string;
+  extra?: string;
+}) {
+  if (!userEmail) return;
+
+  try {
+    await sendWorkStatusEmail({
+      to: userEmail,
+      subject,
+      title,
+      intro,
+      eventTitle,
+      summaryTitle,
+      ctaLabel: "Ouvrir l'evenement",
+      ctaUrl: buildEventPortalUrl(eventId),
+      extra,
+    });
+  } catch (mailError) {
+    console.error("Failed to send work notification email:", mailError);
+  }
+}
+
 export async function submitWorkSummary({
+  workId,
   eventId,
   userId,
   title,
   clientInfo,
   note,
 }: {
+  workId?: string;
   eventId: string;
   userId: string;
   title: string;
@@ -224,29 +274,61 @@ export async function submitWorkSummary({
     const user = await User.findById(userId);
     if (!user) throw new Error("User not found");
 
-    const work = await EventWork.findOne({ eventId, userId });
-    if (work) {
-      work.title = title?.trim();
+    const normalizedTitle = title?.trim() || "Sans titre";
+    const submittedAt = new Date();
+
+    if (workId) {
+      const work = await EventWork.findOne({ _id: workId, eventId, userId });
+      if (!work) throw new Error("Work not found");
+
+      work.title = normalizedTitle;
       work.clientInfo = clientInfo;
       work.note = note;
       work.summaryStatus = "submitted";
-      work.submittedAt = new Date();
+      work.submittedAt = submittedAt;
+      work.approvedAt = undefined;
       await work.save();
+
+      await sendWorkNotificationEmail({
+        userEmail: user.email,
+        subject: "Resume modifie et renvoye",
+        title: "Votre resume a ete modifie",
+        intro:
+          "Nous avons bien recu votre nouvelle version du resume. Elle est maintenant en attente d'approbation par le createur de l'evenement.",
+        eventTitle: event.title,
+        summaryTitle: normalizedTitle,
+        eventId,
+      });
+
+      return JSON.parse(JSON.stringify(work));
     } else {
-      const newWork = new EventWork({
+      const newWork = await EventWork.create({
         eventId,
         userId,
-        title: title?.trim(),
+        title: normalizedTitle,
         clientInfo,
         note,
         summaryStatus: "submitted",
-        submittedAt: new Date(),
+        submittedAt,
         fileUrls: [],
       });
-      await newWork.save();
+
+      await sendWorkNotificationEmail({
+        userEmail: user.email,
+        subject: "Resume soumis",
+        title: "Votre resume a ete soumis",
+        intro:
+          "Nous avons bien recu votre resume. Vous pourrez deposer votre travail une fois l'approbation effectuee par le createur de l'evenement.",
+        eventTitle: event.title,
+        summaryTitle: newWork.title,
+        eventId,
+      });
+
+      return JSON.parse(JSON.stringify(newWork));
     }
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 
@@ -258,25 +340,45 @@ export async function approveWork(workId: string) {
     work.summaryStatus = "approved";
     work.approvedAt = new Date();
     await work.save();
+
+    const [event, user] = await Promise.all([
+      Event.findById(work.eventId),
+      User.findById(work.userId),
+    ]);
+
+    await sendWorkNotificationEmail({
+      userEmail: user?.email,
+      subject: "Resume approuve",
+      title: "Votre resume a ete approuve",
+      intro:
+        "Bonne nouvelle, le createur de l'evenement a approuve votre resume. Vous pouvez maintenant soumettre votre travail.",
+      eventTitle: event?.title || "Evenement",
+      summaryTitle: work.title,
+      eventId: String(work.eventId),
+    });
+
     return JSON.parse(JSON.stringify(work));
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 
 /** Append image URL to work; only allowed when summaryStatus is "approved". */
 export async function appendWorkSubmissionImage({
+  workId,
   eventId,
   userId,
   fileUrl,
 }: {
+  workId: string;
   eventId: string;
   userId: string;
   fileUrl: string;
 }) {
   try {
     await connectToDatabase();
-    const work = await EventWork.findOne({ eventId, userId });
+    const work = await EventWork.findOne({ _id: workId, eventId, userId });
     if (!work) throw new Error("Work not found");
     if (work.summaryStatus && work.summaryStatus !== "approved") {
       throw new Error("Work summary must be approved before uploading submission image");
@@ -284,8 +386,26 @@ export async function appendWorkSubmissionImage({
     work.fileUrls = work.fileUrls || [];
     work.fileUrls.push(fileUrl);
     await work.save();
+
+    const [event, user] = await Promise.all([
+      Event.findById(eventId),
+      User.findById(userId),
+    ]);
+
+    await sendWorkNotificationEmail({
+      userEmail: user?.email,
+      subject: "Travail soumis",
+      title: "Votre travail a ete soumis",
+      intro:
+        "Nous avons bien recu votre fichier de travail. Vous pouvez revenir a tout moment pour consulter vos fichiers deja envoyes.",
+      eventTitle: event?.title || "Evenement",
+      summaryTitle: work.title,
+      eventId,
+      extra: "Le travail reste rattache au resume approuve selectionne.",
+    });
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 
@@ -347,7 +467,11 @@ export async function getUserWorkByEvent({
 }) {
   try {
     await connectToDatabase();
-    const works = await EventWork.findOne({ eventId: eventId, userId: userId });
+    const works = await EventWork.find({ eventId, userId }).sort({
+      approvedAt: -1,
+      submittedAt: -1,
+      createdAt: -1,
+    });
     return JSON.parse(JSON.stringify(works));
   } catch (error) {
     handleError(error);

@@ -11,6 +11,7 @@ export type ClientInfo = {
 };
 
 export type SubmitSummaryParams = {
+  workId?: string;
   userId: string;
   eventId: string;
   title: string;
@@ -19,6 +20,7 @@ export type SubmitSummaryParams = {
 };
 
 export type UploadImageParams = {
+  workId: string;
   file: File;
   userId: string;
   eventId: string;
@@ -26,6 +28,7 @@ export type UploadImageParams = {
 
 const submitSummary = async (data: SubmitSummaryParams) => {
   const formData = new FormData();
+  if (data.workId) formData.append("workId", data.workId);
   formData.append("userId", data.userId);
   formData.append("eventId", data.eventId);
   formData.append("title", data.title);
@@ -42,6 +45,7 @@ const submitSummary = async (data: SubmitSummaryParams) => {
 
 const uploadSubmissionImage = async (data: UploadImageParams) => {
   const formData = new FormData();
+  formData.append("workId", data.workId);
   formData.append("userId", data.userId);
   formData.append("eventId", data.eventId);
   formData.append("file", data.file);
