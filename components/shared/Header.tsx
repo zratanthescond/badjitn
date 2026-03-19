@@ -21,8 +21,8 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-7xl glass-panel rounded-2xl transition-all duration-500 ease-elite-spring px-3 md:px-6">
-      <div className="flex h-14 md:h-18 items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full glass-panel border-b border-white/10 transition-all duration-500 ease-elite-spring px-3 md:px-6">
+      <div className="flex h-14 md:h-18 items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center transition-all duration-300 hover:scale-105 active:scale-95">
             <Image
