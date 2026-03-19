@@ -91,112 +91,72 @@ const Card = ({ event, hasOrderLink, hidePrice, userPhoto }: CardProps) => {
     }, [locale, event.startDateTime]);
 
   return (
-    <div className="group relative  w-full max-w-[400px] flex-col overflow-hidden rounded-2xl backdrop-blur-sm  shadow-md transition-all hover:shadow-lg aspect-[9/16] md:min-h-[380px]">
+    <div className="group relative w-full max-w-[400px] flex-col overflow-hidden rounded-2xl glass-panel shadow-elite-soft transition-all duration-500 ease-elite-spring hover:-translate-y-2 hover:shadow-elite-glow aspect-[9/16] md:min-h-[400px]">
       {userId && !hidePrice && !hasOrderLink && (
-        <ReportComponent eventId={event._id} userId={userId.toString()} />
+        <div className="absolute top-3 left-3 z-10 transition-transform duration-300 group-hover:scale-110">
+          <ReportComponent eventId={event._id} userId={userId.toString()} />
+        </div>
       )}
       <Link
         href={hidePrice ? {} : `/events/${event._id}`}
-        className={`flex-center flex-grow  bg-cover bg-center text-grey-500 w-full h-full `}
+        className="flex-center flex-grow bg-cover bg-center text-grey-500 w-full h-full relative"
       >
-        <HomePostContainer
-          src={event ? event.imageUrl : "/images/placeholder-event.jpg"}
-          className={`rounded-xl flex w-full h-full ${hidePrice && "h-1/3"}`}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t pointer-events-none from-black/90 via-black/30 to-transparent">
-          {/* IS EVENT CREATOR ... */}
+        <div className="absolute inset-0 z-0">
+          <HomePostContainer
+            src={event ? event.imageUrl : "/images/placeholder-event.jpg"}
+            className="rounded-xl flex w-full h-full transition-transform duration-700 ease-out group-hover:scale-110"
+          />
+        </div>
+        
+        <div className="absolute inset-0 z-1 bg-gradient-to-t pointer-events-none from-black/80 via-black/20 to-transparent dark:from-elite-charcoal/95 dark:via-elite-charcoal/40">
           <div
-            className={`rounded-xl w-full h-full flex items-center flex-col ${
-              sponsored && " border-2  border-yellow-500 "
+            className={`rounded-xl w-full h-full flex items-center flex-col relative ${
+              sponsored && "border-2 border-primary/50 shadow-elite-glow"
             }`}
           >
             {sponsored && (
-              <Badge className="absolute rounded-t-none  top-0 left-1/2 transform -translate-x-1/2 bg-yellow-500">
+              <Badge className="absolute rounded-t-none top-0 left-1/2 transform -translate-x-1/2 bg-primary animate-pulse shadow-elite-glow">
                 {t("sponsored")}
               </Badge>
             )}
             {!hidePrice && (
               <>
-                {/* <div className="absolute right-2 top-2 flex flex-col gap-0 items-center p-1 bg-white/30  backdrop-brightness-100 rounded-full backdrop-blur-3xl w-11 h-11   shadow-sm transition-all">
-                  <span className="text-white text-xs  font-bold">
-                    {
-                      formatDateTime(event.startDateTime).homeEvents.split(
-                        " "
-                      )[1]
-                    }
-                  </span>
-                  <Separator className="m-0 p-0" />
-                  <span className="text-white text-sm font-semibold">
-                    {
-                      formatDateTime(event.startDateTime).homeEvents.split(
-                        " "
-                      )[0]
-                    }
-                  </span>
-                </div> */}
-                <div className="absolute right-2 top-2 bg-black/30 backdrop-blur-sm rounded-full px-2 py-0.5 sm:px-2.5 sm:py-1 text-center ">
-                  <div className="text-white font-semibold text-base sm:text-lg leading-none">
-                    {/*  formatDateTime(event.startDateTime).homeEvents.split(
-                        " "
-                      )[1]*/}
+                <div className="absolute right-3 top-3 glass-control rounded-2xl px-3 py-1.5 text-center transition-all duration-500 group-hover:shadow-elite-glow group-hover:scale-110">
+                  <div className="text-slate-900 dark:text-white font-syne font-bold text-xl leading-none">
                     {formattedDateParts?.[1]}
                   </div>
-                  <div className="text-white/90 text-[10px] sm:text-xs leading-none mt-0.5">
+                  <div className="text-slate-600 dark:text-white/70 font-outfit text-[11px] uppercase tracking-wider leading-none mt-1">
                     {formattedDateParts?.[0]}
                   </div>
                 </div>
-                {/* <div className="absolute bottom-0 left-0 flex flex-col gap-0 items-center justify-evenly p-1  bg-white/10 backdrop-brightness-100 rounded-b-lg backdrop-blur-sm w-full h-1/5  shadow-sm transition-all">
-                  <span className="text-white text-xs  line-clamp-2 max-w-full max-h-1/2  font-semibold">
-                    {event.title}
-                  </span>
-                  <Separator className="m-0 p-0" />
 
-                  {event.isOnline ? (
-                    <Radio stroke="red-500" />
-                  ) : (
-                    <div className="flex flex-row w-full items-center justify-evenly p-1">
-                      <MapPin size={16} stroke="white" />
-                      <span className="text-white flex flex-row text-xs font-semibold sm:text-xs sm:font-extralight">
-                        {" "}
-                        {getLastTwoWords(event.location?.name!)}
-                      </span>
-                      <span className="text-white flex flex-row text-xs font-extralight">
-                        -
-                      </span>
-                      <Clock size={16} stroke="white" />
-                      <span className="text-white flex flex-row text-xs font-extralight">
-                        {formatDateTime(event.startDateTime).timeOnly}
-                      </span>
-                    </div>
-                  )}
-
-                </div> */}
-                <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-10">
-                  <h3 className="text-white font-medium text-sm mb-3 leading-tight line-clamp-2">
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-white dark:from-elite-charcoal/90 via-white/80 dark:via-elite-charcoal/40 to-transparent pt-16 transition-all duration-500 group-hover:translate-y-[-5px]">
+                  <h3 className="text-slate-900 dark:text-white font-syne font-bold text-lg md:text-xl mb-3 leading-tight line-clamp-2 tracking-tight group-hover:text-primary transition-colors duration-300">
                     {event.title}
                   </h3>
 
-                  {/* Location and Time - Stacked for mobile */}
-                  <div className="space-y-1.5">
-                    <div className="flex items-center space-x-1.5">
-                      <MapPin className="h-3.5 w-3.5 text-white/80 flex-shrink-0" />
-                      <div className="text-white/90 text-xs leading-tight">
-                        <div className="font-medium">
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex-center w-6 h-6 rounded-lg bg-slate-100 dark:bg-white/10">
+                        <MapPin className="h-3.5 w-3.5 text-elite-cyan" />
+                      </div>
+                      <div className="text-slate-600 dark:text-white/80 font-outfit text-xs leading-tight">
+                        <div className="font-semibold text-slate-900 dark:text-white">
                           {getLastTwoWords(event.location?.name!)}
                         </div>
                         {event.country && (
-                          <div className="text-white/70">
-                            {getLastTwoWords(event.location?.name!)!
-                              .split(" ")!
-                              .pop()}
+                          <div className="text-slate-400 dark:text-white/50 text-[10px] uppercase tracking-widest mt-0.5">
+                            {event.country}
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-1.5">
-                      <Clock className="h-3.5 w-3.5 text-white/80 flex-shrink-0" />
-                      <span className="text-white/90 text-xs font-medium">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex-center w-6 h-6 rounded-lg bg-slate-100 dark:bg-white/10">
+                        <Clock className="h-3.5 w-3.5 text-elite-violet" />
+                      </div>
+                      <span className="text-slate-700 dark:text-white/80 font-outfit text-xs font-medium">
                         {formatDateTime(event.startDateTime, locale).timeOnly}
                       </span>
                     </div>
@@ -205,36 +165,33 @@ const Card = ({ event, hasOrderLink, hidePrice, userPhoto }: CardProps) => {
               </>
             )}
 
-            {hidePrice &&
-              (event != null ? (
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-10">
-                  <h3 className="text-white font-semibold text-sm mb-2 leading-tight line-clamp-2">
-                    {event.title}
-                  </h3>
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-3.5 w-3.5 text-white/80" />
-                      <div className="flex flex-wrap items-center gap-x-2 text-[10px] sm:text-xs text-white/90 font-medium">
-                        <span>{formatDateTime(event.startDateTime, locale).dateOnly}</span>
-                        <span className="text-white/40">•</span>
-                        <span>{formatDateTime(event.startDateTime, locale).timeOnly}</span>
-                      </div>
+            {hidePrice && event && (
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white dark:from-elite-charcoal/90 via-white/80 dark:via-elite-charcoal/40 to-transparent pt-12">
+                <h3 className="text-slate-900 dark:text-white font-syne font-bold text-base mb-2 leading-tight line-clamp-2">
+                  {event.title}
+                </h3>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-primary" />
+                    <div className="flex flex-wrap items-center gap-x-2 text-xs text-slate-600 dark:text-white/80 font-outfit">
+                      <span className="font-semibold text-slate-900 dark:text-white">{formatDateTime(event.startDateTime, locale).dateOnly}</span>
+                      <span className="text-slate-300 dark:text-white/20">•</span>
+                      <span>{formatDateTime(event.startDateTime, locale).timeOnly}</span>
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="w-full h-full flex bg-black/20 items-center justify-center">
-                  <span className="text-white text-xs">{t("noEventDetails")}</span>
-                </div>
-              ))}
-            <div className="absolute bottom-3 right-3">
-              <div className="w-7 h-7 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
-                <Avatar className="w-6 h-6">
+              </div>
+            )}
+
+            
+            <div className="absolute bottom-4 right-4 z-10">
+              <div className="w-10 h-10 glass-control rounded-full flex items-center justify-center p-0.5 shadow-elite-soft transition-transform duration-500 group-hover:scale-110">
+                <Avatar className="w-full h-full">
                   <AvatarImage
                     src={userPhoto || event.organizer.photo}
                     className="rounded-full object-cover"
                   />
-                  <AvatarFallback className="bg-primary/10 text-[8px]">
+                  <AvatarFallback className="bg-primary/20 text-[10px] font-syne font-bold">
                     {event.organizer.firstName?.[0]}
                     {event.organizer.lastName?.[0]}
                   </AvatarFallback>
@@ -244,6 +201,7 @@ const Card = ({ event, hasOrderLink, hidePrice, userPhoto }: CardProps) => {
           </div>
         </div>
       </Link>
+
       {hidePrice && userId && event && (
         <TicketControleDropdown
           eventId={event._id.toString()}

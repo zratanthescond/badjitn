@@ -29,11 +29,11 @@ export function VideoDetailsPanel({
 
   const panelClasses = `
     ${isVisible
-      ? "flex top-[12vh] md:top-auto max-h-[88vh] md:max-h-full glass w-full shadow-2xl"
+      ? "flex top-0 md:top-auto h-full md:h-full glass-panel w-full shadow-2xl"
       : "hidden md:flex backdrop-blur top-full max-h-0 overflow-hidden"
     } 
-    flex-col fixed bottom-0 md:max-w-md md:relative rounded-t-3xl md:rounded-2xl w-full 
-    md:h-full items-center justify-start gap-4 animate-accordion-down repeat-1
+    flex-col fixed bottom-0 md:max-w-md md:relative rounded-none md:rounded-2xl w-full 
+    items-center justify-start gap-4 animate-accordion-down repeat-1
     transition-all duration-300 ease-in-out border-t md:border border-border/60
     [--glass-opacity:70%] [--glass-blur:80px] dark:[--glass-opacity:40%]
   `;
@@ -52,10 +52,10 @@ export function VideoDetailsPanel({
         </Button>
       )}
 
-      <ScrollArea className="w-full h-full">
-        <div className="p-4 space-y-4">
+      <div className="w-full h-full overflow-y-auto no-scrollbar overflow-x-hidden">
+        <div className="p-4 space-y-4 text-slate-900 dark:text-white max-w-full overflow-hidden">
           {/* Profile Section */}
-          <div className="flex flex-row items-start justify-between w-full">
+          <div className="flex flex-row items-start justify-between w-full overflow-hidden">
             <XProfileCard
               username={`${video.organizer.firstName} ${video.organizer.lastName}`}
               avatarUrl={video.organizer.photo}
@@ -63,23 +63,20 @@ export function VideoDetailsPanel({
               handle={video.organizer.username}
               organization={video.organisation?.name || ""}
               bio={""}
+              className="w-full max-w-full"
             />
           </div>
 
           {/* Sponsors Section */}
           {video.sponsors && video.sponsors.length > 0 && (
-            <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-row items-center justify-between w-full overflow-hidden">
               <SponsorsSection sponsorsIds={video.sponsors} />
             </div>
           )}
 
-          {/* Title */}
-          <h1 className="font-bold text-center w-full text-2xl md:text-3xl text-foreground leading-tight">
-            {video.title}
-          </h1>
 
           {/* Category and Website */}
-          <div className="flex flex-row items-center justify-between gap-4 flex-wrap">
+          <div className="flex flex-row items-center justify-between gap-4 flex-wrap w-full overflow-hidden">
             <div className="flex gap-2">
               <Badge className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white border-0 transition-all duration-200">
                 {c(video?.category?.name || "all") || t("allCategories")}
@@ -106,12 +103,11 @@ export function VideoDetailsPanel({
           </div>
 
           {/* Event Details */}
-          <div className="bg-foreground/5 rounded-2xl p-4 backdrop-blur-sm border border-foreground/5">
+          <div className="bg-slate-900/5 dark:bg-white/5 rounded-2xl p-4 backdrop-blur-sm border border-slate-900/5 dark:border-white/5 w-full overflow-hidden">
             <ReelDetails event={video as any} />
           </div>
         </div>
-        <ScrollBar orientation="vertical" className="bg-muted/50" />
-      </ScrollArea>
+      </div>
     </div>
   );
 }

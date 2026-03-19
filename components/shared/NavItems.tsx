@@ -34,16 +34,19 @@ const NavItems = () => {
         return (
           <li
             key={link.route}
-            className={`${isActive
-              ? "text-primary dark:text-blue-400 bg-primary/10 dark:bg-blue-400/10"
-              : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
-              } flex items-center w-full md:w-auto p-medium-16 whitespace-nowrap transition-all duration-200 rounded-xl md:rounded-full px-4 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary`}
+            className={`group flex items-center w-full md:w-auto transition-all duration-300 rounded-xl px-4 py-2.5 ${
+              isActive
+                ? "bg-primary/10 text-primary dark:bg-white/5 dark:text-white shadow-elite-soft"
+                : "text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/40 dark:hover:bg-white/5"
+            }`}
           >
-            <Link href={link.route} className="flex flex-row items-center gap-3 w-full">
-              <span className={isActive ? "text-primary dark:text-blue-400" : "text-inherit"}>
+            <Link href={link.route} className="flex flex-row items-center gap-3 w-full font-outfit">
+              <span className={`transition-all duration-300 group-hover:scale-110 ${isActive ? "text-primary dark:text-elite-cyan" : "text-inherit"}`}>
                 {getIcon(link.route)}
               </span>
-              <span className="font-semibold">{t(link.label)}</span>
+              <span className={`font-semibold tracking-wide ${isActive ? "opacity-100" : "opacity-80 group-hover:opacity-100"}`}>
+                {t(link.label)}
+              </span>
             </Link>
           </li>
         );

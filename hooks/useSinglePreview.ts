@@ -49,8 +49,10 @@ export function useSinglePreview(manifest: string, time: number = 3) {
       captureFrame();
     };
 
-    video.onerror = (e) => {
-      console.error("Video loading error:", e);
+    video.onerror = () => {
+      // Ignore errors if the source is empty (usually during cleanup)
+      if (video.src === "" || video.src.includes(window.location.host + "/")) return;
+      console.error("Video loading error for manifest:", manifest);
     };
 
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
@@ -66,7 +68,13 @@ export function useSinglePreview(manifest: string, time: number = 3) {
     }
 
     return () => {
+      // Remove listeners before clearing src to avoid triggering onerror
+      video.onerror = null;
+      video.onloadedmetadata = null;
+      video.onseeked = null;
+      
       video.src = "";
+      video.load(); // Force release resources
       if (hls) {
         hls.destroy();
       }

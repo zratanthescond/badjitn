@@ -31,28 +31,37 @@ export default async function Home(props: SearchParamProps) {
   // });
 
   return (
-    <>
+    <main className="relative min-h-screen bg-background pb-20 overflow-hidden">
+      {/* Dynamic Background Glows */}
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 dark:bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-elite-violet/10 dark:bg-elite-violet/5 blur-[120px] rounded-full pointer-events-none z-0" />
+
       <section
         id="events"
-        className="wrapper  my-2 flex flex-col gap-8 md:gap-12 rounded-xl  p-2 md:p-3"
+        className="wrapper relative z-10 mt-2 mb-12 flex flex-col gap-10 md:gap-14 px-4 md:px-6"
       >
-        <div className="flex w-full flex-col gap-5 lg:flex-row">
-          <div className="flex w-full flex-col md:flex-row items-center gap-3 md:justify-between">
-            <div className="flex w-full items-center gap-3 md:w-auto">
+        {/* Unified Search & Filter Pill */}
+        <div className="flex w-full flex-col lg:flex-row items-center justify-center gap-4 lg:gap-6 bg-white/5 dark:bg-elite-charcoal/40 backdrop-blur-3xl p-2.5 lg:px-6 lg:py-2.5 rounded-2xl lg:rounded-full border border-white/5 shadow-elite-soft">
+          <div className="flex flex-col md:flex-row items-center gap-3 justify-center shrink-0">
+            <div className="flex items-center gap-3">
               <CountryFilter />
-              <div className="flex-1 w-full md:w-auto">
-                <Search slim placeholder="Search events..." />
-              </div>
+              <Search slim placeholder="Search events..." />
             </div>
-            <div className="w-full md:w-auto">
-              <DatePickerWithPresets />
-            </div>
+            <DatePickerWithPresets slim />
           </div>
-          <CategoryFilter />
+          
+          <div className="h-8 w-px bg-white/10 hidden lg:block mx-1 shrink-0" />
+          
+          <div className="w-full flex-1 min-w-0">
+            <CategoryFilter />
+          </div>
         </div>
 
-        <CollectionWrapper />
+        {/* Content Section */}
+        <div className="animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-elite-spring">
+          <CollectionWrapper />
+        </div>
       </section>
-    </>
+    </main>
   );
 }

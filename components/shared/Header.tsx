@@ -21,23 +21,23 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
-      <div className="wrapper flex h-16 md:h-20 items-center justify-between py-2">
+    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-7xl glass-panel rounded-2xl transition-all duration-500 ease-elite-spring px-3 md:px-6">
+      <div className="flex h-14 md:h-18 items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center transition-opacity hover:opacity-90">
+          <Link href="/" className="flex items-center transition-all duration-300 hover:scale-105 active:scale-95">
             <Image
               src="/assets/images/logo.png"
-              width={140}
-              height={42}
+              width={128}
+              height={38}
               alt="BadjiTn logo"
-              className="hidden dark:block w-[110px] md:w-[140px] h-auto object-contain"
+              className="object-cover hidden dark:block"
             />
             <Image
               src="/assets/images/logoDark.png"
-              width={140}
-              height={42}
+              width={128}
+              height={38}
               alt="BadjiTn logo"
-              className="block dark:hidden w-[110px] md:w-[140px] h-auto object-contain"
+              className="object-cover block dark:hidden"
             />
           </Link>
         </div>
@@ -51,7 +51,7 @@ const Header = () => {
 
           <div className="flex items-center gap-2 md:gap-3">
             {hasMounted && dimensions && (
-              <div className="flex items-center gap-2 border-r border-border/50 pr-2 md:pr-3 mr-1 md:mr-2">
+              <div className="flex items-center gap-2 border-r border-white/10 pr-2 md:pr-3 mr-1 md:mr-2">
                 <LocaleSwitcher />
                 <ModeToggle />
               </div>
@@ -62,22 +62,23 @@ const Header = () => {
                 <UserButton
                   appearance={{
                     elements: {
+                      userButtonTrigger: "hover:scale-110 active:scale-95 transition-all duration-300",
                       userButtonPopoverCard:
-                        "bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-2xl",
+                        "glass-panel text-slate-900 dark:text-slate-100 border border-white/10 shadow-elite-soft",
                       userButtonPopoverMain: "bg-transparent",
                       userButtonPopoverActions: "gap-1",
                       userButtonPopoverActionButton:
-                        "text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors",
+                        "text-slate-800 dark:text-slate-100 hover:bg-white/10 dark:hover:bg-white/5 rounded-xl transition-all",
                       userButtonPopoverActionButtonText:
-                        "text-slate-800 dark:text-slate-100 font-medium",
+                        "text-slate-800 dark:text-slate-100 font-outfit font-medium",
                       userButtonPopoverActionButtonIcon:
                         "text-slate-600 dark:text-slate-300",
                       userPreviewMainIdentifier:
-                        "text-slate-900 dark:text-slate-100 font-semibold",
+                        "text-slate-900 dark:text-slate-100 font-syne font-bold",
                       userPreviewSecondaryIdentifier:
-                        "text-slate-600 dark:text-slate-300",
+                        "text-slate-600 dark:text-slate-300 font-outfit",
                       userButtonPopoverFooter:
-                        "border-t border-slate-200 dark:border-slate-700",
+                        "border-t border-white/10",
                     },
                   }}
                 />
@@ -89,9 +90,8 @@ const Header = () => {
               <div className="flex items-center gap-3">
                 <Button
                   asChild
-                  className="rounded-full px-6 transition-all hover:shadow-lg active:scale-95"
+                  className="rounded-xl px-6 button bg-primary hover:bg-primary-hover text-white dark:text-elite-charcoal"
                   size="default"
-                  variant="outline"
                 >
                   <Link href="/sign-in">{t("login")}</Link>
                 </Button>
