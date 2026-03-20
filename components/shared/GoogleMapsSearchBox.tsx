@@ -30,6 +30,13 @@ const fetchSuggestions = (
 ) => {
   if (!query.trim()) {
     setSuggestions([]);
+    setLoading(false);
+    return;
+  }
+
+  if (typeof window === "undefined" || !window.google?.maps?.places) {
+    setSuggestions([]);
+    setLoading(false);
     return;
   }
 
@@ -48,14 +55,24 @@ const getPlaceDetails = (
   placeId: string,
   onSelect: (place: PlaceDetails) => void
 ) => {
+  if (typeof window === "undefined" || !window.google?.maps?.places) {
+    return;
+  }
+
   const service = new google.maps.places.PlacesService(
     document.createElement("div")
   );
-  service.getDetails({ placeId }, (place, status) => {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      onSelect(place as PlaceDetails);
+  service.getDetails(
+    {
+      placeId,
+      fields: ["formatted_address", "geometry"],
+    },
+    (place, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        onSelect(place as PlaceDetails);
+      }
     }
-  });
+  );
 };
 
 const SearchBox: React.FC<SearchBoxProps> = ({
