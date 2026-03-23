@@ -579,6 +579,44 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
               )}
             </div>
             <div className="w-full">
+              <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">
+                <CardContent className="bg-transparent w-full">
+                  <FormField
+                    control={form.control}
+                    name="showWorkSubmissionPopup"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                          <FormControl>
+                            <Checkbox
+                              checked={!!field.value}
+                              onCheckedChange={(checked) =>
+                                field.onChange(checked === true)
+                              }
+                              id="showWorkSubmissionPopup"
+                              className="mt-1"
+                            />
+                          </FormControl>
+                          <div className="space-y-1">
+                            <FormLabel
+                              htmlFor="showWorkSubmissionPopup"
+                              className="cursor-pointer"
+                            >
+                              Afficher la pop-up de soumission du travail apres achat
+                            </FormLabel>
+                            <FormDescription>
+                              Si cette option est activee, le client verra une confirmation apres participation pour choisir entre soumettre un travail ou revenir a l'accueil.
+                            </FormDescription>
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+            <div className="w-full">
               {sponsors && (
                 <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">
                   <CardContent className="bg-transparent w-full">
@@ -609,37 +647,6 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
                     />
                     <Separator className="my-4" />
                     <ScanPointsConfig form={form} />
-                    <Separator className="my-4" />
-                    <FormField
-                      control={form.control}
-                      name="showWorkSubmissionPopup"
-                      render={({ field }) => (
-                        <FormItem>
-                          <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                id="showWorkSubmissionPopup"
-                                className="mt-1"
-                              />
-                            </FormControl>
-                            <div className="space-y-1">
-                              <FormLabel
-                                htmlFor="showWorkSubmissionPopup"
-                                className="cursor-pointer"
-                              >
-                                Afficher la pop-up de soumission du travail apres achat
-                              </FormLabel>
-                              <FormDescription>
-                                Si cette option est activee, le client verra une confirmation apres paiement pour choisir entre soumettre un travail ou revenir a l'accueil.
-                              </FormDescription>
-                            </div>
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </CardContent>
                 </Card>
               )}

@@ -81,6 +81,7 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
       category: event.categoryId,
       organizer: userId,
       organisation: organisationId,
+      showWorkSubmissionPopup: Boolean(event.showWorkSubmissionPopup),
     });
     revalidatePath(path);
 
@@ -140,6 +141,7 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
         ...event,
         category: event.categoryId,
         sponsors: event.sponsors,
+        showWorkSubmissionPopup: Boolean(event.showWorkSubmissionPopup),
       },
       { new: true }
     );
