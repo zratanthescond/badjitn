@@ -104,6 +104,9 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
             <h1 className="text-2xl md:text-3xl font-syne font-extrabold tracking-tighter text-slate-900 dark:text-white leading-tight break-words max-w-full">
               {event.title}
             </h1>
+            <p className="text-xs md:text-sm font-outfit font-bold uppercase tracking-widest text-primary/80">
+              {event.organisation?.name ? `Hosted by ${event.organisation.name}` : `Organizer: @${event.organizer.username}`}
+            </p>
           </div>
 
           {/* Event Stats */}

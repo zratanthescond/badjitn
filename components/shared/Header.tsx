@@ -82,21 +82,25 @@ const Header = () => {
                     },
                   }}
                 />
-                <MobileNav />
               </div>
             </SignedIn>
 
             <SignedOut>
-              <div className="flex items-center gap-3">
-                <Button
-                  asChild
-                  className="rounded-xl px-6 button bg-primary hover:bg-primary-hover text-white dark:text-elite-charcoal"
-                  size="default"
+              <div className="flex items-center">
+                <Button 
+                  asChild 
+                  variant="elite" 
+                  className="rounded-xl h-[42px] md:h-[46px] px-5 md:px-8 text-sm md:text-base font-syne font-bold transition-transform hover:-translate-y-0.5 flex-shrink-0"
                 >
                   <Link href="/sign-in">{t("login")}</Link>
                 </Button>
               </div>
             </SignedOut>
+
+            {/* Mobile Nav is guaranteed space outside of auth constraints */}
+            <div className="flex md:hidden items-center ml-1">
+              <MobileNav />
+            </div>
           </div>
         </div>
       </div>
