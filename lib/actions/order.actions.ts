@@ -21,9 +21,19 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
 
   try {
     await connectToDatabase();
-    const event = await Event.findById(order.eventId).select("country location");
+    const event = await Event.findById(order.eventId).select(
+      "country location showWorkSubmissionPopup"
+    );
     const price = order.isFree ? 0 : Number(order.price) * 100;
     const currency = getCurrencyCodeByCountry(event?.country, event?.location).toLowerCase();
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SERVER_URL ||
+      process.env.NEXTAUTH_URL ||
+      "http://localhost:3000";
+    const normalizedBaseUrl = baseUrl.replace(/\/$/, "");
+    const successUrl = event?.showWorkSubmissionPopup
+      ? `${normalizedBaseUrl}/events/${order.eventId}/post-purchase`
+      : `${normalizedBaseUrl}/profile`;
 
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -45,8 +55,8 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
         details: JSON.stringify(order.details),
       },
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/profile`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
+      success_url: successUrl,
+      cancel_url: `${normalizedBaseUrl}/events/${order.eventId}`,
     });
 
     redirect(session.url!);
@@ -150,23 +160,24 @@ export async function getOrdersByUser({
     const skipAmount = (Number(page) - 1) * limit;
     const conditions = { buyer: userId };
 
-    const orders = await Order.distinct("event._id")
-      .find(conditions)
+    const orders = await Order.find(conditions)
       .sort({ createdAt: "desc" })
       .skip(skipAmount)
       .limit(limit)
+      .select("event createdAt totalAmount details type")
       .populate({
         path: "event",
         model: Event,
+        select:
+          "title imageUrl startDateTime endDateTime location price isFree country pricePlan category organizer organisation",
         populate: {
           path: "organizer",
           model: User,
-          select: "_id firstName lastName",
+          select: "_id firstName lastName photo",
         },
       });
 
-    const ordersCount =
-      await Order.distinct("event._id").countDocuments(conditions);
+    const ordersCount = await Order.countDocuments(conditions);
 
     return {
       data: JSON.parse(JSON.stringify(orders)),

@@ -121,7 +121,11 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           title: t("success"),
           description: t("orderCreatedSuccess"),
         });
-        router.push("/profile");
+        router.push(
+          event.showWorkSubmissionPopup
+            ? `/events/${event._id}/post-purchase`
+            : "/profile"
+        );
       }
     } catch (error) {
       toast({

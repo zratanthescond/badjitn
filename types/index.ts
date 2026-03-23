@@ -65,6 +65,7 @@ export type CreateEventParams = {
     places?: number;
     scanPoints?: string[];
     organisationId?: string;
+    showWorkSubmissionPopup?: boolean;
   };
   path: string;
 };
@@ -100,6 +101,7 @@ export type UpdateEventParams = {
     places?: number;
     scanPoints?: string[];
     organisationId?: string;
+    showWorkSubmissionPopup?: boolean;
   };
   path: string;
 };
@@ -171,6 +173,7 @@ export type Event = {
   country?: string;
   Sponsors?: string[];
   attendees?: string[];
+  showWorkSubmissionPopup?: boolean;
 };
 
 // ====== CATEGORY PARAMS

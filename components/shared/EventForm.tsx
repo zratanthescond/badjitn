@@ -609,6 +609,37 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
                     />
                     <Separator className="my-4" />
                     <ScanPointsConfig form={form} />
+                    <Separator className="my-4" />
+                    <FormField
+                      control={form.control}
+                      name="showWorkSubmissionPopup"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                id="showWorkSubmissionPopup"
+                                className="mt-1"
+                              />
+                            </FormControl>
+                            <div className="space-y-1">
+                              <FormLabel
+                                htmlFor="showWorkSubmissionPopup"
+                                className="cursor-pointer"
+                              >
+                                Afficher la pop-up de soumission du travail apres achat
+                              </FormLabel>
+                              <FormDescription>
+                                Si cette option est activee, le client verra une confirmation apres paiement pour choisir entre soumettre un travail ou revenir a l'accueil.
+                              </FormDescription>
+                            </div>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </CardContent>
                 </Card>
               )}

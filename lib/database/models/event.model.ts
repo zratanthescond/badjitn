@@ -35,6 +35,7 @@ export interface IEvent extends Document {
   discount: { field: string; value: string; discount: number };
   restricted: boolean;
   scanPoints?: string[];
+  showWorkSubmissionPopup?: boolean;
 }
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
@@ -79,6 +80,7 @@ const EventSchema = new Schema({
     discount: { type: Number },
   },
   restricted: { type: Boolean, default: false },
+  showWorkSubmissionPopup: { type: Boolean, default: false },
 });
 EventSchema.virtual("Sponsors", {
   ref: "Sponsor",

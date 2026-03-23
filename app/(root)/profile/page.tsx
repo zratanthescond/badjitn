@@ -20,12 +20,14 @@ const ProfilePage = async (props: SearchParamProps) => {
   const ordersPage = Number(searchParams?.ordersPage) || 1;
   const eventsPage = Number(searchParams?.eventsPage) || 1;
 
-  const orders = await getOrdersByUser({ userId, page: ordersPage });
+  const [orders, organizedEvents, organisations, t, tCard] = await Promise.all([
+    getOrdersByUser({ userId, page: ordersPage }),
+    getEventsByUser({ userId, page: eventsPage }),
+    getOrganisationsByUser(userId),
+    getTranslations("profile"),
+    getTranslations("organisationCard"),
+  ]);
   const orderedEvents = orders?.data.map((order: IOrder) => order.event) || [];
-  const organizedEvents = await getEventsByUser({ userId, page: eventsPage });
-  const organisations = (await getOrganisationsByUser(userId)) || [];
-  const t = await getTranslations("profile");
-  const tCard = await getTranslations("organisationCard");
 
   // Pre-resolve all translation strings to pass as plain data
   const translations = {

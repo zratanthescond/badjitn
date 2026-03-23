@@ -20,7 +20,6 @@ export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-    //console.log("clerkId", clerkUser?.id);
     // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
     // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
     const clerkId = clerkUser?.id;
@@ -96,6 +95,7 @@ export async function updateCurrentUserProfile(
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
+    // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
     // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
     const clerkId = clerkUser?.id;
 

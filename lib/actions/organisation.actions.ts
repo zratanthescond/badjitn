@@ -138,6 +138,7 @@ export async function getOrganisationsByUser(userId: string) {
         const organisations = await Organisation.find({
             $or: [{ creator: userId }, { admins: userId }],
         })
+            .select("name slug logo description isVerified creator admins createdAt")
             .populate({
                 path: "creator",
                 model: User,

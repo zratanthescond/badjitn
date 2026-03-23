@@ -61,6 +61,7 @@ export const eventFormSchema = z
       .or(z.literal(0))
       .optional(),
     scanPoints: z.array(z.string()).optional().default([]),
+    showWorkSubmissionPopup: z.boolean().optional().default(false),
   })
   .refine(
     (data) => {

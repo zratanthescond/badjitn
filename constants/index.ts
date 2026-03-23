@@ -39,6 +39,7 @@ export const eventDefaultValues = {
   discount: null as { field: string; value: string; discount: number } | null,
   places: 0,
   scanPoints: [] as string[],
+  showWorkSubmissionPopup: false,
 };
 export const borderColors = [
   "#ef4444", // red
