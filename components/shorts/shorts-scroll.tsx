@@ -110,7 +110,7 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
   const toggleDetails = useCallback((videoId: string) => {
     setDetailsVisibility((prev) => ({
       ...prev,
-      [videoId]: !prev[videoId],
+      [videoId]: prev[videoId] === undefined ? false : !prev[videoId],
     }));
   }, []);
 
@@ -157,7 +157,7 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
               <VideoItem
                 key={video._id}
                 video={video}
-                isDetailsVisible={detailsVisibility[video._id] || false}
+                isDetailsVisible={detailsVisibility[video._id] !== false}
                 onToggleDetails={() => toggleDetails(video._id)}
                 onShare={() => handleShare(video._id)}
                 videoRef={(el) => (videoRefs.current[virtualItem.index] = el)}
