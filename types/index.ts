@@ -119,6 +119,10 @@ export type GetAllEventsParams = {
   limit: number;
   page: number;
   date: string;
+  initialData?: {
+    data: any[];
+    totalPages: number;
+  };
 };
 
 export type GetEventsByUserParams = {

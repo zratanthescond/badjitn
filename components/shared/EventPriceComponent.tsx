@@ -96,6 +96,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     }
     return Number.parseFloat(String(finalPrice)).toFixed(2);
   };
+  const isFreeEvent = event.isFree || Number(calculatePriceAsNumber(price)) === 0;
 
   const handleGetPreorder = async () => {
     try {
@@ -166,7 +167,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               {event.title}
             </span>
           </div>
-          <CardTitle className="text-2xl font-bold text-foreground">{t("buyTicket")}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-foreground">
+            {isFreeEvent ? "Obtenir votre billet" : "Acheter votre billet"}
+          </CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6 pb-8 px-8">
@@ -290,67 +293,70 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   discountInfo={discountInfo}
                 />
 
-
-                <SignedIn>
-                  <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    <Button
-                      onClick={() => handleGetPreorder()}
-                      disabled={isProcessing || price == 0}
-                      variant={"outline"}
-                      className="w-full h-14 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-700 hover:to-slate-800 text-white rounded-full font-semibold shadow-lg transition-all duration-300"
-                      onMouseEnter={() => setIsHovered(true)}
-                      onMouseLeave={() => setIsHovered(false)}
-                    >
-                      <div className="flex items-center justify-center gap-3">
-                        {isProcessing ? (
-                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        ) : (
-                          <>
+                {!isFreeEvent && (
+                  <>
+                    <SignedIn>
+                      <motion.div
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        <Button
+                          onClick={() => handleGetPreorder()}
+                          disabled={isProcessing || price == 0}
+                          variant={"outline"}
+                          className="w-full h-14 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-700 hover:to-slate-800 text-white rounded-full font-semibold shadow-lg transition-all duration-300"
+                          onMouseEnter={() => setIsHovered(true)}
+                          onMouseLeave={() => setIsHovered(false)}
+                        >
+                          <div className="flex items-center justify-center gap-3">
+                            {isProcessing ? (
+                              <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                            ) : (
+                              <>
+                                <div className="bg-white/10 p-1.5 rounded-full">
+                                  <ShoppingBag size={16} className="text-white" />
+                                </div>
+                                <span>
+                                  {t("payInDoor")} {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
+                                </span>
+                                <ArrowRight
+                                  size={16}
+                                  className={`transition-transform duration-300 ${isHovered ? "translate-x-1" : ""
+                                    }`}
+                                />
+                              </>
+                            )}
+                          </div>
+                        </Button>
+                      </motion.div>
+                    </SignedIn>
+                    <SignedOut>
+                      <motion.div
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        <Button
+                          onClick={() => router.push("/sign-in")}
+                          disabled={price == 0}
+                          variant={"outline"}
+                          className="w-full h-14 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-700 hover:to-slate-800 text-white rounded-full font-semibold shadow-lg transition-all duration-300"
+                        >
+                          <div className="flex items-center justify-center gap-3">
                             <div className="bg-white/10 p-1.5 rounded-full">
                               <ShoppingBag size={16} className="text-white" />
                             </div>
                             <span>
                               {t("payInDoor")} {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
                             </span>
-                            <ArrowRight
-                              size={16}
-                              className={`transition-transform duration-300 ${isHovered ? "translate-x-1" : ""
-                                }`}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </Button>
-                  </motion.div>
-                </SignedIn>
-                <SignedOut>
-                  <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    <Button
-                      onClick={() => router.push("/sign-in")}
-                      disabled={price == 0}
-                      variant={"outline"}
-                      className="w-full h-14 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-700 hover:to-slate-800 text-white rounded-full font-semibold shadow-lg transition-all duration-300"
-                    >
-                      <div className="flex items-center justify-center gap-3">
-                        <div className="bg-white/10 p-1.5 rounded-full">
-                          <ShoppingBag size={16} className="text-white" />
-                        </div>
-                        <span>
-                          {t("payInDoor")} {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
-                        </span>
-                        <ArrowRight size={16} />
-                      </div>
-                    </Button>
-                  </motion.div>
-                </SignedOut>
+                            <ArrowRight size={16} />
+                          </div>
+                        </Button>
+                      </motion.div>
+                    </SignedOut>
+                  </>
+                )}
 
                 {hasDiscount && (
                   <DiscountDialog
@@ -365,36 +371,40 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   />
                 )}
 
-                <SignedIn>
-                  <BankTransferModal
-                    eventId={event._id}
-                    buyerId={userId || ""}
-                    amount={Number(calculatePriceAsNumber(price))}
-                    currency={currencyCode}
-                    details={event.pricePlan?.filter((item) => checkPlan.includes(item._id!)).map(item => ({
-                      name: item.name,
-                      price: item.price.toString()
-                    })) || []}
-                    requiredUserInfo={requiredUserInfo}
-                    discountInfo={discountInfo}
-                  />
-                </SignedIn>
-                <SignedOut>
-                  <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    <Button
-                      onClick={() => router.push("/sign-in")}
-                      disabled={price == 0}
-                      className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
-                    >
-                      <Landmark className="mr-2 h-5 w-5" />
-                      Virement Bancaire {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
-                    </Button>
-                  </motion.div>
-                </SignedOut>
+                {!isFreeEvent && (
+                  <>
+                    <SignedIn>
+                      <BankTransferModal
+                        eventId={event._id}
+                        buyerId={userId || ""}
+                        amount={Number(calculatePriceAsNumber(price))}
+                        currency={currencyCode}
+                        details={event.pricePlan?.filter((item) => checkPlan.includes(item._id!)).map(item => ({
+                          name: item.name,
+                          price: item.price.toString()
+                        })) || []}
+                        requiredUserInfo={requiredUserInfo}
+                        discountInfo={discountInfo}
+                      />
+                    </SignedIn>
+                    <SignedOut>
+                      <motion.div
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        <Button
+                          onClick={() => router.push("/sign-in")}
+                          disabled={price == 0}
+                          className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
+                        >
+                          <Landmark className="mr-2 h-5 w-5" />
+                          Virement Bancaire {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
+                        </Button>
+                      </motion.div>
+                    </SignedOut>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -402,11 +412,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           <div className="pt-2 flex items-center justify-center gap-4 text-sm pb-2">
             <div className="flex items-center glass gap-2 bg-muted/50 px-4 py-2 rounded-full border border-border/60">
               <CheckCircle size={14} className="text-green-500" />
-              <span className="text-foreground font-bold">{t("secureCheckout")}</span>
+              <span className="text-foreground font-bold">
+                {isFreeEvent ? "Inscription gratuite" : t("secureCheckout")}
+              </span>
             </div>
             <div className="flex items-center glass gap-2 bg-muted/50 px-4 py-2 rounded-full border border-border/60">
               <CheckCircle size={14} className="text-green-500" />
-              <span className="text-foreground font-bold">{t("instantConfirmation")}</span>
+              <span className="text-foreground font-bold">
+                {isFreeEvent ? "Billet envoye instantanement" : t("instantConfirmation")}
+              </span>
             </div>
           </div>
         </CardContent>

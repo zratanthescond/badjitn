@@ -19,7 +19,5 @@ export async function GET(req: Request) {
     limit: 30,
     date,
   });
-  console.log(result);
-  console.log("result", result);
   return NextResponse.json(result, { status: 200 });
 }

@@ -23,11 +23,13 @@ const useGetAllEvents = ({
   category,
   query,
   date,
+  initialData,
 }: GetAllEventsParams) => {
   return useQuery({
     queryKey: ["events", page, limit, country, category, query, date],
     queryFn: () =>
       getAllEvents({ page, limit, country, category, query, date }),
+    initialData,
   });
 };
 export { useGetAllEvents, getAllEvents };

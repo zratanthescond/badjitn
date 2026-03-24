@@ -1,50 +1,15 @@
 "use client";
 import { IEvent } from "@/lib/database/models/event.model";
 import { formatDateTime, getLastTwoWords } from "@/lib/utils";
-import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
-import { DeleteConfirmation } from "./DeleteConfirmation";
-import HLSPlayer from "./phone/HlsPlayer";
+import React, { useMemo } from "react";
 import HomePostContainer from "./HomePostContainer";
-import { useUser } from "@/lib/actions/user.actions";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
-import { PiHandCoins } from "react-icons/pi";
-import { FaHandshake } from "react-icons/fa";
-import SponsorComponent from "../SopnsorComponent";
-import ContributorSelection from "../HostContrebuer";
-import QRCode from "react-qr-code";
 import {
   Clock,
-  CogIcon,
-  Flag,
   MapPin,
-  QrCode,
-  Radio,
-  Timer,
-  User,
-  Watch,
 } from "lucide-react";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { classNames } from "uploadthing/client";
 import { Badge } from "../ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
 import { EventControls } from "./EventsControls";
-import { Separator } from "../ui/separator";
-import { FaEllipsis, FaEllipsisVertical } from "react-icons/fa6";
 import ReportComponent from "./ReportComponent";
 import TicketControleDropdown from "./TicketControleDropdown";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -55,24 +20,18 @@ type CardProps = {
   hasOrderLink?: boolean;
   hidePrice?: boolean;
   userPhoto?: string;
+  currentUserId?: string;
 };
 
-const Card = ({ event, hasOrderLink, hidePrice, userPhoto }: CardProps) => {
+const Card = ({
+  event,
+  hasOrderLink,
+  hidePrice,
+  userPhoto,
+  currentUserId,
+}: CardProps) => {
   const t = useTranslations("Card");
-  // const isEventCreator = userId.toString() === event.organizer._id.toString();
-
   const sponsored = event && event.Sponsors && event.Sponsors.length > 0;
-  const [userId, setUserId] = useState<string>();
-  const getUserId = async () => {
-    const session = await useUser();
-    // alert(JSON.stringify(session));
-    setUserId(session._id);
-  };
-  useEffect(() => {
-    getUserId();
-  }, []);
-  // const isEventCreator = userId && event.organizer._id.toString() === userId.toString();
-
   const locale = useLocale();
 
   const formattedDateParts =
@@ -92,9 +51,9 @@ const Card = ({ event, hasOrderLink, hidePrice, userPhoto }: CardProps) => {
 
   return (
     <div className="group relative w-full max-w-[400px] flex-col overflow-hidden rounded-2xl glass-panel shadow-elite-soft transition-all duration-500 ease-elite-spring hover:-translate-y-2 hover:shadow-elite-glow aspect-[9/16] md:min-h-[400px]">
-      {userId && !hidePrice && !hasOrderLink && (
+      {currentUserId && !hidePrice && !hasOrderLink && (
         <div className="absolute top-3 left-3 z-10 transition-transform duration-300 group-hover:scale-110">
-          <ReportComponent eventId={event._id} userId={userId.toString()} />
+          <ReportComponent eventId={event._id} userId={currentUserId} />
         </div>
       )}
       <Link
@@ -202,48 +161,12 @@ const Card = ({ event, hasOrderLink, hidePrice, userPhoto }: CardProps) => {
         </div>
       </Link>
 
-      {hidePrice && userId && event && (
+      {hidePrice && currentUserId && event && (
         <TicketControleDropdown
           eventId={event._id.toString()}
-          userId={userId.toString()}
+          userId={currentUserId}
         />
-
-        // <AlertDialog>
-        //   <AlertDialogTrigger className="absolute top-2 left-2 glass p-3 rounded-lg text-white flex flex-row gap-2">
-        //     <p>details</p> <QrCode />
-        //   </AlertDialogTrigger>
-        //   <AlertDialogContent>
-        //     <QRCode value={event._id} />
-        //     <AlertDialogCancel>Return</AlertDialogCancel>
-        //   </AlertDialogContent>
-        // </AlertDialog>
       )}
-      {/* <div className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4">
-        {!hidePrice && (
-          <div className="flex gap-2">
-            <span className="p-semibold-14 w-min rounded-full bg-pink-500 px-4 py-1 text-green-60">
-              {event.isFree ? "FREE" : `$${event.price}`}
-            </span>
-            <p className="p-semibold-14 w-min rounded-full bg-primary-500 px-4 py-1  line-clamp-1">
-              {event.category.name}
-            </p>
-          </div>
-        )}
-
-        <p className="p-medium-16 p-medium-18">
-          {formatDateTime(event.startDateTime).dateTime}
-        </p>
-
-        <Link href={`/events/${event._id}`}>
-          <p className="p-medium-16 md:p-medium-20 line-clamp-2 flex-1 text-black">
-            {event.title}
-          </p>
-        </Link>
-
-        <div className="flex-between w-full">
-          <p className="p-medium-14 md:p-medium-16 ">
-            {event.organizer.firstName} {event.organizer.lastName}
-          </p>*/}
 
       {hasOrderLink && (
         <div className="flex flex-col gap-2 absolute left-2 top-2 p-3 justify-start items-start">
@@ -251,8 +174,6 @@ const Card = ({ event, hasOrderLink, hidePrice, userPhoto }: CardProps) => {
         </div>
       )}
     </div>
-    //   </div>
-    // </div>
   );
 };
 

@@ -66,7 +66,11 @@ const CheckoutButton = ({
                   <div className="bg-primary-foreground/20 p-1.5 rounded-full">
                     <Ticket size={16} className="text-primary-foreground" />
                   </div>
-                  <Link href="/sign-in">Pay now {formatPriceByCountry(price, event.country)}</Link>
+                  <Link href="/sign-in">
+                    {event.isFree
+                      ? "Get Ticket"
+                      : `Pay now ${formatPriceByCountry(price, event.country)}`}
+                  </Link>
                 </div>
               </Button>
             </motion.div>

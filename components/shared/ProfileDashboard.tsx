@@ -526,6 +526,7 @@ export default function ProfileDashboard({
                                         limit={3}
                                         page={1}
                                         totalPages={1}
+                                        currentUserId={userId}
                                     />
                                 </div>
                             )}
@@ -723,6 +724,7 @@ export default function ProfileDashboard({
                                 limit={3}
                                 page={ordersPage}
                                 urlParamName="ordersPage"
+                                currentUserId={userId}
                                 totalPages={ordersTotalPages}
                             />
                         </div>
@@ -753,6 +755,7 @@ export default function ProfileDashboard({
                                 limit={3}
                                 page={eventsPage}
                                 urlParamName="eventsPage"
+                                currentUserId={userId}
                                 totalPages={eventsTotalPages}
                             />
                         </div>
