@@ -22,6 +22,10 @@ export default async function Home(props: SearchParamProps) {
   const category = (searchParams?.category as string) || "";
   const country = (searchParams?.country as string) || "";
   const date = (searchParams?.date as string) || "";
+  const user = await useUser();
+  const currentUserId = user?._id?.toString();
+  const userPhoto = user?.photo;
+
   const initialEvents =
     page === 1 && !searchText && !category && !country && !date
       ? await getAllEvents({
@@ -63,7 +67,11 @@ export default async function Home(props: SearchParamProps) {
 
         {/* Content Section */}
         <div className="animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-elite-spring">
-          <CollectionWrapper initialData={initialEvents} />
+          <CollectionWrapper 
+            initialData={initialEvents} 
+            currentUserId={currentUserId}
+            userPhoto={userPhoto}
+          />
         </div>
       </section>
     </main>

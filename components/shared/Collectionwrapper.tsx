@@ -8,8 +8,12 @@ import { useTranslations } from "next-intl";
 
 export default function CollectionWrapper({
   initialData,
+  currentUserId,
+  userPhoto,
 }: {
   initialData?: { data: any[]; totalPages: number };
+  currentUserId?: string;
+  userPhoto?: string;
 }) {
   const searchParams = useSearchParams();
 
@@ -54,6 +58,8 @@ export default function CollectionWrapper({
       limit={30}
       page={page}
       totalPages={events?.totalPages}
+      currentUserId={currentUserId}
+      userPhoto={userPhoto}
     />
   );
 }
