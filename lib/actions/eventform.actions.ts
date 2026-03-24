@@ -300,7 +300,7 @@ export async function sendFormInvitations(params: SendInvitationsParams) {
         for (const email of allEmails) {
             try {
                 await transporter.sendMail({
-                    from: '"BadjiTn" <mail@badji.tn>',
+                    from: '"badgiTn" <mail@badgi.tn>',
                     to: email,
                     subject: `You're invited to register for: ${formTitle}`,
                     html: `
@@ -327,7 +327,7 @@ export async function sendFormInvitations(params: SendInvitationsParams) {
               </div>
               <div style="background: #f9fafb; padding: 20px 30px; border-radius: 0 0 16px 16px; border: 1px solid #e5e7eb; border-top: none; text-align: center;">
                 <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                  Sent via <strong>Badji.tn</strong> — Event Management Platform
+                  Sent via <strong>badgi.tn</strong> — Event Management Platform
                 </p>
               </div>
             </div>

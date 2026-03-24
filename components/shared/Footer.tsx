@@ -65,19 +65,19 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { key: "facebook", href: "https://facebook.com/badjitn", icon: Facebook },
-    { key: "twitter", href: "https://twitter.com/badjitn", icon: Twitter },
+    { key: "facebook", href: "https://facebook.com/badgitn", icon: Facebook },
+    { key: "twitter", href: "https://twitter.com/badgitn", icon: Twitter },
     {
       key: "instagram",
-      href: "https://instagram.com/badjitn",
+      href: "https://instagram.com/badgitn",
       icon: Instagram,
     },
     {
       key: "linkedin",
-      href: "https://linkedin.com/company/badjitn",
+      href: "https://linkedin.com/company/badgitn",
       icon: Linkedin,
     },
-    { key: "youtube", href: "https://youtube.com/@badjitn", icon: Youtube },
+    { key: "youtube", href: "https://youtube.com/@badgitn", icon: Youtube },
   ];
 
   return (
@@ -111,14 +111,14 @@ const Footer = () => {
                 src="/assets/images/logo.png"
                 width={140}
                 height={42}
-                alt="BadjiTn logo"
+                alt="badgiTn logo"
                 className="object-cover hidden dark:block"
               />
               <Image
                 src="/assets/images/logoDark.png"
                 width={140}
                 height={42}
-                alt="BadjiTn logo"
+                alt="badgiTn logo"
                 className="object-cover block dark:hidden"
               />
             </Link>
@@ -131,7 +131,7 @@ const Footer = () => {
                 <div className="flex-center w-8 h-8 rounded-lg bg-white/5 border border-white/10">
                   <Mail className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-medium">contact@badji.net</span>
+                <span className="text-sm font-medium">contact@badgi.net</span>
               </div>
               <div className="flex items-center gap-3 text-slate-500 transition-colors hover:text-slate-900 dark:hover:text-white">
                 <div className="flex-center w-8 h-8 rounded-lg bg-white/5 border border-white/10">

@@ -67,7 +67,7 @@ export default function BlogPage() {
     {
       id: 5,
       title: "Our Journey to Series A",
-      excerpt: "Reflecting on our growth journey and what's next for Badji.net.",
+      excerpt: "Reflecting on our growth journey and what's next for badgi.net.",
       category: "company",
       author: "Ahmed Ben Ali",
       date: "2023-12-28",

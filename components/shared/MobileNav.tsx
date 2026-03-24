@@ -32,14 +32,14 @@ const MobileNav = () => {
                 src="/assets/images/logo.png"
                 width={128}
                 height={38}
-                alt="BadjiTn logo"
+                alt="badgiTn logo"
                 className="object-cover hidden dark:block"
               />
               <Image
                 src="/assets/images/logoDark.png"
                 width={128}
                 height={38}
-                alt="BadjiTn logo"
+                alt="badgiTn logo"
                 className="object-cover block dark:hidden"
               />
             </Link>

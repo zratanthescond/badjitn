@@ -200,7 +200,7 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
           ) : event ? (
             <div ref={reportRef} className="report-root rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 text-slate-900">
               <div className="text-center border-b-[3px] border-blue-600 pb-5 mb-6">
-                <img src="/assets/images/logoDark.png" alt="Badji" className="h-12 w-auto object-contain mx-auto mb-2" />
+                <img src="/assets/images/logoDark.png" alt="badgi" className="h-12 w-auto object-contain mx-auto mb-2" />
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">{event.title}</h1>
                 <p className="text-sm text-slate-500">{t("generatedOn")} {new Date().toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
               </div>
@@ -422,8 +422,8 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
               )}
 
               <div className="text-center mt-8 pt-4 border-t-2 border-slate-200 text-xs text-slate-400">
-                <img src="/assets/images/logoDark.png" alt="Badji" className="h-7 w-auto object-contain mx-auto mb-2" />
-                <p>{t("footer")} - {new Date().getFullYear()} Badji.net</p>
+                <img src="/assets/images/logoDark.png" alt="badgi" className="h-7 w-auto object-contain mx-auto mb-2" />
+                <p>{t("footer")} - {new Date().getFullYear()} badgi.net</p>
               </div>
             </div>
           ) : (

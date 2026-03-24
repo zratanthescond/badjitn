@@ -28,21 +28,21 @@ export default function CommunityPage() {
       key: "discord",
       icon: Discord,
       color: "from-indigo-500 to-purple-500",
-      href: "https://discord.gg/badjitn",
+      href: "https://discord.gg/badgitn",
       members: "5.2K",
     },
     {
       key: "github",
       icon: Github,
       color: "from-gray-500 to-slate-500",
-      href: "https://github.com/badjitn",
+      href: "https://github.com/badgitn",
       members: "2.1K",
     },
     {
       key: "twitter",
       icon: Twitter,
       color: "from-blue-500 to-cyan-500",
-      href: "https://twitter.com/badjitn",
+      href: "https://twitter.com/badgitn",
       members: "8.7K",
     },
     {
@@ -63,7 +63,7 @@ export default function CommunityPage() {
       attendees: 150,
     },
     {
-      title: "Badji.net Developer Meetup",
+      title: "badgi.net Developer Meetup",
       date: "2024-02-20",
       time: "18:00 CET",
       type: "in-person",
@@ -132,7 +132,7 @@ export default function CommunityPage() {
                 className={`bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-full ${isRTL ? "font-arabic" : ""}`}
                 asChild
               >
-                <Link href="https://discord.gg/badjitn" target="_blank">
+                <Link href="https://discord.gg/badgitn" target="_blank">
                   {t("hero.cta.join")}
                 </Link>
               </Button>
@@ -310,7 +310,7 @@ export default function CommunityPage() {
                   className={`bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-full ${isRTL ? "font-arabic" : ""}`}
                   asChild
                 >
-                  <Link href="https://github.com/badjitn" target="_blank">
+                  <Link href="https://github.com/badgitn" target="_blank">
                     {t("cta.contribute")}
                   </Link>
                 </Button>

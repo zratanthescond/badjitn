@@ -195,7 +195,7 @@ export default function GDPRPage() {
               </p>
               <div className={`space-y-4 mb-8 text-left max-w-md mx-auto ${isRTL ? "text-right font-arabic" : ""}`}>
                 <p>
-                  <strong>{t("exercise.email")}:</strong> privacy@badji.net
+                  <strong>{t("exercise.email")}:</strong> privacy@badgi.net
                 </p>
                 <p>
                   <strong>{t("exercise.response")}:</strong> {t("exercise.responseTime")}
