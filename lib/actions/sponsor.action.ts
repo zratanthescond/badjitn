@@ -65,6 +65,7 @@ export async function getSponsors(
   try {
     const conditions: any = {};
     if (userId) {
+      conditions.creator = userId;
     }
     if (eventId) {
       conditions.eventId = eventId;
@@ -106,6 +107,56 @@ export async function getSponsorByIds({
     await connectToDatabase();
     const sponsors = await UserSponsor.find({ _id: { $in: sponsorIds } });
     return { success: true, data: JSON.parse(JSON.stringify(sponsors)) };
+  } catch (error) {
+    return { success: false, message: (error as Error).message };
+  }
+}
+
+export async function updateSponsor(sponsorId: string, formData: FormData) {
+  try {
+    await connectToDatabase();
+
+    const name = formData.get("name") as string;
+    const tier = formData.get("tier") as string;
+    const website = formData.get("website") as string;
+    const file = formData.get("logo"); // Optional
+
+    const updateData: any = {
+      name,
+      tier,
+      website,
+    };
+
+    if (file && file instanceof File && file.size > 0) {
+      const fileExtension = path.extname(file.name);
+      const fileName = `${uuidv4()}${fileExtension}`;
+      const uploadDir = path.join(process.cwd(), "public/uploads");
+
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const filePath = path.join(uploadDir, fileName);
+      fs.writeFileSync(filePath, buffer);
+
+      updateData.logo = `/uploads/${fileName}`;
+    }
+
+    const updatedSponsor = await UserSponsor.findByIdAndUpdate(
+      sponsorId,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedSponsor) {
+      throw new Error("Sponsor not found");
+    }
+
+    revalidatePath("/profile");
+
+    return { success: true, message: "Sponsor updated successfully!" };
   } catch (error) {
     return { success: false, message: (error as Error).message };
   }

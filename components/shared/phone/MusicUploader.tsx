@@ -1,22 +1,22 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { useUploadMusic } from "@/hooks/useMusicUploader";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 import {
   ListRestartIcon,
   LoaderIcon,
   Music,
   Pause,
   Play,
+  Search,
   Trash,
   UploadCloud,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { generateClientDropzoneAccept } from "uploadthing/client";
 
 const MusicUploader = ({
   userId,
@@ -40,9 +40,9 @@ const MusicUploader = ({
   );
 
   const handleDrop = (acceptedFiles: File[]) => {
-    // Logic for handling the dropped files
     setUploadedFiles(acceptedFiles[0]);
   };
+
   const handlePlayPause = () => {
     if (isPlaying) {
       audioRef.current?.pause();
@@ -52,24 +52,19 @@ const MusicUploader = ({
       setIsPlaying(true);
     }
   };
+
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
-      console.log(audioRef.current.duration);
     }
   };
 
-  // Function to format time in minutes and seconds
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: handleDrop,
-    accept: generateClientDropzoneAccept(["audio/*"]),
-    multiple: false,
-  });
+
   useEffect(() => {
     if (uploadedFiles) {
       if (audioRef.current) {
@@ -77,6 +72,7 @@ const MusicUploader = ({
       }
     }
   }, [uploadedFiles]);
+
   useEffect(() => {
     if (data && isSuccess) {
       setUploadedFiles(undefined);
@@ -93,99 +89,128 @@ const MusicUploader = ({
       });
     }
   }, [data, isSuccess, error]);
-  const t = useTranslations("videoEditor");
-  const handleSearchMusic = (query: string) => {
-    // Logic to handle search musi
 
-    console.log("Search query:", query);
-    setTimeout(() => {
-      if (query.trim().length > 2) {
-        setSearchQuery(query);
-      } else {
-        setSearchQuery("");
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearch.trim().length > 2 || localSearch === "") {
+        setSearchQuery(localSearch);
       }
-    }, 1000);
-  };
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [localSearch, setSearchQuery]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: handleDrop,
+    accept: { "audio/*": [] },
+    multiple: false,
+  });
+
+  const t = useTranslations("videoEditor");
 
   return (
-    <div className="flex flex-col items-center w-full rounded-lg ">
+    <div className="w-full flex flex-col gap-4">
       {uploadedFiles ? (
-        <div className="flex flex-row justify-center items-center gap-4  backdrop:blur backdrop-brightness-200 rounded-xl ">
-          <div className="flex flex-row justify-center items-center rounded-lg bg-pink-500 p-1 m-1">
-            <Music className="w-8 h-8" color="white" />
+        <div 
+          className="flex flex-col sm:flex-row items-center gap-4 bg-white dark:bg-slate-800 border border-foreground/10 dark:border-white/10 p-4 rounded-2xl shadow-xl"
+        >
+          <div className="flex items-center gap-4 w-full sm:w-auto overflow-hidden">
+            <div className="relative h-14 w-14 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg shadow-pink-500/20 shrink-0">
+              <Music className="w-7 h-7 text-white" />
+              {isPlaying && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-full h-full border-4 border-white/30 rounded-xl animate-ping" />
+                </div>
+              )}
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <p className="text-foreground dark:text-white font-bold text-sm truncate uppercase tracking-tight">
+                {uploadedFiles.name}
+              </p>
+              <p className="text-muted-foreground dark:text-white/40 text-xs font-medium font-syne">
+                {formatTime(duration)} • Ready to upload
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col justify-center items-start">
-            <p>{uploadedFiles.name.substring(0, 25) + " ... "}</p>
-            <Separator color="slate-800" className="my-1 bg-slate-800" />
-            <p>{formatTime(duration)}</p>
-          </div>
-          <div className="flex flex-row justify-center items-center rounded-lg bg-pink-500 p-1 m-1">
+
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:justify-start">
             <Button
-              className="w-8 h-8  p-0 glass"
-              variant="outline"
+              size="icon"
+              variant="secondary"
+              className="h-10 w-10 shrink-0 rounded-full bg-foreground/10 dark:bg-white/10 hover:bg-foreground/20 dark:hover:bg-white/20 border-0 text-foreground dark:text-white"
               onClick={handlePlayPause}
             >
-              {!isPlaying ? <Play color="white" /> : <Pause color="white" />}
+              {isPlaying ? <Pause className="h-4 w-4 fill-white" /> : <Play className="h-4 w-4 fill-white ml-0.5" />}
             </Button>
-          </div>
-          <div className="flex flex-row justify-center items-center rounded-lg bg-pink-500 p-1 m-1">
+
             <Button
-              variant="outline"
-              className="w-8 h-8  p-0 glass"
+              size="icon"
+              variant="destructive"
+              className="h-10 w-10 rounded-full bg-rose-500/20 hover:bg-rose-500/30 text-rose-500 border-0"
               onClick={() => setUploadedFiles(undefined)}
             >
-              <Trash />
+              <Trash className="h-4 w-4" />
             </Button>
-          </div>
-          <div className="flex flex-row justify-center items-center rounded-lg bg-pink-500 p-1 m-1">
+
             <Button
-              variant="outline"
-              className="h-8 p-0 glass"
               disabled={isPending}
               onClick={() => mutate()}
+              className="h-10 px-4 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-pink-500/20"
             >
               {isPending ? (
-                <LoaderIcon color="white" className="animate-spin" />
+                <LoaderIcon className="h-4 w-4 animate-spin" />
               ) : (
-                <>
-                  <UploadCloud color="white" className="" />
-                  {t("upload")}
-                </>
+                <div className="flex items-center gap-2">
+                  <UploadCloud className="h-4 w-4" />
+                  <span>{t("upload")}</span>
+                </div>
               )}
             </Button>
           </div>
           <audio ref={audioRef} onLoadedMetadata={handleLoadedMetadata} />
         </div>
       ) : (
-        <div className="flex !w-full flex-row items-center justify-between gap-2 ">
-          <Button
-            variant="outline"
-            size={"icon"}
-            className="flex bg-pink-500 flex-row items-center   rounded-lg"
-            onClick={() => refetch()}
-          >
-            <ListRestartIcon color="white" className="w-8 h-8" size={35} />
-          </Button>
-          <Input
-            type="text"
-            onChange={(e) => handleSearchMusic(e.target.value)}
-            placeholder={t("searchMusic")}
-            className="w-1/4 rounded-full hover:w-2/4 glass bg-card-foreground/50 text-card border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <div {...getRootProps()} className="flex  bg-pink-500 p-1 rounded-lg">
-            <input {...getInputProps()} />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full">
+          {/* Search Area */}
+          <div className="relative flex-1 group">
+            <input
+              type="text"
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              placeholder="Search tracks, artists..."
+              className="w-full h-12 pl-12 pr-4 rounded-2xl bg-muted dark:bg-slate-800 border border-foreground/10 dark:border-white/10 text-foreground dark:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:bg-muted/80 dark:focus:bg-white/10 transition-all placeholder:text-foreground/20 dark:placeholder:text-white/20"
+            />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-foreground/20 dark:text-white/20 group-focus-within:text-pink-500 transition-colors" />
+          </div>
 
-            {isDragActive ? (
-              <p>Drop the file here</p>
-            ) : (
-              <Button
-                variant="outline"
-                className="flex glass  flex-row items-center justify-center border-dashed "
-              >
-                {t("addYourMusic")}
-                <FaCloudUploadAlt className="w-8 h-8 ml-2" />
-              </Button>
-            )}
+          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-between sm:justify-start">
+             <Button
+               variant="secondary"
+               size="icon"
+               className="h-10 w-10 sm:h-12 sm:w-12 shrink-0 rounded-2xl bg-muted dark:bg-slate-800 border border-foreground/10 dark:border-white/10 text-foreground dark:text-white transition-all"
+               onClick={() => refetch()}
+             >
+               <ListRestartIcon className="h-5 w-5" />
+             </Button>
+
+             <div {...getRootProps()} className="flex-1 sm:flex-none min-w-0">
+                <input {...getInputProps()} />
+                <Button
+                  variant="outline"
+                  className={`h-10 sm:h-12 w-full sm:w-auto px-3 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-xs uppercase tracking-widest transition-all border-dashed border-2 ${
+                    isDragActive 
+                      ? "bg-pink-500 text-white border-pink-400" 
+                      : "bg-muted dark:bg-slate-800 text-foreground/60 dark:text-white/60 border-foreground/10 dark:border-white/10 hover:border-pink-500/50"
+                  }`}
+                >
+                  <FaCloudUploadAlt className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 shrink-0" />
+                  <span className="truncate max-w-[70px] xs:max-w-[100px] sm:max-w-none">{t("addYourMusic")}</span>
+                </Button>
+             </div>
           </div>
         </div>
       )}

@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     artist: data.artist,
     album: data.album || "no album",
     path: body.outputPath,
-    image: data.thumbnail,
+    image: data.thumbnail || "",
     wave: data.wave,
     addedBy: data.addedBy,
   });

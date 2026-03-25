@@ -40,9 +40,11 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
       const categoryList = await getAllCategories();
 
       if (categoryList) {
-        const sortedList = (categoryList as ICategory[]).sort((a, b) => 
-          t(a.name).localeCompare(t(b.name))
-        );
+        const sortedList = (categoryList as ICategory[]).sort((a, b) => {
+          const nameA = t.has(a.name) ? t(a.name) : a.name;
+          const nameB = t.has(b.name) ? t(b.name) : b.name;
+          return nameA.localeCompare(nameB);
+        });
         setCategories(sortedList);
       }
     };
@@ -53,7 +55,7 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
   return (
     <Select onValueChange={onChangeHandler} defaultValue={value}>
       <SelectTrigger className="select-field">
-        <SelectValue placeholder={t("category")} />
+        <SelectValue placeholder={t.has("category") ? t("category") : "Category"} />
       </SelectTrigger>
       <SelectContent>
         {categories.length > 0 &&
@@ -63,7 +65,7 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
               value={category._id}
               className="select-item p-regular-14"
             >
-              {t(category.name)}
+              {t.has(category.name) ? t(category.name) : category.name}
             </SelectItem>
           ))}
       </SelectContent>

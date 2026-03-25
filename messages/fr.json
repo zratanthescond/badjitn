@@ -41,8 +41,10 @@
       "saveSuccess": "Formulaire sauvegardé avec succès !"
     },
     "preview": {
+      "disclaimer": "Ceci est un aperçu de la façon dont les champs apparaîtront aux participants.",
       "noFields": "aucun champ ajouté pour le moment",
       "selectOption": "Sélectionner une option",
+      "subtitle": "Aperçu de l'Inscription des Participants",
       "title": "Aperçu du Formulaire"
     },
     "title": "Constructeur de Formulaires Personnalisé",
@@ -145,11 +147,15 @@
   "SponsorForm": {
     "actions": {
       "addSponsor": "Ajouter un Sponsor",
+      "editSponsor": "Modifier le Sponsor",
       "cancel": "Annuler",
       "reset": "Réinitialiser le Formulaire",
-      "submitting": "Ajout du sponsor en cours..."
+      "submitting": "Ajout du sponsor en cours...",
+      "updateSponsor": "Mettre à jour le Sponsor"
     },
-    "description": "Saisissez les détails du nouveau sponsor pour l'ajouter à votre plateforme.",
+    "description": "Saisissez les détails du sponsor pour continuer.",
+    "title": "Ajouter un Nouveau Sponsor",
+    "titleEdit": "Modifier les Détails du Sponsor",
     "fields": {
       "logo": {
         "chooseFile": "Choisir un Fichier",
@@ -188,9 +194,12 @@
       "processing": "Traitement de votre demande...",
       "success": "Succès",
       "successDescription": "Sponsor ajouté avec succès ! Il apparaîtra dans votre liste de sponsors.",
+      "updateSuccess": "Succès",
+      "updateSuccessDescription": "Sponsor mis à jour avec succès !",
+      "updateError": "Erreur",
+      "updateErrorDescription": "Échec de la mise à jour du sponsor. Veuillez réessayer.",
       "uploading": "Téléchargement des fichiers..."
     },
-    "title": "Ajouter un Nouveau Sponsor",
     "validation": {
       "fileRequired": "Veuillez télécharger un fichier de logo",
       "fileSize": "La taille du fichier doit être inférieure à 1MB",
@@ -1548,7 +1557,11 @@
     "selectYourSponsors": "Sélectionnez vos sponsors",
     "startDate": "Date de début",
     "submitting": "Envoi en cours...",
-    "url": "Lien de lévenement"
+    "url": "Lien de lévenement",
+    "workSubmission": {
+      "title": "Afficher la pop-up de soumission du travail après achat",
+      "description": "Si cette option est activée, le client verra une confirmation après participation pour choisir entre soumettre un travail ou revenir à l'accueil."
+    }
   },
   "eventPrice": {
     "availablePlaces": "Places Disponibles",
@@ -2739,10 +2752,12 @@
   "profile": {
     "addCustomRequiredInfo": "Ajouter des informations requises personnalisées",
     "emptyCustomFields": "Aucune information requise personnalisée n'a encore été ajoutée.",
-    "addSponsor": "Ajouter un Sponsor",
-    "allSponsors": "Tous les Sponsors",
     "createNewEvent": "Créer un nouvel événement",
     "eventsTabDescription": "Gérez et voyez tous vos événements organisés",
+    "emptySponsors": {
+        "title": "Aucun Sponsor pour le Moment",
+        "description": "Commencez par ajouter votre premier sponsor d'événement à votre profil."
+    },
     "customRequiredInfo": "Informations requises personnalisées",
     "customFieldsDescription": "Gérez les informations requises pour vos événements",
     "emptyEventsCreated": {
@@ -2761,6 +2776,10 @@
     "exploreMoreEvents": "Explorer plus d'événements",
     "mySponsors": "Mes Sponsors",
     "sponsorsDescription": "Gérez vos sponsors d'événements et leur visibilité",
+    "addSponsor": "Ajouter un Sponsor",
+    "editSponsor": "Modifier le Sponsor",
+    "deleteSponsor": "Supprimer le Sponsor",
+    "deleteSponsorConfirm": "Êtes-vous sûr de vouloir supprimer ce sponsor ? Cette action est irréversible.",
     "myTickets": "Mes Tickets",
     "settings": {
       "title": "Paramètres du profil",
@@ -2785,7 +2804,9 @@
         "updatedTitle": "Profil mis à jour",
         "updatedDescription": "Les paramètres de votre profil ont été enregistrés.",
         "errorTitle": "Échec de la mise à jour",
-        "errorDescription": "Impossible d'enregistrer les paramètres du profil."
+        "errorDescription": "Impossible d'enregistrer les paramètres du profil.",
+        "deleteSponsorSuccess": "Sponsor supprimé avec succès",
+        "deleteSponsorError": "Échec de la suppression du sponsor"
       }
     },
     "allTickets": "Tous les billets",

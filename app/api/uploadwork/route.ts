@@ -21,39 +21,52 @@ export const POST = async (req: Request) => {
   const formData = await req.formData();
   const body = Object.fromEntries(formData);
   const file = (body.file as Blob) || null;
+  const fileUrl = (body.fileUrl as string) || "";
   const eventId = (body.eventId as string) || "";
   const userId = (body.userId as string) || "";
   const workId = (body.workId as string) || "";
 
-  if (file && (file as File).size > 0) {
-    const fileName = (body.file as File).name;
-    if (!isImageFile(fileName)) {
-      return NextResponse.json(
-        { success: false, error: "Only image files are allowed (jpg, png, gif, webp)." },
-        { status: 400 }
-      );
+  if (fileUrl || (file && (file as File).size > 0)) {
+    let finalFileUrl = fileUrl;
+
+    if (!fileUrl && file) {
+      const fileName = (body.file as File).name;
+      if (!isImageFile(fileName)) {
+        return NextResponse.json(
+          { success: false, error: "Only image files are allowed (jpg, png, gif, webp)." },
+          { status: 400 }
+        );
+      }
+      const buffer = Buffer.from(await (file as Blob).arrayBuffer());
+      const fileExtension = path.extname(fileName);
+      const newFileName = `${path.basename(fileName, fileExtension)}_${uuidv4()}${fileExtension}`;
+      if (!fs.existsSync(UPLOAD_DIR)) {
+        fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+      }
+      try {
+        fs.writeFileSync(path.resolve(UPLOAD_DIR, newFileName), buffer);
+        finalFileUrl = `/uploads/${newFileName}`;
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Upload failed";
+        return NextResponse.json({ success: false, error: message }, { status: 400 });
+      }
     }
-    const buffer = Buffer.from(await (file as Blob).arrayBuffer());
-    const fileExtension = path.extname(fileName);
-    const newFileName = `${path.basename(fileName, fileExtension)}_${uuidv4()}${fileExtension}`;
-    if (!fs.existsSync(UPLOAD_DIR)) {
-      fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-    }
+
     try {
-      fs.writeFileSync(path.resolve(UPLOAD_DIR, newFileName), buffer);
       await appendWorkSubmissionImage({
         workId,
         eventId,
         userId,
-        fileUrl: `/uploads/${newFileName}`,
+        fileUrl: finalFileUrl,
       });
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Upload failed";
+      const message = err instanceof Error ? err.message : "Database update failed";
       return NextResponse.json({ success: false, error: message }, { status: 400 });
     }
+
     return NextResponse.json({
       success: true,
-      name: fileName,
+      url: finalFileUrl,
     });
   }
 

@@ -35,7 +35,7 @@ const ScrollToTop = () => {
           whileTap={{ scale: 0.95 }}
           onClick={scrollToTop}
           className={cn(
-            "fixed bottom-8 left-8 z-[60] flex h-12 w-12 items-center justify-center rounded-2xl",
+            "fixed bottom-24 lg:bottom-8 left-8 z-[60] flex h-12 w-12 items-center justify-center rounded-2xl",
             "glass-panel border-white/20 shadow-elite-soft transition-all duration-300",
             "group"
           )}

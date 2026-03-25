@@ -75,6 +75,10 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
       throw new Error("You do not have permission to create events for this organisation");
     }
 
+    if (!org.isVerified) {
+      throw new Error("This organisation must be verified by an admin before you can create events.");
+    }
+
     const newEvent = await Event.create({
       ...event,
       pricePlan: event.pricePlan,

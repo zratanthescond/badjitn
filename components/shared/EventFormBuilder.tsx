@@ -375,7 +375,8 @@ export default function EventFormBuilder({
     const showEmailSection = isEditMode || !!createdFormId;
 
     return (
-        <div className="space-y-6">
+        <ScrollArea className="h-[calc(100vh-120px)] sm:h-auto -mx-6 px-6">
+            <div className="space-y-6 pb-32 md:pb-8">
             {/* Form Header */}
             <div className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-4">
@@ -824,5 +825,6 @@ export default function EventFormBuilder({
                 </div>
             )}
         </div>
-    );
+    </ScrollArea>
+);
 }

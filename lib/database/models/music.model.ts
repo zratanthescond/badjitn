@@ -17,7 +17,7 @@ const MusicSchema = new Schema({
   artist: { type: String },
   album: { type: String, required: true },
   path: { type: String, required: true },
-  image: { type: String, required: true },
+  image: { type: String },
   wave: { type: String },
   addedBy: { type: Schema.Types.ObjectId, ref: "User" },
   createAt: { type: Date, default: Date.now() },

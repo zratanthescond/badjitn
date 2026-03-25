@@ -36,8 +36,8 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import Collection from "@/components/shared/Collection";
-import SponsorForm from "@/components/shared/AddSponsorComponenet";
-import HexGridSponsor from "@/components/shared/HexSponsor";
+import SponsorForm from "@/components/shared/SponsorForm";
+import { getSponsors, deleteSponsor } from "@/lib/actions/sponsor.action";
 import FormBuilder from "@/components/shared/FormBuilder";
 import FieldViewer from "@/components/shared/FieldViewer";
 import OrganisationCard from "@/components/shared/OrganisationCard";
@@ -76,6 +76,10 @@ interface TranslationStrings {
         title: string;
         description: string;
     };
+    emptySponsors: {
+        title: string;
+        description: string;
+    };
     mySponsors: string;
     sponsorsDescription: string;
     addSponsor: string;
@@ -100,6 +104,8 @@ interface TranslationStrings {
             updatedDescription: string;
             errorTitle: string;
             errorDescription: string;
+            deleteSponsorSuccess: string;
+            deleteSponsorError: string;
         };
         worldExceptIsrael: string;
         countryPlaceholder: string;
@@ -108,6 +114,9 @@ interface TranslationStrings {
         citySearchPlaceholder: string;
         cityNoMatch: string;
     };
+    editSponsor: string;
+    deleteSponsor: string;
+    deleteSponsorConfirm: string;
     dashboard: string;
     welcomeBack: string;
     stats: {
@@ -228,6 +237,22 @@ export default function ProfileDashboard({
     ];
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<TabKey>("overview");
+
+    // Sync active tab with URL
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get("tab") as TabKey;
+        if (tab && sidebarItems.some(item => item.key === tab)) {
+            setActiveTab(tab);
+        }
+    }, []);
+
+    const handleTabChange = (key: TabKey) => {
+        setActiveTab(key);
+        const url = new URL(window.location.href);
+        url.searchParams.set("tab", key);
+        window.history.replaceState({}, "", url);
+    };
     const [cityOpen, setCityOpen] = useState(false);
     const [isSavingProfile, setIsSavingProfile] = useState(false);
     const [profileForm, setProfileForm] = useState({
@@ -324,10 +349,46 @@ export default function ProfileDashboard({
         });
     };
 
-    // Load forms when forms tab is activated
+    const [userSponsors, setUserSponsors] = useState<any[]>([]);
+    const [sponsorsLoading, setSponsorsLoading] = useState(false);
+    const [showSponsorForm, setShowSponsorForm] = useState(false);
+    const [editingSponsor, setEditingSponsor] = useState<any | null>(null);
+    const [deletingSponsorId, setDeletingSponsorId] = useState<string | null>(null);
+
+    const loadSponsors = () => {
+        setSponsorsLoading(true);
+        getSponsors(null, userId).then((result) => {
+            if (result.success) {
+                setUserSponsors(result.data);
+            }
+            setSponsorsLoading(false);
+        });
+    };
+
+    const handleDeleteSponsor = async (sponsorId: string) => {
+        setDeletingSponsorId(sponsorId);
+        const result = await deleteSponsor({ userId, sponsorId });
+        if (result.success) {
+            setUserSponsors((prev) => prev.filter((s) => s._id !== sponsorId));
+            toast({
+                title: translations.settings.messages.deleteSponsorSuccess,
+            });
+        } else {
+            toast({
+                title: translations.settings.messages.deleteSponsorError,
+                description: (result as any).error || "Failed to delete sponsor",
+                variant: "destructive",
+            });
+        }
+        setDeletingSponsorId(null);
+    };
+
+    // Load forms or sponsors when tab is activated
     useEffect(() => {
         if (activeTab === "forms") {
             loadForms();
+        } else if (activeTab === "sponsors") {
+            loadSponsors();
         }
     }, [activeTab, userId]);
 
@@ -393,25 +454,29 @@ export default function ProfileDashboard({
                 </aside>
 
                 {/* Mobile Tab Bar */}
-                <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border/40 px-2 py-1.5">
-                    <div className="flex justify-around">
-                        {sidebarItems.map((item) => {
-                            const Icon = item.icon;
-                            const isActive = activeTab === item.key;
-                            return (
-                                <button
-                                    key={item.key}
-                                    onClick={() => setActiveTab(item.key)}
-                                    className={`flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg text-xs transition-all ${isActive
-                                        ? "text-indigo-600 dark:text-indigo-400"
-                                        : "text-muted-foreground"
-                                        }`}
-                                >
-                                    <Icon className={`h-5 w-5 ${isActive ? "text-indigo-600 dark:text-indigo-400" : ""}`} />
-                                </button>
-                            );
-                        })}
-                    </div>
+                <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border/40 px-2 py-1.5 overflow-hidden">
+                    <ScrollArea className="w-full">
+                        <div className="flex items-center gap-1 min-w-max px-2 py-1">
+                            {sidebarItems.map((item) => {
+                                const Icon = item.icon;
+                                const isActive = activeTab === item.key;
+                                return (
+                                    <button
+                                        key={item.key}
+                                        onClick={() => handleTabChange(item.key)}
+                                        className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl text-xs transition-all min-w-[72px] ${isActive
+                                            ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium"
+                                            : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5"
+                                            }`}
+                                    >
+                                        <Icon className={`h-5 w-5 ${isActive ? "text-indigo-600 dark:text-indigo-400" : ""}`} />
+                                        <span className="text-[10px] leading-none">{item.label.split(" ")[0]}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <ScrollBar orientation="horizontal" className="invisible" />
+                    </ScrollArea>
                 </div>
 
                 {/* Main Content */}
@@ -705,14 +770,14 @@ export default function ProfileDashboard({
                     {/* Tickets Tab */}
                     {activeTab === "tickets" && (
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.myTickets}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
                                         {translations.exploreMoreEvents}
                                     </p>
                                 </div>
-                                <Button asChild variant="outline" className="rounded-full">
+                                <Button asChild variant="outline" className="rounded-full w-full sm:w-auto">
                                     <Link href="/#events">{translations.exploreMoreEvents}</Link>
                                 </Button>
                             </div>
@@ -733,14 +798,14 @@ export default function ProfileDashboard({
                     {/* Events Tab */}
                     {activeTab === "events" && (
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.eventsOrganized}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
                                         {translations.eventsTabDescription}
                                     </p>
                                 </div>
-                                <Button asChild className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 rounded-full">
+                                <Button asChild className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 rounded-full w-full sm:w-auto">
                                     <Link href="/events/create">
                                         <CalendarPlus className="h-4 w-4 mr-2" />
                                         {translations.createNewEvent}
@@ -764,7 +829,7 @@ export default function ProfileDashboard({
                     {/* Organisations Tab */}
                     {activeTab === "organisations" && (
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.myOrganisations.title}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
@@ -773,7 +838,7 @@ export default function ProfileDashboard({
                                 </div>
                                 <Button
                                     asChild
-                                    className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full"
+                                    className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full w-full sm:w-auto"
                                 >
                                     <Link href="/organisations/create">
                                         <Plus className="h-4 w-4 mr-2" />
@@ -839,36 +904,142 @@ export default function ProfileDashboard({
                     {/* Sponsors Tab */}
                     {activeTab === "sponsors" && (
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.mySponsors}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
                                         {translations.sponsorsDescription}
                                     </p>
                                 </div>
-                                <Dialog>
+                                <Dialog open={showSponsorForm} onOpenChange={(open) => { setShowSponsorForm(open); if (!open) setEditingSponsor(null); }}>
                                     <DialogTrigger asChild>
-                                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full">
+                                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full w-full sm:w-auto">
                                             <Plus className="h-4 w-4 mr-2" />
                                             {translations.addSponsor}
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent className="min-w-full bg-card">
-                                        <ScrollArea className="h-[500px] w-full">
-                                            <SponsorForm userId={userId} />
+                                    <DialogContent className="max-w-2xl p-0 bg-card">
+                                        <DialogTitle className="sr-only">
+                                            {editingSponsor ? translations.editSponsor : translations.addSponsor}
+                                        </DialogTitle>
+                                        <ScrollArea className="max-h-[85vh] p-6">
+                                            <SponsorForm
+                                                userId={userId}
+                                                initialData={editingSponsor}
+                                                onSuccess={() => {
+                                                    setShowSponsorForm(false);
+                                                    setEditingSponsor(null);
+                                                    loadSponsors();
+                                                }}
+                                            />
                                             <ScrollBar orientation="vertical" />
                                         </ScrollArea>
                                     </DialogContent>
                                 </Dialog>
                             </div>
-                            <HexGridSponsor userId={userId} />
+
+                            {sponsorsLoading ? (
+                                <div className="flex items-center justify-center py-12">
+                                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                </div>
+                            ) : userSponsors.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {userSponsors.map((sponsor: any) => (
+                                        <Card
+                                            key={sponsor._id}
+                                            className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 hover:shadow-lg transition-shadow"
+                                        >
+                                            <CardContent className="p-5">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-16 h-16 rounded-xl bg-white p-2 border border-border/40 shrink-0 flex items-center justify-center overflow-hidden">
+                                                        <img
+                                                            src={sponsor.logo}
+                                                            alt={sponsor.name}
+                                                            className="w-full h-full object-contain"
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="font-semibold truncate">{sponsor.name}</h3>
+                                                        <div className="flex items-center gap-2 mt-2">
+                                                            <Badge variant="outline" className="capitalize text-[10px]">
+                                                                {sponsor.tier}
+                                                            </Badge>
+                                                            <Link
+                                                                href={sponsor.website}
+                                                                target="_blank"
+                                                                className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 truncate"
+                                                            >
+                                                                <ExternalLink className="h-3 w-3" />
+                                                                {sponsor.website.replace(/^https?:\/\//, "")}
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 shrink-0">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="rounded-full text-xs"
+                                                            onClick={() => {
+                                                                setEditingSponsor(sponsor);
+                                                                setShowSponsorForm(true);
+                                                            }}
+                                                        >
+                                                            <Pencil className="h-3 w-3 mr-1" />
+                                                            {translations.forms.actions.edit}
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="rounded-full text-xs text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+                                                            disabled={deletingSponsorId === sponsor._id}
+                                                            onClick={() => {
+                                                                if (window.confirm(translations.deleteSponsorConfirm)) {
+                                                                    handleDeleteSponsor(sponsor._id);
+                                                                }
+                                                            }}
+                                                        >
+                                                            {deletingSponsorId === sponsor._id ? (
+                                                                <Loader2 className="h-3 w-3 animate-spin" />
+                                                            ) : (
+                                                                <>
+                                                                    <Trash2 className="h-3 w-3 mr-1" />
+                                                                    {translations.deleteSponsor}
+                                                                </>
+                                                            )}
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-3xl p-12 text-center">
+                                    <div className="max-w-md mx-auto">
+                                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-6">
+                                            <Megaphone className="h-10 w-10 text-indigo-500" />
+                                        </div>
+                                        <h3 className="text-xl font-semibold mb-2">{translations.emptySponsors.title}</h3>
+                                        <p className="text-muted-foreground mb-6">
+                                            {translations.emptySponsors.description}
+                                        </p>
+                                        <Button
+                                            onClick={() => setShowSponsorForm(true)}
+                                            className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full px-8"
+                                        >
+                                            <Plus className="h-5 w-5 mr-2" />
+                                            {translations.addSponsor}
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {/* Custom Forms Tab */}
                     {activeTab === "forms" && (
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.forms.title}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
@@ -877,7 +1048,7 @@ export default function ProfileDashboard({
                                 </div>
                                 <Dialog open={showFormBuilder} onOpenChange={(open) => { setShowFormBuilder(open); if (!open) setEditingForm(null); }}>
                                     <DialogTrigger asChild>
-                                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full">
+                                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full w-full sm:w-auto">
                                             <Plus className="h-4 w-4 mr-2" />
                                             {translations.forms.createButton}
                                         </Button>
@@ -1038,7 +1209,7 @@ export default function ProfileDashboard({
                     {/* Custom Fields Tab */}
                     {activeTab === "fields" && (
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <h2 className="text-2xl font-bold">{translations.customRequiredInfo}</h2>
                                     <p className="text-muted-foreground text-sm mt-1">
@@ -1047,12 +1218,12 @@ export default function ProfileDashboard({
                                 </div>
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full">
-                                            <Plus className="h-4 w-4 mr-2" />
-                                            {translations.addCustomRequiredInfo}
+                                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full w-full sm:w-auto uppercase tracking-wide text-[10px] md:text-sm">
+                                            <Plus className="h-4 w-4 mr-2 shrink-0" />
+                                            <span className="truncate">{translations.addCustomRequiredInfo}</span>
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent className="min-w-full bg-card">
+                                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0 bg-background border-none shadow-2xl rounded-2xl">
                                         <FormBuilder userId={userId} />
                                     </DialogContent>
                                 </Dialog>

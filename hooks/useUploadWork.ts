@@ -44,17 +44,34 @@ const submitSummary = async (data: SubmitSummaryParams) => {
 };
 
 const uploadSubmissionImage = async (data: UploadImageParams) => {
-  const formData = new FormData();
-  formData.append("workId", data.workId);
-  formData.append("userId", data.userId);
-  formData.append("eventId", data.eventId);
-  formData.append("file", data.file);
+  // Step 1: Upload to the new native upload API
+  const uploadFormData = new FormData();
+  uploadFormData.append("file", data.file);
+  
+  const uploadRes = await axios.post("/api/upload", uploadFormData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  if (!uploadRes.data?.success || !uploadRes.data?.url) {
+    throw new Error(uploadRes.data?.message || "Initial file upload failed");
+  }
+
+  const fileUrl = uploadRes.data.url;
+
+  // Step 2: Submit the URL to the work submission API
+  const workFormData = new FormData();
+  workFormData.append("workId", data.workId);
+  workFormData.append("userId", data.userId);
+  workFormData.append("eventId", data.eventId);
+  workFormData.append("fileUrl", fileUrl); // Send URL instead of binary file
+
   const res = await axios.post(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploadwork`,
-    formData,
+    workFormData,
     { headers: { "Content-Type": "multipart/form-data" }, responseType: "json" }
   );
-  if (res.data?.success === false) throw new Error(res.data?.error || "Upload failed");
+  
+  if (res.data?.success === false) throw new Error(res.data?.error || "Metadata update failed");
   return res.data;
 };
 

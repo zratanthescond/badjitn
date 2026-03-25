@@ -1,7 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import { withUt } from "uploadthing/tw";
-
-module.exports = withUt({
+module.exports = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -117,14 +115,29 @@ module.exports = withUt({
           "0%": { transform: "scale(0.95)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        "audio-bar-1": {
+          "0%, 100%": { height: "20%" },
+          "50%": { height: "70%" },
+        },
+        "audio-bar-2": {
+          "0%, 100%": { height: "40%" },
+          "50%": { height: "90%" },
+        },
+        "audio-bar-3": {
+          "0%, 100%": { height: "30%" },
+          "50%": { height: "80%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in-up": "fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
         "scale-in": "scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+        "audio-bar-1": "audio-bar-1 0.6s ease-in-out infinite",
+        "audio-bar-2": "audio-bar-2 0.7s ease-in-out infinite",
+        "audio-bar-3": "audio-bar-3 0.8s ease-in-out infinite",
       },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
-});
+};

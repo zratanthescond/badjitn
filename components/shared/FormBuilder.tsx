@@ -1,372 +1,435 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import {
+    Plus,
+    Trash2,
+    GripVertical,
+    Type,
+    Hash,
+    List,
+    CircleDot,
+    ChevronDown,
+    ChevronUp,
+    Pencil,
+    Save,
+    Loader2,
+    ClipboardList,
+    AlertCircle,
+    CheckCircle2,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { Switch } from "../ui/switch";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import {
-  FaPlus,
-  FaRegEdit,
-  FaTrashAlt,
-  FaListAlt,
-  FaDotCircle,
-} from "react-icons/fa";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardFooter,
 } from "../ui/card";
-import { Pencil, X } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { Badge } from "../ui/badge";
+import { Separator } from "../ui/separator";
 import { fetchFields, saveFields } from "@/lib/actions/field.action";
 import { toast } from "@/hooks/use-toast";
-import { title } from "process";
+import { cn } from "@/lib/utils";
 
 type FieldType = "text" | "number" | "select" | "radio";
 
 interface Field {
-  id: number;
-  type: FieldType;
-  label: string;
-  placeholder?: string;
-  options?: string[];
-  isEditing: boolean;
+    id: string | number;
+    type: FieldType;
+    label: string;
+    placeholder?: string;
+    options?: string[];
+    required: boolean;
+    order: number;
+    isEditing: boolean;
 }
 
+const FIELD_TYPES: { type: FieldType; label: string; icon: any }[] = [
+    { type: "text", label: "Text", icon: Type },
+    { type: "number", label: "Number", icon: Hash },
+    { type: "select", label: "Dropdown", icon: List },
+    { type: "radio", label: "Radio", icon: CircleDot },
+];
+
 const FormBuilder = ({ userId }: { userId: string }) => {
-  const t = useTranslations("FormBuilder");
-  const locale = useLocale();
-  const isRTL = locale === "ar";
+    const t = useTranslations("FormBuilder");
+    const locale = useLocale();
+    const isRTL = locale === "ar";
 
-  const [fields, setFields] = useState<Field[]>([]);
-  const [selectedField, SetSelectedField] = useState<Field | null>(null);
-  const [error, setError] = useState<string>("");
+    const [fields, setFields] = useState<Field[]>([]);
+    const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-  const addField = (type: FieldType) => {
-    const fieldId = Date.now();
-    const newField: Field = {
-      id: fieldId,
-      type,
-      label: "",
-      placeholder: type === "text" || type === "number" ? "" : undefined,
-      options:
-        type === "select" || type === "radio"
-          ? [
-            t("fields.defaultOptions.option1"),
-            t("fields.defaultOptions.option2"),
-          ]
-          : undefined,
-      isEditing: true,
+    const generateId = () => Math.random().toString(36).slice(2, 11);
+
+    // Initial load
+    useEffect(() => {
+        const loadFields = async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetchFields(userId);
+                if (response.success && response.data) {
+                    setFields(
+                        response.data.map((f: any) => ({
+                            id: f._id,
+                            type: f.type,
+                            label: f.label,
+                            placeholder: f.placeholder || "",
+                            options: f.options || [],
+                            required: f.required ?? true,
+                            order: f.order || 0,
+                            isEditing: false,
+                        }))
+                    );
+                }
+            } catch (err) {
+                console.error("Failed to fetch fields:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadFields();
+    }, [userId]);
+
+    const addField = (type: FieldType) => {
+        const newField: Field = {
+            id: generateId(),
+            type,
+            label: "",
+            placeholder: "",
+            options: type === "select" || type === "radio" ? ["Option 1", "Option 2"] : [],
+            required: true,
+            order: fields.length,
+            isEditing: true,
+        };
+        setFields((prev) => [...prev, newField]);
     };
-    setFields((prev) => [...prev, newField]);
-    SetSelectedField(newField);
-  };
 
-  const updateField = (id: number, key: keyof Field, value: any) => {
-    if (key === "options") {
-      if (value.length === 0) {
-        return;
-      }
-    }
-    setFields((prev) =>
-      prev.map((field) =>
-        field.id === id ? { ...field, [key]: value } : field,
-      ),
-    );
-    SetSelectedField((prev) => prev ? { ...prev, [key]: value } : prev);
-  };
-
-  const removeField = (id: number) => {
-    setFields((prev) => prev.filter((field) => field.id !== id));
-    SetSelectedField(null);
-  };
-
-  const finishEditing = (id: number) => {
-    setFields((prev) =>
-      prev.map((field) =>
-        field.id === id ? { ...field, isEditing: false } : field,
-      ),
-    );
-    SetSelectedField(null);
-  };
-
-  const saveForm = async () => {
-    setError("");
-    const emptyLabel = fields.some((field) => {
-      return (
-        field.label === "" || field.label === undefined || field.label === null
-      );
-    });
-    if (emptyLabel === true) {
-      toast({ title: t("validation.emptyLabels") });
-      setError(t("validation.fillAllLabels"));
-      return;
-    }
-    const formattedFields = fields.map(({ id, ...rest }) => ({
-      ...rest,
-      userId,
-    }));
-
-    const response = await saveFields(formattedFields);
-
-    if (response.success) {
-      toast({ title: t("messages.saveSuccess") });
-      setFields([]);
-    } else {
-      toast({ title: t("messages.saveError") + response.message });
-    }
-  };
-  useEffect(() => {
-    const formFields = async () => {
-      const response = await fetchFields(userId);
-
-      setFields(response.data || []);
+    const updateField = (id: string | number, key: keyof Field, value: any) => {
+        setFields((prev) =>
+            prev.map((field) => (field.id === id ? { ...field, [key]: value } : field))
+        );
     };
-    formFields();
-  }, [userId]);
-  return (
-    <div
-      className="space-y-6 max-w-4xl mx-auto max-h-screen py-4"
-      dir={isRTL ? "rtl" : "ltr"}
-    >
-      <ScrollArea className="h-screen">
-        <h2 className="text-2xl font-bold text-center">{t("title")}</h2>
 
-        <div className="flex justify-center flex-col md:flex-row space-x-4 mb-4">
-          <Button variant={"outline"} onClick={() => addField("text")}>
-            <FaRegEdit className="mr-2" />
-            {t("fieldTypes.text")}
-          </Button>
-          <Button variant={"outline"} onClick={() => addField("number")}>
-            <FaListAlt className="mr-2" />
-            {t("fieldTypes.number")}
-          </Button>
-          <Button variant={"outline"} onClick={() => addField("select")}>
-            <FaPlus className="mr-2" />
-            {t("fieldTypes.dropdown")}
-          </Button>
-          <Button variant={"outline"} onClick={() => addField("radio")}>
-            <FaDotCircle className="mr-2" />
-            {t("fieldTypes.radio")}
-          </Button>
-        </div>
+    const removeField = (id: string | number) => {
+        setFields((prev) => prev.filter((field) => field.id !== id));
+    };
 
-        <div className="space-y-4">
-          {selectedField && (
-            <div className="p-4 border rounded-lg space-y-3 shadow-md">
-              <Label>{t("fields.fieldLabel")}</Label>
-              {selectedField.isEditing ? (
-                <Input
-                  value={selectedField.label}
-                  onChange={(e) =>
-                    updateField(selectedField.id, "label", e.target.value)
-                  }
-                  placeholder={t("fields.labelPlaceholder")}
-                  className="w-full"
-                />
-              ) : (
-                <div className="text-lg font-semibold">
-                  {selectedField.label}
-                </div>
-              )}
+    const moveField = useCallback((id: string | number, direction: "up" | "down") => {
+        setFields((prev) => {
+            const idx = prev.findIndex((f) => f.id === id);
+            if (idx === -1) return prev;
+            if (direction === "up" && idx === 0) return prev;
+            if (direction === "down" && idx === prev.length - 1) return prev;
+            
+            const newFields = [...prev];
+            const target = direction === "up" ? idx - 1 : idx + 1;
+            [newFields[idx], newFields[target]] = [newFields[target], newFields[idx]];
+            
+            // Update order properties
+            return newFields.map((f, i) => ({ ...f, order: i }));
+        });
+    }, []);
 
-              {(selectedField.type === "select" ||
-                selectedField.type === "radio") && (
-                  <>
-                    <Label>
-                      {selectedField.type === "select"
-                        ? t("fields.dropdownOptions")
-                        : t("fields.radioOptions")}
-                    </Label>
-                    {selectedField.isEditing ? (
-                      <Textarea
-                        value={selectedField.options?.join(", ")}
-                        onChange={(e) =>
-                          updateField(
-                            selectedField.id,
-                            "options",
-                            e.target.value.split(",").map((opt) => opt.trim()),
-                          )
-                        }
-                        placeholder={t("fields.optionsPlaceholder")}
-                        className="w-full"
-                      />
-                    ) : (
-                      <div>
-                        {selectedField.options?.map((opt, idx) => (
-                          <span key={idx} className="text-sm block">
-                            {opt}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                )}
+    const toggleEditing = (id: string | number) => {
+        setFields((prev) =>
+            prev.map((field) =>
+                field.id === id ? { ...field, isEditing: !field.isEditing } : field
+            )
+        );
+    };
 
-              {selectedField.type !== "select" &&
-                selectedField.type !== "radio" && (
-                  <>
-                    <Label>{t("fields.placeholder")}</Label>
-                    {selectedField.isEditing ? (
-                      <Input
-                        value={selectedField.placeholder}
-                        onChange={(e) =>
-                          updateField(
-                            selectedField.id,
-                            "placeholder",
-                            e.target.value,
-                          )
-                        }
-                        placeholder={t("fields.placeholderText")}
-                        className="w-full"
-                      />
-                    ) : (
-                      <div className="text-sm">{selectedField.placeholder}</div>
-                    )}
-                  </>
-                )}
+    const handleSave = async () => {
+        if (fields.length === 0) {
+            toast({ title: t("validation.noFields") || "Please add at least one field", variant: "destructive" });
+            return;
+        }
 
-              <div className="flex justify-between items-center">
-                <Button
-                  variant="destructive"
-                  onClick={() => removeField(selectedField.id)}
-                >
-                  <FaTrashAlt className="mr-2" />
-                  {t("actions.removeField")}
-                </Button>
-                {selectedField.isEditing ? (
-                  <Button
-                    onClick={() => finishEditing(selectedField.id)}
-                    className="bg-blue-500 text-white"
-                  >
-                    {t("actions.finishEditing")}
-                  </Button>
-                ) : (
-                  <div className="text-xs text-gray-500">
-                    {t("fields.id")}: {selectedField.id}
-                  </div>
-                )}
-              </div>
+        const emptyLabels = fields.filter((f) => !f.label.trim());
+        if (emptyLabels.length > 0) {
+            toast({ title: t("validation.emptyLabels"), variant: "destructive" });
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            const formattedFields = fields.map((f, index) => ({
+                userId,
+                type: f.type,
+                label: f.label,
+                placeholder: f.placeholder,
+                options: f.options,
+                required: f.required,
+                order: index,
+            }));
+
+            const response = await saveFields(userId, formattedFields);
+
+            if (response.success) {
+                toast({ 
+                    title: t("messages.saveSuccess"), 
+                    description: "Your custom fields have been updated." 
+                });
+                // After save, close all editors
+                setFields(prev => prev.map(f => ({ ...f, isEditing: false })));
+            } else {
+                toast({ 
+                    title: t("messages.saveError"), 
+                    description: response.message, 
+                    variant: "destructive" 
+                });
+            }
+        } catch (err) {
+            toast({ 
+                title: "Error", 
+                description: "Failed to save fields", 
+                variant: "destructive" 
+            });
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center p-12 space-y-4">
+                <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+                <p className="text-sm text-muted-foreground animate-pulse">Loading your custom fields...</p>
             </div>
-          )}
-        </div>
+        );
+    }
 
-        <Card className="glass mt-6">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-bold tracking-tight">
-              {t("preview.title")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {fields.length > 0 ? (
-                fields.map((field) => (
-                  <div
-                    key={field.id}
-                    className="space-y-2 border- border-muted-foreground"
-                  >
-                    <div className="flex flex-row justify-end gap-2 self-end">
-                      <Button
-                        variant={"destructive"}
-                        size={"icon"}
-                        onClick={() => removeField(field.id)}
-                      >
-                        <X />
-                      </Button>
-                      <Button
-                        variant={"outline"}
-                        size={"icon"}
-                        onClick={() =>
-                          SetSelectedField({ ...field, isEditing: true })
-                        }
-                      >
-                        <Pencil />
-                      </Button>
+    return (
+        <div className="flex flex-col h-[calc(100vh-180px)]" dir={isRTL ? "rtl" : "ltr"}>
+            {/* Header section - stays at top */}
+            <div className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-2xl p-4 mb-4 shrink-0">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20">
+                        <ClipboardList className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                     </div>
-                    <Label>{field.label}</Label>
-                    {field.type === "select" ? (
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={t("preview.selectOption")}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {field.options?.map((option, idx) => (
-                            <SelectItem
-                              key={idx}
-                              value={option || `option-${idx}`}
-                            >
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : field.type === "radio" ? (
-                      <div className="space-y-1">
-                        {field.options?.map((option, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-center space-x-2"
-                          >
-                            <input
-                              type="radio"
-                              id={`${field.id}-${idx}`}
-                              name={`radio-${field.id}`}
-                              value={option}
-                              className="radio-input"
-                            />
-                            <Label htmlFor={`${field.id}-${idx}`}>
-                              {option}
-                            </Label>
-                          </div>
-                        ))}
-                      </div>
-                    ) : field.type === "number" || field.type === "text" ? (
-                      <Input
-                        type={field.type}
-                        placeholder={field.placeholder}
-                        className="w-full"
-                      />
-                    ) : null}
-                  </div>
-                ))
-              ) : (
-                <div className="flex p-5 rounded-lg w-full h-full items-center justify-center backdrop:blur-2xl backdrop-brightness-150">
-                  <p>{t("preview.noFields")}</p>
+                    <div>
+                        <h2 className="text-lg font-bold leading-tight">{t("title")}</h2>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold opacity-70">
+                            Custom Event Registration Fields
+                        </p>
+                    </div>
                 </div>
-              )}
-            </div>
-            {error.length > 0 && (
-              <div className="flex items-center justify-end space-x-2 pt-6">
-                <p className="text-red-500">{error}</p>
-              </div>
-            )}
-          </CardContent>
-          <CardFooter className="flex flex-row items-center justify-between">
-            <p>
-              <small>{t("footer.description")}</small>
-            </p>
-            <Button size={"lg"} variant={"outline"} onClick={() => saveForm()}>
-              {t("actions.updateForm")}
-            </Button>
-          </CardFooter>
-        </Card>
 
-        <ScrollBar orientation="vertical" />
-      </ScrollArea>
-    </div>
-  );
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {FIELD_TYPES.map(({ type, label, icon: Icon }) => (
+                        <button
+                            key={type}
+                            type="button"
+                            onClick={() => addField(type)}
+                            className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-border/40 hover:border-indigo-300/50 dark:hover:border-indigo-700/50 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all group"
+                        >
+                            <Icon className="h-4 w-4 text-muted-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
+                            <span className="text-[11px] font-medium text-muted-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                {t(`fieldTypes.${type === "select" ? "dropdown" : type}`)}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Scrollable Fields List */}
+            <ScrollArea className="flex-1 -mx-2 px-2">
+                <div className="space-y-4 pb-32 md:pb-20">
+                    {fields.length > 0 ? (
+                        fields.map((field, index) => (
+                            <Card
+                                key={field.id}
+                                className={cn(
+                                    "glass transition-all duration-300 border border-white/20 dark:border-slate-700/30 overflow-hidden",
+                                    field.isEditing ? "ring-2 ring-indigo-500/20 shadow-lg" : "hover:shadow-md"
+                                )}
+                            >
+                                <CardContent className="p-4">
+                                    <div className="flex items-start gap-4">
+                                        {/* Drag handle & reorder */}
+                                        <div className="flex flex-col items-center gap-1 pt-1 shrink-0">
+                                            <button
+                                                type="button"
+                                                onClick={() => moveField(field.id, "up")}
+                                                disabled={index === 0}
+                                                className="p-1 rounded hover:bg-indigo-50 dark:hover:bg-indigo-950/40 disabled:opacity-20 text-muted-foreground transition-colors"
+                                            >
+                                                <ChevronUp className="h-4 w-4" />
+                                            </button>
+                                            <GripVertical className="h-5 w-5 text-muted-foreground/30" />
+                                            <button
+                                                type="button"
+                                                onClick={() => moveField(field.id, "down")}
+                                                disabled={index === fields.length - 1}
+                                                className="p-1 rounded hover:bg-indigo-50 dark:hover:bg-indigo-950/40 disabled:opacity-20 text-muted-foreground transition-colors"
+                                            >
+                                                <ChevronDown className="h-4 w-4" />
+                                            </button>
+                                        </div>
+
+                                        {/* Field Content */}
+                                        <div className="flex-1 space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <Badge variant="secondary" className="bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border-indigo-100/50 dark:border-indigo-800/50">
+                                                        {t(`fieldTypes.${field.type === "select" ? "dropdown" : field.type}`)}
+                                                    </Badge>
+                                                    {field.required && (
+                                                        <Badge className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-800/50">
+                                                            Required
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400"
+                                                        onClick={() => toggleEditing(field.id)}
+                                                    >
+                                                        {field.isEditing ? <CheckCircle2 className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8 rounded-full hover:bg-red-50 dark:hover:bg-red-950/40 text-muted-foreground hover:text-red-600"
+                                                        onClick={() => removeField(field.id)}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+
+                                            {field.isEditing ? (
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                            {t("fields.fieldLabel")}
+                                                        </Label>
+                                                        <Input
+                                                            value={field.label}
+                                                            onChange={(e) => updateField(field.id, "label", e.target.value)}
+                                                            placeholder={t("fields.labelPlaceholder")}
+                                                            className="bg-white/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                            {t("fields.placeholder")}
+                                                        </Label>
+                                                        <Input
+                                                            value={field.placeholder}
+                                                            onChange={(e) => updateField(field.id, "placeholder", e.target.value)}
+                                                            placeholder={t("fields.placeholderText")}
+                                                            className="bg-white/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+                                                        />
+                                                    </div>
+
+                                                    {(field.type === "select" || field.type === "radio") && (
+                                                        <div className="col-span-full space-y-2">
+                                                            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                                {t("fields.options")} (comma separated)
+                                                            </Label>
+                                                            <Textarea
+                                                                value={field.options?.join(", ")}
+                                                                onChange={(e) =>
+                                                                    updateField(
+                                                                        field.id,
+                                                                        "options",
+                                                                        e.target.value.split(",").map((opt) => opt.trim())
+                                                                    )
+                                                                }
+                                                                placeholder={t("fields.optionsPlaceholder")}
+                                                                className="bg-white/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 min-h-[80px]"
+                                                            />
+                                                        </div>
+                                                    )}
+
+                                                    <div className="col-span-full flex items-center gap-3 pt-1">
+                                                        <Switch
+                                                            checked={field.required}
+                                                            onCheckedChange={(checked) => updateField(field.id, "required", checked)}
+                                                        />
+                                                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                            Make this field mandatory
+                                                        </Label>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col gap-1">
+                                                    <p className="font-semibold text-lg">{field.label || "Untitled Field"}</p>
+                                                    {field.placeholder && (
+                                                        <p className="text-sm text-muted-foreground italic">
+                                                            Placeholder: {field.placeholder}
+                                                        </p>
+                                                    )}
+                                                    {(field.type === "select" || field.type === "radio") && field.options && (
+                                                        <div className="flex flex-wrap gap-2 mt-2">
+                                                            {field.options.map((opt, i) => (
+                                                                <span key={i} className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">
+                                                                    {opt}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))
+                    ) : (
+                        <div className="glass bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-dashed border-white/20 dark:border-slate-700/30 rounded-3xl p-12 text-center">
+                            <div className="max-w-xs mx-auto space-y-4">
+                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 flex items-center justify-center mx-auto">
+                                    <Plus className="h-8 w-8 text-indigo-500/40" />
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-base font-semibold">{t("preview.noFields")}</h3>
+                                    <p className="text-[11px] text-muted-foreground">
+                                        Click an icon above to start building your custom form fields.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <ScrollBar orientation="vertical" />
+            </ScrollArea>
+
+            {/* Footer Actions - Stick to bottom */}
+            <div className="shrink-0 border-t border-white/10 dark:border-slate-700/30 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl p-4 mt-auto rounded-b-2xl z-10">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-muted-foreground opacity-60">
+                        <AlertCircle className="h-3.5 w-3.5" />
+                        <span className="text-[10px] font-medium leading-none">Settings apply to all new registrations.</span>
+                    </div>
+                    <Button
+                        onClick={handleSave}
+                        disabled={isSaving || fields.length === 0}
+                        className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full px-10 shadow-lg shadow-indigo-500/20 py-6 h-auto transition-all active:scale-95"
+                    >
+                        {isSaving ? (
+                            <Loader2 className="h-5 w-5 mr-3 animate-spin" />
+                        ) : (
+                            <Save className="h-5 w-5 mr-3" />
+                        )}
+                        <span className="font-bold uppercase tracking-widest text-xs">
+                            {isSaving ? "Saving..." : t("actions.updateForm")}
+                        </span>
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default FormBuilder;

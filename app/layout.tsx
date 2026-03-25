@@ -14,12 +14,12 @@ import {
 } from "@tanstack/react-query";
 import React from "react";
 import localFont from "next/font/local";
-import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { useUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 
 import { Syne, Outfit } from "next/font/google";
+import NextIntlProvider from "@/components/providers/NextIntlProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -90,7 +90,7 @@ export default async function RootLayout({
   // Efficiency: Get the user once at the root layout
   const user = await useUser();
   if (user?.isBanned) {
-      return redirect("/banned");
+    return redirect("/banned");
   }
 
   return (
@@ -126,7 +126,7 @@ export default async function RootLayout({
             </picture>
           </div>
         </div>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlProvider locale={locale} messages={messages}>
           <ThemeProvider>
             <ClientProvider clerkLocale={localization}>
               <TooltipProvider>{children}</TooltipProvider>
@@ -134,7 +134,7 @@ export default async function RootLayout({
               <Toaster />
             </ClientProvider>
           </ThemeProvider>
-        </NextIntlClientProvider>
+        </NextIntlProvider>
       </body>
     </html>
   );

@@ -147,9 +147,12 @@
       "addSponsor": "Añadir patrocinador",
       "cancel": "Cancelar",
       "reset": "Restablecer formulario",
-      "submitting": "Añadiendo patrocinador..."
+      "submitting": "Añadiendo patrocinador...",
+      "updateSponsor": "Actualizar Patrocinador"
     },
-    "description": "Introduce los detalles del nuevo patrocinador para añadirlo a tu plataforma.",
+    "description": "Introduce los detalles del patrocinador para continuar.",
+    "title": "Añadir nuevo patrocinador",
+    "titleEdit": "Editar Detalles del Patrocinador",
     "fields": {
       "logo": {
         "chooseFile": "Elegir archivo",
@@ -188,9 +191,12 @@
       "processing": "Procesando tu solicitud...",
       "success": "Éxito",
       "successDescription": "¡Patrocinador añadido con éxito! Aparecerá en tu lista de patrocinadores.",
+      "updateSuccess": "Éxito",
+      "updateSuccessDescription": "¡Patrocinador actualizado con éxito!",
+      "updateError": "Error",
+      "updateErrorDescription": "Error al actualizar el patrocinador. Por favor, inténtalo de nuevo.",
       "uploading": "Subiendo archivos..."
     },
-    "title": "Añadir nuevo patrocinador",
     "validation": {
       "fileRequired": "Por favor, sube un archivo de logo",
       "fileSize": "El tamaño del archivo debe ser inferior a 1MB",
@@ -1548,7 +1554,11 @@
     "selectYourSponsors": "Selecciona tus patrocinadores",
     "startDate": "Fecha de Inicio",
     "submitting": "Enviando...",
-    "url": "URL"
+    "url": "URL",
+    "workSubmission": {
+      "title": "Mostrar el mensaje emergente de envío de trabajo tras la compra",
+      "description": "Si está habilitado, los clientes verán una confirmación tras su participación para elegir entre enviar el trabajo o volver al inicio."
+    }
   },
   "eventPrice": {
     "availablePlaces": "Plazas Disponibles",
@@ -2739,11 +2749,12 @@
   "profile": {
     "addCustomRequiredInfo": "Añadir información requerida personalizada",
     "emptyCustomFields": "Aún no se ha añadido información requerida personalizada.",
-    "addSponsor": "Añadir patrocinador",
-    "allSponsors": "Todos los patrocinadores",
-    "allTickets": "Todas las entradas",
     "createNewEvent": "Crear nuevo evento",
     "eventsTabDescription": "Gestiona y visualiza todos tus eventos organizados",
+    "emptySponsors": {
+        "title": "Aún no hay patrocinadores",
+        "description": "Comience por añadir su primer patrocinador de eventos a su perfil."
+    },
     "customRequiredInfo": "Información requerida personalizada",
     "customFieldsDescription": "Gestiona la información requerida para tus eventos",
     "emptyEventsCreated": {
@@ -2762,6 +2773,10 @@
     "exploreMoreEvents": "Explorar más eventos",
     "mySponsors": "Mis patrocinadores",
     "sponsorsDescription": "Gestione sus patrocinadores de eventos y su visibilidad",
+    "addSponsor": "Añadir Patrocinador",
+    "editSponsor": "Editar Patrocinador",
+    "deleteSponsor": "Eliminar Patrocinador",
+    "deleteSponsorConfirm": "¿Estás seguro de que deseas eliminar este patrocinador? Esta acción no se puede deshacer.",
     "myTickets": "Mis entradas",
     "settings": {
       "title": "Configuración del perfil",
@@ -2786,7 +2801,9 @@
         "updatedTitle": "Perfil actualizado",
         "updatedDescription": "La configuración de su perfil se guardó correctamente.",
         "errorTitle": "Error al actualizar",
-        "errorDescription": "No se pudo guardar la configuración de su perfil."
+        "errorDescription": "No se pudo guardar la configuración de su perfil.",
+        "deleteSponsorSuccess": "Patrocinador eliminado con éxito",
+        "deleteSponsorError": "Error al eliminar el patrocinador"
       }
     },
     "dashboard": "Panel de control",
