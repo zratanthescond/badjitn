@@ -252,7 +252,7 @@ export default function StatusPage() {
                 </p>
                 <div className={`space-y-4 ${isRTL ? "font-arabic" : ""}`}>
                   <p className="text-sm text-muted-foreground">
-                    <strong>{t("subscribe.email")}:</strong> status-updates@badji.net
+                    <strong>{t("subscribe.email")}:</strong> status-updates@badgi.net
                   </p>
                   <p className="text-sm text-muted-foreground">
                     <strong>{t("subscribe.rss")}:</strong> /status/rss

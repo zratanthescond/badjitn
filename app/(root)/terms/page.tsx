@@ -115,7 +115,7 @@ export default function TermsPage() {
                     <p className={`mb-4 ${isRTL ? "font-arabic" : ""}`}>{t("contact.description")}</p>
                     <div className={`space-y-2 text-sm ${isRTL ? "font-arabic" : ""}`}>
                       <p>
-                        <strong>{t("contact.email")}:</strong> legal@badji.net
+                        <strong>{t("contact.email")}:</strong> legal@badgi.net
                       </p>
                       <p>
                         <strong>{t("contact.address")}:</strong> {t("contact.addressValue")}

@@ -1,7 +1,7 @@
 const fs = require('fs');
 try {
-  const enStr = fs.readFileSync('d:/BARAKODE/Badji solution/badjitn/messages/en.json', 'utf8');
-  const esStr = fs.readFileSync('d:/BARAKODE/Badji solution/badjitn/messages/es.json', 'utf8');
+  const enStr = fs.readFileSync('d:/BARAKODE/badgi solution/badgitn/messages/en.json', 'utf8');
+  const esStr = fs.readFileSync('d:/BARAKODE/badgi solution/badgitn/messages/es.json', 'utf8');
   
   const en = JSON.parse(enStr);
   const es = JSON.parse(esStr);

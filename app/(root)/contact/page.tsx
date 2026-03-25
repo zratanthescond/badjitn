@@ -21,8 +21,8 @@ export default function ContactPage() {
     {
       key: "email",
       icon: Mail,
-      value: "contact@badji.net",
-      href: "mailto:contact@badji.net",
+      value: "contact@badgi.net",
+      href: "mailto:contact@badgi.net",
     },
     {
       key: "phone",

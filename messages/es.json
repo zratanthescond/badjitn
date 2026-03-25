@@ -324,7 +324,7 @@
       "description": "Nuestra misión es hacer que la gestión de eventos sea sencilla, potente y accesible para todos.",
       "founded": "Fundada en 2020",
       "headquarters": "Túnez, Túnez",
-      "title": "Sobre Badji.net"
+      "title": "Sobre badgi.net"
     },
     "mission": {
       "description": "Empoderar a los organizadores de eventos de todo el mundo con las herramientas que necesitan para crear experiencias memorables y construir conexiones significativas.",
@@ -338,7 +338,7 @@
       "users": "Usuarios activos"
     },
     "story": {
-      "content": "Badji.net nació de la frustración de organizar eventos con herramientas obsoletas y complicadas. Nuestros fundadores, organizadores de eventos experimentados, sabían que tenía que haber una forma mejor. Comenzando en una pequeña oficina en Túnez, nos propusimos construir la plataforma de gestión de eventos que deseábamos que existiera.",
+      "content": "badgi.net nació de la frustración de organizar eventos con herramientas obsoletas y complicadas. Nuestros fundadores, organizadores de eventos experimentados, sabían que tenía que haber una forma mejor. Comenzando en una pequeña oficina en Túnez, nos propusimos construir la plataforma de gestión de eventos que deseábamos que existiera.",
       "title": "Nuestra historia"
     },
     "team": {
@@ -368,7 +368,7 @@
     }
   },
   "aiToolsPage": {
-    "badjiAI": "Badji AI Chat",
+    "badgiAI": "badgi AI Chat",
     "capcut": "CapCut",
     "chatgpt": "ChatGPT Pro",
     "chatgptDesc": "IA conversacional líder para texto, código y análisis.",
@@ -386,21 +386,21 @@
     "perplexity": "Perplexity",
     "selectModel": "Seleccionar modelo",
     "subtitle": "Accede a todas tus herramientas de IA favoritas en un solo lugar.",
-    "title": "Hub de herramientas IA de Badji",
+    "title": "Hub de herramientas IA de badgi",
     "visit": "Visitar",
     "xmind": "Xmind",
     "activatedOn": "Activado el",
     "expiresOn": "Expira el",
     "statusExpired": "Expirado",
     "statusPending": "Próximamente",
-    "chatAssistantStatus": "Asistente Badji en linea",
+    "chatAssistantStatus": "Asistente badgi en linea",
     "chatModelFast": "Rapido",
     "chatModelAdvanced": "Avanzado",
     "chatClear": "Borrar chat",
     "chatClearConfirm": "Deseas borrar toda la conversacion?",
-    "chatIntro": "Pregunta solo sobre Badji, sus ofertas, la gestion de eventos, las entradas y los eventos disponibles.",
+    "chatIntro": "Pregunta solo sobre badgi, sus ofertas, la gestion de eventos, las entradas y los eventos disponibles.",
     "chatPlaceholder": "Pregunta sobre la plataforma, las ofertas o los eventos...",
-    "chatPoweredBy": "Impulsado por Badji AI",
+    "chatPoweredBy": "Impulsado por badgi AI",
     "chatErrorTitle": "Lo sentimos, ocurrio un error:",
     "chatErrorFallback": "Error de conexion con la IA. Verifica tus claves API."
   },
@@ -472,7 +472,7 @@
     },
     "featured": "Destacado",
     "hero": {
-      "description": "Mantente al día con las últimas noticias, tutoriales e ideas del equipo y la comunidad de Badji.net.",
+      "description": "Mantente al día con las últimas noticias, tutoriales e ideas del equipo y la comunidad de badgi.net.",
       "title": "Blog e ideas"
     },
     "noResults": {
@@ -562,7 +562,7 @@
           "title": "Genera un impacto"
         }
       },
-      "title": "¿Por qué trabajar en Badji.net?"
+      "title": "¿Por qué trabajar en badgi.net?"
     }
   },
   "category": {
@@ -709,7 +709,7 @@
   "community": {
     "contributors": {
       "contributions": "contribuciones",
-      "description": "Conoce a las personas increíbles que ayudan a mejorar Badji.net cada día.",
+      "description": "Conoce a las personas increíbles que ayudan a mejorar badgi.net cada día.",
       "title": "Principales Colaboradores"
     },
     "cta": {
@@ -793,7 +793,7 @@
       },
       "email": {
         "title": "Correo Electrónico",
-        "value": "hello@badji.net"
+        "value": "hello@badgi.net"
       },
       "hours": {
         "title": "Horario Comercial",
@@ -827,7 +827,7 @@
     "support": {
       "description": "Para soporte técnico y problemas de cuenta, visita nuestro centro de ayuda o contacta directamente con nuestro equipo de soporte.",
       "helpCenter": "Visitar Centro de Ayuda",
-      "supportEmail": "support@badji.net",
+      "supportEmail": "support@badgi.net",
       "title": "¿Necesitas Soporte?",
       "options": {
         "general": {
@@ -875,7 +875,7 @@
   },
   "cookies": {
     "hero": {
-      "description": "Conoce cómo utilizamos las cookies y tecnologías similares para mejorar tu experiencia en Badji.net.",
+      "description": "Conoce cómo utilizamos las cookies y tecnologías similares para mejorar tu experiencia en badgi.net.",
       "title": "Política de Cookies"
     },
     "info": {
@@ -1282,12 +1282,12 @@
   "documentation": {
     "cta": {
       "contact": "Contactar Soporte",
-      "description": "Únete a miles de organizadores de eventos que usan Badji.net para crear experiencias increíbles.",
+      "description": "Únete a miles de organizadores de eventos que usan badgi.net para crear experiencias increíbles.",
       "getStarted": "Empezar Gratis",
       "title": "¿Listo para empezar?"
     },
     "hero": {
-      "description": "Todo lo que necesitas para empezar con Badji.net. Desde guías de inicio rápido hasta referencias detalladas de la API.",
+      "description": "Todo lo que necesitas para empezar con badgi.net. Desde guías de inicio rápido hasta referencias detalladas de la API.",
       "search": "Buscar documentación...",
       "title": "Documentación"
     },
@@ -1329,7 +1329,7 @@
             "title": "Mejores Prácticas"
           },
           "contributing": {
-            "description": "Aprende cómo contribuir a Badji.net.",
+            "description": "Aprende cómo contribuir a badgi.net.",
             "title": "Guía de Contribución"
           },
           "examples": {
@@ -1356,15 +1356,15 @@
             "title": "Crea tu Primer Evento"
           },
           "installation": {
-            "description": "Instala y configura Badji.net según tus necesidades.",
+            "description": "Instala y configura badgi.net según tus necesidades.",
             "title": "Instalación"
           },
           "quick_start": {
-            "description": "Ponte en marcha con Badji.net en 5 minutos.",
+            "description": "Ponte en marcha con badgi.net en 5 minutos.",
             "title": "Guía de Inicio Rápido"
           }
         },
-        "description": "¿Nuevo en Badji.net? Empieza aquí para aprender lo básico.",
+        "description": "¿Nuevo en badgi.net? Empieza aquí para aprender lo básico.",
         "title": "Primeros Pasos",
         "viewAll": "Ver Todas las Guías"
       },
@@ -1379,7 +1379,7 @@
             "title": "Gestión de Eventos Avanzada"
           },
           "integrations": {
-            "description": "Conecta Badji.net con otras herramientas y servicios.",
+            "description": "Conecta badgi.net con otras herramientas y servicios.",
             "title": "Integraciones de Terceros"
           },
           "payment_setup": {
@@ -1466,7 +1466,7 @@
     "breakdownByType": "Desglose por Tipo de Entrada",
     "breakdownByCategory": "Desglose por Categoría",
     "scanPointsDescription": "Entradas y salidas de escaneo de códigos QR registradas en cada punto.",
-    "footer": "Informe generado por Badji.net",
+    "footer": "Informe generado por badgi.net",
     "actions": {
       "print": "Imprimir",
       "download": "Descargar",
@@ -1692,10 +1692,10 @@
           "title": "Escalar Fácilmente"
         }
       },
-      "title": "¿Por qué elegir Badji.net?"
+      "title": "¿Por qué elegir badgi.net?"
     },
     "cta": {
-      "description": "Únete a miles de organizadores que confían en Badji.net para la gestión de sus eventos.",
+      "description": "Únete a miles de organizadores que confían en badgi.net para la gestión de sus eventos.",
       "pricing": "Ver Precios",
       "start": "Empezar Prueba Gratis",
       "title": "¿Listo para transformar tus eventos?"
@@ -1805,7 +1805,7 @@
   "footer": {
     "contactEmail": "Correo electrónico",
     "contactPhone": "Teléfono",
-    "copyright": "© {year} Badji.net. Todos los derechos reservados.",
+    "copyright": "© {year} badgi.net. Todos los derechos reservados.",
     "description": "La plataforma líder para la gestión de eventos y la creación de comunidades. Crea, gestiona y promociona tus eventos con facilidad.",
     "followUs": "Síguenos",
     "gdpr": {
@@ -1965,11 +1965,11 @@
         "title": "Creación de eventos"
       },
       "getting_started": {
-        "description": "¿Nuevo en Badji.net? Comience aquí para aprender lo básico.",
+        "description": "¿Nuevo en badgi.net? Comience aquí para aprender lo básico.",
         "title": "Primeros pasos"
       },
       "integrations": {
-        "description": "Conecte Badji.net con otras herramientas y servicios.",
+        "description": "Conecte badgi.net con otras herramientas y servicios.",
         "title": "Integraciones"
       },
       "payments": {
@@ -2698,7 +2698,7 @@
       "lastUpdated": "Última actualización: 1 de enero de 2024",
       "title": "Política de privacidad"
     },
-    "introduction": "En Badji.net, nos comprometemos a proteger su privacidad y garantizar la seguridad de su información personal. Esta Política de Privacidad explica cómo recopilamos, usamos, divulgamos y salvaguardamos su información cuando utiliza nuestros servicios.",
+    "introduction": "En badgi.net, nos comprometemos a proteger su privacidad y garantizar la seguridad de su información personal. Esta Política de Privacidad explica cómo recopilamos, usamos, divulgamos y salvaguardamos su información cuando utiliza nuestros servicios.",
     "sections": {
       "changes": {
         "content": "Podemos actualizar esta Política de Privacidad de vez en cuando. Le notificaremos sobre cualquier cambio material publicando la nueva política en nuestro sitio web.",
@@ -3004,7 +3004,7 @@
   "status": {
     "hero": {
       "allSystemsOperational": "Todos los sistemas operativos",
-      "description": "Estado en tiempo real de todos los servicios y componentes de infraestructura de Badji.net.",
+      "description": "Estado en tiempo real de todos los servicios y componentes de infraestructura de badgi.net.",
       "title": "Estado del sistema"
     },
     "incidents": {
@@ -3183,12 +3183,12 @@
       "title": "Contáctenos"
     },
     "hero": {
-      "description": "Lea estos términos detenidamente antes de utilizar nuestros servicios. Al usar Badji.net, usted acepta estar sujeto a estos términos.",
+      "description": "Lea estos términos detenidamente antes de utilizar nuestros servicios. Al usar badgi.net, usted acepta estar sujeto a estos términos.",
       "effectiveDate": "Vigente desde: 1 de enero de 2024",
       "lastUpdated": "Última actualización: 1 de enero de 2024",
       "title": "Términos de servicio"
     },
-    "introduction": "Estos Términos de servicio rigen el uso de los servicios de Badji.net. Al acceder o utilizar nuestros servicios, usted acepta estar sujeto a estos términos y a nuestra Política de privacidad.",
+    "introduction": "Estos Términos de servicio rigen el uso de los servicios de badgi.net. Al acceder o utilizar nuestros servicios, usted acepta estar sujeto a estos términos y a nuestra Política de privacidad.",
     "sections": {
       "acceptable_use": {
         "content": "Usted acepta utilizar nuestros servicios solo para fines lícitos y de acuerdo con estos términos.",
@@ -3196,7 +3196,7 @@
         "title": "Política de uso aceptable"
       },
       "acceptance": {
-        "content": "Al acceder y utilizar Badji.net, usted acepta y se compromete a estar sujeto a los términos y disposiciones de este acuerdo.",
+        "content": "Al acceder y utilizar badgi.net, usted acepta y se compromete a estar sujeto a los términos y disposiciones de este acuerdo.",
         "points": "Acuerdo con los términos y condiciones | Capacidad legal para celebrar el acuerdo | Cumplimiento de las leyes aplicables | Actualizaciones de los términos y condiciones",
         "title": "Aceptación de los términos"
       },
@@ -3215,7 +3215,7 @@
         "title": "Contenido del usuario"
       },
       "description": {
-        "content": "Badji.net ofrece servicios de gestión de eventos y venta de entradas a través de nuestra plataforma web y aplicaciones móviles.",
+        "content": "badgi.net ofrece servicios de gestión de eventos y venta de entradas a través de nuestra plataforma web y aplicaciones móviles.",
         "points": "Herramientas de creación y gestión de eventos | Servicios de registro y venta de entradas | Capacidades de procesamiento de pagos | Funciones de análisis e informes | Servicios de atención al cliente",
         "title": "Descripción del servicio"
       },
@@ -3225,7 +3225,7 @@
         "title": "Descargos de responsabilidad"
       },
       "governing_law": {
-        "content": "Estos términos se rigen por las leyes de la jurisdicción donde Badji.net está incorporada.",
+        "content": "Estos términos se rigen por las leyes de la jurisdicción donde badgi.net está incorporada.",
         "points": "Ley aplicable y jurisdicción | Procedimientos de resolución de disputas | Requisitos de arbitraje | Renuncias a demandas colectivas | Sede legal",
         "title": "Ley aplicable"
       },
@@ -3236,7 +3236,7 @@
       },
       "intellectual_property": {
         "content": "Nuestros servicios y contenido están protegidos por leyes de derechos de autor, marcas comerciales y otras leyes de propiedad intelectual.",
-        "points": "Derechos de marca de Badji.net | Protección de derechos de autor | Licencias de contenido de usuario | Propiedad intelectual de terceros | Procedimientos de cumplimiento de la DMCA",
+        "points": "Derechos de marca de badgi.net | Protección de derechos de autor | Licencias de contenido de usuario | Propiedad intelectual de terceros | Procedimientos de cumplimiento de la DMCA",
         "title": "Propiedad intelectual"
       },
       "limitation_liability": {
@@ -3256,7 +3256,7 @@
       },
       "termination": {
         "content": "Cualquier parte puede terminar este acuerdo bajo ciertas circunstancias según se describe en esta sección.",
-        "points": "Terminación por el usuario | Terminación por Badji.net | Efecto de la terminación | Retención de datos tras la terminación | Vigencia de los términos",
+        "points": "Terminación por el usuario | Terminación por badgi.net | Efecto de la terminación | Retención de datos tras la terminación | Vigencia de los términos",
         "title": "Terminación"
       },
       "user_accounts": {

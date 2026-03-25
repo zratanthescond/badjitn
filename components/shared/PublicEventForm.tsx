@@ -466,7 +466,7 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
 
                 {/* Footer */}
                 <p className="text-center text-xs text-muted-foreground pb-8">
-                    Powered by <strong>Badji.tn</strong> — Event Management Platform
+                    Powered by <strong>badgi.tn</strong> — Event Management Platform
                 </p>
             </div>
         </div>

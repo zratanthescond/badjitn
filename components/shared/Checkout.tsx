@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
 
 import { IEvent } from "@/lib/database/models/event.model";
 import { Button } from "../ui/button";
-import { checkoutOrder } from "@/lib/actions/order.actions";
+import { checkoutOrder, createOrder } from "@/lib/actions/order.actions";
 import { Detail } from "@/lib/database/models/order.model";
 import { motion } from "framer-motion";
 import { Ticket } from "lucide-react";
-import { json } from "stream/consumers";
 import { formatPriceByCountry } from "@/lib/utils";
-loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 const Checkout = ({
   event,
@@ -24,6 +24,8 @@ const Checkout = ({
 }) => {
   const [price, setPrice] = useState<number>(0);
   const [details, setDetails] = useState<Detail[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
@@ -74,16 +76,57 @@ const Checkout = ({
     }
   }, [event, chekedPlans, discountInfo]);
   const onCheckout = async () => {
-    const order = {
-      eventTitle: event.title,
-      eventId: event._id,
-      price: price,
-      isFree: event.isFree,
-      buyerId: userId || "",
-      details: details,
-    };
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
-    await checkoutOrder(order);
+    try {
+      if (event.isFree) {
+        const order = await createOrder({
+          eventId: event._id,
+          totalAmount: "0",
+          type: "paid",
+          details,
+          buyerId: userId || "",
+          stripeId: uuidv4(),
+          createdAt: new Date(),
+        });
+
+        if (order) {
+          toast({
+            title: "Billet obtenu",
+            description: event.showWorkSubmissionPopup
+              ? "Votre billet gratuit est confirme. Vous allez maintenant choisir si vous souhaitez soumettre un travail."
+              : "Votre billet gratuit a bien ete confirme. Retrouvez-le des maintenant dans votre profil.",
+          });
+          router.push(
+            event.showWorkSubmissionPopup
+              ? `/events/${event._id}/post-purchase`
+              : "/profile"
+          );
+        }
+
+        return;
+      }
+
+      await checkoutOrder({
+        eventTitle: event.title,
+        eventId: event._id,
+        price,
+        isFree: event.isFree,
+        buyerId: userId || "",
+        details,
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: event.isFree
+          ? "Impossible d'obtenir le billet gratuit pour le moment. Veuillez reessayer."
+          : "Impossible de finaliser l'achat du billet pour le moment. Veuillez reessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -94,7 +137,7 @@ const Checkout = ({
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Button
-          disabled={price == 0}
+          disabled={price == 0 || isSubmitting}
           type="submit"
           role="link"
           className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300 "
@@ -104,7 +147,11 @@ const Checkout = ({
               <Ticket size={16} className="text-primary-foreground" />
             </div>
             <span>
-              {event.isFree ? "Get Free Ticket" : `Pay now ${formatPriceByCountry(price, event.country)}`}
+              {event.isFree
+                ? isSubmitting
+                  ? "Obtention du billet..."
+                  : "Get Ticket"
+                : `Pay now ${formatPriceByCountry(price, event.country)}`}
             </span>
           </div>
         </Button>

@@ -14,9 +14,9 @@ interface AIChatWindowProps {
   onClose: () => void;
 }
 
-const getChatStorageKey = (toolId: string) => `badji-ai-chat:${toolId}`;
+const getChatStorageKey = (toolId: string) => `badgi-ai-chat:${toolId}`;
 
-const AIChatWindow = ({ toolId = "badji-chat", toolName, onClose }: AIChatWindowProps) => {
+const AIChatWindow = ({ toolId = "badgi-chat", toolName, onClose }: AIChatWindowProps) => {
   const t = useTranslations("aiToolsPage");
   const [model, setModel] = React.useState<"googleIA" | "chatgpt">("googleIA");
   const [input, setInput] = React.useState("");
@@ -98,7 +98,7 @@ const AIChatWindow = ({ toolId = "badji-chat", toolName, onClose }: AIChatWindow
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 min-w-0">
             <div className="min-w-0">
               <h2 className="text-base font-bold text-slate-900 dark:text-white leading-tight truncate">
-                {toolName ?? "Badji AI"}
+                {toolName ?? "badgi AI"}
               </h2>
               <p className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold flex items-center gap-1 tracking-[0.14em]">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
@@ -163,7 +163,7 @@ const AIChatWindow = ({ toolId = "badji-chat", toolName, onClose }: AIChatWindow
               <Bot size={18} />
             </div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-              {t("badjiAI")}
+              {t("badgiAI")}
             </h3>
             <p className="text-slate-500 dark:text-slate-400 max-w-sm text-[13px]">
               {t("chatIntro")}

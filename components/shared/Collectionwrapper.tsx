@@ -1,15 +1,20 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import Collection from "./Collection";
-import { getAllEvents } from "@/lib/actions/event.actions";
 import { HomeEventCardSkeleton } from "./HomeEventSkeleton";
 import { useGetAllEvents } from "@/hooks/useGetAllEvent";
-import { date } from "zod";
 import { useTranslations } from "next-intl";
 
-export default function CollectionWrapper() {
+export default function CollectionWrapper({
+  initialData,
+  currentUserId,
+  userPhoto,
+}: {
+  initialData?: { data: any[]; totalPages: number };
+  currentUserId?: string;
+  userPhoto?: string;
+}) {
   const searchParams = useSearchParams();
 
   // Extract values with fallback
@@ -26,6 +31,14 @@ export default function CollectionWrapper() {
     category,
     query,
     date,
+    initialData:
+      page === 1 &&
+      !query &&
+      !category &&
+      !country &&
+      !date
+        ? initialData
+        : undefined,
   });
 
   useEffect(() => {
@@ -45,6 +58,8 @@ export default function CollectionWrapper() {
       limit={30}
       page={page}
       totalPages={events?.totalPages}
+      currentUserId={currentUserId}
+      userPhoto={userPhoto}
     />
   );
 }

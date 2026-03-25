@@ -21,14 +21,22 @@ export default async function Home(props: SearchParamProps) {
   const searchText = (searchParams?.query as string) || "";
   const category = (searchParams?.category as string) || "";
   const country = (searchParams?.country as string) || "";
+  const date = (searchParams?.date as string) || "";
+  const user = await useUser();
+  const currentUserId = user?._id?.toString();
+  const userPhoto = user?.photo;
 
-  // const events = await getAllEvents({
-  //   country,
-  //   query: searchText,
-  //   category,
-  //   page,
-  //   limit: 30,
-  // });
+  const initialEvents =
+    page === 1 && !searchText && !category && !country && !date
+      ? await getAllEvents({
+          country,
+          query: searchText,
+          category,
+          page,
+          limit: 30,
+          date,
+        })
+      : undefined;
 
   return (
     <main className="relative min-h-screen bg-background pb-20 overflow-hidden">
@@ -59,7 +67,11 @@ export default async function Home(props: SearchParamProps) {
 
         {/* Content Section */}
         <div className="animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-elite-spring">
-          <CollectionWrapper />
+          <CollectionWrapper 
+            initialData={initialEvents} 
+            currentUserId={currentUserId}
+            userPhoto={userPhoto}
+          />
         </div>
       </section>
     </main>

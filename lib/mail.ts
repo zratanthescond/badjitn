@@ -13,7 +13,7 @@ export const transporter = nodemailer.createTransport({
 export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `http://localhost:3000/api/auth/activate/${token}`; // Nowy format URL
   await transporter.sendMail({
-    from: '"BadjiTn" <mail@badji.tn>',
+    from: '"badgiTn" <mail@badgi.tn>',
     to: email,
     subject: "Verify Your Email",
     html: `Please click on the following link to verify your email: <a href="${verificationUrl}">${verificationUrl}</a>`,
@@ -50,7 +50,7 @@ export async function sendWorkStatusEmail({
     : "";
 
   await transporter.sendMail({
-    from: '"BadjiTn" <mail@badji.tn>',
+    from: '"badgiTn" <mail@badgi.tn>',
     to,
     subject,
     html: `
