@@ -8,6 +8,8 @@ export interface IField extends Document {
   label: string;
   placeholder?: string;
   options?: string[];
+  required: boolean;
+  order: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -24,6 +26,8 @@ const FieldSchema: Schema<IField> = new Schema(
     label: { type: String, required: true },
     placeholder: { type: String, default: "" },
     options: { type: [String], default: [] },
+    required: { type: Boolean, default: true },
+    order: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

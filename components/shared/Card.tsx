@@ -32,7 +32,6 @@ import {
   Watch,
 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { classNames } from "uploadthing/client";
 import { Badge } from "../ui/badge";
 import {
   DropdownMenu,

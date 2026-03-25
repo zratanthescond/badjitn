@@ -16,7 +16,7 @@ const uploadVideo = async (data: FormData) => {
   return video.data;
 };
 
-const useReelCreate = (data: FormData) => {
-  return useMutation({ mutationFn: () => uploadVideo(data) });
+const useReelCreate = () => {
+  return useMutation({ mutationFn: (data: FormData) => uploadVideo(data) });
 };
 export { useReelCreate, uploadVideo };

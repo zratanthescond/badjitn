@@ -41,8 +41,10 @@
       "saveSuccess": "Form saved successfully!"
     },
     "preview": {
+      "disclaimer": "This is a preview of how the fields will appear to attendees.",
       "noFields": "no fields added yet",
       "selectOption": "Select an option",
+      "subtitle": "Attendee Registration Preview",
       "title": "Form Preview"
     },
     "title": "Custom Form Builder",
@@ -145,9 +147,10 @@
   "SponsorForm": {
     "actions": {
       "addSponsor": "Add Sponsor",
+      "updateSponsor": "Update Sponsor",
       "cancel": "Cancel",
       "reset": "Reset Form",
-      "submitting": "Adding Sponsor..."
+      "submitting": "Processing..."
     },
     "description": "Enter the details of the new sponsor to add them to your platform.",
     "fields": {
@@ -188,6 +191,7 @@
       "processing": "Processing your request...",
       "success": "Success",
       "successDescription": "Sponsor added successfully! They will appear in your sponsor list.",
+      "updateSuccess": "Sponsor updated successfully!",
       "uploading": "Uploading files..."
     },
     "title": "Add New Sponsor",
@@ -1548,7 +1552,11 @@
     "selectYourSponsors": "Select your sponsors",
     "startDate": "Start Date",
     "submitting": "Submitting...",
-    "url": "URL"
+    "url": "URL",
+    "workSubmission": {
+      "title": "Show work submission popup after purchase",
+      "description": "If enabled, customers will see a confirmation after participating to choose between submitting work or returning home."
+    }
   },
   "eventPrice": {
     "availablePlaces": "Available Places",
@@ -2739,9 +2747,6 @@
   "profile": {
     "addCustomRequiredInfo": "Add Custom Required Information",
     "emptyCustomFields": "No custom required information has been added yet.",
-    "addSponsor": "Add Sponsor",
-    "allSponsors": "All Sponsors",
-    "allTickets": "All Tickets",
     "createNewEvent": "Create New Event",
     "customRequiredInfo": "Custom Required Information",
     "customFieldsDescription": "Manage the required information for your events",
@@ -2759,9 +2764,17 @@
     },
     "eventsOrganized": "Events Organized",
     "eventsTabDescription": "Manage and view all your organized events",
+    "emptySponsors": {
+        "title": "No Sponsors Yet",
+        "description": "Start by adding your first event sponsor to your profile."
+    },
     "exploreMoreEvents": "Explore more events",
     "mySponsors": "My Sponsors",
     "sponsorsDescription": "Manage your event sponsors and their visibility",
+    "addSponsor": "Add Sponsor",
+    "editSponsor": "Edit Sponsor",
+    "deleteSponsor": "Delete Sponsor",
+    "deleteSponsorConfirm": "Are you sure you want to delete this sponsor? This action cannot be undone.",
     "myTickets": "My Tickets",
     "settings": {
       "title": "Profile Settings",
@@ -2786,7 +2799,9 @@
         "updatedTitle": "Profile updated",
         "updatedDescription": "Your profile settings were saved successfully.",
         "errorTitle": "Update failed",
-        "errorDescription": "Unable to save your profile settings."
+        "errorDescription": "Unable to save your profile settings.",
+        "deleteSponsorSuccess": "Sponsor deleted successfully",
+        "deleteSponsorError": "Failed to delete sponsor"
       }
     },
     "dashboard": "Dashboard",
@@ -2825,9 +2840,24 @@
       "title": "Custom Event Forms",
       "description": "Build custom registration forms and invite attendees",
       "createButton": "Create Form",
+      "info": {
+        "title": "Custom Registration Info",
+        "description": "Collect the specific information you need from your attendees when they register for your events."
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "fields": "fields",
+        "invited": "invited"
+      },
+      "actions": {
+        "edit": "Edit",
+        "open": "Open"
+      },
       "empty": {
         "title": "No forms yet",
-        "description": "Capture all the information you need from your attendees."
+        "description": "Capture all the information you need from your attendees.",
+        "button": "Create Form"
       },
       "deleteConfirm": "Are you sure you want to delete this form? All submissions will be lost.",
       "messages": {
@@ -3275,7 +3305,13 @@
     "modifyVideo": "Modify Video",
     "searchMusic": "Search for music",
     "upload": "Upload",
-    "use": "Use"
+    "use": "Use",
+    "selectMusic": "Select Music",
+    "done": "Done",
+    "loadingTracks": "Loading tracks...",
+    "processing": "Processing...",
+    "noMusicAttached": "No music is attached to the video yet.",
+    "failedToCreateReel": "Failed to create reel"
   },
   "workAdministration": {
     "actions": {

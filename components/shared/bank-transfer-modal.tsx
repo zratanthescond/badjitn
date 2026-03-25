@@ -137,7 +137,24 @@ export function BankTransferModal({
 
     setIsLoading(true);
     try {
-      // Submit the bank transfer with the base64 screenshot directly
+      // Step 1: Upload the file to the native upload API
+      const formData = new FormData();
+      formData.append("file", uploadedFile);
+
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json();
+
+      if (!uploadData.success || !uploadData.url) {
+        throw new Error(uploadData.message || "Failed to upload screenshot");
+      }
+
+      const screenshotUrl = uploadData.url;
+
+      // Step 2: Submit the bank transfer with the screenshot URL
       const result = await submitBankTransfer({
         eventId,
         buyerId,
@@ -146,7 +163,8 @@ export function BankTransferModal({
         ...(requiredUserInfo && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
         ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
         transferId: null,
-        screenshotBase64: preview,
+        screenshotUrl,
+        screenshotBase64: null,
       });
 
       if (result.success) {

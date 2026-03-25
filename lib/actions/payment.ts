@@ -17,7 +17,8 @@ interface BankTransferInput {
   requiredUserInfo?: any[]
   discountInfo?: any
   transferId: string | null
-  screenshotBase64: string | null
+  screenshotBase64?: string | null
+  screenshotUrl?: string | null
 }
 
 interface BankTransferResponse {
@@ -36,7 +37,8 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
       requiredUserInfo,
       discountInfo,
       transferId,
-      screenshotBase64
+      screenshotBase64,
+      screenshotUrl: inputScreenshotUrl
     } = input
 
     // Basic validation
@@ -48,16 +50,16 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
     }
 
     // Validate that at least one submission method is provided
-    if (!transferId && !screenshotBase64) {
+    if (!transferId && !screenshotBase64 && !inputScreenshotUrl) {
       return {
         success: false,
         message: 'Please provide either a transfer ID or a screenshot',
       }
     }
 
-    // Save screenshot file if base64 is provided
-    let screenshotUrl: string | null = null
-    if (screenshotBase64) {
+    // Save screenshot file if base64 is provided and no URL is given
+    let screenshotUrl: string | null = inputScreenshotUrl || null
+    if (!screenshotUrl && screenshotBase64) {
       try {
         // Extract the mime type and base64 data
         const matches = screenshotBase64.match(/^data:image\/(\w+);base64,(.+)$/)

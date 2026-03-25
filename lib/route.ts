@@ -7,7 +7,7 @@ export const PUBLIC_ROUTES = [
   "/events/:id",
   "/api/webhook/clerk",
   "/api/webhook/stripe",
-  "/api/uploadthing",
+  "/api/upload",
   "/api/auth/activate/:token",
   "/sign-in",
   "/sign-up",

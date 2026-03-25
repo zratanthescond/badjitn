@@ -73,7 +73,7 @@ export function CategorySearch() {
               {CATEGORY_KEYS.map((key) => (
                 <CommandItem
                   key={key}
-                  value={t(key)}
+                  value={t.has(key) ? t(key) : key}
                   onSelect={() => onSelectCategory(key)}
                   className="rounded-xl px-3 py-2 text-slate-300 aria-selected:bg-white/10 aria-selected:text-white cursor-pointer transition-colors"
                 >
@@ -83,7 +83,7 @@ export function CategorySearch() {
                       currentCategory === key ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  <span className="font-semibold text-sm">{t(key)}</span>
+                  <span className="font-semibold text-sm">{t.has(key) ? t(key) : key}</span>
                 </CommandItem>
               ))}
             </CommandGroup>

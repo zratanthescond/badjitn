@@ -147,9 +147,12 @@
       "addSponsor": "إضافة راعي",
       "cancel": "إلغاء",
       "reset": "إعادة تعيين النموذج",
-      "submitting": "جاري إضافة الراعي..."
+      "submitting": "جاري إضافة الراعي...",
+      "updateSponsor": "تعديل الراعي"
     },
-    "description": "أدخل تفاصيل الراعي الجديد لإضافته إلى منصتك.",
+    "description": "أدخل تفاصيل الراعي للمتابعة.",
+    "title": "إضافة راعي جديد",
+    "titleEdit": "تعديل تفاصيل الراعي",
     "fields": {
       "logo": {
         "chooseFile": "اختر ملف",
@@ -188,9 +191,12 @@
       "processing": "جاري معالجة طلبك...",
       "success": "نجح",
       "successDescription": "تم إضافة الراعي بنجاح! سيظهر في قائمة الرعاة الخاصة بك.",
+      "updateSuccess": "نجح",
+      "updateSuccessDescription": "تم تحديث الراعي بنجاح!",
+      "updateError": "خطأ",
+      "updateErrorDescription": "فشل في تحديث الراعي. يرجى المحاولة مرة أخرى.",
       "uploading": "جاري رفع الملفات..."
     },
-    "title": "إضافة راعي جديد",
     "validation": {
       "fileRequired": "يرجى رفع ملف الشعار",
       "fileSize": "يجب أن يكون حجم الملف أقل من 1 ميجابايت",
@@ -1548,7 +1554,11 @@
     "selectYourSponsors": "اختر الرعاة",
     "startDate": "تاريخ البدء",
     "submitting": "جارى التحميل...",
-    "url": "رابط الحدث"
+    "url": "رابط الحدث",
+    "workSubmission": {
+      "title": "إظهار نافذة منبثقة لتقديم العمل بعد الشراء",
+      "description": "إذا تم التفعيل، سيرى العملاء تأكيدًا بعد المشاركة لاختيار تقديم العمل أو العودة للرئيسية."
+    }
   },
   "eventPrice": {
     "availablePlaces": "الأماكن المتاحة",
@@ -2739,10 +2749,12 @@
   "profile": {
     "addCustomRequiredInfo": "اضافة معلومات مطلوبة مخصصة",
     "emptyCustomFields": "لم تتم إضافة أي معلومات مطلوبة مخصصة بعد.",
-    "addSponsor": "اعضافة رعة",
-    "allSponsors": "جميع الرعات",
     "createNewEvent": "إنشاء حدث جديد",
     "eventsTabDescription": "إدارة وعرض جميع الفعاليات التي نظمتها",
+    "emptySponsors": {
+        "title": "لا يوجد رعاة حتى الآن",
+        "description": "ابدأ بإضافة أول راعٍ للحدث إلى ملفك الشخصي."
+    },
     "customRequiredInfo": "معلومات مطلوبة مخصصة",
     "customFieldsDescription": "إدارة المعلومات المطلوبة لفعالياتك",
     "emptyEventsCreated": {
@@ -2761,6 +2773,10 @@
     "exploreMoreEvents": "استكشاف المزيد من الأحداث",
     "mySponsors": "الرعاة الخاصين بي",
     "sponsorsDescription": "إدارة رواة الحدث الخاص بك ورؤيتهم",
+    "addSponsor": "إضافة راعٍ",
+    "editSponsor": "تعديل الراعي",
+    "deleteSponsor": "حذف الراعي",
+    "deleteSponsorConfirm": "هل أنت متأكد أنك تريد حذف هذا الراعي؟ لا يمكن التراجع عن هذا الإجراء.",
     "myTickets": "تذاكري",
     "settings": {
       "title": "إعدادات الملف الشخصي",
@@ -2785,7 +2801,9 @@
         "updatedTitle": "تم تحديث الملف الشخصي",
         "updatedDescription": "تم حفظ إعدادات ملفك الشخصي بنجاح.",
         "errorTitle": "فشل التحديث",
-        "errorDescription": "تعذر حفظ إعدادات الملف الشخصي."
+        "errorDescription": "تعذر حفظ إعدادات الملف الشخصي.",
+        "deleteSponsorSuccess": "تم حذف الراعي بنجاح",
+        "deleteSponsorError": "فشل في حذف الراعي"
       }
     },
     "allTickets": "كل التذاكر",

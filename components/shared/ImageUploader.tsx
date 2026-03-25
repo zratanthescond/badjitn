@@ -2,11 +2,9 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { generateClientDropzoneAccept } from "uploadthing/client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Upload, X, Loader2, ImageIcon } from "lucide-react";
-import { useUploadThing } from "@/lib/uploadthing";
 import { convertFileToUrl } from "@/lib/utils";
 
 type ImageUploaderProps = {
@@ -27,8 +25,6 @@ export function ImageUploader({
     const [isUploading, setIsUploading] = useState(false);
     const [preview, setPreview] = useState<string>(value || "");
 
-    const { startUpload } = useUploadThing("imageUploader");
-
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
             if (acceptedFiles.length === 0) return;
@@ -39,11 +35,25 @@ export function ImageUploader({
             setIsUploading(true);
 
             try {
-                const uploadedImages = await startUpload([file]);
-                if (uploadedImages && uploadedImages.length > 0) {
-                    const uploadedUrl = uploadedImages[0].url;
-                    onChange(uploadedUrl);
-                    setPreview(uploadedUrl);
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const response = await fetch("/api/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error("Upload failed");
+                }
+
+                const data = await response.json();
+                
+                if (data.success && data.url) {
+                    onChange(data.url);
+                    setPreview(data.url);
+                } else {
+                    throw new Error(data.message || "Upload failed");
                 }
             } catch (error) {
                 console.error("Upload failed:", error);
@@ -52,12 +62,12 @@ export function ImageUploader({
                 setIsUploading(false);
             }
         },
-        [startUpload, onChange, value]
+        [onChange, value]
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        accept: generateClientDropzoneAccept(["image/*"]),
+        accept: { "image/*": [] },
         maxFiles: 1,
         multiple: false,
     });

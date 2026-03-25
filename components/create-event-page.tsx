@@ -236,57 +236,8 @@ export default function CreateEventPage({ user }: CreateEventPageProps) {
               {/* Event Form */}
               {selectedOrgId && (
                 <Card className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-green-200/30 dark:border-green-700/30 rounded-3xl overflow-hidden shadow-xl">
-                  <CardHeader className="bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/30 dark:to-emerald-950/30 border-b border-green-100/50 dark:border-green-900/30">
-                    <div
-                      className={`flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""
-                        }`}
-                    >
-                      <div className="p-3 rounded-xl bg-green-500/20">
-                        <Sparkles className="h-6 w-6 text-green-600 dark:text-green-400" />
-                      </div>
-                      <div className={isRTL ? "text-right" : ""}>
-                        <CardTitle
-                          className={`text-2xl text-green-800 dark:text-green-200 ${isRTL ? "font-arabic" : ""
-                            }`}
-                        >
-                          {t("approved.title")}
-                        </CardTitle>
-                        <CardDescription
-                          className={`text-green-600 dark:text-green-300 text-lg ${isRTL ? "font-arabic" : ""
-                            }`}
-                        >
-                          Publishing under{" "}
-                          <strong>{selectedOrg?.name}</strong>
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-
                   <CardContent className="md:p-8 p-2">
                     <div className="space-y-6">
-                      <div className="glass bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 backdrop-blur-sm border border-blue-200/30 dark:border-blue-700/30 rounded-2xl p-6">
-                        <div
-                          className={`flex items-center gap-3 mb-4 ${isRTL ? "flex-row-reverse" : ""
-                            }`}
-                        >
-                          <Plus className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                          <h3
-                            className={`font-semibold text-blue-800 dark:text-blue-200 ${isRTL ? "font-arabic" : ""
-                              }`}
-                          >
-                            {t("approved.welcomeMessage")}
-                          </h3>
-                        </div>
-                        <p
-                          className={`text-muted-foreground ${isRTL ? "font-arabic text-right" : ""
-                            }`}
-                        >
-                          {t("approved.description")}
-                        </p>
-                      </div>
-
-                      <Separator className="bg-gradient-to-r from-transparent via-border to-transparent" />
-
                       {/* Event Form */}
                       <div className="space-y-4">
                         <div
@@ -305,6 +256,7 @@ export default function CreateEventPage({ user }: CreateEventPageProps) {
                           userId={user._id}
                           type="Create"
                           organisationId={selectedOrgId}
+                          onOrganisationChange={(id) => setSelectedOrgId(id)}
                         />
                       </div>
                     </div>

@@ -9,7 +9,6 @@ import {
 } from "react";
 
 import { useDropzone } from "react-dropzone";
-import { generateClientDropzoneAccept } from "uploadthing/client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { convertFileToUrl } from "@/lib/utils";
@@ -52,7 +51,10 @@ export function FileUploader({
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: generateClientDropzoneAccept(["image/*", "video/*"]),
+    accept: {
+      "image/*": [],
+      "video/*": [],
+    },
   });
   useEffect(() => {
     if (imageUrl.includes(".m3u8")) {

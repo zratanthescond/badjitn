@@ -93,7 +93,7 @@ const CategoryFilter = () => {
               )}
               onClick={() => onSelectCategory(key)}
             >
-              {t(key)}
+              {t.has(key) ? t(key) : key}
             </Button>
           );
         })}

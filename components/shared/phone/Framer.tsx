@@ -4,56 +4,41 @@ import Image from "next/image";
 export const Framer = ({
   src,
   duration,
+  remPerSec,
 }: {
   src: string;
   duration: number;
+  remPerSec: number;
 }) => {
   const frames = usePreview(src);
   const isLoading = frames.length === 0;
+  const REM_PER_SEC = remPerSec;
+  const FRAMES_PER_SEC = 4;
+  const FRAME_WIDTH_REM = REM_PER_SEC / FRAMES_PER_SEC; // 2rem
+
   if (isLoading) {
     return (
-      <div className="w-full flex rounded-lg flex-row my-1 ">
-        <div className="w-[4.5rem] h-[9.5rem] bg-card/30 animate-pulse rounded-l-lg "></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse border-s-2 "></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse  border-s-2"></div>
-        <div className="w-[4.5rem]  bg-card/30 animate-pulse rounded-r-lg"></div>
-      </div>
+      <div
+        className="flex rounded-lg flex-row my-1 bg-white/5 animate-pulse overflow-hidden"
+        style={{ width: `${duration * REM_PER_SEC}rem`, height: "4rem" }}
+      />
     );
   }
+
   return (
-    <div className="w-full flex rounded-lg flex-row my-1 ">
+    <div className="flex rounded-lg flex-row my-1 overflow-hidden h-16 bg-black/20">
       {frames.map((frame, index) => (
-        <div key={index} className="w-[4.5rem]  ">
+        <div
+          key={index}
+          className="relative flex-shrink-0"
+          style={{ width: `${FRAME_WIDTH_REM}rem`, height: "100%" }}
+        >
           <Image
-            loader={() => frame}
-            blurDataURL="/assets/images/placeholder.png"
-            placeholder="blur"
             src={frame}
-            style={{ objectFit: "cover" }}
-            layout="responsive"
-            width={72}
-            height={27 / 16 / 9}
-            alt="preview"
-            className={`${index === 0 ? "rounded-l-lg" : ""} ${
-              index === frames.length - 1 ? "rounded-r-lg" : ""
-            }`}
+            alt={`frame-${index}`}
+            fill
+            className="object-cover opacity-80"
+            unoptimized
           />
         </div>
       ))}

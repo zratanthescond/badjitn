@@ -22,7 +22,7 @@ import { FileUploader } from "./FileUploader";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
-import { useUploadThing } from "@/lib/uploadthing";
+import OrganisationDropdown from "./OrganisationDropdown";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from "../ui/checkbox";
@@ -62,10 +62,18 @@ type EventFormProps = {
   type: "Create" | "Update";
   event?: IEvent;
   eventId?: string;
-  organisationId?: string;
+  organisationId?: string | null;
+  onOrganisationChange?: (id: string) => void;
 };
 
-const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormProps) => {
+const EventForm = ({
+  userId,
+  type,
+  event,
+  eventId,
+  organisationId,
+  onOrganisationChange,
+}: EventFormProps) => {
   const [address, setAddress] = useState("our location");
   const [latitude, setLatitude] = useState(34.739822);
   const [longitude, setLongitude] = useState(10.7600196);
@@ -86,12 +94,16 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
     event && type === "Update"
       ? {
         ...event,
+        organisationId: (event.organisation as any)?._id || organisationId || "",
         country: event.country || "TUN",
 
         startDateTime: new Date(event.startDateTime),
         endDateTime: new Date(event.endDateTime),
       }
-      : eventDefaultValues;
+      : {
+        ...eventDefaultValues,
+        organisationId: organisationId || "",
+      };
   const router = useRouter();
 
   useEffect(() => {
@@ -132,7 +144,7 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
             location: { name: address, lon: longitude, lat: latitude },
             imageUrl: reel,
             scanPoints: values.scanPoints,
-            organisationId: organisationId,
+            organisationId: values.organisationId,
           },
           userId,
           path: "/profile",
@@ -206,6 +218,27 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
         })}
         className="flex flex-col gap-5 rounded-3xl p-5"
       >
+        {type === "Update" && (
+          <FormField
+            control={form.control}
+            name="organisationId"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <OrganisationDropdown
+                    userId={userId}
+                    onChangeHandler={(id) => {
+                      field.onChange(id);
+                      if (onOrganisationChange) onOrganisationChange(id);
+                    }}
+                    value={field.value}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
@@ -602,10 +635,10 @@ const EventForm = ({ userId, type, event, eventId, organisationId }: EventFormPr
                               htmlFor="showWorkSubmissionPopup"
                               className="cursor-pointer"
                             >
-                              Afficher la pop-up de soumission du travail apres achat
+                              {t("workSubmission.title")}
                             </FormLabel>
                             <FormDescription>
-                              Si cette option est activee, le client verra une confirmation apres participation pour choisir entre soumettre un travail ou revenir a l'accueil.
+                              {t("workSubmission.description")}
                             </FormDescription>
                           </div>
                         </div>
