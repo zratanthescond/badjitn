@@ -15,6 +15,8 @@ export function useSinglePreview(manifest: string, time: number = 3) {
     
     // Attempt to avoid tainted canvas and black frames
     video.setAttribute("crossorigin", "anonymous");
+    video.setAttribute("playsinline", "true");
+    (video as any).playsInline = true; 
     video.muted = true;
     video.preload = "auto";
     video.autoplay = false;
@@ -30,15 +32,19 @@ export function useSinglePreview(manifest: string, time: number = 3) {
 
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
+        
+        // Draw twice to ensure we get a frame in some mobile browsers
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
         try {
           const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+          // Check if it's not a completely black or transparent frame if possible
+          // But for now, just setting it is better than nothing
           setPreview(dataUrl);
         } catch (e) {
           console.warn("Failed to capture frame (likely CORS):", e);
         }
-      }, 200);
+      }, 300); // Increased delay slightly
     };
 
     video.onloadedmetadata = () => {

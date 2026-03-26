@@ -8,10 +8,12 @@ import { Skeleton } from "../ui/skeleton";
 export default function HomePostContainer({
   src,
   className,
+  fallbackImage = "/images/placeholder-event.jpg",
   ...props
 }: {
   src: string;
   className?: string;
+  fallbackImage?: string;
 }) {
   const [hovred, setHovered] = useState<boolean>(false);
   
@@ -41,10 +43,10 @@ export default function HomePostContainer({
         />
       ) : (
         <div className="w-full h-full relative">
-          {poster ? (
+          {poster || fallbackImage ? (
             <Image
               alt="Event visual"
-              src={poster}
+              src={poster || fallbackImage}
               fill
               className={`rounded-lg object-cover transition-opacity duration-300 ${className}`}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
