@@ -169,17 +169,19 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
         </div>
 
         {/* Action Button */}
-        <div className="flex justify-center pb-4">
-          <Button
-            onClick={() => setSection("price")}
-            variant="elite"
-            size="lg"
-            className="rounded-2xl font-bold h-14 min-w-[200px] shadow-elite-glow"
-          >
-            <Wallet className="w-5 h-5 mr-3" />
-            {t("viewPricing")}
-          </Button>
-        </div>
+        {!event.isFree && (
+          <div className="flex justify-center pb-4">
+            <Button
+              onClick={() => setSection("price")}
+              variant="elite"
+              size="lg"
+              className="rounded-2xl font-bold h-14 min-w-[200px] shadow-elite-glow"
+            >
+              <Wallet className="w-5 h-5 mr-3" />
+              {t("viewPricing")}
+            </Button>
+          </div>
+        )}
       </div>
     );
   }, [event, handleJoinEvent, isJoining, t, dateLocale, router]);

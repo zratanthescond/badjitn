@@ -1567,6 +1567,7 @@
     "eventFree": "Este evento es gratuito",
     "eventTotalPrice": "Precio total del evento",
     "free": "Gratis",
+    "inscription": "Inscripción",
     "instantConfirmation": "Confirmación instantánea",
     "note": "Nota del Plan",
     "orderCreatedError": "No se pudo crear el pedido",
