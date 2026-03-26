@@ -167,29 +167,31 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               {event.title}
             </span>
           </div>
-          <CardTitle className="text-2xl font-bold text-foreground">
-            {isFreeEvent ? "Obtenir votre billet" : "Acheter votre billet"}
-          </CardTitle>
+          {!isFreeEvent && (
+            <CardTitle className="text-2xl font-bold text-foreground">
+              Acheter votre billet
+            </CardTitle>
+          )}
         </CardHeader>
 
         <CardContent className="space-y-6 pb-8 px-8">
           {/* Discount and Pricing Section */}
           <div className="space-y-4">
             {/* Price Display */}
-            <div className="flex items-center justify-between bg-card/5 p-5 rounded-2xl border border-border/50 backdrop-blur-sm">
-              <p className="font-bold text-foreground text-lg">{t("eventTotalPrice")}</p>
-              <div className="text-right">
+            <div className="flex flex-col items-center justify-center bg-card/5 p-6 rounded-[2rem] border border-border/50 backdrop-blur-sm gap-2">
+              <p className="font-bold text-foreground text-lg text-center">{t("eventTotalPrice")}</p>
+              <div className="text-center">
                 {Number(discountInfo?.value) > 0 ? (
-                  <div className="flex flex-col items-end">
+                  <div className="flex flex-col items-center">
                     <span className="text-sm text-destructive font-medium line-through opacity-80">
                       {formatPriceByCountry(price, event.country, "en-US", event.location)}
                     </span>
-                    <span className="text-3xl font-black text-primary animate-in fade-in zoom-in duration-300">
+                    <span className="text-4xl font-black text-primary animate-in fade-in zoom-in duration-300">
                       {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
                     </span>
                   </div>
                 ) : (
-                  <span className="text-3xl font-black text-foreground">
+                  <span className="text-4xl font-black text-foreground">
                     {formatPriceByCountry(price, event.country, "en-US", event.location)}
                   </span>
                 )}
@@ -416,12 +418,14 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 {isFreeEvent ? "Inscription gratuite" : t("secureCheckout")}
               </span>
             </div>
-            <div className="flex items-center glass gap-2 bg-muted/50 px-4 py-2 rounded-full border border-border/60">
-              <CheckCircle size={14} className="text-green-500" />
-              <span className="text-foreground font-bold">
-                {isFreeEvent ? "Billet envoye instantanement" : t("instantConfirmation")}
-              </span>
-            </div>
+            {!isFreeEvent && (
+              <div className="flex items-center glass gap-2 bg-muted/50 px-4 py-2 rounded-full border border-border/60">
+                <CheckCircle size={14} className="text-green-500" />
+                <span className="text-foreground font-bold">
+                  {t("instantConfirmation")}
+                </span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

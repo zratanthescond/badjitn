@@ -160,11 +160,17 @@ export const formatPriceByCountry = (
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   const currencyCode = getCurrencyCodeByCountry(countryCode, location);
 
-  return new Intl.NumberFormat(locale, {
+  const formatted = new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currencyCode,
     maximumFractionDigits: 2,
   }).format(safeAmount);
+
+  if (currencyCode === "TND" && formatted.includes("TND")) {
+    return formatted.replace("TND", "").trim() + " TND";
+  }
+  
+  return formatted;
 };
 
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {

@@ -10,6 +10,7 @@ import { formatPriceByCountry } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 const Checkout = ({
   event,
@@ -26,6 +27,7 @@ const Checkout = ({
   const [details, setDetails] = useState<Detail[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const t = useTranslations("eventPrice");
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
@@ -150,7 +152,7 @@ const Checkout = ({
               {event.isFree
                 ? isSubmitting
                   ? "Obtention du billet..."
-                  : "Get Ticket"
+                  : t("inscription")
                 : `Pay now ${formatPriceByCountry(price, event.country)}`}
             </span>
           </div>

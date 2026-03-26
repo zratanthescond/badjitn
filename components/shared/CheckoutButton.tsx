@@ -10,6 +10,7 @@ import { useAuth } from "@clerk/nextjs";
 import { AlertCircle, Ticket } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatPriceByCountry } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const CheckoutButton = ({
   event,
@@ -21,6 +22,7 @@ const CheckoutButton = ({
   discountInfo?: any;
 }) => {
   const { userId } = useAuth();
+  const t = useTranslations("eventPrice");
 
   const hasEventFinished = new Date(event.endDateTime) < new Date();
 
@@ -68,7 +70,7 @@ const CheckoutButton = ({
                   </div>
                   <Link href="/sign-in">
                     {event.isFree
-                      ? "Get Ticket"
+                      ? t("inscription")
                       : `Pay now ${formatPriceByCountry(price, event.country)}`}
                   </Link>
                 </div>
