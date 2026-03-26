@@ -147,12 +147,14 @@ const Card = ({
               <div className="w-10 h-10 glass-control rounded-full flex items-center justify-center p-0.5 shadow-elite-soft transition-transform duration-500 group-hover:scale-110">
                 <Avatar className="w-full h-full">
                   <AvatarImage
-                    src={userPhoto || event.organizer.photo}
+                    src={event.organisation?.logo}
                     className="rounded-full object-cover"
                   />
                   <AvatarFallback className="bg-primary/20 text-[10px] font-syne font-bold">
-                    {event.organizer.firstName?.[0]}
-                    {event.organizer.lastName?.[0]}
+                    {event.organisation?.name
+                      ? event.organisation.name[0]
+                      : (event.organizer.firstName?.[0] || "") +
+                        (event.organizer.lastName?.[0] || "")}
                   </AvatarFallback>
                 </Avatar>
               </div>

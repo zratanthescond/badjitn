@@ -8,7 +8,20 @@ import {
 } from "@/lib/actions/event.actions";
 import { formatDateTime } from "@/lib/utils";
 import { SearchParamProps } from "@/types";
+import { Metadata } from "next";
 import Image from "next/image";
+
+export async function generateMetadata(props: SearchParamProps): Promise<Metadata> {
+  const params = await props.params;
+  const event = await getEventById(params.id);
+
+  return {
+    title: event?.title || "Event",
+    icons: {
+      icon: event?.organisation?.logo || "/favicon.ico",
+    },
+  };
+}
 
 const EventDetails = async (props: SearchParamProps) => {
   const searchParams = await props.searchParams;
