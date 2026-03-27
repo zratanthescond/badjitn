@@ -1,8 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import HLSPlayer from "./phone/HlsPlayer";
-import { vi } from "date-fns/locale";
-import Image from "next/image";
 import { useSinglePreview } from "@/hooks/useSinglePreview";
 import { Skeleton } from "../ui/skeleton";
 export default function HomePostContainer({
@@ -16,6 +14,7 @@ export default function HomePostContainer({
   fallbackImage?: string;
 }) {
   const [hovred, setHovered] = useState<boolean>(false);
+  const [imageSrc, setImageSrc] = useState<string>(fallbackImage);
   
   // Detect if the src is an HLS manifest (video) or a static image
   const isVideo = src?.includes(".m3u8");
@@ -25,6 +24,10 @@ export default function HomePostContainer({
   
   // Use extracted video poster if video, otherwise use src directly as image
   const poster = isVideo ? videoPoster : src;
+
+  useEffect(() => {
+    setImageSrc(poster || fallbackImage);
+  }, [fallbackImage, poster]);
 
   return (
     <div
@@ -43,13 +46,19 @@ export default function HomePostContainer({
         />
       ) : (
         <div className="w-full h-full relative">
-          {poster || fallbackImage ? (
-            <Image
+          {imageSrc ? (
+            <img
               alt="Event visual"
-              src={poster || fallbackImage}
-              fill
-              className={`rounded-lg object-cover transition-opacity duration-300 ${className}`}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              src={imageSrc}
+              className={`absolute inset-0 h-full w-full rounded-lg object-cover transition-opacity duration-300 ${className || ""}`}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              onError={() => {
+                if (imageSrc !== fallbackImage) {
+                  setImageSrc(fallbackImage);
+                }
+              }}
             />
           ) : (
             <Skeleton className="h-full w-full rounded-lg" />
