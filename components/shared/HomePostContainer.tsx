@@ -8,7 +8,7 @@ import { Skeleton } from "../ui/skeleton";
 export default function HomePostContainer({
   src,
   className,
-  fallbackImage = "/images/placeholder-event.jpg",
+  fallbackImage = "/assets/images/placeholder.png",
   ...props
 }: {
   src: string;

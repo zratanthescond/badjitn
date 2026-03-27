@@ -62,7 +62,7 @@ const Card = ({
       >
         <div className="absolute inset-0 z-0">
           <HomePostContainer
-            src={event ? event.imageUrl : "/images/placeholder-event.jpg"}
+            src={event ? event.imageUrl : "/assets/images/placeholder.png"}
             className="rounded-xl flex w-full h-full transition-transform duration-700 ease-out group-hover:scale-110"
           />
         </div>
