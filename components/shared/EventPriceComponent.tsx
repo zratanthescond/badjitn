@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@clerk/nextjs";
 import { SignedIn, SignedOut } from "./AuthWrappers";
 import { BankTransferModal } from "./bank-transfer-modal";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Badge } from "../ui/badge";
 import { formatPriceByCountry, getCurrencyCodeByCountry } from "@/lib/utils";
 export default function EventPriceComponent({ event }: { event: IEvent }) {
@@ -47,6 +47,11 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const t = useTranslations("eventPrice");
   const { userId } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const fullPath = searchParams.toString() 
+    ? `${pathname}?${searchParams.toString()}` 
+    : pathname;
   const currencyCode = getCurrencyCodeByCountry(event.country, event.location);
 
   // Check if the event actually has a discount configured
@@ -340,7 +345,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
                       >
                         <Button
-                          onClick={() => router.push("/sign-in")}
+                          onClick={() => router.push(`/sign-in?redirect_url=${encodeURIComponent(fullPath)}`)}
                           disabled={price == 0}
                           variant={"outline"}
                           className="w-full h-14 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-700 hover:to-slate-800 text-white rounded-full font-semibold shadow-lg transition-all duration-300"
@@ -396,7 +401,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
                       >
                         <Button
-                          onClick={() => router.push("/sign-in")}
+                          onClick={() => router.push(`/sign-in?redirect_url=${encodeURIComponent(fullPath)}`)}
                           disabled={price == 0}
                           className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
                         >

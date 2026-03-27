@@ -1,28 +1,61 @@
-import SignUpForm from "@/components/auth/SignUpForm";
+"use client";
 import { SignUp } from "@clerk/nextjs";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 export default function Page() {
   return (
-    <SignUp
-      appearance={{
-        elements: {
-          rootBox: " p-8 flex item-center justify-center",
-          card: "glass p-4",
-          socialButtonsIconButton__x:
-            "btn bg-gradient-to-tl gap-2 w-full  from-sky-500/50 to-indigo-500 rounded-full text-white hover:bg-gradient-to-tr hover:from-sky-500 hover:to-indigo-500",
-          socialButtonsIconButton__google:
-            "btn bg-gradient-to-tr w-full gap-2 from-red-500/50 to-pink-500 rounded-full  text-white hover:bg-gradient-to-tl hover:from-red-500 hover:to-pink-500",
-          socialButtonsIconButton__facebook:
-            "btn bg-gradient-to-tr gap-2 w-full  from-pink-500/50 to-indigo-500 rounded-full text-white hover:bg-gradient-to-tl hover:from-pink-500 hover:to-indigo-500",
-          formButtonPrimary:
-            "glass rounded-full bg-primary text-primary-foreground hover:bg-primary/90  font-semibold text-white",
-          headerTitle: "h3-bold text-center sm:text-left",
-          headerSubtitle: "h6-bold text-center sm:text-left ",
-          formFieldLabel: "p-medium-16 ",
-          formFieldInput:
-            "p-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500",
-        },
-      }}
-    />
+    <div className="w-full max-w-md mx-auto relative px-4 text-center">
+      <div className="absolute inset-0 bg-sky-500/5 blur-[100px] rounded-full pointer-events-none" />
+      
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-10 bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-[2.5rem] overflow-hidden glass"
+      >
+        <SignUp 
+          appearance={{
+            elements: {
+              rootBox: "w-full",
+              card: "bg-transparent shadow-none border-none p-4", // Transparent to show parent card
+              headerTitle: "text-white text-3xl font-bold tracking-tight bg-gradient-to-br from-white to-gray-400 bg-clip-text text-transparent mb-2",
+              headerSubtitle: "text-gray-400 text-sm",
+              socialButtonsBlockButton: "bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 transition-all rounded-2xl h-12",
+              socialButtonsBlockButtonText: "text-white font-medium",
+              socialButtonsBlockButtonArrow: "text-white opacity-50",
+              dividerLine: "bg-white/10",
+              dividerText: "text-gray-500 font-medium text-xs",
+              formLabel: "text-gray-300 ml-1 mb-1.5 text-sm",
+              formInput: "bg-white/5 border-white/10 rounded-2xl text-white h-12 focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/40 transition-all placeholder:text-gray-600",
+              formButtonPrimary: "bg-gradient-to-br from-sky-500 to-indigo-700 hover:from-sky-400 hover:to-indigo-600 text-white transition-all rounded-2xl h-12 font-semibold shadow-xl shadow-sky-500/20 active:scale-[0.98]",
+              footer: "hidden", 
+            },
+            variables: {
+              colorPrimary: "#0ea5e9",
+              colorTextOnPrimaryBackground: "white",
+            }
+          }}
+        />
+
+        {/* Integrated Navigation Area */}
+        <div className="px-8 pb-8 pt-2">
+          <div className="h-px w-full bg-white/10 mb-8" />
+          <div className="flex flex-col items-center gap-4">
+            <span className="text-gray-500 text-sm italic font-medium">Vous avez déjà un compte ?</span>
+            <Button 
+              asChild
+              variant="outline" 
+              className="w-full h-12 rounded-2xl border-sky-500/20 bg-sky-500/5 hover:bg-sky-500/10 text-sky-400 hover:text-sky-300 hover:border-sky-500/40 transition-all duration-300"
+            >
+              <Link href="/sign-in">
+                Se connecter
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 }

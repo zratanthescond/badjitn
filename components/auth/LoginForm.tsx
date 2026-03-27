@@ -1,7 +1,6 @@
 "use client";
 import * as Clerk from "@clerk/elements/common";
 import * as SignIn from "@clerk/elements/sign-in";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,299 +11,250 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { FaGithub, FaGoogle } from "react-icons/fa";
+import SocialLogin from "./SocialLogin";
 
 const Icons = {
   spinner: Loader2,
-  gitHub: FaGithub,
-  google: FaGoogle,
 };
 
 export default function SignInPage() {
   return (
-    <div className="grid w-full grow items-center px-4 sm:justify-center">
-      <SignIn.Root>
-        <Clerk.Loading>
-          {(isGlobalLoading) => (
-            <>
-              <SignIn.Step name="start">
-                <Card className="w-full sm:w-96">
-                  <CardHeader>
-                    <CardTitle>Sign in to Acme Co</CardTitle>
-                    <CardDescription>
-                      Welcome back! Please sign in to continue
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="grid gap-y-4">
-                    <div className="grid grid-cols-2 gap-x-4">
-                      <Clerk.Connection name="github" asChild>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          type="button"
-                          disabled={isGlobalLoading}
-                        >
-                          <Clerk.Loading scope="provider:github">
-                            {(isLoading) =>
-                              isLoading ? (
-                                <Icons.spinner className="size-4 animate-spin" />
-                              ) : (
-                                <>
-                                  <Icons.gitHub className="mr-2 size-4" />
-                                  GitHub
-                                </>
-                              )
-                            }
-                          </Clerk.Loading>
-                        </Button>
-                      </Clerk.Connection>
-                      <Clerk.Connection name="google" asChild>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          type="button"
-                          disabled={isGlobalLoading}
-                        >
-                          <Clerk.Loading scope="provider:google">
-                            {(isLoading) =>
-                              isLoading ? (
-                                <Icons.spinner className="size-4 animate-spin" />
-                              ) : (
-                                <>
-                                  <Icons.google className="mr-2 size-4" />
-                                  Google
-                                </>
-                              )
-                            }
-                          </Clerk.Loading>
-                        </Button>
-                      </Clerk.Connection>
-                    </div>
-                    <p className="flex items-center gap-x-3 text-sm text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
-                      or
-                    </p>
-                    <Clerk.Field name="identifier" className="space-y-2">
-                      <Clerk.Label asChild>
-                        <Label>Email address</Label>
-                      </Clerk.Label>
-                      <Clerk.Input type="email" required asChild>
-                        <Input />
-                      </Clerk.Input>
-                      <Clerk.FieldError className="block text-sm text-destructive" />
-                    </Clerk.Field>
-                  </CardContent>
-                  <CardFooter>
-                    <div className="grid w-full gap-y-4">
-                      <SignIn.Action submit asChild>
-                        <Button disabled={isGlobalLoading}>
-                          <Clerk.Loading>
-                            {(isLoading) => {
-                              return isLoading ? (
-                                <Icons.spinner className="size-4 animate-spin" />
-                              ) : (
-                                "Continue"
-                              );
-                            }}
-                          </Clerk.Loading>
-                        </Button>
-                      </SignIn.Action>
+    <div className="flex min-h-[calc(100vh-100px)] w-full items-center justify-center p-4">
+      <div className="relative w-full max-w-md">
+        {/* Decorative background glass elements */}
+        <div className="absolute -top-10 -left-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-pink-500/20 rounded-full blur-3xl animate-pulse" />
 
-                      <Button variant="link" size="sm" asChild>
-                        <Clerk.Link navigate="sign-up">
-                          Don&apos;t have an account? Sign up
-                        </Clerk.Link>
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </SignIn.Step>
-
-              <SignIn.Step name="choose-strategy">
-                <Card className="w-full sm:w-96">
-                  <CardHeader>
-                    <CardTitle>Use another method</CardTitle>
-                    <CardDescription>
-                      Facing issues? You can use any of these methods to sign
-                      in.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="grid gap-y-4">
-                    <SignIn.SupportedStrategy name="email_code" asChild>
-                      <Button
-                        type="button"
-                        variant="link"
-                        disabled={isGlobalLoading}
-                      >
-                        Email code
-                      </Button>
-                    </SignIn.SupportedStrategy>
-                    <SignIn.SupportedStrategy name="password" asChild>
-                      <Button
-                        type="button"
-                        variant="link"
-                        disabled={isGlobalLoading}
-                      >
-                        Password
-                      </Button>
-                    </SignIn.SupportedStrategy>
-                  </CardContent>
-                  <CardFooter>
-                    <div className="grid w-full gap-y-4">
-                      <SignIn.Action navigate="previous" asChild>
-                        <Button disabled={isGlobalLoading}>
-                          <Clerk.Loading>
-                            {(isLoading) => {
-                              return isLoading ? (
-                                <Icons.spinner className="size-4 animate-spin" />
-                              ) : (
-                                "Go back"
-                              );
-                            }}
-                          </Clerk.Loading>
-                        </Button>
-                      </SignIn.Action>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </SignIn.Step>
-
-              <SignIn.Step name="verifications">
-                <SignIn.Strategy name="password">
-                  <Card className="w-full sm:w-96">
-                    <CardHeader>
-                      <CardTitle>Check your email</CardTitle>
-                      <CardDescription>
-                        Enter the verification code sent to your email
+        <SignIn.Root>
+          <Clerk.Loading>
+            {(isGlobalLoading) => (
+              <>
+                <SignIn.Step name="start">
+                  <Card className="border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden glass border">
+                    <CardHeader className="space-y-1 text-center pt-8">
+                      <CardTitle className="text-3xl font-bold tracking-tight text-white bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+                        Welcome Back
+                      </CardTitle>
+                      <CardDescription className="text-gray-400">
+                        Sign in to your account to continue
                       </CardDescription>
-                      <p className="text-sm text-muted-foreground">
-                        Welcome back <SignIn.SafeIdentifier />
-                      </p>
                     </CardHeader>
-                    <CardContent className="grid gap-y-4">
-                      <Clerk.Field name="password" className="space-y-2">
-                        <Clerk.Label asChild>
-                          <Label>Password</Label>
-                        </Clerk.Label>
-                        <Clerk.Input type="password" asChild>
-                          <Input />
-                        </Clerk.Input>
-                        <Clerk.FieldError className="block text-sm text-destructive" />
-                      </Clerk.Field>
-                    </CardContent>
-                    <CardFooter>
-                      <div className="grid w-full gap-y-4">
+                    <CardContent className="grid gap-6 px-8">
+                      {/* Social Login integration - keeping user's logic foundation */}
+                      <SocialLogin />
+
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t border-white/10" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-[#0f172a] px-2 text-gray-500 backdrop-blur-sm rounded-full">
+                            Or continue with
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <Clerk.Field name="identifier" className="space-y-2">
+                          <Clerk.Label className="text-sm font-medium text-gray-300 ml-1">
+                            Email address
+                          </Clerk.Label>
+                          <Clerk.Input type="email" required asChild>
+                            <Input className="h-12 bg-white/5 border-white/10 rounded-2xl text-white placeholder:text-gray-600 focus:ring-indigo-500/50 transition-all focus:border-indigo-500/50" placeholder="name@example.com" />
+                          </Clerk.Input>
+                          <Clerk.FieldError className="text-xs text-red-400 mt-1 ml-1" />
+                        </Clerk.Field>
+
                         <SignIn.Action submit asChild>
-                          <Button disabled={isGlobalLoading}>
+                          <Button 
+                            disabled={isGlobalLoading} 
+                            className="w-full h-12 rounded-2xl bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-semibold shadow-lg shadow-indigo-500/20 transition-all duration-300 active:scale-95"
+                          >
                             <Clerk.Loading>
-                              {(isLoading) => {
-                                return isLoading ? (
-                                  <Icons.spinner className="size-4 animate-spin" />
-                                ) : (
-                                  "Continue"
-                                );
-                              }}
+                              {(isLoading) => isLoading ? <Icons.spinner className="size-5 animate-spin" /> : "Continue"}
                             </Clerk.Loading>
                           </Button>
                         </SignIn.Action>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex flex-col gap-4 pb-8 pt-2">
+                      <div className="text-center text-sm text-gray-400">
+                        Don&apos;t have an account?
+                      </div>
+                      <Button variant="outline" size="lg" className="w-full border-indigo-500/30 bg-indigo-500/5 hover:bg-indigo-500/10 text-indigo-400 rounded-2xl transition-all duration-300 hover:border-indigo-500/50" asChild>
+                        <Clerk.Link navigate="sign-up">
+                          Create an account
+                        </Clerk.Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </SignIn.Step>
+
+                <SignIn.Step name="choose-strategy">
+                  <Card className="border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden glass border">
+                    <CardHeader className="space-y-1 text-center pt-8">
+                      <CardTitle className="text-2xl font-bold tracking-tight text-white">
+                        Use another method
+                      </CardTitle>
+                      <CardDescription className="text-gray-400">
+                        Facing issues? You can use any of these methods to sign in.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-4 px-8 pb-8">
+                      <SignIn.SupportedStrategy name="email_code" asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={isGlobalLoading}
+                          className="w-full h-12 border-white/10 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all"
+                        >
+                          Email code
+                        </Button>
+                      </SignIn.SupportedStrategy>
+                      <SignIn.SupportedStrategy name="password" asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={isGlobalLoading}
+                          className="w-full h-12 border-white/10 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all"
+                        >
+                          Password
+                        </Button>
+                      </SignIn.SupportedStrategy>
+                      <SignIn.Action navigate="previous" asChild>
+                        <Button 
+                          variant="ghost" 
+                          disabled={isGlobalLoading}
+                          className="w-full h-12 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl mt-2"
+                        >
+                          Go back
+                        </Button>
+                      </SignIn.Action>
+                    </CardContent>
+                  </Card>
+                </SignIn.Step>
+
+                <SignIn.Step name="verifications">
+                  <SignIn.Strategy name="password">
+                    <Card className="border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden glass border">
+                      <CardHeader className="space-y-1 text-center pt-8">
+                        <CardTitle className="text-2xl font-bold tracking-tight text-white">
+                          Enter Password
+                        </CardTitle>
+                        <CardDescription className="text-gray-400">
+                          Welcome back to your event platform
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="grid gap-6 px-8 flex-col flex items-center justify-center">
+                        <Clerk.Field name="password" className="space-y-2 w-full">
+                          <Clerk.Label className="text-sm font-medium text-gray-300 ml-1">
+                            Password
+                          </Clerk.Label>
+                          <Clerk.Input type="password" required asChild>
+                            <Input className="h-12 bg-white/5 border-white/10 rounded-2xl text-white focus:ring-indigo-500/50 transition-all" />
+                          </Clerk.Input>
+                          <Clerk.FieldError className="text-xs text-red-400 mt-1 ml-1" />
+                        </Clerk.Field>
+
+                        <SignIn.Action submit asChild>
+                          <Button 
+                            disabled={isGlobalLoading} 
+                            className="w-full h-12 rounded-2xl bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-semibold shadow-lg shadow-indigo-500/20 transition-all duration-300 active:scale-95"
+                          >
+                            <Clerk.Loading>
+                              {(isLoading) => isLoading ? <Icons.spinner className="size-5 animate-spin" /> : "Continue"}
+                            </Clerk.Loading>
+                          </Button>
+                        </SignIn.Action>
+                        
                         <SignIn.Action navigate="choose-strategy" asChild>
-                          <Button type="button" size="sm" variant="link">
+                          <Button type="button" variant="link" className="text-indigo-400 hover:text-indigo-300 pt-1">
                             Use another method
                           </Button>
                         </SignIn.Action>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                </SignIn.Strategy>
+                      </CardContent>
+                    </Card>
+                  </SignIn.Strategy>
 
-                <SignIn.Strategy name="email_code">
-                  <Card className="w-full sm:w-96">
-                    <CardHeader>
-                      <CardTitle>Check your email</CardTitle>
-                      <CardDescription>
-                        Enter the verification code sent to your email
-                      </CardDescription>
-                      <p className="text-sm text-muted-foreground">
-                        Welcome back <SignIn.SafeIdentifier />
-                      </p>
-                    </CardHeader>
-                    <CardContent className="grid gap-y-4">
-                      <Clerk.Field name="code">
-                        <Clerk.Label className="sr-only">
-                          Email verification code
-                        </Clerk.Label>
-                        <div className="grid gap-y-2 items-center justify-center">
-                          <div className="flex justify-center text-center">
+                  <SignIn.Strategy name="email_code">
+                    <Card className="border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden glass border">
+                      <CardHeader className="space-y-1 text-center pt-8">
+                        <CardTitle className="text-2xl font-bold tracking-tight text-white">
+                          Check your email
+                        </CardTitle>
+                        <CardDescription className="text-gray-400">
+                          Enter the code we sent to your address
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="grid gap-6 px-8">
+                        <Clerk.Field name="code" className="space-y-4">
+                          <Clerk.Label className="sr-only">Verification code</Clerk.Label>
+                          <div className="flex justify-center flex-col items-center">
                             <Clerk.Input
                               type="otp"
                               autoSubmit
-                              className="flex justify-center has-[:disabled]:opacity-50"
-                              render={({ value, status }) => {
-                                return (
-                                  <div
-                                    data-status={status}
-                                    className="relative flex h-9 w-9 items-center justify-center border-y border-r border-input text-sm shadow-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md data-[status=selected]:ring-1 data-[status=selected]:ring-ring data-[status=cursor]:ring-1 data-[status=cursor]:ring-ring"
-                                  >
-                                    {value}
-                                  </div>
-                                );
-                              }}
+                              className="flex gap-2 has-[:disabled]:opacity-50"
+                              render={({ value, status }) => (
+                                <div
+                                  data-status={status}
+                                  className="relative flex h-12 w-10 items-center justify-center border border-white/10 bg-white/5 text-lg font-semibold text-white shadow-sm transition-all first:rounded-l-2xl last:rounded-r-2xl data-[status=selected]:ring-2 data-[status=selected]:ring-indigo-500/50 data-[status=cursor]:ring-1 data-[status=cursor]:ring-indigo-500/50"
+                                >
+                                  {value}
+                                </div>
+                              )}
                             />
+                            <Clerk.FieldError className="text-xs text-red-400 mt-2 text-center" />
                           </div>
-                          <Clerk.FieldError className="block text-sm text-destructive text-center" />
+                          
                           <SignIn.Action
                             asChild
                             resend
-                            className="text-muted-foreground"
                             fallback={({ resendableAfter }) => (
-                              <Button variant="link" size="sm" disabled>
-                                Didn&apos;t receive a code? Resend (
-                                <span className="tabular-nums">
-                                  {resendableAfter}
-                                </span>
-                                )
+                              <Button variant="link" size="sm" disabled className="w-full text-gray-500">
+                                Resend code in <span className="tabular-nums font-mono ml-1">{resendableAfter}s</span>
                               </Button>
                             )}
                           >
-                            <Button variant="link" size="sm">
+                            <Button variant="link" size="sm" className="w-full text-indigo-400 hover:text-indigo-300">
                               Didn&apos;t receive a code? Resend
                             </Button>
                           </SignIn.Action>
-                        </div>
-                      </Clerk.Field>
-                    </CardContent>
-                    <CardFooter>
-                      <div className="grid w-full gap-y-4">
+                        </Clerk.Field>
+
                         <SignIn.Action submit asChild>
-                          <Button disabled={isGlobalLoading}>
+                          <Button 
+                            disabled={isGlobalLoading} 
+                            className="w-full h-12 rounded-2xl bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-semibold shadow-lg shadow-indigo-500/20 transition-all duration-300 active:scale-95"
+                          >
                             <Clerk.Loading>
-                              {(isLoading) => {
-                                return isLoading ? (
-                                  <Icons.spinner className="size-4 animate-spin" />
-                                ) : (
-                                  "Continue"
-                                );
-                              }}
+                              {(isLoading) => isLoading ? <Icons.spinner className="size-5 animate-spin" /> : "Continue"}
                             </Clerk.Loading>
                           </Button>
                         </SignIn.Action>
+                        
                         <SignIn.Action navigate="choose-strategy" asChild>
-                          <Button size="sm" variant="link">
+                          <Button size="sm" variant="link" className="text-indigo-400 hover:text-indigo-300 pt-1">
                             Use another method
                           </Button>
                         </SignIn.Action>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                </SignIn.Strategy>
-              </SignIn.Step>
-            </>
-          )}
-        </Clerk.Loading>
-      </SignIn.Root>
+                      </CardContent>
+                    </Card>
+                  </SignIn.Strategy>
+                </SignIn.Step>
+
+                {/* SSO Callback Step */}
+                <SignIn.Step name="sso-callback">
+                  <div className="flex flex-col items-center justify-center p-12 bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10">
+                    <Icons.spinner className="size-10 animate-spin text-indigo-500 mb-4" />
+                    <p className="text-white font-medium">Completing sign in...</p>
+                  </div>
+                </SignIn.Step>
+              </>
+            )}
+          </Clerk.Loading>
+        </SignIn.Root>
+      </div>
     </div>
   );
 }

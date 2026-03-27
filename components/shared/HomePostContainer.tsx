@@ -32,13 +32,13 @@ export default function HomePostContainer({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {hovred && isVideo && poster ? (
+      {hovred && isVideo ? (
         <HLSPlayer
           manifest={src}
           muted
           autoPlay
           className={className}
-          poster={poster}
+          poster={poster || ""}
           isActive={hovred}
         />
       ) : (

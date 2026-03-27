@@ -11,7 +11,15 @@ import LocaleSwitcher from "./LocaleSwitcher";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+
 const Header = () => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const fullPath = searchParams.toString() 
+    ? `${pathname}?${searchParams.toString()}` 
+    : pathname;
+  
   const [hasMounted, setHasMounted] = useState(false);
   const dimensions = useMediaQuery("(min-width: 768px)");
   const t = useTranslations("Navbar");
@@ -92,7 +100,9 @@ const Header = () => {
                   variant="elite" 
                   className="rounded-xl h-[42px] md:h-[46px] px-5 md:px-8 text-sm md:text-base font-syne font-bold transition-transform hover:-translate-y-0.5 flex-shrink-0"
                 >
-                  <Link href="/sign-in">{t("login")}</Link>
+                  <Link href={`/sign-in?redirect_url=${encodeURIComponent(fullPath)}`}>
+                    {t("login")}
+                  </Link>
                 </Button>
               </div>
             </SignedOut>

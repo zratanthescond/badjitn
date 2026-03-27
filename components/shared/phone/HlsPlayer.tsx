@@ -33,6 +33,7 @@ const HLSPlayer = forwardRef<HTMLVideoElement, Props>(
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
         // Safari native HLS support
         video.src = manifest;
+        video.load(); // Force load on source change
         video.play().catch(() => console.log("Autoplay blocked"));
       } else if (Hls.isSupported()) {
         // Use HLS.js for Chrome and other browsers
@@ -62,6 +63,7 @@ const HLSPlayer = forwardRef<HTMLVideoElement, Props>(
         autoPlay
         muted // 🔥 Required for autoplay to work on mobile!
         playsInline // 🔥 Required for iOS
+        crossOrigin="anonymous" // Match preview hook and avoid CORS issues
         //controls={false} // Hide controls to mimic TikTok
       />
     );
