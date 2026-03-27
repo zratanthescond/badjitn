@@ -50,7 +50,7 @@ const Card = ({
     }, [locale, event.startDateTime]);
 
   return (
-    <div className="group relative w-full max-w-[400px] flex-col overflow-hidden rounded-2xl glass-panel shadow-elite-soft transition-all duration-500 ease-elite-spring hover:-translate-y-2 hover:shadow-elite-glow aspect-[9/16] md:min-h-[400px]">
+    <div className="ios-card-shell group relative w-full max-w-[400px] flex-col overflow-hidden rounded-2xl glass-panel shadow-elite-soft transition-all duration-500 ease-elite-spring hover:-translate-y-2 hover:shadow-elite-glow aspect-[9/16] md:min-h-[400px]">
       {currentUserId && !hidePrice && !hasOrderLink && (
         <div className="absolute top-3 left-3 z-10 transition-transform duration-300 group-hover:scale-110">
           <ReportComponent eventId={event._id} userId={currentUserId} />
@@ -60,14 +60,14 @@ const Card = ({
         href={hidePrice ? {} : `/events/${event._id}`}
         className="flex-center flex-grow bg-cover bg-center text-grey-500 w-full h-full relative"
       >
-        <div className="absolute inset-0 z-0">
+        <div className="ios-card-media absolute inset-0 z-0">
           <HomePostContainer
             src={event ? event.imageUrl : "/assets/images/placeholder.png"}
             className="rounded-xl flex w-full h-full transition-transform duration-700 ease-out group-hover:scale-110"
           />
         </div>
         
-        <div className="absolute inset-0 z-1 bg-gradient-to-t pointer-events-none from-black/80 via-black/20 to-transparent dark:from-elite-charcoal/95 dark:via-elite-charcoal/40">
+        <div className="ios-card-overlay absolute inset-0 z-[1] bg-gradient-to-t pointer-events-none from-black/80 via-black/20 to-transparent dark:from-elite-charcoal/95 dark:via-elite-charcoal/40">
           <div
             className={`rounded-xl w-full h-full flex items-center flex-col relative ${
               sponsored && "border-2 border-primary/50 shadow-elite-glow"
@@ -89,7 +89,7 @@ const Card = ({
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-white dark:from-elite-charcoal/90 via-white/80 dark:via-elite-charcoal/40 to-transparent pt-16 transition-all duration-500 group-hover:translate-y-[-5px]">
+                <div className="ios-card-footer absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-white dark:from-elite-charcoal/90 via-white/80 dark:via-elite-charcoal/40 to-transparent pt-16 transition-all duration-500 group-hover:translate-y-[-5px]">
                   <h3 className="text-slate-900 dark:text-white font-syne font-bold text-lg md:text-xl mb-3 leading-tight line-clamp-2 tracking-tight group-hover:text-primary transition-colors duration-300">
                     {event.title}
                   </h3>
@@ -125,7 +125,7 @@ const Card = ({
             )}
 
             {hidePrice && event && (
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white dark:from-elite-charcoal/90 via-white/80 dark:via-elite-charcoal/40 to-transparent pt-12">
+              <div className="ios-card-footer absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white dark:from-elite-charcoal/90 via-white/80 dark:via-elite-charcoal/40 to-transparent pt-12">
                 <h3 className="text-slate-900 dark:text-white font-syne font-bold text-base mb-2 leading-tight line-clamp-2">
                   {event.title}
                 </h3>
