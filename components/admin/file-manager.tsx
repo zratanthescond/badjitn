@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useTranslations } from "next-intl";
 import {
   Trash2,
   RefreshCw,
@@ -31,6 +32,7 @@ interface FileManagerProps {
 }
 
 export function FileManager({ adminClient }: FileManagerProps) {
+  const t = useTranslations("fileManager");
   const [files, setFiles] = useState<any>(null);
   const [orphanedFiles, setOrphanedFiles] =
     useState<OrphanedFilesResponse | null>(null);
@@ -75,7 +77,6 @@ export function FileManager({ adminClient }: FileManagerProps) {
       setCleanupResult(result);
 
       if (!dryRun) {
-        // Refresh data after actual cleanup
         await fetchFiles();
       }
     } catch (err: any) {
@@ -144,7 +145,9 @@ export function FileManager({ adminClient }: FileManagerProps) {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>{title}</span>
-          <Badge variant="secondary">{files.length} files</Badge>
+          <Badge variant="secondary">
+            {t("common.filesCount", { count: files.length })}
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -164,20 +167,19 @@ export function FileManager({ adminClient }: FileManagerProps) {
                     {file.relativePath}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {file.sizeFormatted} •{" "}
-                    {new Date(file.created).toLocaleDateString()}
+                    {file.sizeFormatted} • {new Date(file.created).toLocaleDateString()}
                   </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
                 {file.orphaned && (
                   <Badge variant="destructive" className="text-xs">
-                    Orphaned
+                    {t("badges.orphaned")}
                   </Badge>
                 )}
                 {file.inDatabase && (
                   <Badge variant="default" className="text-xs">
-                    In DB
+                    {t("badges.inDb")}
                   </Badge>
                 )}
               </div>
@@ -191,13 +193,13 @@ export function FileManager({ adminClient }: FileManagerProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">File Manager</h2>
+        <h2 className="text-2xl font-bold">{t("title")}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={fetchFiles} disabled={loading}>
             <RefreshCw
               className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
             />
-            Refresh
+            {t("actions.refresh")}
           </Button>
         </div>
       </div>
@@ -209,23 +211,22 @@ export function FileManager({ adminClient }: FileManagerProps) {
         </Alert>
       )}
 
-      {/* Filters and Search */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
-            Filters
+            {t("filters.title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center space-x-4">
             <div className="flex-1">
-              <Label htmlFor="search">Search Files</Label>
+              <Label htmlFor="search">{t("filters.searchLabel")}</Label>
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="search"
-                  placeholder="Search by filename or path..."
+                  placeholder={t("filters.searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
@@ -236,27 +237,28 @@ export function FileManager({ adminClient }: FileManagerProps) {
               <Switch
                 id="orphaned-only"
                 checked={showOrphanedOnly}
-                //  className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
                 onCheckedChange={setShowOrphanedOnly}
               />
-              <Label htmlFor="orphaned-only">Show orphaned only</Label>
+              <Label htmlFor="orphaned-only">
+                {t("filters.showOrphanedOnly")}
+              </Label>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Orphaned Files Summary */}
       {orphanedFiles && orphanedFiles.summary.totalOrphaned > 0 && (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Found {orphanedFiles.summary.totalOrphaned} orphaned files taking up{" "}
-            {orphanedFiles.summary.totalSize}
+            {t("summary.orphanedFound", {
+              count: orphanedFiles.summary.totalOrphaned,
+              size: orphanedFiles.summary.totalSize,
+            })}
           </AlertDescription>
         </Alert>
       )}
 
-      {/* Action Buttons */}
       <div className="flex items-center gap-2">
         <Button
           onClick={() => handleCleanup(true)}
@@ -264,7 +266,7 @@ export function FileManager({ adminClient }: FileManagerProps) {
           variant="outline"
         >
           <Eye className="mr-2 h-4 w-4" />
-          Preview Cleanup
+          {t("actions.previewCleanup")}
         </Button>
         <Button
           onClick={() => handleCleanup(false)}
@@ -272,14 +274,14 @@ export function FileManager({ adminClient }: FileManagerProps) {
           variant="destructive"
         >
           <Trash2 className="mr-2 h-4 w-4" />
-          Clean Up Orphaned Files
+          {t("actions.cleanupOrphaned")}
         </Button>
         <Button
           onClick={selectAllOrphaned}
           disabled={!orphanedFiles || orphanedFiles.summary.totalOrphaned === 0}
           variant="outline"
         >
-          Select All Orphaned
+          {t("actions.selectAllOrphaned")}
         </Button>
         {selectedFiles.length > 0 && (
           <Button
@@ -288,12 +290,11 @@ export function FileManager({ adminClient }: FileManagerProps) {
             variant="destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
-            Delete Selected ({selectedFiles.length})
+            {t("actions.deleteSelected", { count: selectedFiles.length })}
           </Button>
         )}
       </div>
 
-      {/* Cleanup Results */}
       {cleanupResult && (
         <Card>
           <CardHeader>
@@ -303,7 +304,9 @@ export function FileManager({ adminClient }: FileManagerProps) {
               ) : (
                 <CheckCircle className="h-5 w-5" />
               )}
-              {cleanupResult.dryRun ? "Cleanup Preview" : "Cleanup Results"}
+              {cleanupResult.dryRun
+                ? t("cleanup.previewTitle")
+                : t("cleanup.resultsTitle")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -312,51 +315,54 @@ export function FileManager({ adminClient }: FileManagerProps) {
                 <div className="text-2xl font-bold text-blue-600">
                   {cleanupResult.summary.totalFound}
                 </div>
-                <div className="text-sm text-gray-500">Found</div>
+                <div className="text-sm text-gray-500">{t("cleanup.found")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
                   {cleanupResult.summary.totalDeleted}
                 </div>
                 <div className="text-sm text-gray-500">
-                  {cleanupResult.dryRun ? "Would Delete" : "Deleted"}
+                  {cleanupResult.dryRun
+                    ? t("cleanup.wouldDelete")
+                    : t("cleanup.deleted")}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-red-600">
                   {cleanupResult.summary.totalFailed}
                 </div>
-                <div className="text-sm text-gray-500">Failed</div>
+                <div className="text-sm text-gray-500">{t("cleanup.failed")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-yellow-600">
                   {cleanupResult.summary.totalSkipped}
                 </div>
-                <div className="text-sm text-gray-500">Skipped</div>
+                <div className="text-sm text-gray-500">{t("cleanup.skipped")}</div>
               </div>
             </div>
             <div className="text-center text-lg font-semibold">
-              Space {cleanupResult.dryRun ? "would be" : ""} freed:{" "}
-              {cleanupResult.summary.sizeFreedFormatted}
+              {t("cleanup.spaceFreed", {
+                qualifier: cleanupResult.dryRun ? t("cleanup.wouldBe") : "",
+                size: cleanupResult.summary.sizeFreedFormatted,
+              })}
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* File Lists */}
       {files && (
         <Tabs defaultValue="videos" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="videos">Videos</TabsTrigger>
-            <TabsTrigger value="music">Music</TabsTrigger>
+            <TabsTrigger value="videos">{t("tabs.videos")}</TabsTrigger>
+            <TabsTrigger value="music">{t("tabs.music")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="videos">
-            <FileList files={files.videos || []} title="Video Files" />
+            <FileList files={files.videos || []} title={t("tabs.videoFiles")} />
           </TabsContent>
 
           <TabsContent value="music">
-            <FileList files={files.music || []} title="Music Files" />
+            <FileList files={files.music || []} title={t("tabs.musicFiles")} />
           </TabsContent>
         </Tabs>
       )}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +21,7 @@ export default function PostPurchaseWorkPrompt({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(true);
+  const t = useTranslations("postPurchaseWorkPrompt");
 
   const handleGoHome = () => {
     setOpen(false);
@@ -42,24 +44,18 @@ export default function PostPurchaseWorkPrompt({
           }
         }}
       >
-        <DialogContent className="sm:max-w-lg rounded-3xl border border-border/60 bg-background/95 p-0 overflow-hidden">
+        <DialogContent className="sm:max-w-lg overflow-hidden rounded-3xl border border-border/60 bg-background/95 p-0">
           <div className="bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-5 text-white">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold">
-                Achat confirme
-              </DialogTitle>
+              <DialogTitle className="text-2xl font-bold">{t("title")}</DialogTitle>
               <DialogDescription className="text-white/90">
-                Votre commande pour {eventTitle} a bien ete prise en compte.
+                {t("description", { eventTitle })}
               </DialogDescription>
             </DialogHeader>
           </div>
 
           <div className="space-y-6 px-6 py-6">
-            <p className="text-sm leading-6 text-muted-foreground">
-              Voulez-vous soumettre un travail maintenant ? Si vous confirmez,
-              vous serez redirige vers la page de soumission. Sinon, vous serez
-              redirige vers l'accueil.
-            </p>
+            <p className="text-sm leading-6 text-muted-foreground">{t("body")}</p>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
               <Button
@@ -68,14 +64,14 @@ export default function PostPurchaseWorkPrompt({
                 className="rounded-2xl"
                 onClick={handleGoHome}
               >
-                Non, retourner a l'accueil
+                {t("goHome")}
               </Button>
               <Button
                 type="button"
                 className="rounded-2xl"
                 onClick={handleSubmitWork}
               >
-                Oui, soumettre un travail
+                {t("submitWork")}
               </Button>
             </div>
           </div>

@@ -183,8 +183,8 @@ const Orders = async (props: SearchParamProps) => {
                   }`}
               >
                 <Landmark className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
-                <span className="hidden sm:inline">Bank Transfers</span>
-                <span className="sm:hidden">Transfers</span>
+                <span className="hidden sm:inline">{t("tabs.bankTransfers")}</span>
+                <span className="sm:hidden">{t("tabs.bankTransfersShort")}</span>
               </TabsTrigger>
             </TabsList>
 
@@ -272,7 +272,7 @@ const Orders = async (props: SearchParamProps) => {
                     className={`text-xl font-semibold text-pink-800 dark:text-pink-200 ${isRTL ? "font-arabic" : ""
                       }`}
                   >
-                    Bank Transfer Verification
+                    {t("tabs.bankTransfers")}
                   </h2>
                 </div>
                 <BankTransferAdministration

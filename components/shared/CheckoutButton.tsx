@@ -55,7 +55,7 @@ const CheckoutButton = ({
               <AlertCircle size={18} className="text-red-400" />
             </div>
             <p className="text-red-300 font-medium">
-              Sorry, tickets are no longer available.
+              Sorry, registrations are no longer available.
             </p>
           </div>
         </div>

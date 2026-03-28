@@ -23,12 +23,14 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import type { AdminClient, DashboardData } from "@/lib/admin-client";
+import { useTranslations } from "next-intl";
 
 interface DashboardStatsProps {
   adminClient: AdminClient;
 }
 
 export function DashboardStats({ adminClient }: DashboardStatsProps) {
+  const t = useTranslations("serverDashboard");
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -58,7 +60,7 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
   }, [autoRefresh]);
 
   const getHealthStatus = () => {
-    if (!data) return { status: "unknown", color: "gray" };
+    if (!data) return { status: "unknown", color: "gray", label: t("status.unknown") };
 
     const successRate = Number.parseFloat(
       data.stats.requests.successRate.replace("%", "")
@@ -66,11 +68,11 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
     const hasErrors = data.stats.requests.errors > 0;
 
     if (successRate >= 95 && !hasErrors) {
-      return { status: "healthy", color: "green" };
+      return { status: "healthy", color: "green", label: t("status.healthy") };
     } else if (successRate >= 90) {
-      return { status: "warning", color: "yellow" };
+      return { status: "warning", color: "yellow", label: t("status.warning") };
     } else {
-      return { status: "critical", color: "red" };
+      return { status: "critical", color: "red", label: t("status.critical") };
     }
   };
 
@@ -99,11 +101,11 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
         <CardContent className="pt-6">
           <div className="flex items-center gap-2 text-red-600">
             <AlertTriangle className="h-5 w-5" />
-            <span>Error loading dashboard: {error}</span>
+            <span>{t("errorLoading", { error })}</span>
           </div>
           <Button onClick={fetchData} className="mt-4">
             <RefreshCw className="mr-2 h-4 w-4" />
-            Retry
+            {t("retry")}
           </Button>
         </CardContent>
       </Card>
@@ -117,13 +119,13 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
       {/* Header with refresh controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h2 className="text-2xl font-bold">Server Dashboard</h2>
+          <h2 className="text-2xl font-bold">{t("title")}</h2>
           <Badge
             variant={health.status === "healthy" ? "default" : "destructive"}
             className="flex items-center gap-1"
           >
             <CheckCircle className="h-3 w-3" />
-            {health.status.toUpperCase()}
+            {health.label}
           </Badge>
         </div>
         <div className="flex items-center gap-2">
@@ -136,7 +138,7 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
             <RefreshCw
               className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
             />
-            Refresh
+            {t("refresh")}
           </Button>
         </div>
       </div>
@@ -146,7 +148,7 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
         {/* Server Info */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Server Uptime</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("cards.uptime.title")}</CardTitle>
             <Server className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -154,7 +156,9 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
               {data.server.uptime.formatted}
             </div>
             <p className="text-xs text-muted-foreground">
-              Started {new Date(data.server.startTime).toLocaleDateString()}
+              {t("cards.uptime.started", {
+                date: new Date(data.server.startTime).toLocaleDateString(),
+              })}
             </p>
           </CardContent>
         </Card>
@@ -163,7 +167,7 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Requests
+              {t("cards.requests.title")}
             </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -172,7 +176,9 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
               {data.stats.requests.total.toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
-              {data.stats.requests.successRate} success rate
+              {t("cards.requests.successRate", {
+                rate: data.stats.requests.successRate,
+              })}
             </p>
           </CardContent>
         </Card>
@@ -181,7 +187,7 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Files Processed
+              {t("cards.files.title")}
             </CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -190,7 +196,9 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
               {data.stats.files.processed}
             </div>
             <p className="text-xs text-muted-foreground">
-              {data.stats.files.activeProcesses} active processes
+              {t("cards.files.activeProcesses", {
+                count: data.stats.files.activeProcesses,
+              })}
             </p>
           </CardContent>
         </Card>
@@ -198,7 +206,7 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
         {/* Active Processes */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Process Queue</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("cards.queue.title")}</CardTitle>
             <Cpu className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -206,7 +214,9 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
               {data.stats.processes.queueLength}
             </div>
             <p className="text-xs text-muted-foreground">
-              {data.stats.processes.runningProcesses} running
+              {t("cards.queue.running", {
+                count: data.stats.processes.runningProcesses,
+              })}
             </p>
           </CardContent>
         </Card>
@@ -218,25 +228,25 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MemoryStick className="h-5 w-5" />
-              Memory Usage
+              {t("memory.title")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>RSS Memory</span>
+                <span>{t("memory.rss")}</span>
                 <span>{data.memory.rss}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>Heap Total</span>
+                <span>{t("memory.heapTotal")}</span>
                 <span>{data.memory.heapTotal}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>Heap Used</span>
+                <span>{t("memory.heapUsed")}</span>
                 <span>{data.memory.heapUsed}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>External</span>
+                <span>{t("memory.external")}</span>
                 <span>{data.memory.external}</span>
               </div>
             </div>
@@ -247,25 +257,25 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <HardDrive className="h-5 w-5" />
-              Disk Usage
+              {t("disk.title")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Videos</span>
+                <span>{t("disk.videos")}</span>
                 <span>{data.disk.videos}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>Music</span>
+                <span>{t("disk.music")}</span>
                 <span>{data.disk.music}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>Temp Files</span>
+                <span>{t("disk.tempFiles")}</span>
                 <span>{data.disk.temp}</span>
               </div>
               <div className="flex justify-between text-sm font-semibold border-t pt-2">
-                <span>Total</span>
+                <span>{t("disk.total")}</span>
                 <span>{data.disk.total}</span>
               </div>
             </div>
@@ -279,18 +289,20 @@ export function DashboardStats({ adminClient }: DashboardStatsProps) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
-              Temporary Files
+              {t("tempFiles.title")}
             </CardTitle>
             <CardDescription>
-              {data.stats.tempFiles.trackedFiles} files being tracked
+              {t("tempFiles.tracked", {
+                count: data.stats.tempFiles.trackedFiles,
+              })}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-sm text-muted-foreground">
-              Last cleanup:{" "}
+              {t("tempFiles.lastCleanup")}{" "}
               {data.stats.lastCleanup
                 ? new Date(data.stats.lastCleanup).toLocaleString()
-                : "Never"}
+                : t("tempFiles.never")}
             </div>
           </CardContent>
         </Card>

@@ -3,8 +3,10 @@ import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export default function Page() {
+  const t = useTranslations("authPages.signIn");
   return (
     <div className="w-full max-w-md mx-auto relative px-4 text-center">
       <div className="absolute inset-0 bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
@@ -43,14 +45,14 @@ export default function Page() {
         <div className="px-8 pb-8 pt-2">
           <div className="h-px w-full bg-white/10 mb-8" />
           <div className="flex flex-col items-center gap-4">
-            <span className="text-gray-500 text-sm italic font-medium">Vous n&apos;avez pas encore de compte ?</span>
+            <span className="text-gray-500 text-sm italic font-medium">{t("noAccount")}</span>
             <Button 
               asChild
               variant="outline" 
               className="w-full h-12 rounded-2xl border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 text-indigo-400 hover:text-indigo-300 hover:border-indigo-500/40 transition-all duration-300"
             >
               <Link href="/sign-up">
-                S&apos;inscrire
+                {t("cta")}
               </Link>
             </Button>
           </div>

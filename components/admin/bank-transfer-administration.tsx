@@ -56,7 +56,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface BankTransferAdministrationProps {
     eventId?: string;
@@ -84,6 +84,7 @@ export default function BankTransferAdministration({
   const queryClient = useQueryClient();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const locale = useLocale();
+  const t = useTranslations("bankTransferAdministration");
   const [isExporting, setIsExporting] = useState(false);
 
   // Fetch bank transfers
@@ -118,7 +119,7 @@ export default function BankTransferAdministration({
     onSuccess: (result) => {
       if (result.success) {
         toast({
-          title: "Success",
+          title: t("messages.success"),
           description: result.message,
         });
         queryClient.invalidateQueries({ queryKey: ["bankTransfers"] });
@@ -126,7 +127,7 @@ export default function BankTransferAdministration({
         setRejectionReason("");
       } else {
         toast({
-          title: "Error",
+          title: t("messages.error"),
           description: result.message,
           variant: "destructive",
         });
@@ -134,8 +135,8 @@ export default function BankTransferAdministration({
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to verify bank transfer",
+        title: t("messages.error"),
+        description: t("messages.verifyFailed"),
         variant: "destructive",
       });
     },
@@ -159,8 +160,8 @@ export default function BankTransferAdministration({
       });
     } else {
       toast({
-        title: "Error",
-        description: "Please provide a rejection reason",
+        title: t("messages.error"),
+        description: t("messages.rejectionReasonRequired"),
         variant: "destructive",
       });
     }
@@ -187,18 +188,26 @@ export default function BankTransferAdministration({
 
     const variant = variants[status as keyof typeof variants];
     const Icon = variant?.icon || Clock;
+    const statusLabel =
+      status === "pending"
+        ? t("tabs.pending")
+        : status === "approved"
+          ? t("tabs.approved")
+          : status === "rejected"
+            ? t("tabs.rejected")
+            : status;
 
     return (
       <Badge variant="outline" className={variant?.className}>
         <Icon className="mr-1 h-3 w-3" />
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {statusLabel}
       </Badge>
     );
   };
 
   const columns = [
     {
-      header: "Date",
+      header: t("table.date"),
       accessor: "createdAt",
       cell: (value: Date) => (
         <div className="flex items-center gap-2">
@@ -208,7 +217,7 @@ export default function BankTransferAdministration({
       ),
     },
     {
-      header: "Buyer",
+      header: t("table.buyer"),
       accessor: "buyerName",
       cell: (value: string) => (
         <div className="flex items-center gap-2">
@@ -220,7 +229,7 @@ export default function BankTransferAdministration({
       ),
     },
     {
-      header: "Amount",
+      header: t("table.amount"),
       accessor: "amount",
       cell: (value: number) => (
         <div className="flex items-center gap-2">
@@ -232,7 +241,7 @@ export default function BankTransferAdministration({
       ),
     },
     {
-      header: "Transfer ID",
+      header: t("table.transferId"),
       accessor: "transferId",
       cell: (value: string | null) =>
         value ? (
@@ -244,7 +253,7 @@ export default function BankTransferAdministration({
         ),
     },
     {
-      header: "Screenshot",
+      header: t("table.screenshot"),
       accessor: "screenshotUrl",
       cell: (value: string | null) =>
         value ? (
@@ -254,12 +263,12 @@ export default function BankTransferAdministration({
         ),
     },
     {
-      header: "Status",
+      header: t("table.status"),
       accessor: "status",
       cell: (value: string) => getStatusBadge(value),
     },
     {
-      header: "Actions",
+      header: t("table.actions"),
       accessor: "root",
       align: "right" as const,
       cell: (value: any) => (
@@ -269,7 +278,7 @@ export default function BankTransferAdministration({
           onClick={() => setSelectedTransfer(value)}
         >
           <Eye className="h-4 w-4 mr-1" />
-          View
+          {t("table.view")}
         </Button>
       ),
     },
@@ -307,7 +316,7 @@ export default function BankTransferAdministration({
         {item.screenshotUrl && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <ImageIcon className="h-4 w-4" />
-            <span>Screenshot attached</span>
+            <span>{t("table.screenshotAttached")}</span>
           </div>
         )}
       </CardContent>
@@ -320,7 +329,7 @@ export default function BankTransferAdministration({
           onClick={() => setSelectedTransfer(item)}
         >
           <Eye className="h-4 w-4 mr-2" />
-          View Details
+          {t("table.viewDetails")}
         </Button>
       </CardFooter>
     </Card>
@@ -330,12 +339,12 @@ export default function BankTransferAdministration({
 
   const getExportPayload = () => {
     const headers = [
-      "Date",
-      "Buyer",
-      "Amount",
-      "Transfer ID",
-      "Status",
-      "Event",
+      t("table.date"),
+      t("table.buyer"),
+      t("table.amount"),
+      t("table.transferId"),
+      t("table.status"),
+      t("table.event"),
     ];
 
     const rows = (data?.data || []).map((transfer: any) => [
@@ -355,8 +364,8 @@ export default function BankTransferAdministration({
   const handleExportTransfers = async (format: ExportFormat) => {
     if (!data || !data.data || data.data.length === 0) {
       toast({
-        title: "Export",
-        description: "No bank transfers to export.",
+        title: t("actions.export"),
+        description: t("messages.noTransfersToExport"),
         variant: "destructive",
       });
       return;
@@ -447,7 +456,7 @@ export default function BankTransferAdministration({
           )
           .join("");
 
-        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>Bank Transfers Export</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
+        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>${t("export.title")}</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
         const blob = new Blob(["\uFEFF" + htmlDoc], {
           type: "application/msword;charset=utf-8",
         });
@@ -459,7 +468,7 @@ export default function BankTransferAdministration({
         const doc = new jsPDF({ unit: "pt", format: "a4" });
         let y = 40;
         doc.setFontSize(14);
-        doc.text("Bank Transfers Export", 40, y);
+        doc.text(t("export.title"), 40, y);
         y += 22;
         doc.setFontSize(9);
         doc.text(headers.join(" | "), 40, y);
@@ -480,14 +489,17 @@ export default function BankTransferAdministration({
       }
 
       toast({
-        title: "Export",
-        description: `${data.data.length} bank transfer(s) exported as ${format.toUpperCase()}.`,
+        title: t("actions.export"),
+        description: t("messages.exportSuccess", {
+          count: data.data.length,
+          format: format.toUpperCase(),
+        }),
       });
     } catch (exportError) {
       console.error("Export failed", exportError);
       toast({
-        title: "Export",
-        description: "Failed to export bank transfers. Please try again.",
+        title: t("actions.export"),
+        description: t("messages.exportFailed"),
         variant: "destructive",
       });
     } finally {
@@ -506,20 +518,20 @@ export default function BankTransferAdministration({
             </div>
             <div>
               <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                Bank Transfer Verification
+                {t("title")}
               </h2>
               <p className="text-muted-foreground">
-                Review and verify bank transfer payments
+                {t("subtitle")}
               </p>
             </div>
           </div>
 
           <div className="w-full lg:w-auto flex flex-wrap items-center gap-2 sm:gap-3">
             <Search
-              placeholder="Search by buyer or transfer ID..."
+              placeholder={t("searchPlaceholder")}
               className="w-full sm:w-auto"
             />
-            <Button variant="outline" size="icon" title="Filter">
+            <Button variant="outline" size="icon" title={t("actions.filter")}>
               <Filter className="h-4 w-4" />
             </Button>
             <DropdownMenu>
@@ -527,7 +539,7 @@ export default function BankTransferAdministration({
                 <Button
                   variant="outline"
                   size="icon"
-                  title="Export"
+                  title={t("actions.export")}
                   disabled={
                     isExporting || isPending || !data || !data.data || data.data.length === 0
                   }
@@ -537,16 +549,16 @@ export default function BankTransferAdministration({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => handleExportTransfers("xlsx")}>
-                  Export XLSX
+                  {t("actions.exportXlsx")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExportTransfers("word")}>
-                  Export Word
+                  {t("actions.exportWord")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExportTransfers("pdf")}>
-                  Export PDF
+                  {t("actions.exportPdf")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExportTransfers("csv")}>
-                  Export CSV
+                  {t("actions.exportCsv")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -563,7 +575,7 @@ export default function BankTransferAdministration({
                 </div>
                 <div>
                   <p className="text-xl md:text-2xl font-bold">{data.totalCount}</p>
-                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">Total</p>
+                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.total")}</p>
                 </div>
               </div>
             </div>
@@ -577,7 +589,7 @@ export default function BankTransferAdministration({
                   <p className="text-xl md:text-2xl font-bold">
                     {data.data.filter((t: any) => t.status === "pending").length}
                   </p>
-                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">Pending</p>
+                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.pending")}</p>
                 </div>
               </div>
             </div>
@@ -591,7 +603,7 @@ export default function BankTransferAdministration({
                   <p className="text-xl md:text-2xl font-bold">
                     {data.data.filter((t: any) => t.status === "approved").length}
                   </p>
-                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">Approved</p>
+                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.approved")}</p>
                 </div>
               </div>
             </div>
@@ -605,7 +617,7 @@ export default function BankTransferAdministration({
                   <p className="text-xl md:text-2xl font-bold">
                     {data.data.filter((t: any) => t.status === "rejected").length}
                   </p>
-                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">Rejected</p>
+                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.rejected")}</p>
                 </div>
               </div>
             </div>
@@ -616,10 +628,10 @@ export default function BankTransferAdministration({
       {/* Filter Tabs */}
       <Tabs value={statusFilter} onValueChange={(v: any) => setStatusFilter(v)}>
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="pending">Pending</TabsTrigger>
-          <TabsTrigger value="approved">Approved</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          <TabsTrigger value="all">{t("tabs.all")}</TabsTrigger>
+          <TabsTrigger value="pending">{t("tabs.pending")}</TabsTrigger>
+          <TabsTrigger value="approved">{t("tabs.approved")}</TabsTrigger>
+          <TabsTrigger value="rejected">{t("tabs.rejected")}</TabsTrigger>
         </TabsList>
       </Tabs>
 
@@ -638,10 +650,10 @@ export default function BankTransferAdministration({
             <div className="text-center py-12">
               <Landmark className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">
-                No bank transfers found
+                {t("empty.title")}
               </h3>
               <p className="text-muted-foreground">
-                No bank transfer payments to display
+                {t("empty.description")}
               </p>
             </div>
           )
@@ -653,10 +665,10 @@ export default function BankTransferAdministration({
           <div className="text-center py-12">
             <Landmark className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">
-              No bank transfers found
+              {t("empty.title")}
             </h3>
             <p className="text-muted-foreground">
-              No bank transfer payments to display
+              {t("empty.description")}
             </p>
           </div>
         )}
@@ -671,10 +683,10 @@ export default function BankTransferAdministration({
           <DialogHeader className="rounded-2xl border border-pink-100 bg-gradient-to-r from-pink-50 to-rose-50 p-5 dark:border-pink-900/50 dark:from-pink-950/40 dark:to-rose-950/40">
             <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-slate-900 dark:text-slate-100">
               <Landmark className="h-5 w-5 text-pink-600" />
-              Bank Transfer Details
+              {t("dialog.title")}
             </DialogTitle>
             <DialogDescription className="text-base text-slate-600 dark:text-slate-300">
-              Review and verify this bank transfer payment
+              {t("dialog.description")}
             </DialogDescription>
           </DialogHeader>
 
@@ -682,33 +694,33 @@ export default function BankTransferAdministration({
             <div className="space-y-6">
               {/* Status */}
               <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Status</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{t("dialog.status")}</span>
                 {getStatusBadge(selectedTransfer.status)}
               </div>
 
-              {/* Order Information */}
+              {/* Registration Information */}
               <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
                   <FileText className="h-4 w-4 text-pink-600" />
-                  Order Information
+                  {t("dialog.registrationInfo")}
                 </h3>
                 <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
                   <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/80">
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Buyer</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{t("dialog.buyer")}</span>
                     <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{selectedTransfer.buyerName}</p>
                   </div>
                   <div className="rounded-xl bg-green-50 p-4 dark:bg-green-950/30">
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Amount</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{t("dialog.amount")}</span>
                     <p className="mt-1 text-xl font-bold text-green-600 dark:text-green-400">
 {formatPriceByCountry(selectedTransfer.amount, eventCountry, locale, eventLocation)}
                     </p>
                   </div>
                   <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/80">
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Event</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{t("dialog.event")}</span>
                     <p className="mt-1 break-words font-semibold text-slate-900 dark:text-slate-100">{selectedTransfer.eventTitle}</p>
                   </div>
                   <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/80">
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Date</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{t("dialog.date")}</span>
                     <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">
                       {formatDateTime(selectedTransfer.createdAt).dateTime}
                     </p>
@@ -719,7 +731,7 @@ export default function BankTransferAdministration({
               {/* Transfer ID */}
               {selectedTransfer.transferId && (
                 <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Transfer ID</h3>
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("dialog.transferId")}</h3>
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
                     <code className="text-sm font-mono text-slate-800 dark:text-slate-100">
                       {selectedTransfer.transferId}
@@ -733,13 +745,13 @@ export default function BankTransferAdministration({
                 <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                   <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
                     <ImageIcon className="h-4 w-4 text-pink-600" />
-                    Transfer Screenshot
+                    {t("dialog.transferScreenshot")}
                   </h3>
                   <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
                     <Zoom>
                       <img
                         src={selectedTransfer.screenshotUrl}
-                        alt="Bank transfer screenshot"
+                        alt={t("dialog.transferScreenshotAlt")}
                         className="max-h-[28rem] w-full object-contain"
                       />
                     </Zoom>
@@ -752,7 +764,7 @@ export default function BankTransferAdministration({
                 selectedTransfer.rejectionReason && (
                   <div className="space-y-3 rounded-2xl border border-red-200 bg-red-50 p-5 shadow-sm dark:border-red-900/60 dark:bg-red-950/20">
                     <h3 className="text-lg font-semibold text-red-600 dark:text-red-400">
-                      Rejection Reason
+                      {t("dialog.rejectionReason")}
                     </h3>
                     <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-800 dark:bg-slate-900">
                       <p className="text-sm text-slate-700 dark:text-slate-200">
@@ -766,18 +778,18 @@ export default function BankTransferAdministration({
               {selectedTransfer.status === "pending" && (
                 <div className="space-y-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/20">
                   <Label htmlFor="rejection-reason" className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                    Rejection Reason
+                    {t("dialog.rejectionReason")}
                   </Label>
                   <Textarea
                     id="rejection-reason"
-                    placeholder="Enter reason for rejection..."
+                    placeholder={t("dialog.rejectionReasonPlaceholder")}
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
                     rows={3}
                     className="min-h-[120px] rounded-2xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-pink-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   />
                   <p className="text-sm text-slate-500 dark:text-slate-400">
-                    Required only if you reject this payment.
+                    {t("dialog.rejectionReasonHint")}
                   </p>
                 </div>
               )}
@@ -792,7 +804,7 @@ export default function BankTransferAdministration({
                   className="flex-1 rounded-2xl border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
                   onClick={() => setSelectedTransfer(null)}
                 >
-                  Cancel
+                  {t("dialog.cancel")}
                 </Button>
                 <Button
                   variant="destructive"
@@ -801,7 +813,7 @@ export default function BankTransferAdministration({
                   disabled={verifyMutation.isPending}
                 >
                   <XCircle className="mr-2 h-4 w-4" />
-                  Reject
+                  {t("dialog.reject")}
                 </Button>
                 <Button
                   className="flex-1 rounded-2xl bg-green-600 hover:bg-green-700"
@@ -809,11 +821,11 @@ export default function BankTransferAdministration({
                   disabled={verifyMutation.isPending}
                 >
                   <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Approve
+                  {t("dialog.approve")}
                 </Button>
               </div>
             ) : (
-              <Button className="rounded-2xl" onClick={() => setSelectedTransfer(null)}>Close</Button>
+              <Button className="rounded-2xl" onClick={() => setSelectedTransfer(null)}>{t("dialog.close")}</Button>
             )}
           </DialogFooter>
         </DialogContent>

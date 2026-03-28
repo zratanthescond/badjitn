@@ -174,7 +174,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           </div>
           {!isFreeEvent && (
             <CardTitle className="text-2xl font-bold text-foreground">
-              Acheter votre billet
+              Finaliser votre inscription
             </CardTitle>
           )}
         </CardHeader>

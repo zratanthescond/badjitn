@@ -28,6 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // Placeholder registration logic preserved from original
 const doRegister = async (values: any): Promise<any> => {
@@ -36,6 +37,7 @@ const doRegister = async (values: any): Promise<any> => {
 };
 
 export default function SignUpForm() {
+  const t = useTranslations("authComponents.signUp");
   const { toast } = useToast();
   type SignUpFormValues = z.infer<typeof signUpFormSchema>;
   const form = useForm<SignUpFormValues, any, SignUpFormValues>({
@@ -59,8 +61,8 @@ export default function SignUpForm() {
       const response = await doRegister(values);
       if (response._id) {
         toast({
-          title: "Account created!",
-          description: "Welcome to our platform.",
+          title: t("toastSuccessTitle"),
+          description: t("toastSuccessDescription"),
         });
         form.reset();
         router.push("/sign-in");
@@ -69,7 +71,7 @@ export default function SignUpForm() {
         setServerError(response.error);
       }
     } catch (err) {
-      setServerError("An unexpected error occurred.");
+      setServerError(t("unexpectedError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -78,7 +80,7 @@ export default function SignUpForm() {
   useEffect(() => {
     if (serverError) {
       toast({
-        title: "Error",
+        title: t("toastErrorTitle"),
         description: serverError,
         variant: "destructive",
       });
@@ -95,10 +97,10 @@ export default function SignUpForm() {
         <Card className="border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden glass border">
           <CardHeader className="space-y-1 text-center pt-8">
             <CardTitle className="text-3xl font-bold tracking-tight text-white bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">
-              Create Account
+              {t("title")}
             </CardTitle>
             <CardDescription className="text-gray-400">
-              Join our community and start creating events
+              {t("description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 px-8">
@@ -110,7 +112,7 @@ export default function SignUpForm() {
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-[#0f172a] px-2 text-gray-500 backdrop-blur-sm rounded-full">
-                  Or sign up with email
+                  {t("orEmail")}
                 </span>
               </div>
             </div>
@@ -123,7 +125,7 @@ export default function SignUpForm() {
                     name="username"
                     render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-xs font-medium text-gray-400 ml-1">Username</FormLabel>
+                        <FormLabel className="text-xs font-medium text-gray-400 ml-1">{t("username")}</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input 
@@ -143,7 +145,7 @@ export default function SignUpForm() {
                     name="phoneNumber"
                     render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-xs font-medium text-gray-400 ml-1">Phone</FormLabel>
+                        <FormLabel className="text-xs font-medium text-gray-400 ml-1">{t("phone")}</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input 
@@ -165,7 +167,7 @@ export default function SignUpForm() {
                   name="email"
                   render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="text-xs font-medium text-gray-400 ml-1">Email</FormLabel>
+                      <FormLabel className="text-xs font-medium text-gray-400 ml-1">{t("email")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input 
@@ -188,7 +190,7 @@ export default function SignUpForm() {
                     name="password"
                     render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-xs font-medium text-gray-400 ml-1">Password</FormLabel>
+                        <FormLabel className="text-xs font-medium text-gray-400 ml-1">{t("password")}</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input 
@@ -209,7 +211,7 @@ export default function SignUpForm() {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-xs font-medium text-gray-400 ml-1">Confirm</FormLabel>
+                        <FormLabel className="text-xs font-medium text-gray-400 ml-1">{t("confirm")}</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input 
@@ -232,13 +234,13 @@ export default function SignUpForm() {
                   disabled={isSubmitting}
                   className="w-full h-11 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-sky-500/20 transition-all duration-300 active:scale-95 mt-2"
                 >
-                  {isSubmitting ? <Loader2 className="size-5 animate-spin mx-auto" /> : "Create Account"}
+                  {isSubmitting ? <Loader2 className="size-5 animate-spin mx-auto" /> : t("submit")}
                 </Button>
 
                 <p className="text-center text-sm text-gray-400 pt-2">
-                  Already have an account?{" "}
+                  {t("hasAccount")}{" "}
                   <a href="/sign-in" className="text-sky-400 hover:text-sky-300 font-medium transition-colors">
-                    Sign In
+                    {t("signIn")}
                   </a>
                 </p>
               </form>

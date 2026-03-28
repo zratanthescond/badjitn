@@ -24,12 +24,14 @@ import {
   Zap,
 } from "lucide-react";
 import type { AdminClient, DashboardData } from "@/lib/admin-client";
+import { useTranslations } from "next-intl";
 
 interface ProcessMonitorProps {
   adminClient: AdminClient;
 }
 
 export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
+  const t = useTranslations("processMonitor");
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -101,7 +103,7 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Process Monitor</h2>
+        <h2 className="text-2xl font-bold">{t("title")}</h2>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -113,13 +115,13 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
             ) : (
               <Play className="mr-2 h-4 w-4" />
             )}
-            {autoRefresh ? "Pause" : "Resume"} Auto-refresh
+            {autoRefresh ? t("pause") : t("resume")} {t("autoRefresh")}
           </Button>
           <Button variant="outline" onClick={fetchData} disabled={loading}>
             <RefreshCw
               className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
             />
-            Refresh
+            {t("refresh")}
           </Button>
         </div>
       </div>
@@ -138,16 +140,18 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Process Status
+                  {t("cards.status.title")}
                 </CardTitle>
                 <div
                   className={`w-3 h-3 rounded-full ${getStatusColor(status)}`}
                 />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold capitalize">{status}</div>
+                <div className="text-2xl font-bold capitalize">{t(`status.${status}`)}</div>
                 <p className="text-xs text-muted-foreground">
-                  {data.stats.processes.activeProcesses} active processes
+                  {t("cards.status.activeProcesses", {
+                    count: data.stats.processes.activeProcesses,
+                  })}
                 </p>
               </CardContent>
             </Card>
@@ -155,7 +159,7 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Queue Length
+                  {t("cards.queue.title")}
                 </CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -164,7 +168,9 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
                   {data.stats.processes.queueLength}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {data.stats.processes.runningProcesses} currently running
+                  {t("cards.queue.running", {
+                    count: data.stats.processes.runningProcesses,
+                  })}
                 </p>
               </CardContent>
             </Card>
@@ -172,7 +178,7 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Files Processed
+                  {t("cards.files.title")}
                 </CardTitle>
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -181,7 +187,7 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
                   {data.stats.files.processed}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Total files processed
+                  {t("cards.files.description")}
                 </p>
               </CardContent>
             </Card>
@@ -192,10 +198,10 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Cpu className="h-5 w-5" />
-                Active Processes
+                {t("activeProcesses.title")}
               </CardTitle>
               <CardDescription>
-                Currently running FFmpeg processes
+                {t("activeProcesses.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -211,18 +217,18 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
                         <div>
                           <div className="font-medium">{processId}</div>
                           <div className="text-sm text-gray-500">
-                            FFmpeg Process
+                            {t("activeProcesses.ffmpegProcess")}
                           </div>
                         </div>
                       </div>
-                      <Badge variant="default">Running</Badge>
+                      <Badge variant="default">{t("status.running")}</Badge>
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-500">
                   <Cpu className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No active processes</p>
+                  <p>{t("activeProcesses.none")}</p>
                 </div>
               )}
             </CardContent>
@@ -233,9 +239,9 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Zap className="h-5 w-5" />
-                Process Controls
+                {t("controls.title")}
               </CardTitle>
-              <CardDescription>Manage running processes</CardDescription>
+              <CardDescription>{t("controls.description")}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
@@ -247,12 +253,14 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
                   variant="destructive"
                 >
                   <Square className="mr-2 h-4 w-4" />
-                  Kill All Processes
+                  {t("controls.killAll")}
                 </Button>
                 <div className="text-sm text-gray-500">
                   {data.stats.processes.activeProcesses === 0
-                    ? "No processes to kill"
-                    : `This will terminate ${data.stats.processes.activeProcesses} active process(es)`}
+                    ? t("controls.noProcesses")
+                    : t("controls.terminateCount", {
+                        count: data.stats.processes.activeProcesses,
+                      })}
                 </div>
               </div>
             </CardContent>
@@ -262,18 +270,21 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
           {data.stats.processes.queueLength > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Process Queue</CardTitle>
+                <CardTitle>{t("queue.title")}</CardTitle>
                 <CardDescription>
-                  {data.stats.processes.queueLength} processes waiting to be
-                  executed
+                  {t("queue.description", {
+                    count: data.stats.processes.queueLength,
+                  })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Queue Progress</span>
+                    <span>{t("queue.progress")}</span>
                     <span>
-                      {data.stats.processes.runningProcesses} / 3 slots used
+                      {t("queue.slotsUsed", {
+                        count: data.stats.processes.runningProcesses,
+                      })}
                     </span>
                   </div>
                   <Progress
@@ -281,7 +292,7 @@ export function ProcessMonitor({ adminClient }: ProcessMonitorProps) {
                     className="w-full"
                   />
                   <div className="text-xs text-gray-500">
-                    Maximum concurrent processes: 3
+                    {t("queue.maxConcurrent")}
                   </div>
                 </div>
               </CardContent>

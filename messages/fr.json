@@ -113,18 +113,18 @@
     "confirmDelete": "Voulez-vous vraiment supprimer ce point de scannage ?",
     "currentPoint": "Point de scannage actuel",
     "deletePoint": "Supprimer",
-    "errorOccurred": "Une erreur est survenue lors de la vérification du ticket.",
+    "errorOccurred": "Une erreur est survenue lors de la verification de l'acces.",
     "instructions": {
       "step1": "1. Sélectionnez le point de contrôle.",
-      "step2": "2. Présentez le code QR du ticket face à la caméra.",
+      "step2": "2. Presentez le code QR d'acces face a la camera.",
       "step3": "3. Attendez la confirmation visuelle et sonore.",
       "title": "Instructions"
     },
-    "invalidTicket": "Ticket Invalide",
+    "invalidTicket": "Acces invalide",
     "newPoint": "Nouveau point",
     "noImageChosen": "Aucun fichier",
-    "notBelong": "Ce ticket n'appartient pas à cet évènement.",
-    "notFound": "Ticket non trouvé ou code QR invalide.",
+    "notBelong": "Cet acces n'appartient pas a cet evenement.",
+    "notFound": "Acces non trouve ou code QR invalide.",
     "ok": "OK",
     "orDropImage": "Glissez une image ici",
     "participant": "Participant",
@@ -136,13 +136,13 @@
     "retry": "Réessayer",
     "scanCameraDirectly": "Utiliser la caméra",
     "scanImageFile": "Scanner une image",
-    "scanNext": "Scanner le Ticket Suivant",
+    "scanNext": "Scanner l'acces suivant",
     "scannedAt": "Scanné le:",
     "stopScanning": "Arrêter",
     "subtitle": "Scannage et contrôle d'accès en temps réel",
-    "ticketType": "Type de Ticket",
+    "ticketType": "Modalite d'acces",
     "unknown": "Inconnu",
-    "verifying": "Vérification du ticket..."
+    "verifying": "Verification de l'acces..."
   },
   "SponsorForm": {
     "actions": {
@@ -218,7 +218,7 @@
     },
     "actions": {
       "getCertificate": "Obtenir le Certificat",
-      "getTicket": "Obtenir le Billet",
+      "getTicket": "Obtenir mon acces",
       "uploadWork": "Télécharger le Travail"
     },
     "dialogs": {
@@ -227,8 +227,8 @@
         "title": "Obtenir le Certificat"
       },
       "ticket": {
-        "description": "Voir et télécharger votre billet d'événement",
-        "title": "Obtenir le Billet"
+        "description": "Voir et telecharger votre acces a l'evenement",
+        "title": "Obtenir mon acces"
       },
       "uploadWork": {
         "description": "Téléchargez vos fichiers de travail pour cet événement",
@@ -401,7 +401,7 @@
     "chatModelAdvanced": "Avancé",
     "chatClear": "Effacer le chat",
     "chatClearConfirm": "Voulez-vous vraiment effacer toute la discussion ?",
-    "chatIntro": "Posez vos questions uniquement sur badgi, ses offres, la gestion d'evenements, les billets et les evenements disponibles.",
+    "chatIntro": "Posez vos questions uniquement sur badgi, ses offres, la gestion d'evenements, les inscriptions et les evenements disponibles.",
     "chatPlaceholder": "Posez une question sur la plateforme, les offres ou les evenements...",
     "chatPoweredBy": "Propulse par badgi AI",
     "chatErrorTitle": "Desole, une erreur est survenue :",
@@ -1436,7 +1436,7 @@
     "delete": "Supprimer",
     "hostContributor": "Héberger un Contributeur",
     "modify": "Modifier",
-    "orderDetails": "Détails de la Commande",
+    "orderDetails": "Details de l'inscription",
     "return": "Retour",
     "registrationForms": "Formulaires d'inscription",
     "settings": "Paramètres de l'Événement",
@@ -1451,7 +1451,7 @@
     "free": "Gratuit",
     "seats": "places",
     "entries": "entrées",
-    "totalOrders": "Total des Commandes",
+    "totalOrders": "Total des inscriptions",
     "totalRevenue": "Revenu Total",
     "uniqueAttendees": "Participants Uniques",
     "scanCoverage": "Couverture des Scans",
@@ -1460,13 +1460,13 @@
     "highlightsTitle": "Points clés",
     "totalSuffix": "total",
     "highlights": {
-      "noOrders": "Aucune commande enregistrée pour cet événement.",
-      "ordersAndAttendees": "{orders} commandes générées pour {attendees} participants uniques.",
-      "avgOrder": "Panier moyen estimé: {amount} par commande.",
+      "noOrders": "Aucune inscription enregistree pour cet evenement.",
+      "ordersAndAttendees": "{orders} inscriptions enregistrees pour {attendees} participants uniques.",
+      "avgOrder": "Contribution moyenne estimee: {amount} par inscription.",
       "attendanceRate": "Taux de présence scannée: {rate}% ({scanned} participants scannés).",
       "topPlan": "Plan le plus performant: {plan} ({orders} ventes)."
     },
-    "breakdownByType": "Répartition par Type de Ticket",
+    "breakdownByType": "Repartition par modalite d'inscription",
     "breakdownByCategory": "Répartition par Catégorie",
     "scanPointsDescription": "Entrées et sorties enregistrées par scan QR code à chaque point de contrôle.",
     "footer": "Rapport généré par badgi.net",
@@ -1479,13 +1479,13 @@
     "sections": {
       "eventInfo": "Informations de l'Événement",
       "pricePlans": "Plans Tarifaires",
-      "orderStats": "Statistiques des Commandes",
+      "orderStats": "Statistiques des inscriptions",
       "scanPoints": "Détails des Points de Scannage",
       "executiveTrends": "Résumé exécutif et tendances",
       "pricePlanPerformance": "Performance des plans tarifaires"
     },
     "charts": {
-      "ordersTrendTitle": "Évolution des commandes (jour par jour)",
+      "ordersTrendTitle": "Evolution des inscriptions (jour par jour)",
       "ordersTrendEmpty": "Aucune évolution disponible.",
       "scanHourlyTitle": "Activité des scans par heure"
     },
@@ -1527,7 +1527,7 @@
     "event": "événement",
     "eventDescriptionPlaceholder": "Description de l'événement",
     "eventTitle": "Titre de l'evenement",
-    "freeTicket": "Ticket Gratuit",
+    "freeTicket": "Inscription gratuite",
     "locationPlaceHolder": "Lieu de l'événement ou on ligne",
     "online": "Événement en ligne",
     "places": "N° palces",
@@ -1537,7 +1537,7 @@
     "requiredInfoDescription": "Veuillez remplir toutes les informations requises.",
     "scanPoints": {
       "add": "Ajouter",
-      "description": "Définissez les points de contrôle où les tickets seront scannés (ex: Entrée, Atelier).",
+      "description": "Definissez les points de controle ou les acces seront scannes (ex: Entree, Atelier).",
       "empty": "Aucun point de scannage configuré.",
       "items": {
         "exhibitors": "Espace exposants",
@@ -1565,7 +1565,7 @@
   },
   "eventPrice": {
     "availablePlaces": "Places Disponibles",
-    "buyTicket": "Acheter un billet ou obtenir une précommande",
+    "buyTicket": "S'inscrire a l'evenement ou demander un acces sur place",
     "error": "Erreur",
     "eventFree": "Cet événement est gratuit",
     "eventTotalPrice": "Prix total de l'événement",
@@ -1573,8 +1573,8 @@
     "inscription": "Inscription",
     "instantConfirmation": "Confirmation instantanée",
     "note": "Note relative au plan",
-    "orderCreatedError": "Échec de la création de la commande",
-    "orderCreatedSuccess": "Commande créée avec succès",
+    "orderCreatedError": "Echec de la creation de l'inscription",
+    "orderCreatedSuccess": "Inscription creee avec succes",
     "payInDoor": "Payer à la porte",
     "selectPlans": "Choisissez vos plans",
     "secureCheckout": "Paiement sécurisé",
@@ -1658,7 +1658,7 @@
           "title": "Multilingue"
         },
         "qr_codes": {
-          "description": "Générez des QR codes pour les billets et check-ins.",
+          "description": "Generez des QR codes pour les acces et les check-ins.",
           "title": "Intégration QR Code"
         },
         "real_time": {
@@ -1672,7 +1672,7 @@
       "description": "Découvrez les avantages qui font de nous le choix préféré des organisateurs mondiaux.",
       "items": {
         "boost_revenue": {
-          "description": "Maximisez les ventes de billets avec nos outils marketing.",
+          "description": "Developpez les inscriptions avec nos outils marketing.",
           "title": "Augmentez les Revenus"
         },
         "improve_experience": {
@@ -1981,8 +1981,8 @@
         "title": "Paiements & Facturation"
       },
       "ticketing": {
-        "description": "Configurez les billets et gérez les inscriptions.",
-        "title": "Billetterie & Inscription"
+        "description": "Configurez les inscriptions et gerez les participants.",
+        "title": "Inscriptions & Participation"
       },
       "troubleshooting": {
         "description": "Résolvez les problèmes courants et techniques.",
@@ -2073,7 +2073,7 @@
       "events": {
         "articles": {
           "0": {
-            "content": "<h2>Créer Votre Premier Événement</h2><p>Apprenez à créer des événements engageants qui attirent les participants.</p><h3>Bases de la Planification d'Événements</h3><p>Commencez avec des objectifs clairs et l'identification du public cible.</p><h3>Détails de l'Événement</h3><p>Fournissez des informations complètes incluant la date, l'heure, le lieu et la description.</p><h3>Configuration des Billets</h3><p>Configurez différents types de billets et options de tarification.</p><h3>Publication de Votre Événement</h3><p>Révisez tous les détails avant de rendre votre événement en ligne.</p>",
+            "content": "<h2>Créer Votre Premier Événement</h2><p>Apprenez à créer des événements engageants qui attirent les participants.</p><h3>Bases de la Planification d'Événements</h3><p>Commencez avec des objectifs clairs et l'identification du public cible.</p><h3>Détails de l'Événement</h3><p>Fournissez des informations complètes incluant la date, l'heure, le lieu et la description.</p><h3>Configuration des inscriptions</h3><p>Configurez les modalites d'inscription et les options tarifaires.</p><h3>Publication de Votre Événement</h3><p>Révisez tous les détails avant de rendre votre événement en ligne.</p>",
             "description": "Guide étape par étape pour créer et publier votre premier événement",
             "title": "Créer Votre Premier Événement"
           },
@@ -2481,23 +2481,23 @@
   "orderAdministration": {
     "actions": {
       "export": "Exporter les Données",
-      "filter": "Filtrer les Commandes",
+      "filter": "Filtrer les inscriptions",
       "rapport": "Rapport",
       "viewDetails": "Voir les Détails"
     },
     "buyer": "Acheteur",
     "emptyState": {
-      "description": "Il n'y a pas encore de commandes pour cet événement. Les commandes apparaîtront ici une fois que les clients commenceront à acheter des billets.",
-      "title": "Aucune Commande Trouvée"
+      "description": "Il n'y a pas encore d'inscriptions pour cet evenement. Elles apparaitront ici des que les participants commenceront a s'inscrire.",
+      "title": "Aucune inscription trouvee"
     },
-    "orderIdLabel": "ID de Commande",
+    "orderIdLabel": "Reference d'inscription",
     "searchPlaceholder": "Rechercher par ID, acheteur ou événement...",
     "stats": {
-      "totalOrders": "Total des Commandes",
+      "totalOrders": "Total des inscriptions",
       "totalRevenue": "Chiffre d'Affaires Total",
       "uniqueBuyers": "Acheteurs Uniques"
     },
-    "subtitle": "Suivre et gérer toutes les commandes d'événements",
+    "subtitle": "Suivre et gerer toutes les inscriptions de l'evenement",
     "table": {
       "headers": {
         "amount": "Montant",
@@ -2505,63 +2505,65 @@
         "created": "Créé",
         "details": "Détails",
         "eventTitle": "Titre de l'Événement",
-        "orderId": "ID Commande",
-        "ticketType": "Type de Billet"
+        "orderId": "Reference",
+        "ticketType": "Modalite d'acces"
       }
     },
     "ticketTypes": {
-      "doorpay": "Billet de Porte",
-      "free": "Billet Gratuit",
-      "hosted": "Billet Hébergé",
-      "paid": "Billet Payant",
+      "doorpay": "Inscription sur place",
+      "free": "Inscription gratuite",
+      "hosted": "Inscription invitee",
+      "paid": "Inscription payante",
       "bankTransfer": "Virement Bancaire"
     },
-    "title": "Gestion des Commandes"
+    "title": "Gestion des inscriptions"
   },
   "orderDetailsDialog": {
     "buyerInfo": {
       "description": "Données requises de l'acheteur par l'administrateur",
       "title": "Informations de l'Acheteur"
     },
-    "description": "Informations complètes sur cette commande",
+    "description": "Informations completes sur cette inscription",
     "discount": {
       "eligible": "Éligible à la Remise",
       "label": "Remise"
     },
     "orderPlans": {
       "allPlansAvailable": "Tous les plans d'événement sont disponibles",
-      "description": "Plans disponibles inclus dans cette commande",
-      "title": "Plans de Commande"
+      "description": "Plans disponibles inclus dans cette inscription",
+      "title": "Plans d'inscription"
     },
     "payment": {
       "cashPaid": "Espèces Payées",
-      "hostedByAdmin": "Cette commande est hébergée par l'administrateur",
+      "hostedByAdmin": "Cette inscription est prise en charge par l'administrateur",
       "toPay": "À Payer",
       "totalAmount": "Montant Total"
     },
     "returnButton": "Retour",
-    "title": "Détails de la Commande",
+    "title": "Details de l'inscription",
     "viewButton": "Voir"
   },
   "orders": {
     "sections": {
       "certificationManagement": "Gestion des Certifications",
-      "orderManagement": "Gestion des Commandes",
+      "orderManagement": "Gestion des inscriptions",
       "workManagement": "Gestion du Travail"
     },
     "stats": {
       "certifications": "Certifications",
-      "totalOrders": "Total des Commandes",
+      "totalOrders": "Total des inscriptions",
       "works": "Éléments de Travail"
     },
-    "subtitle": "Gérer les commandes, certifications et affectations de travail",
+    "subtitle": "Gerer les inscriptions, certifications et affectations de travail",
     "tabs": {
       "certificationAdministration": "Administration des Certifications",
       "certifications": "Certifications",
-      "orderAdministration": "Administration des Commandes",
-      "orders": "Commandes",
+      "orderAdministration": "Administration des inscriptions",
+      "orders": "Inscriptions",
       "workAdministration": "Administration du Travail",
-      "works": "Travaux"
+      "works": "Travaux",
+      "bankTransfers": "Vérification des virements bancaires",
+      "bankTransfersShort": "Virements"
     },
     "title": "Administration d'Événement"
   },
@@ -2756,8 +2758,8 @@
     "createNewEvent": "Créer un nouvel événement",
     "eventsTabDescription": "Gérez et voyez tous vos événements organisés",
     "emptySponsors": {
-        "title": "Aucun Sponsor pour le Moment",
-        "description": "Commencez par ajouter votre premier sponsor d'événement à votre profil."
+      "title": "Aucun Sponsor pour le Moment",
+      "description": "Commencez par ajouter votre premier sponsor d'événement à votre profil."
     },
     "customRequiredInfo": "Informations requises personnalisées",
     "customFieldsDescription": "Gérez les informations requises pour vos événements",
@@ -2770,8 +2772,8 @@
       "title": "Aucun événement créé"
     },
     "emptyTickets": {
-      "description": "Il n'y a actuellement aucun billet disponible pour cet événement. Veuillez vérifier plus tard ou contacter l'organisateur pour plus d'informations.",
-      "title": "Aucun billet disponible"
+      "description": "Il n'y a actuellement aucune modalite d'inscription disponible pour cet evenement. Veuillez verifier plus tard ou contacter l'organisateur pour plus d'informations.",
+      "title": "Aucune inscription disponible"
     },
     "eventsOrganized": "Événements organisés",
     "exploreMoreEvents": "Explorer plus d'événements",
@@ -2781,7 +2783,7 @@
     "editSponsor": "Modifier le Sponsor",
     "deleteSponsor": "Supprimer le Sponsor",
     "deleteSponsorConfirm": "Êtes-vous sûr de vouloir supprimer ce sponsor ? Cette action est irréversible.",
-    "myTickets": "Mes Tickets",
+    "myTickets": "Mes inscriptions",
     "settings": {
       "title": "Paramètres du profil",
       "description": "Mettez à jour les informations de votre profil.",
@@ -2810,11 +2812,11 @@
         "deleteSponsorError": "Échec de la suppression du sponsor"
       }
     },
-    "allTickets": "Tous les billets",
+    "allTickets": "Toutes les inscriptions",
     "dashboard": "Tableau de bord",
     "welcomeBack": "Bon retour, {name} ! Voici votre aperçu.",
     "stats": {
-      "tickets": "Tickets",
+      "tickets": "Inscriptions",
       "events": "Événements",
       "organisations": "Organisations",
       "verifiedOrgs": "Orgs vérifiées"
@@ -2823,7 +2825,7 @@
       "title": "Actions rapides",
       "createEvent": "Créer un événement",
       "newOrganisation": "Nouvelle organisation",
-      "viewTickets": "Voir les tickets"
+      "viewTickets": "Voir mes inscriptions"
     },
     "recentEvents": {
       "title": "Événements récents",
@@ -2876,7 +2878,7 @@
     "sidebar": {
       "overview": "Aperçu",
       "profileSettings": "Paramètres du profil",
-      "myTickets": "Mes Tickets",
+      "myTickets": "Mes inscriptions",
       "eventsOrganized": "Événements organisés",
       "organisations": "Organisations",
       "customForms": "Formulaires personnalisés",
@@ -3465,6 +3467,492 @@
       "searchInput": "Rechercher des options",
       "pillOptions": "Options disponibles",
       "removePill": "Retirer {name}"
+    }
+  },
+  "authPages": {
+    "signIn": {
+      "noAccount": "Vous n'avez pas encore de compte ?",
+      "cta": "S'inscrire"
+    },
+    "signUp": {
+      "hasAccount": "Vous avez d?j? un compte ?",
+      "cta": "Se connecter"
+    }
+  },
+  "fileManager": {
+    "title": "Gestionnaire de fichiers",
+    "common": {
+      "filesCount": "{count} fichiers"
+    },
+    "badges": {
+      "orphaned": "Orphelin",
+      "inDb": "En base"
+    },
+    "actions": {
+      "refresh": "Actualiser",
+      "previewCleanup": "Pr?visualiser le nettoyage",
+      "cleanupOrphaned": "Nettoyer les fichiers orphelins",
+      "selectAllOrphaned": "S?lectionner tous les orphelins",
+      "deleteSelected": "Supprimer la s?lection ({count})"
+    },
+    "filters": {
+      "title": "Filtres",
+      "searchLabel": "Rechercher des fichiers",
+      "searchPlaceholder": "Rechercher par nom de fichier ou chemin...",
+      "showOrphanedOnly": "Afficher uniquement les orphelins"
+    },
+    "summary": {
+      "orphanedFound": "{count} fichiers orphelins trouv?s pour un total de {size}"
+    },
+    "cleanup": {
+      "previewTitle": "Aper?u du nettoyage",
+      "resultsTitle": "R?sultats du nettoyage",
+      "found": "Trouv?s",
+      "wouldDelete": "Seraient supprim?s",
+      "deleted": "Supprim?s",
+      "failed": "?checs",
+      "skipped": "Ignor?s",
+      "wouldBe": "serait",
+      "spaceFreed": "Espace {qualifier} lib?r? : {size}"
+    },
+    "tabs": {
+      "videos": "Vid?os",
+      "music": "Musique",
+      "videoFiles": "Fichiers vid?o",
+      "musicFiles": "Fichiers audio"
+    }
+  },
+  "bankTransferAdministration": {
+    "title": "Vérification des virements bancaires",
+    "subtitle": "Examiner et valider les paiements par virement bancaire",
+    "searchPlaceholder": "Rechercher par acheteur ou identifiant de virement...",
+    "actions": {
+      "filter": "Filtrer",
+      "export": "Exporter",
+      "exportXlsx": "Exporter XLSX",
+      "exportWord": "Exporter Word",
+      "exportPdf": "Exporter PDF",
+      "exportCsv": "Exporter CSV"
+    },
+    "messages": {
+      "success": "Succès",
+      "error": "Erreur",
+      "verifyFailed": "Échec de la vérification du virement bancaire",
+      "rejectionReasonRequired": "Veuillez saisir un motif de rejet",
+      "noTransfersToExport": "Aucun virement bancaire à exporter.",
+      "exportSuccess": "{count} virement(s) bancaire(s) exporté(s) en {format}.",
+      "exportFailed": "Échec de l’export des virements bancaires. Veuillez réessayer."
+    },
+    "table": {
+      "date": "Date",
+      "buyer": "Acheteur",
+      "amount": "Montant",
+      "transferId": "Identifiant du virement",
+      "screenshot": "Capture",
+      "status": "Statut",
+      "actions": "Actions",
+      "event": "Événement",
+      "view": "Voir",
+      "viewDetails": "Voir les détails",
+      "screenshotAttached": "Capture jointe"
+    },
+    "stats": {
+      "total": "Total",
+      "pending": "En attente",
+      "approved": "Approuvés",
+      "rejected": "Rejetés"
+    },
+    "tabs": {
+      "all": "Tous",
+      "pending": "En attente",
+      "approved": "Approuvés",
+      "rejected": "Rejetés"
+    },
+    "empty": {
+      "title": "Aucun virement bancaire trouvé",
+      "description": "Aucun paiement par virement bancaire à afficher"
+    },
+    "export": {
+      "title": "Export des virements bancaires"
+    },
+    "dialog": {
+      "title": "Détails du virement bancaire",
+      "description": "Examiner et valider ce paiement par virement bancaire",
+      "status": "Statut",
+      "registrationInfo": "Informations sur l’inscription",
+      "buyer": "Acheteur",
+      "amount": "Montant",
+      "event": "Événement",
+      "date": "Date",
+      "transferId": "Identifiant du virement",
+      "transferScreenshot": "Capture du virement",
+      "transferScreenshotAlt": "Capture du virement bancaire",
+      "rejectionReason": "Motif du rejet",
+      "rejectionReasonPlaceholder": "Saisissez le motif du rejet...",
+      "rejectionReasonHint": "Requis uniquement si vous rejetez ce paiement.",
+      "cancel": "Annuler",
+      "reject": "Rejeter",
+      "approve": "Approuver",
+      "close": "Fermer"
+    }
+  },
+  "badgePage": {
+    "notFoundTitle": "Evenement introuvable",
+    "returnHome": "Retour a l'accueil",
+    "backToEvent": "Retour a l'evenement",
+    "title": "Generer les badges de l'evenement",
+    "description": "Concevez des badges personnalises et gerez l'impression pour les participants inscrits."
+  },
+  "eventEditPage": {
+    "title": "Modifier l'evenement"
+  },
+  "themeToggle": {
+    "toggle": "Changer le theme",
+    "light": "Clair",
+    "dark": "Sombre"
+  },
+  "postPurchaseWorkPrompt": {
+    "title": "Inscription confirmee",
+    "description": "Votre inscription a {eventTitle} a bien ete prise en compte.",
+    "body": "Voulez-vous soumettre un travail maintenant ? Si vous confirmez, vous serez redirige vers la page de soumission. Sinon, vous serez redirige vers l'accueil.",
+    "goHome": "Non, retourner a l'accueil",
+    "submitWork": "Oui, soumettre un travail"
+  },
+  "authComponents": {
+    "signIn": {
+      "title": "Bon retour",
+      "description": "Connectez-vous a votre compte pour continuer",
+      "orContinueWith": "Ou continuer avec",
+      "emailAddress": "Adresse e-mail",
+      "continue": "Continuer",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "createAccount": "Creer un compte",
+      "otherMethodTitle": "Utiliser une autre methode",
+      "otherMethodDescription": "Vous rencontrez un probleme ? Vous pouvez utiliser l'une de ces methodes pour vous connecter.",
+      "emailCode": "Code e-mail",
+      "password": "Mot de passe",
+      "goBack": "Retour",
+      "enterPassword": "Saisir le mot de passe",
+      "passwordDescription": "Bon retour sur votre plateforme d'evenements",
+      "useAnotherMethod": "Utiliser une autre methode",
+      "checkEmail": "Verifiez votre e-mail",
+      "checkEmailDescription": "Saisissez le code envoye a votre adresse",
+      "verificationCode": "Code de verification",
+      "resendIn": "Renvoyer le code dans",
+      "resend": "Vous n'avez pas recu de code ? Renvoyer",
+      "completing": "Connexion en cours..."
+    },
+    "signUp": {
+      "title": "Creer un compte",
+      "description": "Rejoignez notre communaute et commencez a creer des evenements",
+      "orEmail": "Ou s'inscrire par e-mail",
+      "username": "Nom d'utilisateur",
+      "phone": "Telephone",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "confirm": "Confirmer",
+      "submit": "Creer un compte",
+      "hasAccount": "Vous avez deja un compte ?",
+      "signIn": "Se connecter",
+      "toastSuccessTitle": "Compte cree !",
+      "toastSuccessDescription": "Bienvenue sur notre plateforme.",
+      "toastErrorTitle": "Erreur",
+      "unexpectedError": "Une erreur inattendue est survenue."
+    }
+  },
+  "ownerDashboard": {
+    "title": "Tableau de bord proprietaire",
+    "tabs": {
+      "users": "Utilisateurs",
+      "usersShort": "Users",
+      "organisations": "Organisations",
+      "organisationsShort": "Orgs",
+      "reports": "Signalements",
+      "reportsShort": "Signal.",
+      "categories": "Categories",
+      "categoriesShort": "Cats",
+      "aiTools": "Outils IA",
+      "aiToolsShort": "IA"
+    }
+  },
+  "serverAdmin": {
+    "auth": {
+      "title": "Tableau de bord administrateur",
+      "description": "Saisissez votre cle API administrateur pour acceder au tableau de bord",
+      "apiKeyLabel": "Cle API",
+      "apiKeyPlaceholder": "Saisissez votre cle API administrateur",
+      "authenticating": "Authentification...",
+      "submit": "Acceder au tableau de bord"
+    },
+    "header": {
+      "title": "Administration du serveur media",
+      "logout": "Deconnexion"
+    },
+    "tabs": {
+      "dashboard": "Tableau de bord",
+      "files": "Fichiers",
+      "processes": "Processus",
+      "maintenance": "Maintenance",
+      "logs": "Journaux"
+    },
+    "errors": {
+      "apiKeyRequired": "La cle API est requise",
+      "authenticationFailed": "Echec de l'authentification"
+    }
+  },
+  "serverDashboard": {
+    "title": "Tableau de bord du serveur",
+    "refresh": "Actualiser",
+    "retry": "Reessayer",
+    "errorLoading": "Erreur de chargement du tableau de bord : {error}",
+    "status": {
+      "healthy": "Sain",
+      "warning": "Alerte",
+      "critical": "Critique",
+      "unknown": "Inconnu"
+    },
+    "cards": {
+      "uptime": {
+        "title": "Disponibilite du serveur",
+        "started": "Demarre le {date}"
+      },
+      "requests": {
+        "title": "Requetes totales",
+        "successRate": "{rate} de reussite"
+      },
+      "files": {
+        "title": "Fichiers traites",
+        "activeProcesses": "{count} processus actifs"
+      },
+      "queue": {
+        "title": "File des processus",
+        "running": "{count} en cours"
+      }
+    },
+    "memory": {
+      "title": "Utilisation de la memoire",
+      "rss": "Memoire RSS",
+      "heapTotal": "Tas total",
+      "heapUsed": "Tas utilise",
+      "external": "Externe"
+    },
+    "disk": {
+      "title": "Utilisation du disque",
+      "videos": "Videos",
+      "music": "Musique",
+      "tempFiles": "Fichiers temporaires",
+      "total": "Total"
+    },
+    "tempFiles": {
+      "title": "Fichiers temporaires",
+      "tracked": "{count} fichiers suivis",
+      "lastCleanup": "Dernier nettoyage :",
+      "never": "Jamais"
+    }
+  },
+  "maintenancePanel": {
+    "title": "Panneau de maintenance",
+    "cleanup": {
+      "title": "Nettoyage des fichiers",
+      "description": "Nettoyez les fichiers orphelins et temporaires pour liberer de l'espace disque",
+      "orphanedFiles": {
+        "label": "Nettoyer les fichiers orphelins",
+        "description": "Supprimer les fichiers absents de la base de donnees"
+      },
+      "tempFiles": {
+        "label": "Nettoyer les fichiers temporaires",
+        "description": "Supprimer les anciens fichiers temporaires de traitement"
+      },
+      "dryRun": {
+        "label": "Mode simulation",
+        "description": "Previsualiser les changements sans supprimer de fichiers"
+      },
+      "forceTemp": {
+        "label": "Forcer le nettoyage temporaire",
+        "description": "Supprimer tous les fichiers temporaires quel que soit leur age"
+      },
+      "maxFileSize": {
+        "label": "Taille maximale du fichier (Mo)",
+        "placeholder": "Laisser vide pour aucune limite",
+        "description": "Supprimer seulement les fichiers plus petits que cette taille"
+      },
+      "running": "Maintenance en cours...",
+      "preview": "Previsualiser le nettoyage",
+      "run": "Lancer le nettoyage"
+    },
+    "processes": {
+      "title": "Gestion des processus",
+      "description": "Gerer les processus FFmpeg en cours",
+      "warning": "Cette action forcera l'arret de tous les processus FFmpeg actifs. A utiliser avec prudence.",
+      "killing": "Arret des processus...",
+      "killAll": "Arreter tous les processus"
+    },
+    "system": {
+      "title": "Informations systeme",
+      "description": "Etat actuel du systeme et recommandations",
+      "recommendedCleanupFrequency": "Frequence de nettoyage recommandee :",
+      "daily": "Quotidienne",
+      "tempFileRetention": "Retention des fichiers temporaires :",
+      "oneHour": "1 heure",
+      "maxConcurrentProcesses": "Nombre maximal de processus concurrents :",
+      "processTimeout": "Delai d'expiration des processus :",
+      "fiveMinutes": "5 minutes"
+    },
+    "results": {
+      "completed": "Maintenance terminee",
+      "orphanedFiles": "Fichiers orphelins : {count} {suffix}",
+      "tempFiles": "Fichiers temporaires : {count} supprimes",
+      "wouldBeDeleted": "seraient supprimes",
+      "deleted": "supprimes",
+      "killedProcesses": "{count} processus arretes"
+    }
+  },
+  "processMonitor": {
+    "title": "Moniteur des processus",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "autoRefresh": "Actualisation automatique",
+    "refresh": "Actualiser",
+    "status": {
+      "unknown": "Inconnu",
+      "active": "Actif",
+      "queued": "En attente",
+      "idle": "Inactif",
+      "running": "En cours"
+    },
+    "cards": {
+      "status": {
+        "title": "Statut des processus",
+        "activeProcesses": "{count} processus actifs"
+      },
+      "queue": {
+        "title": "Longueur de la file",
+        "running": "{count} actuellement en cours"
+      },
+      "files": {
+        "title": "Fichiers traites",
+        "description": "Total des fichiers traites"
+      }
+    },
+    "activeProcesses": {
+      "title": "Processus actifs",
+      "description": "Processus FFmpeg actuellement en cours",
+      "ffmpegProcess": "Processus FFmpeg",
+      "none": "Aucun processus actif"
+    },
+    "controls": {
+      "title": "Controle des processus",
+      "description": "Gerer les processus en cours",
+      "killAll": "Arreter tous les processus",
+      "noProcesses": "Aucun processus a arreter",
+      "terminateCount": "Cette action arretera {count} processus actif(s)"
+    },
+    "queue": {
+      "title": "File des processus",
+      "description": "{count} processus en attente d'execution",
+      "progress": "Progression de la file",
+      "slotsUsed": "{count} / 3 emplacements utilises",
+      "maxConcurrent": "Nombre maximal de processus concurrents : 3"
+    }
+  },
+  "serverLogs": {
+    "title": "Journaux du serveur",
+    "autoRefreshOn": "Actualisation auto activee",
+    "autoRefreshOff": "Actualisation auto desactivee",
+    "refresh": "Actualiser",
+    "controls": {
+      "title": "Controle des journaux",
+      "maxLines": "Nombre maximal de lignes",
+      "logLevel": "Niveau de journal",
+      "allLevels": "Tous les niveaux",
+      "searchLogs": "Rechercher dans les journaux",
+      "searchPlaceholder": "Rechercher dans les entrees...",
+      "exportLogs": "Exporter les journaux"
+    },
+    "statistics": {
+      "title": "Statistiques des journaux",
+      "description": "Affichage de {shown} entrees sur {total} entrees au total",
+      "processQueue": "File des processus",
+      "queueLength": "Longueur de la file :",
+      "running": "En cours :",
+      "active": "Actifs :",
+      "tempFiles": "Fichiers temporaires",
+      "tracked": "Suivis :",
+      "oldest": "Le plus ancien :",
+      "none": "Aucun",
+      "serverStats": "Statistiques serveur",
+      "requests": "Requetes :",
+      "errors": "Erreurs :",
+      "processed": "Traites :"
+    },
+    "entries": {
+      "title": "Entrees du journal",
+      "description": "Journaux serveur en temps reel avec filtrage et recherche",
+      "showMetadata": "Afficher les metadonnees"
+    },
+    "empty": {
+      "title": "Aucun journal trouve",
+      "description": "Aucune entree ne correspond a vos filtres actuels. Essayez d'ajuster vos criteres de recherche."
+    },
+    "errors": {
+      "exportFailed": "Echec de l'export : {error}",
+      "exportFailedStatus": "Echec de l'export : {status}"
+    }
+  },
+  "userAlertDialog": {
+    "trigger": "Gerer l'utilisateur",
+    "title": "Gestion utilisateur",
+    "description": "Consultez les informations de l'utilisateur et gerez ses permissions.",
+    "banned": "Banni",
+    "memberSince": "Membre depuis : {date}",
+    "unbanUser": "Debannir l'utilisateur",
+    "banUser": "Bannir l'utilisateur",
+    "close": "Fermer"
+  },
+  "organisationsAdministration": {
+    "title": "Verification des organisations",
+    "description": "Gerez les badges editeur des organisations. Les organisations verifiees affichent un badge de confiance.",
+    "table": {
+      "organisation": "Organisation",
+      "creator": "Createur",
+      "members": "Membres",
+      "created": "Creee le",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "status": {
+      "verified": "Verifiee",
+      "unverified": "Non verifiee"
+    },
+    "actions": {
+      "verify": "Verifier",
+      "revoke": "Retirer",
+      "cancel": "Annuler",
+      "revokeVerification": "Retirer la verification",
+      "approveVerification": "Approuver la verification"
+    },
+    "dialog": {
+      "verifyTitle": "Verifier l'organisation",
+      "revokeTitle": "Retirer la verification",
+      "verifyDescription": "Voulez-vous vraiment verifier \"{orgName}\" ? Un badge editeur de confiance lui sera attribue.",
+      "revokeDescription": "Voulez-vous vraiment retirer le badge verifie de \"{orgName}\" ? Elle perdra son statut d'editeur de confiance."
+    },
+    "toast": {
+      "verificationRemoved": "Verification retiree",
+      "organisationVerified": "Organisation verifiee",
+      "unverifiedDescription": "{orgName} n'est plus verifiee.",
+      "verifiedDescription": "{orgName} est maintenant verifiee et peut publier avec un badge de confiance.",
+      "errorTitle": "Erreur",
+      "errorDescription": "Echec de la mise a jour du statut de verification."
+    },
+    "stats": {
+      "totalOrganisations": "Total organisations",
+      "pendingUnverified": "En attente / non verifiees"
+    },
+    "mobile": {
+      "creatorSubtitle": "Createur : {creatorName}",
+      "website": "Site web",
+      "noWebsite": "-"
     }
   }
 }

@@ -26,7 +26,7 @@ interface OrdersEvolutionChartProps {
 
 const OrdersEvolutionChart: React.FC<OrdersEvolutionChartProps> = ({
   orders,
-  title = "Évolution des commandes",
+  title = "Evolution des inscriptions",
 }) => {
   const data = useMemo(() => {
     if (!orders || orders.length === 0) return [];
@@ -122,7 +122,7 @@ const OrdersEvolutionChart: React.FC<OrdersEvolutionChartProps> = ({
             <Area
               type="monotone"
               dataKey="count"
-              name="Commandes"
+              name="Inscriptions"
               stroke="#4f46e5"
               strokeWidth={3}
               fillOpacity={1}

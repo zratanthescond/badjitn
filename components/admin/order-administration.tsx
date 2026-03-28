@@ -299,7 +299,7 @@ export default function OrderAdministration({
     if (!data || data.length === 0) {
       toast({
         title: "Export",
-        description: "Aucune commande à exporter.",
+        description: "Aucune inscription à exporter.",
         variant: "destructive",
       });
       return;
@@ -382,7 +382,7 @@ export default function OrderAdministration({
           )
           .join("");
 
-        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>Orders Export</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
+        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>Registrations Export</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
         const blob = new Blob(["\uFEFF" + htmlDoc], {
           type: "application/msword;charset=utf-8",
         });
@@ -394,7 +394,7 @@ export default function OrderAdministration({
         const doc = new jsPDF({ unit: "pt", format: "a4" });
         let y = 40;
         doc.setFontSize(14);
-        doc.text("Orders Export", 40, y);
+        doc.text("Registrations Export", 40, y);
         y += 22;
         doc.setFontSize(9);
         doc.text(headers.join(" | "), 40, y);
@@ -416,7 +416,7 @@ export default function OrderAdministration({
 
       toast({
         title: "Export",
-        description: `${data.length} commande(s) exportée(s) en ${format.toUpperCase()}.`,
+        description: `${data.length} inscription(s) exportée(s) en ${format.toUpperCase()}.`,
       });
     } catch (exportError) {
       console.error("Export failed", exportError);
@@ -511,7 +511,7 @@ export default function OrderAdministration({
             >
               <Link href={`/events/${eventId}/scan`}>
                 <QrCode className="h-4 w-4" />
-                <span>Scan Ticket</span>
+                <span>Scanner un accès</span>
               </Link>
             </Button>
             {eventId && (
@@ -531,7 +531,7 @@ export default function OrderAdministration({
                 >
                   <Link href={`/events/${eventId}/badge`}>
                     <Printer className="w-4 h-4 mr-2" />
-                    Manage Badges
+                    Gérer les badges
                   </Link>
                 </Button>
               </>

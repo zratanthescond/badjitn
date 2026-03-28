@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/actions/user.actions";
+import { getTranslations } from "next-intl/server";
 
 type BadgePageProps = {
     params: Promise<{
@@ -15,6 +16,7 @@ type BadgePageProps = {
 
 export default async function BadgePage(props: BadgePageProps) {
     const params = await props.params;
+    const t = await getTranslations("badgePage");
 
     const {
         id
@@ -30,9 +32,9 @@ export default async function BadgePage(props: BadgePageProps) {
     if (!event) {
         return (
             <div className="flex flex-col items-center justify-center p-20 text-center">
-                <h1 className="text-2xl font-bold mb-4">Event Not Found</h1>
+                <h1 className="text-2xl font-bold mb-4">{t("notFoundTitle")}</h1>
                 <Button asChild>
-                    <Link href="/">Return Home</Link>
+                    <Link href="/">{t("returnHome")}</Link>
                 </Button>
             </div>
         );
@@ -52,15 +54,15 @@ export default async function BadgePage(props: BadgePageProps) {
                 <Button variant="ghost" size="sm" asChild>
                     <Link href={`/events/${id}`}>
                         <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Event
+                        {t("backToEvent")}
                     </Link>
                 </Button>
             </div>
 
             <header className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight">Generate Event Badges</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
                 <p className="text-muted-foreground">
-                    Design custom badges and manage printing for your ticket holders.
+                    {t("description")}
                 </p>
             </header>
 

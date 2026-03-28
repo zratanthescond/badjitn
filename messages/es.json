@@ -1433,7 +1433,7 @@
     "delete": "Eliminar",
     "hostContributor": "Alojar a un Colaborador",
     "modify": "Modificar",
-    "orderDetails": "Detalles del Pedido",
+    "orderDetails": "Detalles de la inscripcion",
     "return": "Volver",
     "registrationForms": "Formularios de Registro",
     "settings": "Ajustes del Evento",
@@ -1448,7 +1448,7 @@
     "free": "Gratis",
     "seats": "plazas",
     "entries": "entradas",
-    "totalOrders": "Total de Pedidos",
+    "totalOrders": "Total de inscripciones",
     "totalRevenue": "Ingresos Totales",
     "uniqueAttendees": "Asistentes Únicos",
     "scanCoverage": "Cobertura de Escaneo",
@@ -1457,13 +1457,13 @@
     "highlightsTitle": "Aspectos Destacados",
     "totalSuffix": "total",
     "highlights": {
-      "noOrders": "No se registraron pedidos para este evento.",
-      "ordersAndAttendees": "Se generaron {orders} pedidos para {attendees} asistentes únicos.",
-      "avgOrder": "Valor promedio estimado del pedido: {amount} por pedido.",
+      "noOrders": "No se registraron inscripciones para este evento.",
+      "ordersAndAttendees": "Se registraron {orders} inscripciones para {attendees} asistentes unicos.",
+      "avgOrder": "Contribucion promedio estimada: {amount} por inscripcion.",
       "attendanceRate": "Tasa de asistencia escaneada: {rate}% ({scanned} asistentes escaneados).",
       "topPlan": "Plan con mejor rendimiento: {plan} ({orders} ventas)."
     },
-    "breakdownByType": "Desglose por Tipo de Entrada",
+    "breakdownByType": "Desglose por modalidad de inscripcion",
     "breakdownByCategory": "Desglose por Categoría",
     "scanPointsDescription": "Entradas y salidas de escaneo de códigos QR registradas en cada punto.",
     "footer": "Informe generado por badgi.net",
@@ -1476,13 +1476,13 @@
     "sections": {
       "eventInfo": "Información del Evento",
       "pricePlans": "Planes de Precios",
-      "orderStats": "Estadísticas de Pedidos",
+      "orderStats": "Estadisticas de inscripciones",
       "scanPoints": "Detalles de Puntos de Escaneo",
       "executiveTrends": "Resumen Ejecutivo y Tendencias",
       "pricePlanPerformance": "Rendimiento del Plan de Precios"
     },
     "charts": {
-      "ordersTrendTitle": "Tendencia de pedidos (día a día)",
+      "ordersTrendTitle": "Tendencia de inscripciones (dia a dia)",
       "ordersTrendEmpty": "No hay datos de tendencia disponibles.",
       "scanHourlyTitle": "Actividad de escaneo por hora"
     },
@@ -1524,7 +1524,7 @@
     "event": "evento",
     "eventDescriptionPlaceholder": "Escribe tu descripción aquí...",
     "eventTitle": "Título del Evento",
-    "freeTicket": "Entrada Gratuita",
+    "freeTicket": "Inscripcion gratuita",
     "locationPlaceHolder": "Ubicación del Evento o En línea",
     "online": "En línea",
     "places": "Plazas",
@@ -1534,7 +1534,7 @@
     "requiredInfoDescription": "Por favor, completa la información requerida del candidato.",
     "scanPoints": {
       "add": "Añadir",
-      "description": "Define los puntos de control donde se escanearán las entradas (ej. Entrada, Taller).",
+      "description": "Define los puntos de control donde se escanearan los accesos (ej. Entrada, Taller).",
       "empty": "No hay puntos de escaneo configurados.",
       "items": {
         "exhibitors": "Área de Expositores",
@@ -1562,7 +1562,7 @@
   },
   "eventPrice": {
     "availablePlaces": "Plazas Disponibles",
-    "buyTicket": "Comprar una entrada u obtener una reserva",
+    "buyTicket": "Inscribirse al evento o solicitar acceso en sitio",
     "error": "Error",
     "eventFree": "Este evento es gratuito",
     "eventTotalPrice": "Precio total del evento",
@@ -1570,8 +1570,8 @@
     "inscription": "Inscripción",
     "instantConfirmation": "Confirmación instantánea",
     "note": "Nota del Plan",
-    "orderCreatedError": "No se pudo crear el pedido",
-    "orderCreatedSuccess": "Pedido creado con éxito",
+    "orderCreatedError": "No se pudo crear la inscripcion",
+    "orderCreatedSuccess": "Inscripcion creada con exito",
     "payInDoor": "Pagar en puerta",
     "selectPlans": "Selecciona tus planes",
     "secureCheckout": "Pago seguro",
@@ -2478,23 +2478,23 @@
   "orderAdministration": {
     "actions": {
       "export": "Exportar datos",
-      "filter": "Filtrar pedidos",
+      "filter": "Filtrar inscripciones",
       "rapport": "Informe",
       "viewDetails": "Ver detalles"
     },
     "buyer": "Comprador",
     "emptyState": {
-      "description": "Aún no hay pedidos para este evento. Los pedidos aparecerán aquí una vez que los clientes comiencen a comprar entradas.",
-      "title": "No se encontraron pedidos"
+      "description": "Aun no hay inscripciones para este evento. Apareceran aqui cuando los participantes comiencen a registrarse.",
+      "title": "No se encontraron inscripciones"
     },
-    "orderIdLabel": "ID del pedido",
+    "orderIdLabel": "Referencia de inscripcion",
     "searchPlaceholder": "Buscar pedidos por ID, comprador o evento...",
     "stats": {
-      "totalOrders": "Total de pedidos",
+      "totalOrders": "Total de inscripciones",
       "totalRevenue": "Ingresos totales",
       "uniqueBuyers": "Compradores únicos"
     },
-    "subtitle": "Rastree y gestione todos los pedidos del evento",
+    "subtitle": "Siga y gestione todas las inscripciones del evento",
     "table": {
       "headers": {
         "amount": "Cantidad",
@@ -2502,63 +2502,65 @@
         "created": "Creado",
         "details": "Detalles",
         "eventTitle": "Título del evento",
-        "orderId": "ID del pedido",
-        "ticketType": "Tipo de entrada"
+        "orderId": "Referencia",
+        "ticketType": "Modalidad de acceso"
       }
     },
     "ticketTypes": {
       "doorpay": "Pago en puerta",
-      "free": "Entrada gratuita",
-      "hosted": "Entrada alojada",
-      "paid": "Entrada pagada",
+      "free": "Inscripcion gratuita",
+      "hosted": "Inscripcion invitada",
+      "paid": "Inscripcion pagada",
       "bankTransfer": "Transferencia Bancaria"
     },
-    "title": "Gestión de pedidos"
+    "title": "Gestion de inscripciones"
   },
   "orderDetailsDialog": {
     "buyerInfo": {
       "description": "Datos requeridos del comprador por el administrador",
       "title": "Información del comprador"
     },
-    "description": "Información completa sobre este pedido",
+    "description": "Informacion completa sobre esta inscripcion",
     "discount": {
       "eligible": "Elegible para descuento",
       "label": "Descuento"
     },
     "orderPlans": {
       "allPlansAvailable": "Todos los planes de eventos están disponibles",
-      "description": "Planes disponibles incluidos en este pedido",
-      "title": "Planes del pedido"
+      "description": "Planes disponibles incluidos en esta inscripcion",
+      "title": "Planes de inscripcion"
     },
     "payment": {
       "cashPaid": "Pagado en efectivo",
-      "hostedByAdmin": "Este pedido está alojado por el administrador",
+      "hostedByAdmin": "Esta inscripcion esta gestionada por el administrador",
       "toPay": "A pagar",
       "totalAmount": "Cantidad total"
     },
     "returnButton": "Volver",
-    "title": "Detalles del pedido",
+    "title": "Detalles de la inscripcion",
     "viewButton": "Ver"
   },
   "orders": {
     "sections": {
       "certificationManagement": "Gestión de certificaciones",
-      "orderManagement": "Gestión de pedidos",
+      "orderManagement": "Gestion de inscripciones",
       "workManagement": "Gestión de trabajos"
     },
     "stats": {
       "certifications": "Certificaciones",
-      "totalOrders": "Total de pedidos",
+      "totalOrders": "Total de inscripciones",
       "works": "Ítems de trabajo"
     },
-    "subtitle": "Gestione pedidos, certificaciones y asignaciones de trabajo",
+    "subtitle": "Gestione inscripciones, certificaciones y asignaciones de trabajo",
     "tabs": {
       "certificationAdministration": "Administración de certificaciones",
       "certifications": "Certificaciones",
-      "orderAdministration": "Administración de pedidos",
-      "orders": "Pedidos",
+      "orderAdministration": "Administracion de inscripciones",
+      "orders": "Inscripciones",
       "workAdministration": "Administración de trabajos",
-      "works": "Trabajos"
+      "works": "Trabajos",
+      "bankTransfers": "Verificaci?n de transferencias bancarias",
+      "bankTransfersShort": "Transfer."
     },
     "title": "Administración de eventos"
   },
@@ -2753,8 +2755,8 @@
     "createNewEvent": "Crear nuevo evento",
     "eventsTabDescription": "Gestiona y visualiza todos tus eventos organizados",
     "emptySponsors": {
-        "title": "Aún no hay patrocinadores",
-        "description": "Comience por añadir su primer patrocinador de eventos a su perfil."
+      "title": "Aún no hay patrocinadores",
+      "description": "Comience por añadir su primer patrocinador de eventos a su perfil."
     },
     "customRequiredInfo": "Información requerida personalizada",
     "customFieldsDescription": "Gestiona la información requerida para tus eventos",
@@ -2767,8 +2769,8 @@
       "title": "Aún no hay eventos creados"
     },
     "emptyTickets": {
-      "description": "Aún no ha comprado ninguna entrada para eventos. ¡Explore nuestros eventos y consiga sus entradas ahora!",
-      "title": "Aún no se han comprado entradas"
+      "description": "No hay modalidades de inscripcion disponibles para este evento en este momento. Por favor, vuelve a consultar mas tarde.",
+      "title": "No hay inscripciones disponibles"
     },
     "eventsOrganized": "Eventos organizados",
     "exploreMoreEvents": "Explorar más eventos",
@@ -2778,7 +2780,7 @@
     "editSponsor": "Editar Patrocinador",
     "deleteSponsor": "Eliminar Patrocinador",
     "deleteSponsorConfirm": "¿Estás seguro de que deseas eliminar este patrocinador? Esta acción no se puede deshacer.",
-    "myTickets": "Mis entradas",
+    "myTickets": "Mis inscripciones",
     "settings": {
       "title": "Configuración del perfil",
       "description": "Actualice la información de su perfil.",
@@ -2810,7 +2812,7 @@
     "dashboard": "Panel de control",
     "welcomeBack": "¡Bienvenido de nuevo, {name}! Aquí tienes tu resumen.",
     "stats": {
-      "tickets": "Entradas",
+      "tickets": "Inscripciones",
       "events": "Eventos",
       "organisations": "Organizaciones",
       "verifiedOrgs": "Orgs Verificadas"
@@ -2819,7 +2821,7 @@
       "title": "Acciones rápidas",
       "createEvent": "Crear evento",
       "newOrganisation": "Nueva organización",
-      "viewTickets": "Ver entradas"
+      "viewTickets": "Ver inscripciones"
     },
     "recentEvents": {
       "title": "Eventos recientes",
@@ -2872,7 +2874,7 @@
     "sidebar": {
       "overview": "Resumen",
       "profileSettings": "Configuración del perfil",
-      "myTickets": "Mis Entradas",
+      "myTickets": "Mis inscripciones",
       "eventsOrganized": "Eventos Organizados",
       "organisations": "Organizaciones",
       "customForms": "Formularios personalizados",
@@ -3461,6 +3463,492 @@
       "searchInput": "Buscar opciones",
       "pillOptions": "Opciones disponibles",
       "removePill": "Eliminar {name}"
+    }
+  },
+  "authPages": {
+    "signIn": {
+      "noAccount": "?A?n no tienes una cuenta?",
+      "cta": "Registrarse"
+    },
+    "signUp": {
+      "hasAccount": "?Ya tienes una cuenta?",
+      "cta": "Iniciar sesi?n"
+    }
+  },
+  "fileManager": {
+    "title": "Gestor de archivos",
+    "common": {
+      "filesCount": "{count} archivos"
+    },
+    "badges": {
+      "orphaned": "Hu?rfano",
+      "inDb": "En BD"
+    },
+    "actions": {
+      "refresh": "Actualizar",
+      "previewCleanup": "Vista previa de limpieza",
+      "cleanupOrphaned": "Limpiar archivos hu?rfanos",
+      "selectAllOrphaned": "Seleccionar todos los hu?rfanos",
+      "deleteSelected": "Eliminar selecci?n ({count})"
+    },
+    "filters": {
+      "title": "Filtros",
+      "searchLabel": "Buscar archivos",
+      "searchPlaceholder": "Buscar por nombre de archivo o ruta...",
+      "showOrphanedOnly": "Mostrar solo hu?rfanos"
+    },
+    "summary": {
+      "orphanedFound": "Se encontraron {count} archivos hu?rfanos ocupando {size}"
+    },
+    "cleanup": {
+      "previewTitle": "Vista previa de limpieza",
+      "resultsTitle": "Resultados de limpieza",
+      "found": "Encontrados",
+      "wouldDelete": "Se eliminar?an",
+      "deleted": "Eliminados",
+      "failed": "Fallidos",
+      "skipped": "Omitidos",
+      "wouldBe": "ser?a",
+      "spaceFreed": "Espacio {qualifier} liberado: {size}"
+    },
+    "tabs": {
+      "videos": "V?deos",
+      "music": "M?sica",
+      "videoFiles": "Archivos de v?deo",
+      "musicFiles": "Archivos de audio"
+    }
+  },
+  "bankTransferAdministration": {
+    "title": "Verificaci?n de transferencias bancarias",
+    "subtitle": "Revisar y verificar pagos por transferencia bancaria",
+    "searchPlaceholder": "Buscar por comprador o ID de transferencia...",
+    "actions": {
+      "filter": "Filtrar",
+      "export": "Exportar",
+      "exportXlsx": "Exportar XLSX",
+      "exportWord": "Exportar Word",
+      "exportPdf": "Exportar PDF",
+      "exportCsv": "Exportar CSV"
+    },
+    "messages": {
+      "success": "?xito",
+      "error": "Error",
+      "verifyFailed": "No se pudo verificar la transferencia bancaria",
+      "rejectionReasonRequired": "Introduce un motivo de rechazo",
+      "noTransfersToExport": "No hay transferencias bancarias para exportar.",
+      "exportSuccess": "Se exportaron {count} transferencia(s) bancaria(s) en {format}.",
+      "exportFailed": "No se pudieron exportar las transferencias bancarias. Int?ntalo de nuevo."
+    },
+    "table": {
+      "date": "Fecha",
+      "buyer": "Comprador",
+      "amount": "Importe",
+      "transferId": "ID de transferencia",
+      "screenshot": "Captura",
+      "status": "Estado",
+      "actions": "Acciones",
+      "event": "Evento",
+      "view": "Ver",
+      "viewDetails": "Ver detalles",
+      "screenshotAttached": "Captura adjunta"
+    },
+    "stats": {
+      "total": "Total",
+      "pending": "Pendientes",
+      "approved": "Aprobadas",
+      "rejected": "Rechazadas"
+    },
+    "tabs": {
+      "all": "Todos",
+      "pending": "Pendientes",
+      "approved": "Aprobadas",
+      "rejected": "Rechazadas"
+    },
+    "empty": {
+      "title": "No se encontraron transferencias bancarias",
+      "description": "No hay pagos por transferencia bancaria para mostrar"
+    },
+    "export": {
+      "title": "Exportaci?n de transferencias bancarias"
+    },
+    "dialog": {
+      "title": "Detalles de la transferencia bancaria",
+      "description": "Revisa y verifica este pago por transferencia bancaria",
+      "status": "Estado",
+      "registrationInfo": "Informaci?n de la inscripci?n",
+      "buyer": "Comprador",
+      "amount": "Importe",
+      "event": "Evento",
+      "date": "Fecha",
+      "transferId": "ID de transferencia",
+      "transferScreenshot": "Captura de la transferencia",
+      "transferScreenshotAlt": "Captura de la transferencia bancaria",
+      "rejectionReason": "Motivo del rechazo",
+      "rejectionReasonPlaceholder": "Introduce el motivo del rechazo...",
+      "rejectionReasonHint": "Solo es obligatorio si rechazas este pago.",
+      "cancel": "Cancelar",
+      "reject": "Rechazar",
+      "approve": "Aprobar",
+      "close": "Cerrar"
+    }
+  },
+  "badgePage": {
+    "notFoundTitle": "Evento no encontrado",
+    "returnHome": "Volver al inicio",
+    "backToEvent": "Volver al evento",
+    "title": "Generar credenciales del evento",
+    "description": "Disena credenciales personalizadas y gestiona la impresion para los participantes inscritos."
+  },
+  "eventEditPage": {
+    "title": "Actualizar evento"
+  },
+  "themeToggle": {
+    "toggle": "Cambiar tema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
+  "postPurchaseWorkPrompt": {
+    "title": "Inscripcion confirmada",
+    "description": "Tu inscripcion a {eventTitle} ha sido confirmada.",
+    "body": "Deseas enviar un trabajo ahora? Si confirmas, seras redirigido a la pagina de envio. Si no, seras redirigido a la pagina de inicio.",
+    "goHome": "No, volver al inicio",
+    "submitWork": "Si, enviar un trabajo"
+  },
+  "authComponents": {
+    "signIn": {
+      "title": "Bienvenido de nuevo",
+      "description": "Inicia sesion en tu cuenta para continuar",
+      "orContinueWith": "O continuar con",
+      "emailAddress": "Correo electronico",
+      "continue": "Continuar",
+      "noAccount": "No tienes una cuenta?",
+      "createAccount": "Crear una cuenta",
+      "otherMethodTitle": "Usar otro metodo",
+      "otherMethodDescription": "Tienes problemas? Puedes usar cualquiera de estos metodos para iniciar sesion.",
+      "emailCode": "Codigo por correo",
+      "password": "Contrasena",
+      "goBack": "Volver",
+      "enterPassword": "Introducir contrasena",
+      "passwordDescription": "Bienvenido de nuevo a tu plataforma de eventos",
+      "useAnotherMethod": "Usar otro metodo",
+      "checkEmail": "Revisa tu correo",
+      "checkEmailDescription": "Introduce el codigo que enviamos a tu direccion",
+      "verificationCode": "Codigo de verificacion",
+      "resendIn": "Reenviar codigo en",
+      "resend": "No recibiste un codigo? Reenviar",
+      "completing": "Completando el inicio de sesion..."
+    },
+    "signUp": {
+      "title": "Crear cuenta",
+      "description": "Unete a nuestra comunidad y empieza a crear eventos",
+      "orEmail": "O registrarte con correo electronico",
+      "username": "Nombre de usuario",
+      "phone": "Telefono",
+      "email": "Correo electronico",
+      "password": "Contrasena",
+      "confirm": "Confirmar",
+      "submit": "Crear cuenta",
+      "hasAccount": "Ya tienes una cuenta?",
+      "signIn": "Iniciar sesion",
+      "toastSuccessTitle": "Cuenta creada!",
+      "toastSuccessDescription": "Bienvenido a nuestra plataforma.",
+      "toastErrorTitle": "Error",
+      "unexpectedError": "Ocurrio un error inesperado."
+    }
+  },
+  "ownerDashboard": {
+    "title": "Panel del propietario",
+    "tabs": {
+      "users": "Usuarios",
+      "usersShort": "Usuarios",
+      "organisations": "Organizaciones",
+      "organisationsShort": "Orgs",
+      "reports": "Reportes",
+      "reportsShort": "Reportes",
+      "categories": "Categorias",
+      "categoriesShort": "Cats",
+      "aiTools": "Herramientas IA",
+      "aiToolsShort": "IA"
+    }
+  },
+  "serverAdmin": {
+    "auth": {
+      "title": "Panel de administracion",
+      "description": "Introduce tu clave API de administrador para acceder al panel",
+      "apiKeyLabel": "Clave API",
+      "apiKeyPlaceholder": "Introduce tu clave API de administrador",
+      "authenticating": "Autenticando...",
+      "submit": "Acceder al panel"
+    },
+    "header": {
+      "title": "Administracion del servidor multimedia",
+      "logout": "Cerrar sesion"
+    },
+    "tabs": {
+      "dashboard": "Panel",
+      "files": "Archivos",
+      "processes": "Procesos",
+      "maintenance": "Mantenimiento",
+      "logs": "Registros"
+    },
+    "errors": {
+      "apiKeyRequired": "La clave API es obligatoria",
+      "authenticationFailed": "Error de autenticacion"
+    }
+  },
+  "serverDashboard": {
+    "title": "Panel del servidor",
+    "refresh": "Actualizar",
+    "retry": "Reintentar",
+    "errorLoading": "Error al cargar el panel: {error}",
+    "status": {
+      "healthy": "Saludable",
+      "warning": "Advertencia",
+      "critical": "Critico",
+      "unknown": "Desconocido"
+    },
+    "cards": {
+      "uptime": {
+        "title": "Tiempo activo del servidor",
+        "started": "Iniciado el {date}"
+      },
+      "requests": {
+        "title": "Solicitudes totales",
+        "successRate": "{rate} de exito"
+      },
+      "files": {
+        "title": "Archivos procesados",
+        "activeProcesses": "{count} procesos activos"
+      },
+      "queue": {
+        "title": "Cola de procesos",
+        "running": "{count} en ejecucion"
+      }
+    },
+    "memory": {
+      "title": "Uso de memoria",
+      "rss": "Memoria RSS",
+      "heapTotal": "Heap total",
+      "heapUsed": "Heap usado",
+      "external": "Externa"
+    },
+    "disk": {
+      "title": "Uso de disco",
+      "videos": "Videos",
+      "music": "Musica",
+      "tempFiles": "Archivos temporales",
+      "total": "Total"
+    },
+    "tempFiles": {
+      "title": "Archivos temporales",
+      "tracked": "{count} archivos rastreados",
+      "lastCleanup": "Ultima limpieza:",
+      "never": "Nunca"
+    }
+  },
+  "maintenancePanel": {
+    "title": "Panel de mantenimiento",
+    "cleanup": {
+      "title": "Limpieza de archivos",
+      "description": "Limpia archivos huerfanos y temporales para liberar espacio en disco",
+      "orphanedFiles": {
+        "label": "Limpiar archivos huerfanos",
+        "description": "Eliminar archivos que no existen en la base de datos"
+      },
+      "tempFiles": {
+        "label": "Limpiar archivos temporales",
+        "description": "Eliminar archivos temporales antiguos de procesamiento"
+      },
+      "dryRun": {
+        "label": "Modo simulacion",
+        "description": "Previsualizar cambios sin eliminar archivos"
+      },
+      "forceTemp": {
+        "label": "Forzar limpieza temporal",
+        "description": "Eliminar todos los archivos temporales sin importar su antiguedad"
+      },
+      "maxFileSize": {
+        "label": "Tamano maximo de archivo (MB)",
+        "placeholder": "Dejar vacio para sin limite",
+        "description": "Eliminar solo archivos mas pequenos que este tamano"
+      },
+      "running": "Ejecutando mantenimiento...",
+      "preview": "Previsualizar limpieza",
+      "run": "Ejecutar limpieza"
+    },
+    "processes": {
+      "title": "Gestion de procesos",
+      "description": "Gestiona los procesos FFmpeg en ejecucion",
+      "warning": "Esto finalizara por la fuerza todos los procesos FFmpeg activos. Usalo con precaucion.",
+      "killing": "Finalizando procesos...",
+      "killAll": "Finalizar todos los procesos"
+    },
+    "system": {
+      "title": "Informacion del sistema",
+      "description": "Estado actual del sistema y recomendaciones",
+      "recommendedCleanupFrequency": "Frecuencia recomendada de limpieza:",
+      "daily": "Diaria",
+      "tempFileRetention": "Retencion de archivos temporales:",
+      "oneHour": "1 hora",
+      "maxConcurrentProcesses": "Procesos concurrentes maximos:",
+      "processTimeout": "Tiempo de espera del proceso:",
+      "fiveMinutes": "5 minutos"
+    },
+    "results": {
+      "completed": "Mantenimiento completado",
+      "orphanedFiles": "Archivos huerfanos: {count} {suffix}",
+      "tempFiles": "Archivos temporales: {count} eliminados",
+      "wouldBeDeleted": "serian eliminados",
+      "deleted": "eliminados",
+      "killedProcesses": "Se finalizaron {count} procesos"
+    }
+  },
+  "processMonitor": {
+    "title": "Monitor de procesos",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "autoRefresh": "Autoactualizacion",
+    "refresh": "Actualizar",
+    "status": {
+      "unknown": "Desconocido",
+      "active": "Activo",
+      "queued": "En cola",
+      "idle": "Inactivo",
+      "running": "En ejecucion"
+    },
+    "cards": {
+      "status": {
+        "title": "Estado del proceso",
+        "activeProcesses": "{count} procesos activos"
+      },
+      "queue": {
+        "title": "Longitud de la cola",
+        "running": "{count} ejecutandose actualmente"
+      },
+      "files": {
+        "title": "Archivos procesados",
+        "description": "Total de archivos procesados"
+      }
+    },
+    "activeProcesses": {
+      "title": "Procesos activos",
+      "description": "Procesos FFmpeg actualmente en ejecucion",
+      "ffmpegProcess": "Proceso FFmpeg",
+      "none": "No hay procesos activos"
+    },
+    "controls": {
+      "title": "Controles de procesos",
+      "description": "Gestiona los procesos en ejecucion",
+      "killAll": "Finalizar todos los procesos",
+      "noProcesses": "No hay procesos para finalizar",
+      "terminateCount": "Esto finalizara {count} proceso(s) activo(s)"
+    },
+    "queue": {
+      "title": "Cola de procesos",
+      "description": "{count} procesos esperando ser ejecutados",
+      "progress": "Progreso de la cola",
+      "slotsUsed": "{count} / 3 espacios usados",
+      "maxConcurrent": "Maximo de procesos concurrentes: 3"
+    }
+  },
+  "serverLogs": {
+    "title": "Registros del servidor",
+    "autoRefreshOn": "Autoactualizacion activada",
+    "autoRefreshOff": "Autoactualizacion desactivada",
+    "refresh": "Actualizar",
+    "controls": {
+      "title": "Controles de registros",
+      "maxLines": "Maximo de lineas",
+      "logLevel": "Nivel de registro",
+      "allLevels": "Todos los niveles",
+      "searchLogs": "Buscar en registros",
+      "searchPlaceholder": "Buscar entradas del registro...",
+      "exportLogs": "Exportar registros"
+    },
+    "statistics": {
+      "title": "Estadisticas de registros",
+      "description": "Mostrando {shown} de {total} entradas de registro",
+      "processQueue": "Cola de procesos",
+      "queueLength": "Longitud de la cola:",
+      "running": "En ejecucion:",
+      "active": "Activos:",
+      "tempFiles": "Archivos temporales",
+      "tracked": "Rastreados:",
+      "oldest": "Mas antiguo:",
+      "none": "Ninguno",
+      "serverStats": "Estadisticas del servidor",
+      "requests": "Solicitudes:",
+      "errors": "Errores:",
+      "processed": "Procesados:"
+    },
+    "entries": {
+      "title": "Entradas del registro",
+      "description": "Registros del servidor en tiempo real con filtrado y busqueda",
+      "showMetadata": "Mostrar metadatos"
+    },
+    "empty": {
+      "title": "No se encontraron registros",
+      "description": "Ninguna entrada coincide con tus filtros actuales. Intenta ajustar los criterios de busqueda."
+    },
+    "errors": {
+      "exportFailed": "Error al exportar: {error}",
+      "exportFailedStatus": "Error al exportar: {status}"
+    }
+  },
+  "userAlertDialog": {
+    "trigger": "Gestionar usuario",
+    "title": "Gestion de usuarios",
+    "description": "Revisa la informacion del usuario y gestiona sus permisos.",
+    "banned": "Bloqueado",
+    "memberSince": "Miembro desde: {date}",
+    "unbanUser": "Desbloquear usuario",
+    "banUser": "Bloquear usuario",
+    "close": "Cerrar"
+  },
+  "organisationsAdministration": {
+    "title": "Verificacion de organizaciones",
+    "description": "Gestiona las insignias de editor de las organizaciones. Las organizaciones verificadas muestran una insignia de confianza.",
+    "table": {
+      "organisation": "Organizacion",
+      "creator": "Creador",
+      "members": "Miembros",
+      "created": "Creada",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "status": {
+      "verified": "Verificada",
+      "unverified": "No verificada"
+    },
+    "actions": {
+      "verify": "Verificar",
+      "revoke": "Revocar",
+      "cancel": "Cancelar",
+      "revokeVerification": "Revocar verificacion",
+      "approveVerification": "Aprobar verificacion"
+    },
+    "dialog": {
+      "verifyTitle": "Verificar organizacion",
+      "revokeTitle": "Revocar verificacion",
+      "verifyDescription": "Seguro que deseas verificar \"{orgName}\"? Esto le otorgara una insignia de editor de confianza.",
+      "revokeDescription": "Seguro que deseas quitar la insignia verificada a \"{orgName}\"? Perdera el estado de editor de confianza."
+    },
+    "toast": {
+      "verificationRemoved": "Verificacion retirada",
+      "organisationVerified": "Organizacion verificada",
+      "unverifiedDescription": "{orgName} ya no esta verificada.",
+      "verifiedDescription": "{orgName} ahora esta verificada y puede publicar con una insignia de confianza.",
+      "errorTitle": "Error",
+      "errorDescription": "No se pudo actualizar el estado de verificacion."
+    },
+    "stats": {
+      "totalOrganisations": "Total de organizaciones",
+      "pendingUnverified": "Pendiente / no verificada"
+    },
+    "mobile": {
+      "creatorSubtitle": "Creador: {creatorName}",
+      "website": "Sitio web",
+      "noWebsite": "-"
     }
   }
 }

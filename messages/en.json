@@ -113,18 +113,18 @@
     "confirmDelete": "Are you sure you want to delete this scan point?",
     "currentPoint": "Current scanning point",
     "deletePoint": "Delete",
-    "errorOccurred": "An error occurred while verifying the ticket.",
+    "errorOccurred": "An error occurred while verifying access.",
     "instructions": {
       "step1": "1. Select the checkpoint.",
-      "step2": "2. Present the ticket QR code to the camera.",
+      "step2": "2. Present the access QR code to the camera.",
       "step3": "3. Wait for visual and audio confirmation.",
       "title": "Instructions"
     },
-    "invalidTicket": "Invalid Ticket",
+    "invalidTicket": "Invalid Access",
     "newPoint": "New point",
     "noImageChosen": "No file",
-    "notBelong": "This ticket does not belong to this event.",
-    "notFound": "Ticket not found or invalid QR code.",
+    "notBelong": "This access does not belong to this event.",
+    "notFound": "Access not found or invalid QR code.",
     "ok": "OK",
     "orDropImage": "Drop image here",
     "participant": "Participant",
@@ -136,13 +136,13 @@
     "retry": "Retry",
     "scanCameraDirectly": "Use Camera",
     "scanImageFile": "Scan an Image",
-    "scanNext": "Scan Next Ticket",
+    "scanNext": "Scan Next Access",
     "scannedAt": "Scanned at:",
     "stopScanning": "Stop",
     "subtitle": "Real-time scanning and access control",
-    "ticketType": "Ticket Type",
+    "ticketType": "Access Type",
     "unknown": "Unknown",
-    "verifying": "Verifying ticket..."
+    "verifying": "Verifying access..."
   },
   "SponsorForm": {
     "actions": {
@@ -213,7 +213,7 @@
     },
     "actions": {
       "getCertificate": "Get Certificate",
-      "getTicket": "Get Ticket",
+      "getTicket": "Get Access",
       "uploadWork": "Upload Work"
     },
     "dialogs": {
@@ -222,8 +222,8 @@
         "title": "Get Certificate"
       },
       "ticket": {
-        "description": "View and download your event ticket",
-        "title": "Get Ticket"
+        "description": "View and download your event access",
+        "title": "Get Access"
       },
       "uploadWork": {
         "description": "Upload your work files for this event",
@@ -396,7 +396,7 @@
     "chatModelAdvanced": "Advanced",
     "chatClear": "Clear chat",
     "chatClearConfirm": "Do you really want to clear the whole conversation?",
-    "chatIntro": "Ask only about badgi, its offers, event management, tickets, and available events.",
+    "chatIntro": "Ask only about badgi, its offers, event management, registrations, and available events.",
     "chatPlaceholder": "Ask about the platform, offers, or events...",
     "chatPoweredBy": "Powered by badgi AI",
     "chatErrorTitle": "Sorry, an error occurred:",
@@ -487,7 +487,7 @@
     "benefits": {
       "items": {
         "equipment": "Top-tier equipment and tools",
-        "events": "Free tickets to events worldwide",
+        "events": "Free registrations to events worldwide",
         "health": "Comprehensive health insurance",
         "learning": "Learning and development budget",
         "remote": "Remote-first work culture",
@@ -1400,8 +1400,8 @@
     "title": "No events created yet"
   },
   "emptyTickets": {
-    "description": "Sorry, there are no tickets available for this event right now. Please check back later.",
-    "title": "No tickets available"
+    "description": "Sorry, there are no registration options available for this event right now. Please check back later.",
+    "title": "No registrations available"
   },
   "event": {
     "attendees": "{count, plural, =0 {No attendees} =1 {1 person attending} other {# people attending}}",
@@ -1431,7 +1431,7 @@
     "delete": "Delete",
     "hostContributor": "Host a Contributor",
     "modify": "Modify",
-    "orderDetails": "Order Details",
+    "orderDetails": "Registration Details",
     "return": "Return",
     "registrationForms": "Registration Forms",
     "settings": "Event Settings",
@@ -1446,7 +1446,7 @@
     "free": "Free",
     "seats": "seats",
     "entries": "entries",
-    "totalOrders": "Total Orders",
+    "totalOrders": "Total Registrations",
     "totalRevenue": "Total Revenue",
     "uniqueAttendees": "Unique Attendees",
     "scanCoverage": "Scan Coverage",
@@ -1455,13 +1455,13 @@
     "highlightsTitle": "Key Highlights",
     "totalSuffix": "total",
     "highlights": {
-      "noOrders": "No orders recorded for this event.",
-      "ordersAndAttendees": "{orders} orders generated for {attendees} unique attendees.",
-      "avgOrder": "Estimated average order value: {amount} per order.",
+      "noOrders": "No registrations recorded for this event.",
+      "ordersAndAttendees": "{orders} registrations recorded for {attendees} unique attendees.",
+      "avgOrder": "Estimated average contribution: {amount} per registration.",
       "attendanceRate": "Scanned attendance rate: {rate}% ({scanned} scanned attendees).",
       "topPlan": "Top performing plan: {plan} ({orders} sales)."
     },
-    "breakdownByType": "Breakdown by Ticket Type",
+    "breakdownByType": "Breakdown by Access Type",
     "breakdownByCategory": "Breakdown by Category",
     "scanPointsDescription": "QR code scan entries and exits recorded at each scan point.",
     "footer": "Report generated by badgi.net",
@@ -1474,13 +1474,13 @@
     "sections": {
       "eventInfo": "Event Information",
       "pricePlans": "Price Plans",
-      "orderStats": "Order Statistics",
+      "orderStats": "Registration Statistics",
       "scanPoints": "Scan Point Details",
       "executiveTrends": "Executive Summary and Trends",
       "pricePlanPerformance": "Price Plan Performance"
     },
     "charts": {
-      "ordersTrendTitle": "Orders trend (day by day)",
+      "ordersTrendTitle": "Registrations trend (day by day)",
       "ordersTrendEmpty": "No trend data available.",
       "scanHourlyTitle": "Scan activity by hour"
     },
@@ -1522,7 +1522,7 @@
     "event": "event",
     "eventDescriptionPlaceholder": "Type your description here...",
     "eventTitle": "Event Title",
-    "freeTicket": "Free Ticket",
+    "freeTicket": "Free Registration",
     "locationPlaceHolder": "Event Location or Online",
     "online": "Online",
     "places": "Places",
@@ -1532,7 +1532,7 @@
     "requiredInfoDescription": "Please fill out your required condidate information.",
     "scanPoints": {
       "add": "Add",
-      "description": "Define the control points where tickets will be scanned (e.g., Entrance, Workshop).",
+      "description": "Define the control points where access QR codes will be scanned (e.g., Entrance, Workshop).",
       "empty": "No scan points configured.",
       "items": {
         "exhibitors": "Exhibitors Area",
@@ -1560,7 +1560,7 @@
   },
   "eventPrice": {
     "availablePlaces": "Available Places",
-    "buyTicket": "Buy a ticket or get a preorder",
+    "buyTicket": "Register for the event or request on-site access",
     "error": "Error",
     "eventFree": "This event is free",
     "eventTotalPrice": "Event total price",
@@ -1568,8 +1568,8 @@
     "inscription": "Registration",
     "instantConfirmation": "Instant confirmation",
     "note": "Plan Note",
-    "orderCreatedError": "Failed to create order",
-    "orderCreatedSuccess": "Order created successfully",
+    "orderCreatedError": "Failed to create registration",
+    "orderCreatedSuccess": "Registration created successfully",
     "payInDoor": "Pay in door",
     "selectPlans": "Select your plans",
     "secureCheckout": "Secure checkout",
@@ -1653,7 +1653,7 @@
           "title": "Multi-Language Support"
         },
         "qr_codes": {
-          "description": "Generate QR codes for tickets and check-ins.",
+          "description": "Generate QR codes for access control and check-ins.",
           "title": "QR Code Integration"
         },
         "real_time": {
@@ -1667,7 +1667,7 @@
       "description": "Discover the benefits that make us the preferred choice for event organizers worldwide.",
       "items": {
         "boost_revenue": {
-          "description": "Maximize ticket sales with our marketing tools.",
+          "description": "Grow registrations with our marketing tools.",
           "title": "Boost Revenue"
         },
         "improve_experience": {
@@ -1976,8 +1976,8 @@
         "title": "Payments & Billing"
       },
       "ticketing": {
-        "description": "Set up tickets and manage registrations.",
-        "title": "Ticketing & Registration"
+        "description": "Set up registrations and manage participants.",
+        "title": "Registration & Participation"
       },
       "troubleshooting": {
         "description": "Solve common issues and technical problems.",
@@ -2476,23 +2476,23 @@
   "orderAdministration": {
     "actions": {
       "export": "Export Data",
-      "filter": "Filter Orders",
+      "filter": "Filter Registrations",
       "rapport": "Report",
       "viewDetails": "View Details"
     },
     "buyer": "Buyer",
     "emptyState": {
-      "description": "There are no orders for this event yet. Orders will appear here once customers start purchasing tickets.",
-      "title": "No Orders Found"
+      "description": "There are no registrations for this event yet. Registrations will appear here once attendees start signing up.",
+      "title": "No Registrations Found"
     },
-    "orderIdLabel": "Order ID",
+    "orderIdLabel": "Registration Ref",
     "searchPlaceholder": "Search orders by ID, buyer, or event...",
     "stats": {
-      "totalOrders": "Total Orders",
+      "totalOrders": "Total Registrations",
       "totalRevenue": "Total Revenue",
       "uniqueBuyers": "Unique Buyers"
     },
-    "subtitle": "Track and manage all event orders",
+    "subtitle": "Track and manage all event registrations",
     "table": {
       "headers": {
         "amount": "Amount",
@@ -2500,63 +2500,65 @@
         "created": "Created",
         "details": "Details",
         "eventTitle": "Event Title",
-        "orderId": "Order ID",
-        "ticketType": "Ticket Type"
+        "orderId": "Reference",
+        "ticketType": "Access Type"
       }
     },
     "ticketTypes": {
-      "doorpay": "Door Pay Ticket",
-      "free": "Free Ticket",
-      "hosted": "Hosted Ticket",
-      "paid": "Paid Ticket",
+      "doorpay": "On-site Registration",
+      "free": "Free Registration",
+      "hosted": "Hosted Registration",
+      "paid": "Paid Registration",
       "bankTransfer": "Bank Transfer"
     },
-    "title": "Order Management"
+    "title": "Registration Management"
   },
   "orderDetailsDialog": {
     "buyerInfo": {
       "description": "Required data from buyer by admin",
       "title": "Buyer Information"
     },
-    "description": "Complete information about this order",
+    "description": "Complete information about this registration",
     "discount": {
       "eligible": "Discount Eligible",
       "label": "Discount"
     },
     "orderPlans": {
       "allPlansAvailable": "All event plans are available",
-      "description": "Available plans included in this order",
-      "title": "Order Plans"
+      "description": "Available plans included in this registration",
+      "title": "Registration Plans"
     },
     "payment": {
       "cashPaid": "Cash Paid",
-      "hostedByAdmin": "This order is hosted by admin",
+      "hostedByAdmin": "This registration is hosted by admin",
       "toPay": "To Pay",
       "totalAmount": "Total Amount"
     },
     "returnButton": "Return",
-    "title": "Order Details",
+    "title": "Registration Details",
     "viewButton": "View"
   },
   "orders": {
     "sections": {
       "certificationManagement": "Certification Management",
-      "orderManagement": "Order Management",
+      "orderManagement": "Registration Management",
       "workManagement": "Work Management"
     },
     "stats": {
       "certifications": "Certifications",
-      "totalOrders": "Total Orders",
+      "totalOrders": "Total Registrations",
       "works": "Work Items"
     },
-    "subtitle": "Manage orders, certifications, and work assignments",
+    "subtitle": "Manage registrations, certifications, and work assignments",
     "tabs": {
       "certificationAdministration": "Certification Administration",
       "certifications": "Certifications",
-      "orderAdministration": "Order Administration",
-      "orders": "Orders",
+      "orderAdministration": "Registration Administration",
+      "orders": "Registrations",
       "workAdministration": "Work Administration",
-      "works": "Works"
+      "works": "Works",
+      "bankTransfers": "Bank Transfer Verification",
+      "bankTransfersShort": "Transfer."
     },
     "title": "Event Administration"
   },
@@ -2760,14 +2762,14 @@
       "title": "No events created yet"
     },
     "emptyTickets": {
-      "description": "You haven't purchased any event tickets yet. Explore our events and get your tickets now!",
-      "title": "No event tickets purchased yet"
+      "description": "You do not have any event registrations yet. Explore the available events and complete your registration.",
+      "title": "No registrations yet"
     },
     "eventsOrganized": "Events Organized",
     "eventsTabDescription": "Manage and view all your organized events",
     "emptySponsors": {
-        "title": "No Sponsors Yet",
-        "description": "Start by adding your first event sponsor to your profile."
+      "title": "No Sponsors Yet",
+      "description": "Start by adding your first event sponsor to your profile."
     },
     "exploreMoreEvents": "Explore more events",
     "mySponsors": "My Sponsors",
@@ -2776,7 +2778,7 @@
     "editSponsor": "Edit Sponsor",
     "deleteSponsor": "Delete Sponsor",
     "deleteSponsorConfirm": "Are you sure you want to delete this sponsor? This action cannot be undone.",
-    "myTickets": "My Tickets",
+    "myTickets": "My Registrations",
     "settings": {
       "title": "Profile Settings",
       "description": "Update your profile information.",
@@ -2808,7 +2810,7 @@
     "dashboard": "Dashboard",
     "welcomeBack": "Welcome back, {name}! Here's your overview.",
     "stats": {
-      "tickets": "Tickets",
+      "tickets": "Registrations",
       "events": "Events",
       "organisations": "Organisations",
       "verifiedOrgs": "Verified Orgs"
@@ -2817,7 +2819,7 @@
       "title": "Quick Actions",
       "createEvent": "Create Event",
       "newOrganisation": "New Organisation",
-      "viewTickets": "View Tickets"
+      "viewTickets": "View Registrations"
     },
     "recentEvents": {
       "title": "Recent Events",
@@ -2870,7 +2872,7 @@
     "sidebar": {
       "overview": "Overview",
       "profileSettings": "Profile Settings",
-      "myTickets": "My Tickets",
+      "myTickets": "My Registrations",
       "eventsOrganized": "Events Organized",
       "organisations": "Organisations",
       "customForms": "Custom Forms",
@@ -3214,8 +3216,8 @@
         "title": "User Content"
       },
       "description": {
-        "content": "badgi.net provides event management and ticketing services through our web platform and mobile applications.",
-        "points": "Event creation and management tools | Ticketing and registration services | Payment processing capabilities | Analytics and reporting features | Customer support services",
+        "content": "badgi.net provides event management and registration services through our web platform and mobile applications.",
+        "points": "Event creation and management tools | Registration services | Payment processing capabilities | Analytics and reporting features | Customer support services",
         "title": "Description of Service"
       },
       "disclaimers": {
@@ -3465,6 +3467,492 @@
       "searchInput": "Search options",
       "pillOptions": "Available options",
       "removePill": "Remove {name}"
+    }
+  },
+  "authPages": {
+    "signIn": {
+      "noAccount": "Don't have an account yet?",
+      "cta": "Sign up"
+    },
+    "signUp": {
+      "hasAccount": "Already have an account?",
+      "cta": "Sign in"
+    }
+  },
+  "fileManager": {
+    "title": "File Manager",
+    "common": {
+      "filesCount": "{count} files"
+    },
+    "badges": {
+      "orphaned": "Orphaned",
+      "inDb": "In DB"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "previewCleanup": "Preview Cleanup",
+      "cleanupOrphaned": "Clean Up Orphaned Files",
+      "selectAllOrphaned": "Select All Orphaned",
+      "deleteSelected": "Delete Selected ({count})"
+    },
+    "filters": {
+      "title": "Filters",
+      "searchLabel": "Search Files",
+      "searchPlaceholder": "Search by filename or path...",
+      "showOrphanedOnly": "Show orphaned only"
+    },
+    "summary": {
+      "orphanedFound": "Found {count} orphaned files taking up {size}"
+    },
+    "cleanup": {
+      "previewTitle": "Cleanup Preview",
+      "resultsTitle": "Cleanup Results",
+      "found": "Found",
+      "wouldDelete": "Would Delete",
+      "deleted": "Deleted",
+      "failed": "Failed",
+      "skipped": "Skipped",
+      "wouldBe": "would be",
+      "spaceFreed": "Space {qualifier} freed: {size}"
+    },
+    "tabs": {
+      "videos": "Videos",
+      "music": "Music",
+      "videoFiles": "Video Files",
+      "musicFiles": "Music Files"
+    }
+  },
+  "bankTransferAdministration": {
+    "title": "Bank Transfer Verification",
+    "subtitle": "Review and verify bank transfer payments",
+    "searchPlaceholder": "Search by buyer or transfer ID...",
+    "actions": {
+      "filter": "Filter",
+      "export": "Export",
+      "exportXlsx": "Export XLSX",
+      "exportWord": "Export Word",
+      "exportPdf": "Export PDF",
+      "exportCsv": "Export CSV"
+    },
+    "messages": {
+      "success": "Success",
+      "error": "Error",
+      "verifyFailed": "Failed to verify bank transfer",
+      "rejectionReasonRequired": "Please provide a rejection reason",
+      "noTransfersToExport": "No bank transfers to export.",
+      "exportSuccess": "{count} bank transfer(s) exported as {format}.",
+      "exportFailed": "Failed to export bank transfers. Please try again."
+    },
+    "table": {
+      "date": "Date",
+      "buyer": "Buyer",
+      "amount": "Amount",
+      "transferId": "Transfer ID",
+      "screenshot": "Screenshot",
+      "status": "Status",
+      "actions": "Actions",
+      "event": "Event",
+      "view": "View",
+      "viewDetails": "View Details",
+      "screenshotAttached": "Screenshot attached"
+    },
+    "stats": {
+      "total": "Total",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "tabs": {
+      "all": "All",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "empty": {
+      "title": "No bank transfers found",
+      "description": "No bank transfer payments to display"
+    },
+    "export": {
+      "title": "Bank Transfers Export"
+    },
+    "dialog": {
+      "title": "Bank Transfer Details",
+      "description": "Review and verify this bank transfer payment",
+      "status": "Status",
+      "registrationInfo": "Registration Information",
+      "buyer": "Buyer",
+      "amount": "Amount",
+      "event": "Event",
+      "date": "Date",
+      "transferId": "Transfer ID",
+      "transferScreenshot": "Transfer Screenshot",
+      "transferScreenshotAlt": "Bank transfer screenshot",
+      "rejectionReason": "Rejection Reason",
+      "rejectionReasonPlaceholder": "Enter reason for rejection...",
+      "rejectionReasonHint": "Required only if you reject this payment.",
+      "cancel": "Cancel",
+      "reject": "Reject",
+      "approve": "Approve",
+      "close": "Close"
+    }
+  },
+  "badgePage": {
+    "notFoundTitle": "Event not found",
+    "returnHome": "Return home",
+    "backToEvent": "Back to event",
+    "title": "Generate event badges",
+    "description": "Design custom badges and manage printing for registered participants."
+  },
+  "eventEditPage": {
+    "title": "Update event"
+  },
+  "themeToggle": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "postPurchaseWorkPrompt": {
+    "title": "Registration confirmed",
+    "description": "Your registration for {eventTitle} has been confirmed.",
+    "body": "Would you like to submit a work now? If you confirm, you will be redirected to the submission page. Otherwise, you will be redirected to the home page.",
+    "goHome": "No, return home",
+    "submitWork": "Yes, submit a work"
+  },
+  "authComponents": {
+    "signIn": {
+      "title": "Welcome back",
+      "description": "Sign in to your account to continue",
+      "orContinueWith": "Or continue with",
+      "emailAddress": "Email address",
+      "continue": "Continue",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create an account",
+      "otherMethodTitle": "Use another method",
+      "otherMethodDescription": "Having trouble? You can use any of these methods to sign in.",
+      "emailCode": "Email code",
+      "password": "Password",
+      "goBack": "Go back",
+      "enterPassword": "Enter password",
+      "passwordDescription": "Welcome back to your event platform",
+      "useAnotherMethod": "Use another method",
+      "checkEmail": "Check your email",
+      "checkEmailDescription": "Enter the code we sent to your address",
+      "verificationCode": "Verification code",
+      "resendIn": "Resend code in",
+      "resend": "Didn't receive a code? Resend",
+      "completing": "Completing sign in..."
+    },
+    "signUp": {
+      "title": "Create account",
+      "description": "Join our community and start creating events",
+      "orEmail": "Or sign up with email",
+      "username": "Username",
+      "phone": "Phone",
+      "email": "Email",
+      "password": "Password",
+      "confirm": "Confirm",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "toastSuccessTitle": "Account created!",
+      "toastSuccessDescription": "Welcome to our platform.",
+      "toastErrorTitle": "Error",
+      "unexpectedError": "An unexpected error occurred."
+    }
+  },
+  "ownerDashboard": {
+    "title": "Owner dashboard",
+    "tabs": {
+      "users": "Users",
+      "usersShort": "Users",
+      "organisations": "Organisations",
+      "organisationsShort": "Orgs",
+      "reports": "Reports",
+      "reportsShort": "Reports",
+      "categories": "Categories",
+      "categoriesShort": "Cats",
+      "aiTools": "AI tools",
+      "aiToolsShort": "AI tools"
+    }
+  },
+  "serverAdmin": {
+    "auth": {
+      "title": "Admin dashboard",
+      "description": "Enter your admin API key to access the dashboard",
+      "apiKeyLabel": "API key",
+      "apiKeyPlaceholder": "Enter your admin API key",
+      "authenticating": "Authenticating...",
+      "submit": "Access dashboard"
+    },
+    "header": {
+      "title": "Media server admin",
+      "logout": "Logout"
+    },
+    "tabs": {
+      "dashboard": "Dashboard",
+      "files": "Files",
+      "processes": "Processes",
+      "maintenance": "Maintenance",
+      "logs": "Logs"
+    },
+    "errors": {
+      "apiKeyRequired": "API key is required",
+      "authenticationFailed": "Authentication failed"
+    }
+  },
+  "serverDashboard": {
+    "title": "Server dashboard",
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "errorLoading": "Error loading dashboard: {error}",
+    "status": {
+      "healthy": "Healthy",
+      "warning": "Warning",
+      "critical": "Critical",
+      "unknown": "Unknown"
+    },
+    "cards": {
+      "uptime": {
+        "title": "Server uptime",
+        "started": "Started {date}"
+      },
+      "requests": {
+        "title": "Total requests",
+        "successRate": "{rate} success rate"
+      },
+      "files": {
+        "title": "Files processed",
+        "activeProcesses": "{count} active processes"
+      },
+      "queue": {
+        "title": "Process queue",
+        "running": "{count} running"
+      }
+    },
+    "memory": {
+      "title": "Memory usage",
+      "rss": "RSS memory",
+      "heapTotal": "Heap total",
+      "heapUsed": "Heap used",
+      "external": "External"
+    },
+    "disk": {
+      "title": "Disk usage",
+      "videos": "Videos",
+      "music": "Music",
+      "tempFiles": "Temp files",
+      "total": "Total"
+    },
+    "tempFiles": {
+      "title": "Temporary files",
+      "tracked": "{count} files being tracked",
+      "lastCleanup": "Last cleanup:",
+      "never": "Never"
+    }
+  },
+  "maintenancePanel": {
+    "title": "Maintenance panel",
+    "cleanup": {
+      "title": "File cleanup",
+      "description": "Clean up orphaned and temporary files to free disk space",
+      "orphanedFiles": {
+        "label": "Clean orphaned files",
+        "description": "Remove files that do not exist in the database"
+      },
+      "tempFiles": {
+        "label": "Clean temporary files",
+        "description": "Remove old temporary processing files"
+      },
+      "dryRun": {
+        "label": "Dry run mode",
+        "description": "Preview changes without actually deleting files"
+      },
+      "forceTemp": {
+        "label": "Force temp cleanup",
+        "description": "Remove all temp files regardless of age"
+      },
+      "maxFileSize": {
+        "label": "Max file size (MB)",
+        "placeholder": "Leave empty for no limit",
+        "description": "Only delete files smaller than this size"
+      },
+      "running": "Running maintenance...",
+      "preview": "Preview cleanup",
+      "run": "Run cleanup"
+    },
+    "processes": {
+      "title": "Process management",
+      "description": "Manage running FFmpeg processes",
+      "warning": "This will forcefully terminate all active FFmpeg processes. Use with caution.",
+      "killing": "Killing processes...",
+      "killAll": "Kill all processes"
+    },
+    "system": {
+      "title": "System information",
+      "description": "Current system status and recommendations",
+      "recommendedCleanupFrequency": "Recommended cleanup frequency:",
+      "daily": "Daily",
+      "tempFileRetention": "Temp file retention:",
+      "oneHour": "1 hour",
+      "maxConcurrentProcesses": "Max concurrent processes:",
+      "processTimeout": "Process timeout:",
+      "fiveMinutes": "5 minutes"
+    },
+    "results": {
+      "completed": "Maintenance completed",
+      "orphanedFiles": "Orphaned files: {count} {suffix}",
+      "tempFiles": "Temp files: {count} deleted",
+      "wouldBeDeleted": "would be deleted",
+      "deleted": "deleted",
+      "killedProcesses": "Killed {count} processes"
+    }
+  },
+  "processMonitor": {
+    "title": "Process monitor",
+    "pause": "Pause",
+    "resume": "Resume",
+    "autoRefresh": "Auto-refresh",
+    "refresh": "Refresh",
+    "status": {
+      "unknown": "Unknown",
+      "active": "Active",
+      "queued": "Queued",
+      "idle": "Idle",
+      "running": "Running"
+    },
+    "cards": {
+      "status": {
+        "title": "Process status",
+        "activeProcesses": "{count} active processes"
+      },
+      "queue": {
+        "title": "Queue length",
+        "running": "{count} currently running"
+      },
+      "files": {
+        "title": "Files processed",
+        "description": "Total files processed"
+      }
+    },
+    "activeProcesses": {
+      "title": "Active processes",
+      "description": "Currently running FFmpeg processes",
+      "ffmpegProcess": "FFmpeg process",
+      "none": "No active processes"
+    },
+    "controls": {
+      "title": "Process controls",
+      "description": "Manage running processes",
+      "killAll": "Kill all processes",
+      "noProcesses": "No processes to kill",
+      "terminateCount": "This will terminate {count} active process(es)"
+    },
+    "queue": {
+      "title": "Process queue",
+      "description": "{count} processes waiting to be executed",
+      "progress": "Queue progress",
+      "slotsUsed": "{count} / 3 slots used",
+      "maxConcurrent": "Maximum concurrent processes: 3"
+    }
+  },
+  "serverLogs": {
+    "title": "Server logs",
+    "autoRefreshOn": "Auto-refresh ON",
+    "autoRefreshOff": "Auto-refresh OFF",
+    "refresh": "Refresh",
+    "controls": {
+      "title": "Log controls",
+      "maxLines": "Max lines",
+      "logLevel": "Log level",
+      "allLevels": "All levels",
+      "searchLogs": "Search logs",
+      "searchPlaceholder": "Search log entries...",
+      "exportLogs": "Export logs"
+    },
+    "statistics": {
+      "title": "Log statistics",
+      "description": "Showing {shown} of {total} total log entries",
+      "processQueue": "Process queue",
+      "queueLength": "Queue length:",
+      "running": "Running:",
+      "active": "Active:",
+      "tempFiles": "Temp files",
+      "tracked": "Tracked:",
+      "oldest": "Oldest:",
+      "none": "None",
+      "serverStats": "Server stats",
+      "requests": "Requests:",
+      "errors": "Errors:",
+      "processed": "Processed:"
+    },
+    "entries": {
+      "title": "Log entries",
+      "description": "Real-time server logs with filtering and search capabilities",
+      "showMetadata": "Show metadata"
+    },
+    "empty": {
+      "title": "No logs found",
+      "description": "No log entries match your current filters. Try adjusting your search criteria."
+    },
+    "errors": {
+      "exportFailed": "Export failed: {error}",
+      "exportFailedStatus": "Export failed: {status}"
+    }
+  },
+  "userAlertDialog": {
+    "trigger": "Manage user",
+    "title": "User management",
+    "description": "Review user information and manage permissions.",
+    "banned": "Banned",
+    "memberSince": "Member since: {date}",
+    "unbanUser": "Unban user",
+    "banUser": "Ban user",
+    "close": "Close"
+  },
+  "organisationsAdministration": {
+    "title": "Organisation verification",
+    "description": "Manage organisation publisher badges. Verified organisations display a trusted badge.",
+    "table": {
+      "organisation": "Organisation",
+      "creator": "Creator",
+      "members": "Members",
+      "created": "Created",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "verified": "Verified",
+      "unverified": "Unverified"
+    },
+    "actions": {
+      "verify": "Verify",
+      "revoke": "Revoke",
+      "cancel": "Cancel",
+      "revokeVerification": "Revoke verification",
+      "approveVerification": "Approve verification"
+    },
+    "dialog": {
+      "verifyTitle": "Verify organisation",
+      "revokeTitle": "Revoke verification",
+      "verifyDescription": "Are you sure you want to verify \"{orgName}\"? This will grant them a trusted publisher badge.",
+      "revokeDescription": "Are you sure you want to remove the verified badge from \"{orgName}\"? They will lose the trusted publisher status."
+    },
+    "toast": {
+      "verificationRemoved": "Verification removed",
+      "organisationVerified": "Organisation verified",
+      "unverifiedDescription": "{orgName} has been unverified.",
+      "verifiedDescription": "{orgName} is now verified and can publish with a trusted badge.",
+      "errorTitle": "Error",
+      "errorDescription": "Failed to update verification status."
+    },
+    "stats": {
+      "totalOrganisations": "Total organisations",
+      "pendingUnverified": "Pending / Unverified"
+    },
+    "mobile": {
+      "creatorSubtitle": "Creator: {creatorName}",
+      "website": "Website",
+      "noWebsite": "-"
     }
   }
 }
