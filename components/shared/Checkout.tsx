@@ -10,6 +10,7 @@ import { formatPriceByCountry } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 const Checkout = ({
   event,
@@ -26,6 +27,7 @@ const Checkout = ({
   const [details, setDetails] = useState<Detail[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const t = useTranslations("eventPrice");
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
@@ -93,10 +95,10 @@ const Checkout = ({
 
         if (order) {
           toast({
-            title: "Billet obtenu",
+            title: "Inscription confirmée",
             description: event.showWorkSubmissionPopup
-              ? "Votre billet gratuit est confirme. Vous allez maintenant choisir si vous souhaitez soumettre un travail."
-              : "Votre billet gratuit a bien ete confirme. Retrouvez-le des maintenant dans votre profil.",
+              ? "Votre inscription gratuite est confirmée. Vous allez maintenant choisir si vous souhaitez soumettre un travail."
+              : "Votre inscription gratuite a bien été confirmée. Retrouvez-la dès maintenant dans votre profil.",
           });
           router.push(
             event.showWorkSubmissionPopup
@@ -120,8 +122,8 @@ const Checkout = ({
       toast({
         title: "Erreur",
         description: event.isFree
-          ? "Impossible d'obtenir le billet gratuit pour le moment. Veuillez reessayer."
-          : "Impossible de finaliser l'achat du billet pour le moment. Veuillez reessayer.",
+          ? "Impossible de confirmer l'inscription gratuite pour le moment. Veuillez réessayer."
+          : "Impossible de finaliser l'inscription pour le moment. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
@@ -149,8 +151,8 @@ const Checkout = ({
             <span>
               {event.isFree
                 ? isSubmitting
-                  ? "Obtention du billet..."
-                  : "Get Ticket"
+                  ? "Confirmation de l'inscription..."
+                  : t("inscription")
                 : `Pay now ${formatPriceByCountry(price, event.country)}`}
             </span>
           </div>

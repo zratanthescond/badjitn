@@ -635,13 +635,13 @@ export async function getEventReportData(eventId: string) {
     // Automated highlights
     const highlights: string[] = [];
     if (totalOrders === 0) {
-      highlights.push("Aucune commande enregistrée pour cet événement.");
+      highlights.push("Aucune inscription enregistrée pour cet événement.");
     } else {
       highlights.push(
-        `${totalOrders} commandes générées pour ${uniqueBuyers} participants uniques.`
+        `${totalOrders} inscriptions enregistrées pour ${uniqueBuyers} participants uniques.`
       );
       highlights.push(
-        `Panier moyen estimé: ${formatPriceByCountry(averageOrderValue, event.country)} par commande.`
+        `Contribution moyenne estimée: ${formatPriceByCountry(averageOrderValue, event.country)} par inscription.`
       );
       highlights.push(
         `Taux de présence scannée: ${attendanceRate}% (${uniqueScannedAttendees} participants scannés).`

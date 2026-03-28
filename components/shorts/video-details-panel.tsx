@@ -57,10 +57,10 @@ export function VideoDetailsPanel({
           {/* Profile Section */}
           <div className="flex flex-row items-start justify-between w-full overflow-hidden">
             <XProfileCard
-              username={`${video.organizer.firstName} ${video.organizer.lastName}`}
-              avatarUrl={video.organizer.photo}
+              username={video.organisation?.name || `${video.organizer.firstName} ${video.organizer.lastName}`}
+              avatarUrl={video.organisation?.logo}
               isVerified={video.organisation?.isVerified || false}
-              handle={video.organizer.username}
+              handle={video.organisation?.slug || video.organizer.username}
               organization={video.organisation?.name || ""}
               bio={""}
               className="w-full max-w-full"

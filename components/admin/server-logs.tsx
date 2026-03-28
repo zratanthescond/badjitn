@@ -29,6 +29,7 @@ import {
   Download,
 } from "lucide-react";
 import type { AdminClient } from "@/lib/admin-client";
+import { useTranslations } from "next-intl";
 
 interface ServerLogsProps {
   adminClient: AdminClient;
@@ -54,6 +55,7 @@ interface LogsResponse {
 }
 
 export function ServerLogs({ adminClient }: ServerLogsProps) {
+  const t = useTranslations("serverLogs");
   const [logsData, setLogsData] = useState<LogsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -110,7 +112,7 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
       });
 
       if (!response.ok) {
-        throw new Error(`Export failed: ${response.statusText}`);
+        throw new Error(t("errors.exportFailedStatus", { status: response.statusText }));
       }
 
       const blob = await response.blob();
@@ -125,7 +127,7 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (err: any) {
-      setError(`Export failed: ${err.message}`);
+      setError(t("errors.exportFailed", { error: err.message }));
     }
   };
 
@@ -165,7 +167,7 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Server Logs</h2>
+        <h2 className="text-2xl font-bold">{t("title")}</h2>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -173,13 +175,13 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
             onClick={() => setAutoRefresh(!autoRefresh)}
             className={autoRefresh ? "bg-green-50 border-green-200" : ""}
           >
-            {autoRefresh ? "Auto-refresh ON" : "Auto-refresh OFF"}
+            {autoRefresh ? t("autoRefreshOn") : t("autoRefreshOff")}
           </Button>
           <Button variant="outline" onClick={fetchLogs} disabled={loading}>
             <RefreshCw
               className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
             />
-            Refresh
+            {t("refresh")}
           </Button>
         </div>
       </div>
@@ -196,13 +198,13 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
-            Log Controls
+            {t("controls.title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="max-lines">Max Lines</Label>
+              <Label htmlFor="max-lines">{t("controls.maxLines")}</Label>
               <Input
                 id="max-lines"
                 type="number"
@@ -216,13 +218,13 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="log-level">Log Level</Label>
+              <Label htmlFor="log-level">{t("controls.logLevel")}</Label>
               <Select value={selectedLevel} onValueChange={setSelectedLevel}>
                 <SelectTrigger>
-                  <SelectValue placeholder="All levels" />
+                  <SelectValue placeholder={t("controls.allLevels")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All levels</SelectItem>
+                  <SelectItem value="all">{t("controls.allLevels")}</SelectItem>
                   {logsData?.levels.map((level) => (
                     <SelectItem key={level} value={level.toLowerCase()}>
                       {level}
@@ -233,12 +235,12 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="search-logs">Search Logs</Label>
+              <Label htmlFor="search-logs">{t("controls.searchLogs")}</Label>
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="search-logs"
-                  placeholder="Search log entries..."
+                  placeholder={t("controls.searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
@@ -247,7 +249,7 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
             </div>
 
             <div className="space-y-2">
-              <Label>Export Logs</Label>
+              <Label>{t("controls.exportLogs")}</Label>
               <div className="flex gap-1">
                 <Button
                   variant="outline"
@@ -288,33 +290,35 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              Log Statistics
+              {t("statistics.title")}
             </CardTitle>
             <CardDescription>
-              Showing {logsData.logs.length} of {logsData.totalLogs} total log
-              entries
+              {t("statistics.description", {
+                shown: logsData.logs.length,
+                total: logsData.totalLogs,
+              })}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <h4 className="font-semibold">Process Queue</h4>
+                <h4 className="font-semibold">{t("statistics.processQueue")}</h4>
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
-                    <span>Queue Length:</span>
+                    <span>{t("statistics.queueLength")}</span>
                     <Badge variant="secondary">
                       {logsData.currentStats?.processQueue?.queueLength || 0}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span>Running:</span>
+                    <span>{t("statistics.running")}</span>
                     <Badge variant="default">
                       {logsData.currentStats?.processQueue?.runningProcesses ||
                         0}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span>Active:</span>
+                    <span>{t("statistics.active")}</span>
                     <Badge variant="default">
                       {logsData.currentStats?.processQueue?.activeProcesses ||
                         0}
@@ -324,38 +328,38 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-semibold">Temp Files</h4>
+                <h4 className="font-semibold">{t("statistics.tempFiles")}</h4>
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
-                    <span>Tracked:</span>
+                    <span>{t("statistics.tracked")}</span>
                     <Badge variant="secondary">
                       {logsData.currentStats?.tempFiles?.trackedFiles || 0}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span>Oldest:</span>
+                    <span>{t("statistics.oldest")}</span>
                     <span className="text-xs">
                       {logsData.currentStats?.tempFiles?.oldestFile
                         ? new Date(
                             logsData.currentStats.tempFiles.oldestFile
                           ).toLocaleString()
-                        : "None"}
+                        : t("statistics.none")}
                     </span>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-semibold">Server Stats</h4>
+                <h4 className="font-semibold">{t("statistics.serverStats")}</h4>
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
-                    <span>Requests:</span>
+                    <span>{t("statistics.requests")}</span>
                     <Badge variant="secondary">
                       {logsData.currentStats?.serverStats?.requestCount || 0}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span>Errors:</span>
+                    <span>{t("statistics.errors")}</span>
                     <Badge
                       variant={
                         logsData.currentStats?.serverStats?.errorCount > 0
@@ -367,7 +371,7 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span>Processed:</span>
+                    <span>{t("statistics.processed")}</span>
                     <Badge variant="default">
                       {logsData.currentStats?.serverStats?.processedFiles || 0}
                     </Badge>
@@ -383,9 +387,9 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
       {logsData && logsData.logs.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Log Entries</CardTitle>
+            <CardTitle>{t("entries.title")}</CardTitle>
             <CardDescription>
-              Real-time server logs with filtering and search capabilities
+              {t("entries.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -411,7 +415,7 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
                   {formatMeta(log.meta) && (
                     <details className="text-xs">
                       <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
-                        Show metadata
+                        {t("entries.showMetadata")}
                       </summary>
                       <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-x-auto">
                         {formatMeta(log.meta)}
@@ -429,10 +433,9 @@ export function ServerLogs({ adminClient }: ServerLogsProps) {
         <Card>
           <CardContent className="text-center py-8">
             <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No logs found</h3>
+            <h3 className="text-lg font-semibold mb-2">{t("empty.title")}</h3>
             <p className="text-muted-foreground">
-              No log entries match your current filters. Try adjusting your
-              search criteria.
+              {t("empty.description")}
             </p>
           </CardContent>
         </Card>

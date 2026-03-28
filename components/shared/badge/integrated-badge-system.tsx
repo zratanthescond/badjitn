@@ -117,7 +117,7 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
                             <Printer className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-20" />
                             <h3 className="text-xl font-semibold mb-2">Ready to Print?</h3>
                             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                                Go to the **Attendees** tab to select ticket holders and print their badges. You can also customize your badge layout in the **Design** tab.
+                                Go to the **Attendees** tab to select registered participants and print their badges. You can also customize your badge layout in the **Design** tab.
                             </p>
                             <div className="flex items-center justify-center gap-4">
                                 <Button variant="outline" onClick={() => setActiveTab("design")}>

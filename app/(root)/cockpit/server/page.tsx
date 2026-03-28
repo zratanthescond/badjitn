@@ -29,8 +29,10 @@ import { FileManager } from "@/components/admin/file-manager";
 import { ProcessMonitor } from "@/components/admin/process-monitor";
 import { ServerLogs } from "@/components/admin/server-logs";
 import { MaintenancePanel } from "@/components/admin/maintenance-panel";
+import { useTranslations } from "next-intl";
 
 export default function AdminDashboard() {
+  const t = useTranslations("serverAdmin");
   const [adminClient, setAdminClient] = useState<AdminClient | null>(null);
   const [apiKey, setApiKey] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,7 +41,7 @@ export default function AdminDashboard() {
 
   const handleAuth = async () => {
     if (!apiKey.trim()) {
-      setError("API key is required");
+      setError(t("errors.apiKeyRequired"));
       return;
     }
 
@@ -57,7 +59,7 @@ export default function AdminDashboard() {
       setIsAuthenticated(true);
       localStorage.setItem("admin_api_key", apiKey);
     } catch (err: any) {
-      setError(err.message || "Authentication failed");
+      setError(err.message || t("errors.authenticationFailed"));
     } finally {
       setLoading(false);
     }
@@ -98,19 +100,19 @@ export default function AdminDashboard() {
           <CardHeader className="text-center">
             <CardTitle className="flex items-center justify-center gap-2">
               <Settings className="h-6 w-6" />
-              Admin Dashboard
+              {t("auth.title")}
             </CardTitle>
             <CardDescription>
-              Enter your admin API key to access the dashboard
+              {t("auth.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="apiKey">API Key</Label>
+              <Label htmlFor="apiKey">{t("auth.apiKeyLabel")}</Label>
               <Input
                 id="apiKey"
                 type="password"
-                placeholder="Enter your admin API key"
+                placeholder={t("auth.apiKeyPlaceholder")}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAuth()}
@@ -132,10 +134,10 @@ export default function AdminDashboard() {
               {loading ? (
                 <>
                   <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  Authenticating...
+                  {t("auth.authenticating")}
                 </>
               ) : (
-                "Access Dashboard"
+                t("auth.submit")
               )}
             </Button>
           </CardContent>
@@ -151,10 +153,10 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Server className="h-6 w-6" />
-              <h1 className="text-2xl font-bold">Media Server Admin</h1>
+              <h1 className="text-2xl font-bold">{t("header.title")}</h1>
             </div>
             <Button variant="outline" onClick={handleLogout}>
-              Logout
+              {t("header.logout")}
             </Button>
           </div>
         </div>
@@ -165,26 +167,26 @@ export default function AdminDashboard() {
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
-              Dashboard
+              {t("tabs.dashboard")}
             </TabsTrigger>
             <TabsTrigger value="files" className="flex items-center gap-2">
               <FolderOpen className="h-4 w-4" />
-              Files
+              {t("tabs.files")}
             </TabsTrigger>
             <TabsTrigger value="processes" className="flex items-center gap-2">
               <Cpu className="h-4 w-4" />
-              Processes
+              {t("tabs.processes")}
             </TabsTrigger>
             <TabsTrigger
               value="maintenance"
               className="flex items-center gap-2"
             >
               <Settings className="h-4 w-4" />
-              Maintenance
+              {t("tabs.maintenance")}
             </TabsTrigger>
             <TabsTrigger value="logs" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
-              Logs
+              {t("tabs.logs")}
             </TabsTrigger>
           </TabsList>
 

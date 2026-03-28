@@ -10,6 +10,8 @@ import { useAuth } from "@clerk/nextjs";
 import { AlertCircle, Ticket } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatPriceByCountry } from "@/lib/utils";
+import { useTranslations } from "next-intl";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const CheckoutButton = ({
   event,
@@ -20,7 +22,14 @@ const CheckoutButton = ({
   checkPlan?: string[];
   discountInfo?: any;
 }) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const fullPath = searchParams.toString() 
+    ? `${pathname}?${searchParams.toString()}` 
+    : pathname;
+  
   const { userId } = useAuth();
+  const t = useTranslations("eventPrice");
 
   const hasEventFinished = new Date(event.endDateTime) < new Date();
 
@@ -46,7 +55,7 @@ const CheckoutButton = ({
               <AlertCircle size={18} className="text-red-400" />
             </div>
             <p className="text-red-300 font-medium">
-              Sorry, tickets are no longer available.
+              Sorry, registrations are no longer available.
             </p>
           </div>
         </div>
@@ -66,9 +75,9 @@ const CheckoutButton = ({
                   <div className="bg-primary-foreground/20 p-1.5 rounded-full">
                     <Ticket size={16} className="text-primary-foreground" />
                   </div>
-                  <Link href="/sign-in">
+                  <Link href={`/sign-in?redirect_url=${encodeURIComponent(fullPath)}`}>
                     {event.isFree
-                      ? "Get Ticket"
+                      ? t("inscription")
                       : `Pay now ${formatPriceByCountry(price, event.country)}`}
                   </Link>
                 </div>

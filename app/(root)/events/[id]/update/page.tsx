@@ -3,6 +3,7 @@ import { getEventById } from "@/lib/actions/event.actions";
 import { useUser } from "@/lib/actions/user.actions";
 import { checkOrgPermission } from "@/lib/actions/organisation.actions";
 import { notFound, redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 type UpdateEventProps = {
   params: Promise<{
@@ -12,6 +13,7 @@ type UpdateEventProps = {
 
 const UpdateEvent = async (props: UpdateEventProps) => {
   const params = await props.params;
+  const t = await getTranslations("eventEditPage");
 
   const {
     id
@@ -46,7 +48,7 @@ const UpdateEvent = async (props: UpdateEventProps) => {
     <>
       <section className="glass backdrop-blur backdrop-brightness-90 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
         <h3 className="wrapper h3-bold text-center sm:text-left">
-          Update Event
+          {t("title")}
         </h3>
       </section>
 

@@ -487,3 +487,48 @@ body {
     height: 70px;
   }
 }
+
+.ios-card-shell,
+.ios-card-media,
+.ios-card-overlay,
+.ios-card-footer,
+.ios-card-media img {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.ios-card-shell {
+  isolation: isolate;
+  contain: layout paint;
+}
+
+.ios-card-media,
+.ios-card-media img,
+.ios-card-overlay {
+  will-change: transform, opacity;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .ios-card-shell {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: rgba(255, 255, 255, 0.88);
+    background-image: none;
+  }
+
+  .dark .ios-card-shell {
+    background-color: rgba(24, 24, 27, 0.72);
+  }
+
+  .ios-card-shell .glass-control {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: rgba(255, 255, 255, 0.82);
+  }
+
+  .dark .ios-card-shell .glass-control {
+    background-color: rgba(15, 23, 42, 0.7);
+  }
+}

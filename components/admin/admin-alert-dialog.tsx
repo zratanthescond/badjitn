@@ -30,6 +30,7 @@ import {
   UserCog,
 } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 // Custom scrollbar styles
 const scrollbarStyles = `
@@ -72,9 +73,10 @@ export default function UserAlertDialog({
   onBanUser,
   onUnbanUser,
   triggerClassName = "",
-  triggerText = "Manage User",
+  triggerText,
   user,
 }: UserAlertDialogProps) {
+  const t = useTranslations("userAlertDialog");
   const [isLoading, setIsLoading] = useState(false);
 
   const [open, setOpen] = useState(false);
@@ -114,16 +116,16 @@ export default function UserAlertDialog({
                 onClick={() => setOpen(true)}
               >
                 <UserCog className="h-4 w-4" />
-                {triggerText}
+                {triggerText || t("trigger")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="max-w-md max-h-[85vh] flex flex-col">
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-xl">
-                  User Management
+                  {t("title")}
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Review user information and manage permissions.
+                  {t("description")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
@@ -152,14 +154,16 @@ export default function UserAlertDialog({
                       </div>
                       {value.isBanned && (
                         <Badge variant="destructive" className="animate-pulse">
-                          Banned
+                          {t("banned")}
                         </Badge>
                       )}
                     </div>
                   </CardHeader>
                   <CardContent className="text-sm">
                     <p className="text-muted-foreground mb-4">
-                      Member since: {formatDateTime(new Date(value.createdAt || value.joinDate || new Date())).dateTime}
+                      {t("memberSince", {
+                        date: formatDateTime(new Date(value.createdAt || value.joinDate || new Date())).dateTime,
+                      })}
                     </p>
 
                     <Button
@@ -176,7 +180,7 @@ export default function UserAlertDialog({
                         className={`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""
                           }`}
                       />
-                      {value.isBanned ? "Unban User" : "Ban User"}
+                      {value.isBanned ? t("unbanUser") : t("banUser")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -187,7 +191,7 @@ export default function UserAlertDialog({
                   className="rounded-full"
                   onClick={() => setOpen(false)}
                 >
-                  Close
+                  {t("close")}
                 </AlertDialogCancel>
               </AlertDialogFooter>
             </AlertDialogContent>

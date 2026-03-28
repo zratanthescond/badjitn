@@ -36,7 +36,7 @@
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-radio-group": "^1.2.1",
     "@radix-ui/react-scroll-area": "^1.2.0",
-    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.1",
@@ -83,7 +83,6 @@
     "mongoose": "^8.0.3",
     "motion": "^12.5.0",
     "next": "16.0.10",
-    "next-auth": "^5.0.0-beta.25",
     "next-i18next": "^15.4.2",
     "next-intl": "^4.0.2",
     "next-themes": "^0.3.0",
@@ -140,15 +139,14 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "@clerk/shared": "4.3.2"
   },
   "resolutions": {
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "@radix-ui/react-visually-hidden": "1.1.0",
-    "@radix-ui/react-primitive": "2.0.0",
-    "@radix-ui/react-compose-refs": "1.1.0"
+    "@clerk/shared": "4.3.2"
   }
 }

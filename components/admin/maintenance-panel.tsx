@@ -22,12 +22,14 @@ import {
   Zap,
 } from "lucide-react";
 import type { AdminClient } from "@/lib/admin-client";
+import { useTranslations } from "next-intl";
 
 interface MaintenancePanelProps {
   adminClient: AdminClient;
 }
 
 export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
+  const t = useTranslations("maintenancePanel");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -56,9 +58,10 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
           maxSize
         );
         results.push(
-          `Orphaned files: ${orphanedResult.summary.totalDeleted} ${
-            cleanupOptions.dryRun ? "would be" : ""
-          } deleted`
+          t("results.orphanedFiles", {
+            count: orphanedResult.summary.totalDeleted,
+            suffix: cleanupOptions.dryRun ? t("results.wouldBeDeleted") : t("results.deleted"),
+          })
         );
       }
 
@@ -66,10 +69,14 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
         const tempResult = await adminClient.cleanupTempFiles(
           cleanupOptions.forceTemp
         );
-        results.push(`Temp files: ${tempResult.summary.totalDeleted} deleted`);
+        results.push(
+          t("results.tempFiles", {
+            count: tempResult.summary.totalDeleted,
+          })
+        );
       }
 
-      setSuccess(`Maintenance completed:\n${results.join("\n")}`);
+      setSuccess(`${t("results.completed")}:\n${results.join("\n")}`);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -84,7 +91,11 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
 
     try {
       const result = await adminClient.killAllProcesses();
-      setSuccess(`Killed ${result.killedProcesses.length} processes`);
+      setSuccess(
+        t("results.killedProcesses", {
+          count: result.killedProcesses.length,
+        })
+      );
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -95,7 +106,7 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Maintenance Panel</h2>
+        <h2 className="text-2xl font-bold">{t("title")}</h2>
       </div>
 
       {error && (
@@ -119,19 +130,19 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <HardDrive className="h-5 w-5" />
-            File Cleanup
+            {t("cleanup.title")}
           </CardTitle>
           <CardDescription>
-            Clean up orphaned and temporary files to free disk space
+            {t("cleanup.description")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="orphaned-files">Clean orphaned files</Label>
+                <Label htmlFor="orphaned-files">{t("cleanup.orphanedFiles.label")}</Label>
                 <div className="text-sm text-muted-foreground">
-                  Remove files that don't exist in the database
+                  {t("cleanup.orphanedFiles.description")}
                 </div>
               </div>
               <Switch
@@ -148,9 +159,9 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="temp-files">Clean temporary files</Label>
+                <Label htmlFor="temp-files">{t("cleanup.tempFiles.label")}</Label>
                 <div className="text-sm text-muted-foreground">
-                  Remove old temporary processing files
+                  {t("cleanup.tempFiles.description")}
                 </div>
               </div>
               <Switch
@@ -164,9 +175,9 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="dry-run">Dry run mode</Label>
+                <Label htmlFor="dry-run">{t("cleanup.dryRun.label")}</Label>
                 <div className="text-sm text-muted-foreground">
-                  Preview changes without actually deleting files
+                  {t("cleanup.dryRun.description")}
                 </div>
               </div>
               <Switch
@@ -180,9 +191,9 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="force-temp">Force temp cleanup</Label>
+                <Label htmlFor="force-temp">{t("cleanup.forceTemp.label")}</Label>
                 <div className="text-sm text-muted-foreground">
-                  Remove all temp files regardless of age
+                  {t("cleanup.forceTemp.description")}
                 </div>
               </div>
               <Switch
@@ -195,11 +206,11 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="max-file-size">Max file size (MB)</Label>
+              <Label htmlFor="max-file-size">{t("cleanup.maxFileSize.label")}</Label>
               <Input
                 id="max-file-size"
                 type="number"
-                placeholder="Leave empty for no limit"
+                placeholder={t("cleanup.maxFileSize.placeholder")}
                 value={cleanupOptions.maxFileSize}
                 onChange={(e) =>
                   setCleanupOptions((prev) => ({
@@ -209,7 +220,7 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
                 }
               />
               <div className="text-sm text-muted-foreground">
-                Only delete files smaller than this size
+                {t("cleanup.maxFileSize.description")}
               </div>
             </div>
           </div>
@@ -224,10 +235,10 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
           >
             <Trash2 className="mr-2 h-4 w-4" />
             {loading
-              ? "Running Maintenance..."
+              ? t("cleanup.running")
               : cleanupOptions.dryRun
-              ? "Preview Cleanup"
-              : "Run Cleanup"}
+              ? t("cleanup.preview")
+              : t("cleanup.run")}
           </Button>
         </CardContent>
       </Card>
@@ -237,17 +248,16 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />
-            Process Management
+            {t("processes.title")}
           </CardTitle>
-          <CardDescription>Manage running FFmpeg processes</CardDescription>
+          <CardDescription>{t("processes.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <Alert>
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                This will forcefully terminate all active FFmpeg processes. Use
-                with caution.
+                {t("processes.warning")}
               </AlertDescription>
             </Alert>
 
@@ -258,7 +268,7 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
               className="w-full"
             >
               <Zap className="mr-2 h-4 w-4" />
-              {loading ? "Killing Processes..." : "Kill All Processes"}
+              {loading ? t("processes.killing") : t("processes.killAll")}
             </Button>
           </div>
         </CardContent>
@@ -269,29 +279,29 @@ export function MaintenancePanel({ adminClient }: MaintenancePanelProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Database className="h-5 w-5" />
-            System Information
+            {t("system.title")}
           </CardTitle>
           <CardDescription>
-            Current system status and recommendations
+            {t("system.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span>Recommended cleanup frequency:</span>
-              <span>Daily</span>
+              <span>{t("system.recommendedCleanupFrequency")}</span>
+              <span>{t("system.daily")}</span>
             </div>
             <div className="flex justify-between">
-              <span>Temp file retention:</span>
-              <span>1 hour</span>
+              <span>{t("system.tempFileRetention")}</span>
+              <span>{t("system.oneHour")}</span>
             </div>
             <div className="flex justify-between">
-              <span>Max concurrent processes:</span>
+              <span>{t("system.maxConcurrentProcesses")}</span>
               <span>3</span>
             </div>
             <div className="flex justify-between">
-              <span>Process timeout:</span>
-              <span>5 minutes</span>
+              <span>{t("system.processTimeout")}</span>
+              <span>{t("system.fiveMinutes")}</span>
             </div>
           </div>
         </CardContent>
