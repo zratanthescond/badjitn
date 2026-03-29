@@ -24,10 +24,12 @@ import { useTranslations } from "next-intl";
 export default function VideoEditor({
   url,
   setReel,
+  setThumbnailUrl,
   userId,
 }: {
   url: File | string;
   setReel: React.Dispatch<React.SetStateAction<string>>;
+  setThumbnailUrl: React.Dispatch<React.SetStateAction<string>>;
   userId: string;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -41,9 +43,17 @@ export default function VideoEditor({
       const videoPath = process.env.NEXT_PUBLIC_FILE_SERVER_URL + data.path;
       console.log(videoPath);
       setVideoUrl(videoPath);
+      const thumbnailPath =
+        data.thumbnailUrl || data.thumbnail || data.poster || data.preview;
+      if (thumbnailPath) {
+        const absoluteThumbnail = String(thumbnailPath).startsWith("http")
+          ? String(thumbnailPath)
+          : process.env.NEXT_PUBLIC_FILE_SERVER_URL + thumbnailPath;
+        setThumbnailUrl(absoluteThumbnail);
+      }
       // if (videoRef.current)
     }
-  }, [data]);
+  }, [data, setThumbnailUrl]);
 
   useEffect(() => {
     if (url && url.toString().indexOf(".m3u8") !== -1) {
@@ -62,7 +72,13 @@ export default function VideoEditor({
   }, [videoUrl]);
   return data || videoUrl ? (
     <div className="flex z-10 flex-col items-center justify-center h-full w-full">
-      <ModifyVideo video={videoUrl} setVideo={setVideoUrl} userId={userId} />
+      <ModifyVideo
+        video={videoUrl}
+        setVideo={setVideoUrl}
+        setThumbnailUrl={setThumbnailUrl}
+        userId={userId}
+      />
+      
 
       <HLSPlayer
         className="rounded-lg w-full h-full aspect-video object-fill relative "

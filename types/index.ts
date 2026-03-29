@@ -47,6 +47,7 @@ export type CreateEventParams = {
     };
     pricePlan: pricePlan[];
     imageUrl: string;
+    thumbnailUrl?: string;
     startDateTime: Date;
     endDateTime: Date;
     categoryId: string;
@@ -76,6 +77,7 @@ export type UpdateEventParams = {
     _id: string;
     title: string;
     imageUrl: string;
+    thumbnailUrl?: string;
     description: string;
     location: {
       name: string;
@@ -145,6 +147,7 @@ export type Event = {
   price: string;
   isFree: boolean;
   imageUrl: string;
+  thumbnailUrl?: string;
   location: {
     name: string;
     lon: number;

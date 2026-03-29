@@ -19,6 +19,7 @@ export interface IEvent extends Document {
   }[];
   createdAt: Date;
   imageUrl: string;
+  thumbnailUrl?: string;
   startDateTime: Date;
   endDateTime: Date;
   price: string;
@@ -64,6 +65,7 @@ const EventSchema = new Schema({
   pricePlan: { type: [pricePlanSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },
+  thumbnailUrl: { type: String, default: "" },
   startDateTime: { type: Date, default: Date.now },
   endDateTime: { type: Date, default: Date.now },
   price: { type: String },

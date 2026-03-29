@@ -32,6 +32,7 @@ type FileUploaderProps = {
   imageUrl: string;
   setFiles: Dispatch<SetStateAction<File[]>>;
   setReel: Dispatch<SetStateAction<string>>;
+  setThumbnailUrl: Dispatch<SetStateAction<string>>;
   userId: string;
 };
 
@@ -40,6 +41,7 @@ export function FileUploader({
   onFieldChange,
   setFiles,
   setReel,
+  setThumbnailUrl,
   userId,
 }: FileUploaderProps) {
   const [fileToUpload, setFileToUpload] = useState<File | string | null>(null);
@@ -70,7 +72,12 @@ export function FileUploader({
         <div className="camera"></div>
         <div className="display bg-card/30 min-h-full w-full  ">
           <AspectRatio ratio={7.5 / 15}>
-            <VideoEditor url={fileToUpload ?? imageUrl} setReel={setReel} userId={userId} />
+            <VideoEditor
+              url={fileToUpload ?? imageUrl}
+              setReel={setReel}
+              setThumbnailUrl={setThumbnailUrl}
+              userId={userId}
+            />
 
             <div className="absolute right-0  top-0  h-full p-4">
               <div className="flex w-full justify-end">

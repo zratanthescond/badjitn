@@ -62,7 +62,8 @@ const Card = ({
       >
         <div className="ios-card-media absolute inset-0 z-0">
           <HomePostContainer
-            src={event ? event.imageUrl : "/assets/images/placeholder.png"}
+            src={event ? event.thumbnailUrl || event.imageUrl : "/assets/images/placeholder.png"}
+            videoSrc={event?.imageUrl}
             className="rounded-xl flex w-full h-full transition-transform duration-700 ease-out group-hover:scale-110"
           />
         </div>

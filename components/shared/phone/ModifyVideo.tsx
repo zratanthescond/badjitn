@@ -27,7 +27,7 @@ import HLSPlayer from "./HlsPlayer";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import AudioWaveform from "./AudioWaveFrom";
-export function ModifyVideo({ video, setVideo, userId }: any) {
+export function ModifyVideo({ video, setVideo, setThumbnailUrl, userId }: any) {
   const [searchQuery, setSearchQuery] = useState("");
   const {
     data,
@@ -62,6 +62,18 @@ export function ModifyVideo({ video, setVideo, userId }: any) {
     if (reelData?.success == true) {
       //  alert(process.env.NEXT_PUBLIC_FILE_SERVER_URL + "/" + reelData.videoPath);
       setVideo(process.env.NEXT_PUBLIC_FILE_SERVER_URL + reelData.videoPath);
+      const thumbnailPath =
+        reelData.thumbnailUrl ||
+        reelData.thumbnail ||
+        reelData.poster ||
+        reelData.preview;
+      if (thumbnailPath) {
+        setThumbnailUrl(
+          String(thumbnailPath).startsWith("http")
+            ? String(thumbnailPath)
+            : process.env.NEXT_PUBLIC_FILE_SERVER_URL + thumbnailPath
+        );
+      }
       setIsDialogOpen(false);
     } else if (reelError) {
       toast({
@@ -70,7 +82,7 @@ export function ModifyVideo({ video, setVideo, userId }: any) {
         variant: "destructive",
       });
     }
-  }, [reelData, reelLoading, reelError]);
+  }, [reelData, reelLoading, reelError, setThumbnailUrl]);
 
   useEffect(() => {
     console.log(video);

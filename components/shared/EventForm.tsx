@@ -81,6 +81,7 @@ const EventForm = ({
   const [pricePlan, setPricePlan] = useState<pricePlan[]>([]);
   const [isPricePlan, setIsPricePlan] = useState<boolean>(false);
   const [reel, setReel] = useState<string>("");
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
 
   // When toggling to price plan mode, set a default price so Zod validation doesn't block submission
   const handleSetIsPricePlan: Dispatch<SetStateAction<boolean>> = (value) => {
@@ -113,6 +114,10 @@ const EventForm = ({
     }
   }, []);
 
+  useEffect(() => {
+    setThumbnailUrl((event as any)?.thumbnailUrl || "");
+  }, [event]);
+
   type EventFormValues = z.infer<typeof eventFormSchema>;
 
   const form = useForm<EventFormValues, any, EventFormValues>({
@@ -143,6 +148,7 @@ const EventForm = ({
             pricePlan: pricePlan,
             location: { name: address, lon: longitude, lat: latitude },
             imageUrl: reel,
+            thumbnailUrl,
             scanPoints: values.scanPoints,
             organisationId: values.organisationId,
           },
@@ -174,6 +180,7 @@ const EventForm = ({
             pricePlan: pricePlan,
             location: { name: address, lon: longitude, lat: latitude },
             imageUrl: values.imageUrl,
+            thumbnailUrl,
             _id: eventId,
             scanPoints: values.scanPoints,
           },
@@ -566,6 +573,7 @@ const EventForm = ({
                     <FormControl className="h-full">
                       <FileUploader
                         setReel={setReel}
+                        setThumbnailUrl={setThumbnailUrl}
                         onFieldChange={field.onChange}
                         imageUrl={field.value}
                         setFiles={setFiles}
