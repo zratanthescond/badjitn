@@ -1422,7 +1422,8 @@
       "details": "Details",
       "feedback": "Feedback",
       "location": "Location",
-      "price": "Price"
+      "price": "Price",
+      "registration": "Registration"
     },
     "title": "Event Details",
     "viewPricing": "View Pricing"
@@ -2789,7 +2790,7 @@
       "cityNoOptions": "No cities available for this country",
       "citySearchPlaceholder": "Search a city...",
       "cityNoMatch": "No matching city found",
-      "worldExceptIsrael": "Available worldwide except Israel.",
+      "worldExceptIsrael": "",
       "fields": {
         "firstName": "First Name",
         "lastName": "Last Name",

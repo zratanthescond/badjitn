@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   if (eventType === "checkout.session.completed") {
     const { id, amount_total, metadata } = event.data.object;
     console.log(metadata?.buyerId);
-    if (!metadata?.eventId || !metadata?.buyerId) {
+    if (!metadata?.eventId) {
       return NextResponse.json(
         { message: "Missing metadata" },
         { status: 400 }
@@ -40,7 +40,9 @@ export async function POST(request: Request) {
       buyerId: metadata?.buyerId || "",
       totalAmount: amount_total ? (amount_total / 100).toString() : "0",
       createdAt: new Date(),
-      details: JSON.parse(metadata?.details) || "[]",
+      details: JSON.parse(metadata?.details || "[]"),
+      requiredUserInfo: JSON.parse(metadata?.requiredUserInfo || "[]"),
+      discountInfo: JSON.parse(metadata?.discountInfo || "null"),
     };
 
     const newOrder = await createOrder(order);

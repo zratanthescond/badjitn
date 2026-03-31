@@ -1,7 +1,6 @@
 "use client";
 
 import { IEvent } from "@/lib/database/models/event.model";
-import { SignedIn, SignedOut } from "./AuthWrappers";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
@@ -17,10 +16,16 @@ const CheckoutButton = ({
   event,
   checkPlan,
   discountInfo,
+  requiredUserInfo,
+  validateBeforeCheckout,
+  beforeCheckout,
 }: {
   event: IEvent;
   checkPlan?: string[];
   discountInfo?: any;
+  requiredUserInfo?: any[];
+  validateBeforeCheckout?: () => boolean;
+  beforeCheckout?: () => Promise<boolean> | boolean;
 }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -46,6 +51,8 @@ const CheckoutButton = ({
   const discountValue = Number(discountInfo?.value) || 0;
   const price = initialPriceValue - (initialPriceValue * discountValue) / 100;
 
+  const allowGuestRegistration = event.allowGuestRegistration !== false;
+
   return (
     <div className="w-full">
       {hasEventFinished ? (
@@ -61,7 +68,7 @@ const CheckoutButton = ({
         </div>
       ) : (
         <>
-          <SignedOut>
+          {!userId && !allowGuestRegistration ? (
             <motion.div
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -71,28 +78,32 @@ const CheckoutButton = ({
                 asChild
                 className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
               >
-                <div className="flex items-center justify-center gap-3">
+                <Link
+                  href={`/sign-in?redirect_url=${encodeURIComponent(fullPath)}`}
+                  className="flex items-center justify-center gap-3"
+                >
                   <div className="bg-primary-foreground/20 p-1.5 rounded-full">
                     <Ticket size={16} className="text-primary-foreground" />
                   </div>
-                  <Link href={`/sign-in?redirect_url=${encodeURIComponent(fullPath)}`}>
+                  <span>
                     {event.isFree
                       ? t("inscription")
                       : `Pay now ${formatPriceByCountry(price, event.country)}`}
-                  </Link>
-                </div>
+                  </span>
+                </Link>
               </Button>
             </motion.div>
-          </SignedOut>
-
-          <SignedIn>
+          ) : (
             <Checkout
               chekedPlans={checkPlan}
               event={event}
               userId={userId || ""}
               discountInfo={discountInfo}
+              requiredUserInfo={requiredUserInfo}
+              validateBeforeCheckout={validateBeforeCheckout}
+              beforeCheckout={beforeCheckout}
             />
-          </SignedIn>
+          )}
         </>
       )}
     </div>

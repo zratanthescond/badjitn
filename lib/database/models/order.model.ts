@@ -39,7 +39,7 @@ export interface IOrder extends Document {
     _id: string;
     firstName: string;
     lastName: string;
-  };
+  } | null;
   type: OrderType;
   details: Detail[];
   discountInfo?: DiscountType;
@@ -94,7 +94,7 @@ const OrderSchema = new Schema<IOrder>({
   buyer: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    required: false,
   },
   type: {
     type: String,

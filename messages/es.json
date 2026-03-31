@@ -1424,7 +1424,8 @@
       "details": "Detalles",
       "feedback": "Comentarios",
       "location": "Ubicación",
-      "price": "Precio"
+      "price": "Precio",
+      "registration": "Inscripción"
     },
     "title": "Detalles del Evento",
     "viewPricing": "Ver Precios"
@@ -2791,7 +2792,7 @@
       "cityNoOptions": "No hay ciudades disponibles para este país",
       "citySearchPlaceholder": "Buscar una ciudad...",
       "cityNoMatch": "No se encontró ninguna ciudad coincidente",
-      "worldExceptIsrael": "Disponible en todo el mundo excepto Israel.",
+      "worldExceptIsrael": "",
       "fields": {
         "firstName": "Nombre",
         "lastName": "Apellido",

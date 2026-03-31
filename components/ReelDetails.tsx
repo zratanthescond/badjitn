@@ -41,7 +41,7 @@ interface ReelDetailsProps {
   event: Event;
 }
 
-type SectionType = "details" | "date" | "location" | "price" | "feedback";
+type SectionType = "details" | "date" | "location" | "registration" | "feedback";
 
 // Date locales mapping
 const dateLocales = {
@@ -63,6 +63,9 @@ const languages = [
 
 export default function ReelDetails({ event }: ReelDetailsProps) {
   const t = useTranslations("event");
+  const registrationTabLabel = t.has("tabs.registration")
+    ? t("tabs.registration")
+    : "Registration";
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -133,7 +136,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
           <div className="pt-4">
             <SignedIn>
               <Button
-                onClick={() => setSection("price")}
+                onClick={() => setSection("registration")}
                 size="lg"
                 variant="elite"
                 className="rounded-2xl min-w-[200px] h-14 text-lg"
@@ -150,7 +153,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
             </SignedIn>
             <SignedOut>
               <Button
-                onClick={() => setSection("price")}
+                onClick={() => setSection("registration")}
                 size="lg"
                 variant="elite"
                 className="rounded-2xl min-w-[200px] h-14 text-lg"
@@ -172,7 +175,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
         {!event.isFree && (
           <div className="flex justify-center pb-4">
             <Button
-              onClick={() => setSection("price")}
+              onClick={() => setSection("registration")}
               variant="elite"
               size="lg"
               className="rounded-2xl font-bold h-14 min-w-[200px] shadow-elite-glow"
@@ -270,7 +273,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
         return <DateComponent />;
       case "location":
         return <EventLocationComponent event={event as any} />;
-      case "price":
+      case "registration":
         return <EventPriceComponent event={event as any} />;
       case "feedback":
         return <FeedBackComponent eventId={event._id.toString()} />;
@@ -284,10 +287,10 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
       { value: "details", label: t("tabs.details"), icon: Menu },
       { value: "date", label: t("tabs.date"), icon: CalendarDays },
       { value: "location", label: t("tabs.location"), icon: MapPin },
-      { value: "price", label: t("tabs.price"), icon: Wallet },
+      { value: "registration", label: registrationTabLabel, icon: Wallet },
       { value: "feedback", label: t("tabs.feedback"), icon: MessageSquareIcon },
     ],
-    [t]
+    [registrationTabLabel, t]
   );
 
   return (

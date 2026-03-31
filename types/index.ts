@@ -66,6 +66,7 @@ export type CreateEventParams = {
     scanPoints?: string[];
     organisationId?: string;
     showWorkSubmissionPopup?: boolean;
+    allowGuestRegistration?: boolean;
   };
   path: string;
 };
@@ -102,6 +103,7 @@ export type UpdateEventParams = {
     scanPoints?: string[];
     organisationId?: string;
     showWorkSubmissionPopup?: boolean;
+    allowGuestRegistration?: boolean;
   };
   path: string;
 };
@@ -178,6 +180,7 @@ export type Event = {
   Sponsors?: string[];
   attendees?: string[];
   showWorkSubmissionPopup?: boolean;
+  allowGuestRegistration?: boolean;
 };
 
 // ====== CATEGORY PARAMS
@@ -191,14 +194,16 @@ export type CheckoutOrderParams = {
   eventId: string;
   price: number;
   isFree: boolean;
-  buyerId: string;
+  buyerId?: string;
   details: Detail[];
+  requiredUserInfo?: any[];
+  discountInfo?: any;
 };
 
 export type CreateOrderParams = {
   stripeId: string;
   eventId: string;
-  buyerId: string;
+  buyerId?: string;
   totalAmount: string;
   createdAt: Date;
   type?: string;

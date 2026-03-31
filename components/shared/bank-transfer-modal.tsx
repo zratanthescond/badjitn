@@ -13,6 +13,7 @@ import { Upload, AlertCircle, X, Landmark } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 interface BankTransferModalProps {
   eventId: string;
   buyerId: string;
@@ -21,6 +22,8 @@ interface BankTransferModalProps {
   details: any[];
   requiredUserInfo?: any[];
   discountInfo?: any;
+  validateBeforeOpen?: () => boolean;
+  beforeSubmit?: () => Promise<boolean> | boolean;
 }
 
 export function BankTransferModal({
@@ -31,6 +34,8 @@ export function BankTransferModal({
   details,
   requiredUserInfo,
   discountInfo,
+  validateBeforeOpen,
+  beforeSubmit,
 }: BankTransferModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [transferId, setTransferId] = useState("");
@@ -39,14 +44,33 @@ export function BankTransferModal({
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const t = useTranslations("bankTransferModal");
+  const text = (key: string, fallback: string) =>
+    t.has(key) ? t(key as any) : fallback;
+
+  const handleOpen = () => {
+    if (validateBeforeOpen && !validateBeforeOpen()) {
+      toast({
+        title: text("error", "Erreur"),
+        description: text(
+          "completeRegistrationFirst",
+          "Veuillez d'abord completer les informations d'inscription."
+        ),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsOpen(true);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
         toast({
-          title: "Invalid file type",
-          description: "Please upload an image file (JPG, PNG, etc.)",
+          title: text("invalidFileType", "Type de fichier invalide"),
+          description: text("invalidFileTypeDescription", "Veuillez televerser une image (JPG, PNG, etc.)"),
           variant: "destructive",
         });
         return;
@@ -54,8 +78,8 @@ export function BankTransferModal({
 
       if (file.size > 5 * 1024 * 1024) {
         toast({
-          title: "File too large",
-          description: "Please upload a file smaller than 5MB",
+          title: text("fileTooLarge", "Fichier trop volumineux"),
+          description: text("fileTooLargeDescription", "Veuillez televerser un fichier inferieur a 5 Mo"),
           variant: "destructive",
         });
         return;
@@ -76,8 +100,8 @@ export function BankTransferModal({
 
     if (!transferId.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a transfer ID",
+        title: text("error", "Erreur"),
+        description: text("enterTransferId", "Veuillez saisir un identifiant de virement"),
         variant: "destructive",
       });
       return;
@@ -85,6 +109,11 @@ export function BankTransferModal({
 
     setIsLoading(true);
     try {
+      if (beforeSubmit) {
+        const canContinue = await beforeSubmit();
+        if (!canContinue) return;
+      }
+
       const result = await submitBankTransfer({
         eventId,
         buyerId,
@@ -98,24 +127,26 @@ export function BankTransferModal({
 
       if (result.success) {
         toast({
-          title: "Success",
-          description:
-            "Bank transfer submitted successfully. Awaiting verification.",
+          title: text("success", "Succes"),
+          description: text(
+            "transferSubmitted",
+            "Le virement bancaire a ete envoye avec succes. Verification en attente."
+          ),
         });
         setTransferId("");
         setIsOpen(false);
-        router.push("/profile");
+        router.push(`/events/${eventId}?registered=1`);
       } else {
         toast({
-          title: "Error",
-          description: result.message || "Failed to submit transfer",
+          title: text("error", "Erreur"),
+          description: result.message || text("submitTransferFailed", "Echec de l'envoi du virement"),
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "An error occurred while submitting your transfer",
+        title: text("error", "Erreur"),
+        description: text("submitTransferError", "Une erreur est survenue lors de l'envoi du virement"),
         variant: "destructive",
       });
     } finally {
@@ -128,8 +159,8 @@ export function BankTransferModal({
 
     if (!uploadedFile) {
       toast({
-        title: "Error",
-        description: "Please upload a screenshot",
+        title: text("error", "Erreur"),
+        description: text("uploadScreenshot", "Veuillez televerser une capture d'ecran"),
         variant: "destructive",
       });
       return;
@@ -137,6 +168,11 @@ export function BankTransferModal({
 
     setIsLoading(true);
     try {
+      if (beforeSubmit) {
+        const canContinue = await beforeSubmit();
+        if (!canContinue) return;
+      }
+
       // Step 1: Upload the file to the native upload API
       const formData = new FormData();
       formData.append("file", uploadedFile);
@@ -169,25 +205,27 @@ export function BankTransferModal({
 
       if (result.success) {
         toast({
-          title: "Success",
-          description:
-            "Bank transfer screenshot submitted successfully. Awaiting verification.",
+          title: text("success", "Succes"),
+          description: text(
+            "screenshotSubmitted",
+            "La capture du virement a ete envoyee avec succes. Verification en attente."
+          ),
         });
         setUploadedFile(null);
         setPreview(null);
         setIsOpen(false);
-        router.push("/profile");
+        router.push(`/events/${eventId}?registered=1`);
       } else {
         toast({
-          title: "Error",
-          description: result.message || "Failed to submit screenshot",
+          title: text("error", "Erreur"),
+          description: result.message || text("submitScreenshotFailed", "Echec de l'envoi de la capture"),
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "An error occurred while uploading your screenshot",
+        title: text("error", "Erreur"),
+        description: text("uploadScreenshotError", "Une erreur est survenue lors du televersement de la capture"),
         variant: "destructive",
       });
     } finally {
@@ -210,11 +248,11 @@ export function BankTransferModal({
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Button
-          onClick={() => setIsOpen(true)}
+          onClick={handleOpen}
           className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
         >
           <Landmark className="mr-2 h-5 w-5" />
-          Virement Bancaire {amount} {currency}
+          {text("cta", "Virement bancaire")} {amount} {currency}
         </Button>
       </motion.div>
       {isOpen && (
@@ -225,7 +263,7 @@ export function BankTransferModal({
               <div className="flex items-center gap-2">
                 <Landmark className="h-5 w-5 text-pink-500" />
                 <h2 className="text-xl font-bold">
-                  Bank Transfer Payment
+                  {text("title", "Paiement par virement bancaire")}
                 </h2>
               </div>
               <button
@@ -241,17 +279,20 @@ export function BankTransferModal({
               <Alert className="mb-6 bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription className="text-sm">
-                  Make a bank transfer to our account and provide your transfer ID or a screenshot of the confirmation.
+                  {text(
+                    "description",
+                    "Effectuez un virement bancaire vers notre compte puis fournissez l'identifiant du virement ou une capture de confirmation."
+                  )}
                 </AlertDescription>
               </Alert>
 
               <Tabs defaultValue="transfer-id" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50">
                   <TabsTrigger value="transfer-id" className="text-sm">
-                    Transfer ID
+                    {text("transferIdTab", "Identifiant")}
                   </TabsTrigger>
                   <TabsTrigger value="screenshot" className="text-sm">
-                    Screenshot
+                    {text("screenshotTab", "Capture")}
                   </TabsTrigger>
                 </TabsList>
 
@@ -262,11 +303,11 @@ export function BankTransferModal({
                         htmlFor="transfer-id"
                         className="text-sm font-medium"
                       >
-                        Transfer ID
+                        {text("transferIdLabel", "Identifiant du virement")}
                       </Label>
                       <Input
                         id="transfer-id"
-                        placeholder="e.g., TRF12345678910"
+                        placeholder={text("transferIdPlaceholder", "ex. TRF12345678910")}
                         value={transferId}
                         onChange={(e) => setTransferId(e.target.value)}
                         disabled={isLoading}
@@ -274,8 +315,10 @@ export function BankTransferModal({
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Enter the reference or confirmation number from your bank
-                      transfer.
+                      {text(
+                        "transferIdHelp",
+                        "Saisissez la reference ou le numero de confirmation de votre virement bancaire."
+                      )}
                     </p>
                     <Button
                       type="submit"
@@ -285,10 +328,10 @@ export function BankTransferModal({
                       {isLoading ? (
                         <>
                           <Spinner className="mr-2 h-4 w-4" />
-                          Submitting...
+                          {text("submitting", "Envoi...")}
                         </>
                       ) : (
-                        "Submit Transfer ID"
+                        text("submitTransferId", "Envoyer l'identifiant")
                       )}
                     </Button>
                   </form>
@@ -301,7 +344,7 @@ export function BankTransferModal({
                         htmlFor="screenshot"
                         className="text-sm font-medium"
                       >
-                        Upload Screenshot
+                        {text("uploadScreenshotLabel", "Televerser la capture")}
                       </Label>
                       <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-border p-4 transition-colors hover:border-primary/50 hover:bg-muted/50">
                         <label
@@ -310,10 +353,10 @@ export function BankTransferModal({
                         >
                           <Upload className="h-6 w-6 text-muted-foreground" />
                           <p className="mt-1 text-xs font-medium text-foreground">
-                            Click to upload or drag and drop
+                            {text("uploadHint", "Cliquez pour televerser ou glissez-deposez")}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            PNG, JPG, GIF up to 5MB
+                            {text("uploadFormats", "PNG, JPG, GIF jusqu'a 5 Mo")}
                           </p>
                           <input
                             id="file-upload"
@@ -359,15 +402,15 @@ export function BankTransferModal({
                       disabled={isLoading || !uploadedFile}
                       className="w-full bg-pink-500 hover:bg-pink-600 text-white rounded-lg py-2"
                     >
-                      {isLoading ? (
-                        <>
-                          <Spinner className="mr-2 h-4 w-4" />
-                          Uploading...
-                        </>
-                      ) : (
-                        "Submit Screenshot"
-                      )}
-                    </Button>
+                          {isLoading ? (
+                            <>
+                              <Spinner className="mr-2 h-4 w-4" />
+                              {text("uploading", "Televersement...")}
+                            </>
+                          ) : (
+                            text("submitScreenshot", "Envoyer la capture")
+                          )}
+                        </Button>
                   </form>
                 </TabsContent>
               </Tabs>

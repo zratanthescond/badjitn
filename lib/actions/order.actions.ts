@@ -31,9 +31,7 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
       process.env.NEXTAUTH_URL ||
       "http://localhost:3000";
     const normalizedBaseUrl = baseUrl.replace(/\/$/, "");
-    const successUrl = event?.showWorkSubmissionPopup
-      ? `${normalizedBaseUrl}/events/${order.eventId}/post-purchase`
-      : `${normalizedBaseUrl}/profile`;
+    const successUrl = `${normalizedBaseUrl}/events/${order.eventId}?registered=1`;
 
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -51,8 +49,10 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
       ],
       metadata: {
         eventId: order.eventId,
-        buyerId: order.buyerId,
+        buyerId: order.buyerId || "",
         details: JSON.stringify(order.details),
+        requiredUserInfo: JSON.stringify(order.requiredUserInfo || []),
+        discountInfo: JSON.stringify(order.discountInfo || null),
       },
       mode: "payment",
       success_url: successUrl,
@@ -68,11 +68,13 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
 export const createOrder = async (order: CreateOrderParams) => {
   try {
     await connectToDatabase();
-    const buyer = await User.findOne({ clerkId: order.buyerId });
+    const buyer = order.buyerId
+      ? await User.findOne({ clerkId: order.buyerId })
+      : null;
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,
-      buyer: buyer?._id.toString().length > 0 ? buyer._id : order.buyerId,
+      ...(buyer ? { buyer: buyer._id } : {}),
     });
 
     return JSON.parse(JSON.stringify(newOrder));
@@ -102,7 +104,30 @@ export async function getOrdersByEvent({
         },
       },
       {
-        $unwind: "$buyer",
+        $unwind: {
+          path: "$buyer",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          buyerDisplay: {
+            $ifNull: [
+              {
+                $trim: {
+                  input: {
+                    $concat: [
+                      { $ifNull: ["$buyer.firstName", ""] },
+                      " ",
+                      { $ifNull: ["$buyer.lastName", ""] },
+                    ],
+                  },
+                },
+              },
+              "",
+            ],
+          },
+        },
       },
       {
         $lookup: {
@@ -124,7 +149,11 @@ export async function getOrdersByEvent({
           eventId: "$event._id",
           eventCountry: "$event.country",
           buyer: {
-            $concat: ["$buyer.firstName", " ", "$buyer.lastName"],
+            $cond: [
+              { $gt: [{ $strLenCP: "$buyerDisplay" }, 0] },
+              "$buyerDisplay",
+              "Guest registration",
+            ],
           },
           type: 1,
           details: 1,
@@ -136,7 +165,7 @@ export async function getOrdersByEvent({
         $match: {
           $and: [
             { eventId: eventObjectId },
-            { buyer: { $regex: RegExp(searchString, "i") } },
+            { buyer: { $regex: RegExp(searchString || "", "i") } },
           ],
         },
       },

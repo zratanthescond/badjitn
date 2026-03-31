@@ -11,7 +11,7 @@ import path from 'path'
 
 interface BankTransferInput {
   eventId: string
-  buyerId: string
+  buyerId?: string
   totalAmount: string
   details: any[]
   requiredUserInfo?: any[]
@@ -42,7 +42,7 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
     } = input
 
     // Basic validation
-    if (!eventId || !buyerId || !totalAmount) {
+    if (!eventId || !totalAmount) {
       return {
         success: false,
         message: 'Missing required order information',
@@ -92,18 +92,10 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
 
     // 1. Find the buyer to get their MongoDB ID
     // Try by clerkId first (most common), fallback to _id if it's a valid ObjectId string
-    let buyer = await User.findOne({ clerkId: buyerId })
+    let buyer = buyerId ? await User.findOne({ clerkId: buyerId }) : null
 
-    if (!buyer && buyerId.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!buyer && buyerId && buyerId.match(/^[0-9a-fA-F]{24}$/)) {
       buyer = await User.findById(buyerId)
-    }
-
-    if (!buyer) {
-      console.error(`[Bank Transfer] Buyer not found for ID: ${buyerId}`)
-      return {
-        success: false,
-        message: `Buyer not found (ID: ${buyerId}). Please ensure your profile is fully set up.`,
-      }
     }
 
     // 2. Find the event to get its title
@@ -119,7 +111,7 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
     const newOrder = await Order.create({
       stripeId: `bt_${uuidv4()}`,
       event: eventId,
-      buyer: buyer._id,
+      ...(buyer ? { buyer: buyer._id } : {}),
       totalAmount: Number(totalAmount),
       type: 'bank_transfer',
       details: details || [],
@@ -132,6 +124,20 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
     }
 
     // 4. Create bank transfer record linked to the new order
+    const guestName =
+      requiredUserInfo?.find((item: any) => item.field === "firstName")?.value ||
+      requiredUserInfo?.find((item: any) => item.label?.toLowerCase() === "first name")?.value ||
+      "";
+    const guestLastName =
+      requiredUserInfo?.find((item: any) => item.field === "lastName")?.value ||
+      requiredUserInfo?.find((item: any) => item.label?.toLowerCase() === "last name")?.value ||
+      "";
+    const derivedBuyerName =
+      `${guestName} ${guestLastName}`.trim() ||
+      buyer?.firstName ||
+      buyer?.username ||
+      "Guest attendee";
+
     const bankTransfer = await BankTransfer.create({
       orderId: newOrder._id.toString(),
       eventId: eventId,
@@ -139,7 +145,9 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
       screenshotUrl: screenshotUrl || null,
       status: 'pending',
       amount: Number(totalAmount),
-      buyerName: `${buyer.firstName || ''} ${buyer.lastName || ''}`.trim() || buyer.username,
+      buyerName: buyer
+        ? `${buyer.firstName || ''} ${buyer.lastName || ''}`.trim() || buyer.username
+        : derivedBuyerName,
       eventTitle: event.title,
     })
 

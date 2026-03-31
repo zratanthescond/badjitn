@@ -62,6 +62,7 @@ export const eventFormSchema = z
       .optional(),
     scanPoints: z.array(z.string()).optional().default([]),
     showWorkSubmissionPopup: z.boolean().optional().default(false),
+    allowGuestRegistration: z.boolean().optional().default(true),
     organisationId: z.string().min(1, "Organisation is required"),
   })
   .refine(

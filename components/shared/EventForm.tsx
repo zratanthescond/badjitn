@@ -96,6 +96,7 @@ const EventForm = ({
         ...event,
         organisationId: (event.organisation as any)?._id || organisationId || "",
         country: event.country || "TUN",
+        allowGuestRegistration: event.allowGuestRegistration ?? true,
 
         startDateTime: new Date(event.startDateTime),
         endDateTime: new Date(event.endDateTime),
@@ -205,6 +206,12 @@ const EventForm = ({
     console.log(sponsors, fields);
   }, [sponsors, fields]);
   const t = useTranslations("eventForm");
+  const guestRegistrationTitle = t.has("guestRegistration.title")
+    ? t("guestRegistration.title")
+    : "Allow registration without account";
+  const guestRegistrationDescription = t.has("guestRegistration.description")
+    ? t("guestRegistration.description")
+    : "If enabled, attendees can complete their registration without signing in to the app.";
   const editorPlaceholder = t("eventDescriptionPlaceholder");
   const locale = useLocale();
   const selectedCountry = form.watch("country") || "TUN";
@@ -614,6 +621,39 @@ const EventForm = ({
             <div className="w-full">
               <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">
                 <CardContent className="bg-transparent w-full">
+                  <FormField
+                    control={form.control}
+                    name="allowGuestRegistration"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value !== false}
+                              onCheckedChange={(checked) =>
+                                field.onChange(checked === true)
+                              }
+                              id="allowGuestRegistration"
+                              className="mt-1"
+                            />
+                          </FormControl>
+                          <div className="space-y-1">
+                            <FormLabel
+                              htmlFor="allowGuestRegistration"
+                              className="cursor-pointer"
+                            >
+                              {guestRegistrationTitle}
+                            </FormLabel>
+                            <FormDescription>
+                              {guestRegistrationDescription}
+                            </FormDescription>
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Separator className="my-4" />
                   <FormField
                     control={form.control}
                     name="showWorkSubmissionPopup"

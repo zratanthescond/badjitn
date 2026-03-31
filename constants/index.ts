@@ -41,6 +41,7 @@ export const eventDefaultValues = {
   places: 0,
   scanPoints: [] as string[],
   showWorkSubmissionPopup: false,
+  allowGuestRegistration: true,
 };
 export const borderColors = [
   "#ef4444", // red

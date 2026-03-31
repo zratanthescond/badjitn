@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Globe } from "lucide-react";
-import { IoClose } from "react-icons/io5";
 import { XProfileCard } from "../shared/Xprofile";
 import ReelDetails from "../ReelDetails";
 import SponsorsSection from "../shared/SponsorSection";
+import HLSPlayer from "../shared/phone/HlsPlayer";
 import { useTranslations } from "next-intl";
 import type { Event } from "./types";
 
@@ -40,18 +39,6 @@ export function VideoDetailsPanel({
 
   return (
     <div className={panelClasses}>
-      {isMobile && (
-        <Button
-          size="icon"
-          variant="ghost"
-          className="absolute top-2 right-2 rounded-full z-10 md:hidden text-foreground hover:bg-muted/50 transition-colors duration-200 "
-          onClick={onClose}
-          aria-label={t("close")}
-        >
-          <IoClose size={20} />
-        </Button>
-      )}
-
       <div className="w-full h-full overflow-y-auto no-scrollbar overflow-x-hidden">
         <div className="p-4 space-y-4 text-slate-900 dark:text-white max-w-full overflow-hidden">
           {/* Profile Section */}
@@ -101,6 +88,21 @@ export function VideoDetailsPanel({
               </a>
             )}
           </div>
+
+          {isMobile && (
+            <div className="overflow-hidden rounded-2xl border border-border/60 bg-black/70 shadow-xl">
+              <div className="mx-auto w-full max-w-[380px]">
+                <HLSPlayer
+                  manifest={video.imageUrl}
+                  isActive={isVisible}
+                  autoPlay={false}
+                  controls
+                  muted
+                  className="aspect-[9/16] h-auto w-full object-cover"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Event Details */}
           <div className="bg-slate-900/5 dark:bg-white/5 rounded-2xl p-4 backdrop-blur-sm border border-slate-900/5 dark:border-white/5 w-full overflow-hidden">

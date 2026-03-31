@@ -687,9 +687,6 @@ export default function ProfileDashboard({
                                                 }))
                                             }
                                         />
-                                        <p className="text-xs text-muted-foreground">
-                                            {translations.settings.worldExceptIsrael}
-                                        </p>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="city">{translations.settings.fields.city}</Label>

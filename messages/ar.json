@@ -2791,7 +2791,7 @@
       "cityNoOptions": "لا توجد مدن متاحة لهذا البلد",
       "citySearchPlaceholder": "ابحث عن مدينة...",
       "cityNoMatch": "لا توجد مدينة مطابقة",
-      "worldExceptIsrael": "متاح في جميع أنحاء العالم باستثناء إسرائيل.",
+      "worldExceptIsrael": "",
       "fields": {
         "firstName": "الاسم الأول",
         "lastName": "الاسم العائلي",

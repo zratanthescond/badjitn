@@ -17,36 +17,39 @@ const Checkout = ({
   userId,
   chekedPlans,
   discountInfo,
+  requiredUserInfo,
+  validateBeforeCheckout,
+  beforeCheckout,
 }: {
   event: IEvent;
   userId?: string;
   chekedPlans?: string[];
   discountInfo?: any;
+  requiredUserInfo?: any[];
+  validateBeforeCheckout?: () => boolean;
+  beforeCheckout?: () => Promise<boolean> | boolean;
 }) => {
   const [price, setPrice] = useState<number>(0);
   const [details, setDetails] = useState<Detail[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const t = useTranslations("eventPrice");
+
   useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
     if (query.get("success")) {
       console.log("Order placed! You will receive an email confirmation.");
     }
 
     if (query.get("canceled")) {
-      console.log(
-        "Order canceled -- continue to shop around and checkout when you’re ready.",
-      );
+      console.log("Order canceled. Continue to shop around and checkout when you're ready.");
     }
   }, []);
+
   useEffect(() => {
-    // 1. Initialize local variables
     let calculatedPrice = 0;
     let detail: Detail[] = [];
 
-    // 2. Check for Plans FIRST (If plans exist, they usually override the base price)
     if (chekedPlans && chekedPlans.length > 0) {
       event.pricePlan?.forEach((plan: any) => {
         if (chekedPlans.includes(plan._id)) {
@@ -56,14 +59,11 @@ const Checkout = ({
       });
       setPrice(calculatedPrice);
       setDetails(detail);
-    }
-    // 3. FALLBACK to Base Price if no plans are selected
-    else if (event.price && parseFloat(event.price) > 0) {
+    } else if (event.price && parseFloat(event.price) > 0) {
       calculatedPrice = parseFloat(event.price);
       setPrice(calculatedPrice);
     }
 
-    // 4. Apply Discount BEFORE setting final price
     const discountValue = Number(discountInfo?.value) || 0;
     if (discountValue > 0 && calculatedPrice > 0) {
       const discountedPrice = calculatedPrice - (calculatedPrice * discountValue) / 100;
@@ -72,16 +72,31 @@ const Checkout = ({
       setPrice(calculatedPrice);
     }
 
-    // 5. Handle Free state
     if (event.isFree) {
       setPrice(-1);
     }
   }, [event, chekedPlans, discountInfo]);
+
   const onCheckout = async () => {
     if (isSubmitting) return;
+
+    if (validateBeforeCheckout && !validateBeforeCheckout()) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez completer les informations d'inscription avant de continuer.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      if (beforeCheckout) {
+        const canContinue = await beforeCheckout();
+        if (!canContinue) return;
+      }
+
       if (event.isFree) {
         const order = await createOrder({
           eventId: event._id,
@@ -89,22 +104,18 @@ const Checkout = ({
           type: "paid",
           details,
           buyerId: userId || "",
+          requiredUserInfo: requiredUserInfo || [],
+          ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
           stripeId: uuidv4(),
           createdAt: new Date(),
         });
 
         if (order) {
           toast({
-            title: "Inscription confirmée",
-            description: event.showWorkSubmissionPopup
-              ? "Votre inscription gratuite est confirmée. Vous allez maintenant choisir si vous souhaitez soumettre un travail."
-              : "Votre inscription gratuite a bien été confirmée. Retrouvez-la dès maintenant dans votre profil.",
+            title: "Inscription confirmee",
+            description: "Votre inscription gratuite a bien ete confirmee.",
           });
-          router.push(
-            event.showWorkSubmissionPopup
-              ? `/events/${event._id}/post-purchase`
-              : "/profile"
-          );
+          router.push(`/events/${event._id}?registered=1`);
         }
 
         return;
@@ -117,13 +128,15 @@ const Checkout = ({
         isFree: event.isFree,
         buyerId: userId || "",
         details,
+        requiredUserInfo: requiredUserInfo || [],
+        discountInfo,
       });
     } catch (error) {
       toast({
         title: "Erreur",
         description: event.isFree
-          ? "Impossible de confirmer l'inscription gratuite pour le moment. Veuillez réessayer."
-          : "Impossible de finaliser l'inscription pour le moment. Veuillez réessayer.",
+          ? "Impossible de confirmer l'inscription gratuite pour le moment. Veuillez reessayer."
+          : "Impossible de finaliser l'inscription pour le moment. Veuillez reessayer.",
         variant: "destructive",
       });
     } finally {
