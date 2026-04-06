@@ -210,10 +210,29 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return () => window.clearTimeout(timeout);
   }, [router, successOpen, userId]);
 
-  const registrationFields = useMemo(
-    () => [...baseRegistrationFields, ...customFields],
-    [customFields]
-  );
+  const registrationFields = useMemo(() => {
+    const disabledFields = event.disabledBaseFields || [];
+    const filteredBase = baseRegistrationFields.filter((field) => {
+      // If republic is configured (not none), we hide it
+      if (field._id === "republic" && event.selectedRepublic && event.selectedRepublic !== "none") return false;
+      
+      // If republic is disabled, city is also disabled by design as it depends on it
+      if (field._id === "city" && disabledFields.includes("republic")) return false;
+      
+      return !disabledFields.includes(field._id);
+    });
+
+    const eventCustomFields = (event.customRegistrationFields || []).map((cf) => ({
+      _id: cf.label,
+      label: cf.label,
+      type: "text",
+      placeholder: cf.label,
+      required: cf.isRequired,
+      options: [],
+    }));
+
+    return [...filteredBase, ...customFields, ...eventCustomFields];
+  }, [customFields, event.disabledBaseFields, event.customRegistrationFields, event.selectedRepublic]);
   const cityOptions = useMemo(() => {
     const selectedRepublic = registrationValues.republic;
     if (!selectedRepublic) return [];
@@ -228,8 +247,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       case "lastName":
         return profileText("settings.fields.lastName", "Last name");
       case "jobTitle":
-        return profileText("settings.fields.jobTitle", fallback);
+        return event.jobTitleLabel || profileText("settings.fields.jobTitle", fallback);
       case "republic":
+        if (event.disabledBaseFields?.includes("maskRepublicLabel")) return "";
         return profileText("settings.fields.republic", fallback);
       case "city":
         return profileText("settings.fields.city", fallback);
@@ -249,9 +269,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           next[fieldId] = "";
         }
       });
+
+      // Handle pre-selected republic
+      if (event.selectedRepublic && event.selectedRepublic !== "none") {
+        next.republic = event.selectedRepublic;
+      }
+
       return next;
     });
-  }, [registrationFields]);
+  }, [registrationFields, event.selectedRepublic]);
 
   const handleAddPlan = (num: string) => {
     setCheckedPlan([num]);

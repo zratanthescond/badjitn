@@ -1559,9 +1559,30 @@
     "startDate": "Date de début",
     "submitting": "Envoi en cours...",
     "url": "Lien de lévenement",
+    "city": "Ville",
+    "village": "Village",
     "workSubmission": {
       "title": "Afficher la pop-up de soumission du travail après achat",
       "description": "Si cette option est activée, le client verra une confirmation après participation pour choisir entre soumettre un travail ou revenir à l'accueil."
+    },
+    "registrationConfig": {
+      "title": "Configuration de l'inscription",
+      "description": "Choisissez les informations à demander aux participants.",
+      "fields": {
+        "jobTitle": "Fonction / Spécialité",
+        "republic": "République (Gouvernorat)",
+        "village": "Village",
+        "maskRepublicLabel": "Masquer désignation République",
+        "jobTitleLabelPlaceholder": "Titre personnalisé pour Fonction",
+        "selectedRepublic": "République pré-sélectionnée",
+        "none": "Aucune",
+        "customFields": {
+          "title": "Champs personnalisés",
+          "addField": "Ajouter un champ",
+          "labelPlaceholder": "Nom du champ",
+          "isRequired": "Obligatoire"
+        }
+      }
     }
   },
   "eventPrice": {

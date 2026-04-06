@@ -26,6 +26,7 @@ import OrganisationDropdown from "./OrganisationDropdown";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from "../ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { createEvent, updateEvent } from "@/lib/actions/event.actions";
 import { IEvent } from "@/lib/database/models/event.model";
@@ -39,7 +40,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import GoogleMapComponent from "./GoogleMap";
-import { CalendarIcon, Disc, LinkIcon, ListChecks, MapPin } from "lucide-react";
+import { CalendarIcon, Disc, LinkIcon, ListChecks, MapPin, Plus, Trash2 } from "lucide-react";
 import PricePlanComponent from "./PricePlanComponent";
 import { pricePlan } from "@/types";
 import FormBuilder from "./FormBuilder";
@@ -49,6 +50,7 @@ import { useGetFields } from "@/hooks/useGetFields";
 
 import { Separator } from "../ui/separator";
 import { Card, CardContent } from "../ui/card";
+import { countryGovernorates } from "@/constants/country-governorates";
 import { CountryDropdown } from "../ui/country-dropdown";
 import { Value } from "@radix-ui/react-select";
 import DiscountDialog from "./DiscountDialogComponenet";
@@ -56,6 +58,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { useLoadScript } from "@react-google-maps/api";
 import ScanPointsConfig from "./ScanPointsConfig";
 import { getCurrencyCodeByCountry } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type EventFormProps = {
   userId: string;
@@ -406,6 +415,41 @@ const EventForm = ({
                 </FormItem>
               )}
             />
+            <div className="flex flex-col gap-5 md:flex-row">
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input
+                        placeholder={t("city")}
+                        {...field}
+                        className="input-field glass"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="village"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input
+                        placeholder={t("village")}
+                        {...field}
+                        className="input-field glass"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
               name="startDateTime"
@@ -617,6 +661,189 @@ const EventForm = ({
                   </CardContent>
                 </Card>
               )}
+            </div>
+
+            <div className="w-full">
+              <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">
+                <CardContent className="bg-transparent w-full space-y-6">
+                  <div className="flex flex-col gap-2">
+                    <FormLabel className="text-base font-bold">{t("registrationConfig.title")}</FormLabel>
+                    <FormDescription>
+                      {t("registrationConfig.description")}
+                    </FormDescription>
+                  </div>
+                  <Separator />
+                  
+                  <div className="space-y-6">
+                    {/* Basic Fields Visibility */}
+                    <FormField
+                      control={form.control}
+                      name="disabledBaseFields"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              { id: "jobTitle", label: t("registrationConfig.fields.jobTitle") },
+                              { id: "republic", label: t("registrationConfig.fields.republic") },
+                              { id: "village", label: t("registrationConfig.fields.village") },
+                              { id: "maskRepublicLabel", label: t("registrationConfig.fields.maskRepublicLabel") },
+                            ].map((item) => {
+                              const value = field.value || [];
+                              const isHidden = value.includes(item.id);
+                              return (
+                                <div key={item.id} className="flex items-center space-x-2 bg-background/40 p-3 rounded-xl border border-border/40 hover:bg-background/60 transition-colors">
+                                  <Checkbox
+                                    id={item.id}
+                                    checked={!isHidden}
+                                    onCheckedChange={(checked) => {
+                                      const current = field.value || [];
+                                      if (!checked) {
+                                        field.onChange([...current, item.id]);
+                                      } else {
+                                        field.onChange(current.filter((i) => i !== item.id));
+                                      }
+                                    }}
+                                  />
+                                  <Label htmlFor={item.id} className="text-sm font-medium leading-none cursor-pointer flex-1 py-1">
+                                    {item.label}
+                                  </Label>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {/* Job Title Label Override */}
+                      <FormField
+                        control={form.control}
+                        name="jobTitleLabel"
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>{t("registrationConfig.fields.jobTitle")}</FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder={t("registrationConfig.fields.jobTitleLabelPlaceholder")} 
+                                {...field} 
+                                className="bg-background/40 rounded-xl border-border/40"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Default Republic Selection */}
+                      <FormField
+                        control={form.control}
+                        name="selectedRepublic"
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>{t("registrationConfig.fields.selectedRepublic")}</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || "none"}>
+                              <FormControl>
+                                <SelectTrigger className="bg-background/40 rounded-xl border-border/40">
+                                  <SelectValue placeholder={t("registrationConfig.fields.selectedRepublic")} />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="none">{t("registrationConfig.fields.none")}</SelectItem>
+                                {Object.keys(countryGovernorates).map((code) => (
+                                  <SelectItem key={code} value={code}>
+                                    {code}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <Separator />
+
+                    {/* Custom Registration Fields */}
+                    <FormField
+                      control={form.control}
+                      name="customRegistrationFields"
+                      render={({ field }) => (
+                        <FormItem className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-base">{t("registrationConfig.fields.customFields.title")}</FormLabel>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="rounded-xl border-dashed"
+                              onClick={() => {
+                                const current = field.value || [];
+                                field.onChange([...current, { label: "", isRequired: false }]);
+                              }}
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              {t("registrationConfig.fields.customFields.addField")}
+                            </Button>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            {(field.value || []).map((customField: any, index: number) => (
+                              <div key={index} className="flex gap-4 items-start bg-background/20 p-4 rounded-2xl border border-border/20">
+                                <div className="flex-1 space-y-2">
+                                  <Input
+                                    placeholder={t("registrationConfig.fields.customFields.labelPlaceholder")}
+                                    value={customField.label}
+                                    onChange={(e) => {
+                                      const current = field.value || [];
+                                      const newList = [...current];
+                                      if (newList[index]) {
+                                        newList[index].label = e.target.value;
+                                        field.onChange(newList);
+                                      }
+                                    }}
+                                    className="bg-background/40 rounded-xl border-border/40"
+                                  />
+                                </div>
+                                <div className="flex items-center gap-4 pt-2">
+                                  <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`required-${index}`}
+                                      checked={customField.isRequired}
+                                      onCheckedChange={(checked) => {
+                                        const newList = [...field.value];
+                                        newList[index].isRequired = !!checked;
+                                        field.onChange(newList);
+                                      }}
+                                    />
+                                    <Label htmlFor={`required-${index}`} className="text-sm cursor-pointer whitespace-nowrap">
+                                      {t("registrationConfig.fields.customFields.isRequired")}
+                                    </Label>
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full"
+                                    onClick={() => {
+                                      const newList = field.value.filter((_: any, i: number) => i !== index);
+                                      field.onChange(newList);
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
             <div className="w-full">
               <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">

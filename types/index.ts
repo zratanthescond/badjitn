@@ -67,6 +67,12 @@ export type CreateEventParams = {
     organisationId?: string;
     showWorkSubmissionPopup?: boolean;
     allowGuestRegistration?: boolean;
+    disabledBaseFields?: string[];
+    city?: string;
+    village?: string;
+    jobTitleLabel?: string;
+    selectedRepublic?: string;
+    customRegistrationFields?: { label: string; isRequired: boolean }[];
   };
   path: string;
 };
@@ -104,6 +110,12 @@ export type UpdateEventParams = {
     organisationId?: string;
     showWorkSubmissionPopup?: boolean;
     allowGuestRegistration?: boolean;
+    disabledBaseFields?: string[];
+    city?: string;
+    village?: string;
+    jobTitleLabel?: string;
+    selectedRepublic?: string;
+    customRegistrationFields?: { label: string; isRequired: boolean }[];
   };
   path: string;
 };
@@ -181,6 +193,12 @@ export type Event = {
   attendees?: string[];
   showWorkSubmissionPopup?: boolean;
   allowGuestRegistration?: boolean;
+  disabledBaseFields?: string[];
+  city?: string;
+  village?: string;
+  jobTitleLabel?: string;
+  selectedRepublic?: string;
+  customRegistrationFields?: { label: string; isRequired: boolean }[];
 };
 
 // ====== CATEGORY PARAMS

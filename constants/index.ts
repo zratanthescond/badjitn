@@ -42,6 +42,12 @@ export const eventDefaultValues = {
   scanPoints: [] as string[],
   showWorkSubmissionPopup: false,
   allowGuestRegistration: true,
+  disabledBaseFields: [] as string[],
+  city: "",
+  village: "",
+  jobTitleLabel: "",
+  selectedRepublic: "",
+  customRegistrationFields: [],
 };
 export const borderColors = [
   "#ef4444", // red

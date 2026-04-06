@@ -170,8 +170,15 @@ export default function EventLocationComponent({ event }: { event: Event }) {
         <label className="flex flex-row  p-2  font-semibold rounded-lg gap-2 items-start ">
           <MapPin />
         </label>
-        <span className="bg-card text-center p-2 rounded-2xl m-1 w-full">
-          This event is organized on {event.location.name}
+        <span className="bg-card text-center p-2 rounded-2xl m-1 w-full uppercase font-bold text-sm tracking-wide">
+          {event.city ? (
+            <>
+              {event.city}
+              {event.village ? ` - ${event.village}` : ""}
+            </>
+          ) : (
+            `This event is organized on ${event.location?.name || ""}`
+          )}
         </span>
       </div>
 

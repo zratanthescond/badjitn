@@ -63,6 +63,15 @@ export const eventFormSchema = z
     scanPoints: z.array(z.string()).optional().default([]),
     showWorkSubmissionPopup: z.boolean().optional().default(false),
     allowGuestRegistration: z.boolean().optional().default(true),
+    disabledBaseFields: z.array(z.string()).optional().default([]),
+    city: z.string().optional(),
+    village: z.string().optional(),
+    jobTitleLabel: z.string().optional(),
+    selectedRepublic: z.string().optional(),
+    customRegistrationFields: z.array(z.object({
+      label: z.string(),
+      isRequired: z.boolean().default(false)
+    })).optional().default([]),
     organisationId: z.string().min(1, "Organisation is required"),
   })
   .refine(

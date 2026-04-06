@@ -10,6 +10,11 @@ export interface IEvent extends Document {
     lon: number;
     lat: number;
   };
+  city?: string;
+  village?: string;
+  jobTitleLabel?: string;
+  selectedRepublic?: string;
+  customRegistrationFields?: { label: string; isRequired: boolean }[];
   pricePlan?: {
     _id?: string;
     name: string;
@@ -38,6 +43,7 @@ export interface IEvent extends Document {
   scanPoints?: string[];
   showWorkSubmissionPopup?: boolean;
   allowGuestRegistration?: boolean;
+  disabledBaseFields?: string[];
 }
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
@@ -85,6 +91,15 @@ const EventSchema = new Schema({
   restricted: { type: Boolean, default: false },
   showWorkSubmissionPopup: { type: Boolean, default: false },
   allowGuestRegistration: { type: Boolean, default: true },
+  disabledBaseFields: { type: [String], default: [] },
+  city: { type: String },
+  village: { type: String },
+  jobTitleLabel: { type: String },
+  selectedRepublic: { type: String },
+  customRegistrationFields: [{
+    label: { type: String },
+    isRequired: { type: Boolean, default: false }
+  }],
 });
 EventSchema.virtual("Sponsors", {
   ref: "Sponsor",
