@@ -1587,6 +1587,7 @@
   },
   "eventPrice": {
     "availablePlaces": "Places Disponibles",
+    "backToEvent": "Retourner à l'événement",
     "buyTicket": "S'inscrire a l'evenement ou demander un acces sur place",
     "error": "Erreur",
     "eventFree": "Cet événement est gratuit",

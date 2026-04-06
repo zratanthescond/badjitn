@@ -581,6 +581,14 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             )}
 
             <DialogFooter className="gap-3 sm:justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-2xl"
+                onClick={() => setSuccessOpen(false)}
+              >
+                {t("backToEvent")}
+              </Button>
               {userId ? (
                 <Button
                   type="button"
