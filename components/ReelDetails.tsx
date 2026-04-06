@@ -100,7 +100,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
     return (
       <div className="space-y-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
         {/* Header Section */}
-        <div className="glass-panel p-4 md:p-5 text-center space-y-4 rounded-3xl overflow-hidden relative w-full max-w-full">
+        <div className="glass-panel p-3 md:p-4 text-center space-y-3 rounded-3xl overflow-hidden relative w-full max-w-full">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-elite-cyan to-elite-violet opacity-50" />
           
           <div className="space-y-2 w-full max-w-full">
@@ -165,26 +165,11 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
         </div>
 
         {/* Description */}
-        <div className="glass-panel p-4 md:p-5 rounded-3xl w-full overflow-hidden">
+        <div className="glass-panel p-3 md:p-4 rounded-3xl w-full overflow-hidden">
            <div className="prose prose-slate dark:prose-invert max-w-none break-all text-sm md:text-base">
              <TiptapRenderer content={event.description} />
            </div>
         </div>
-
-        {/* Action Button */}
-        {!event.isFree && (
-          <div className="flex justify-center pb-4">
-            <Button
-              onClick={() => setSection("registration")}
-              variant="elite"
-              size="lg"
-              className="rounded-2xl font-bold h-14 min-w-[200px] shadow-elite-glow"
-            >
-              <Wallet className="w-5 h-5 mr-3" />
-              {t("viewPricing")}
-            </Button>
-          </div>
-        )}
       </div>
     );
   }, [event, handleJoinEvent, isJoining, t, dateLocale, router]);
@@ -327,7 +312,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
       </div>
 
       {/* Content */}
-      <div className="flex w-full px-4 py-8 md:p-8 min-h-[500px]">
+      <div className="flex w-full px-2 py-4 md:p-4 min-h-[500px]">
         <div className="w-full">
           {RenderComponent}
         </div>

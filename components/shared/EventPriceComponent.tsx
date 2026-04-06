@@ -259,6 +259,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
   const handleSelectOption = (planId: string, option: string) => {
     setSelectedOptions(prev => ({ ...prev, [planId]: option }));
+    if (!checkPlan.includes(planId)) {
+      handleAddPlan(planId);
+    }
   };
 
   const handleRegistrationValueChange = (fieldId: string, value: string) => {
@@ -586,7 +589,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       <Card className="relative w-full overflow-hidden rounded-2xl border bg-card/90 shadow-2xl backdrop-blur-sm">
         <div className="absolute left-0 top-0 h-2 w-full rounded-t-[2rem] bg-gradient-to-r from-blue-500 via-pink-500 to-red-500" />
 
-        <CardHeader className="items-center px-8 pb-2 pt-8">
+        <CardHeader className="items-center px-6 pb-2 pt-6">
           <div className="mb-2 flex items-center gap-2 rounded-full shadow-md">
             <span className="inline-flex items-center justify-center rounded-full bg-card/10 px-3 py-1 text-xs font-semibold text-foreground/80">
               <Ticket size={12} className="mr-1" />
@@ -598,7 +601,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-6 px-8 pb-8">
+        <CardContent className="space-y-4 px-6 pb-6">
           <div className="space-y-4">
             {!isFreeEvent && (
               <div className="rounded-[2rem] border border-border/50 bg-card/5 p-6 text-center backdrop-blur-sm">
@@ -641,7 +644,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           whileHover={{ scale: 1.01 }}
                           whileTap={{ scale: 0.99 }}
                           onClick={() => handleAddPlan(plan._id)}
-                          className={`relative flex cursor-pointer items-center justify-between rounded-2xl border-2 p-4 transition-all duration-200 ${
+                          className={`relative flex cursor-pointer items-center justify-between rounded-2xl border-2 p-3 transition-all duration-200 ${
                             isSelected
                               ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
                               : "border-border/50 bg-card/5 hover:border-primary/30 hover:bg-primary/[0.02]"
@@ -674,9 +677,19 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           </Badge>
                         </motion.div>
                         
-                        {isSelected && plan.options && plan.options.length > 0 && (
-                          <div className="mx-4 my-2 p-4 bg-muted/40 rounded-2xl border border-dashed border-primary/20 space-y-3">
-                            <p className="text-xs font-bold uppercase tracking-wider text-primary/70">
+                        {plan.note && (
+                          <div className="px-2 pb-1">
+                            <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-2 text-xs text-blue-600 shadow-sm dark:text-blue-400">
+                              <p className="font-medium">
+                                {t("note")}: {plan.note}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {plan.options && plan.options.length > 0 && (
+                          <div className="mx-2 my-1 p-3 bg-muted/40 rounded-2xl border border-dashed border-primary/20 space-y-2">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-primary/70">
                               Choisissez un choix :
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -687,7 +700,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                     key={idx}
                                     type="button"
                                     onClick={() => handleSelectOption(plan._id, opt)}
-                                    className={`flex items-center gap-2 p-2 px-3 rounded-xl border transition-all text-sm ${
+                                    className={`flex items-center gap-2 p-1.5 px-3 rounded-xl border transition-all text-xs ${
                                       isOptSelected
                                         ? "border-primary bg-primary/10 text-primary font-medium"
                                         : "border-border/60 bg-background/50 hover:border-primary/40"
@@ -698,16 +711,6 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                   </button>
                                 );
                               })}
-                            </div>
-                          </div>
-                        )}
-
-                        {plan.note && (
-                          <div className="px-4 pb-2">
-                            <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-3 text-xs text-blue-600 shadow-sm dark:text-blue-400">
-                              <p className="font-medium">
-                                {t("note")}: {plan.note}
-                              </p>
                             </div>
                           </div>
                         )}
