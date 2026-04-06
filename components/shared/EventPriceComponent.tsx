@@ -581,36 +581,42 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             )}
 
             <DialogFooter className="gap-3 sm:justify-end">
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-2xl"
-                onClick={() => setSuccessOpen(false)}
-              >
-                {t("backToEvent")}
-              </Button>
-              {userId ? (
+              {event.showReturnButton !== false && (
                 <Button
                   type="button"
+                  variant="outline"
                   className="rounded-2xl"
-                  onClick={() => {
-                    setSuccessOpen(false);
-                    router.push("/profile");
-                  }}
+                  onClick={() => setSuccessOpen(false)}
                 >
-                  Consulter mon profil
+                  {t("backToEvent")}
                 </Button>
-              ) : (
-                <Button
-                  type="button"
-                  className="rounded-2xl"
-                  onClick={() =>
-                    router.push(`/sign-in?redirect_url=${encodeURIComponent("/profile")}`)
-                  }
-                >
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Se connecter a Badgi
-                </Button>
+              )}
+              {event.showProfileButton !== false && (
+                <>
+                  {userId ? (
+                    <Button
+                      type="button"
+                      className="rounded-2xl"
+                      onClick={() => {
+                        setSuccessOpen(false);
+                        router.push("/profile");
+                      }}
+                    >
+                      Consulter mon profil
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      className="rounded-2xl"
+                      onClick={() =>
+                        router.push(`/sign-in?redirect_url=${encodeURIComponent("/profile")}`)
+                      }
+                    >
+                      <LogIn className="mr-2 h-4 w-4" />
+                      Se connecter a Badgi
+                    </Button>
+                  )}
+                </>
               )}
             </DialogFooter>
           </div>

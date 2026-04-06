@@ -44,6 +44,8 @@ export interface IEvent extends Document {
   showWorkSubmissionPopup?: boolean;
   allowGuestRegistration?: boolean;
   disabledBaseFields?: string[];
+  showProfileButton?: boolean;
+  showReturnButton?: boolean;
 }
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
@@ -100,6 +102,8 @@ const EventSchema = new Schema({
     label: { type: String },
     isRequired: { type: Boolean, default: false }
   }],
+  showProfileButton: { type: Boolean, default: true },
+  showReturnButton: { type: Boolean, default: true },
 });
 EventSchema.virtual("Sponsors", {
   ref: "Sponsor",

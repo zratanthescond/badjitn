@@ -72,6 +72,8 @@ export const eventFormSchema = z
       label: z.string(),
       isRequired: z.boolean().default(false)
     })).optional().default([]),
+    showProfileButton: z.boolean().optional().default(true),
+    showReturnButton: z.boolean().optional().default(true),
     organisationId: z.string().min(1, "Organisation is required"),
   })
   .refine(

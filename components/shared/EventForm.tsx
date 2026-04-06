@@ -845,6 +845,7 @@ const EventForm = ({
                 </CardContent>
               </Card>
             </div>
+
             <div className="w-full">
               <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">
                 <CardContent className="bg-transparent w-full">
@@ -881,6 +882,73 @@ const EventForm = ({
                     )}
                   />
                   <Separator className="my-4" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="showProfileButton"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4 h-full">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value !== false}
+                                onCheckedChange={(checked) =>
+                                  field.onChange(checked === true)
+                                }
+                                id="showProfileButton"
+                                className="mt-1"
+                              />
+                            </FormControl>
+                            <div className="space-y-1">
+                              <FormLabel
+                                htmlFor="showProfileButton"
+                                className="cursor-pointer"
+                              >
+                                {t("showProfileButton.title")}
+                              </FormLabel>
+                              <FormDescription>
+                                {t("showProfileButton.description")}
+                              </FormDescription>
+                            </div>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="showReturnButton"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4 h-full">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value !== false}
+                                onCheckedChange={(checked) =>
+                                  field.onChange(checked === true)
+                                }
+                                id="showReturnButton"
+                                className="mt-1"
+                              />
+                            </FormControl>
+                            <div className="space-y-1">
+                              <FormLabel
+                                htmlFor="showReturnButton"
+                                className="cursor-pointer"
+                              >
+                                {t("showReturnButton.title")}
+                              </FormLabel>
+                              <FormDescription>
+                                {t("showReturnButton.description")}
+                              </FormDescription>
+                            </div>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Separator className="my-4" />
                   <FormField
                     control={form.control}
                     name="showWorkSubmissionPopup"
@@ -916,6 +984,7 @@ const EventForm = ({
                 </CardContent>
               </Card>
             </div>
+
             <div className="w-full">
               {sponsors && (
                 <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">

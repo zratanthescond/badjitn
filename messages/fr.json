@@ -1565,6 +1565,14 @@
       "title": "Afficher la pop-up de soumission du travail après achat",
       "description": "Si cette option est activée, le client verra une confirmation après participation pour choisir entre soumettre un travail ou revenir à l'accueil."
     },
+    "showProfileButton": {
+      "title": "Afficher le bouton 'Consulter mon profil'",
+      "description": "Permet au participant d'aller vers son profil après l'inscription."
+    },
+    "showReturnButton": {
+      "title": "Afficher le bouton 'Retourner à l'événement'",
+      "description": "Permet au participant de rester sur la page de l'événement après l'inscription."
+    },
     "registrationConfig": {
       "title": "Configuration de l'inscription",
       "description": "Choisissez les informations à demander aux participants.",

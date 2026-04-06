@@ -48,6 +48,8 @@ export const eventDefaultValues = {
   jobTitleLabel: "",
   selectedRepublic: "",
   customRegistrationFields: [],
+  showProfileButton: true,
+  showReturnButton: true,
 };
 export const borderColors = [
   "#ef4444", // red
