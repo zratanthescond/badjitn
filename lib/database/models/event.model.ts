@@ -16,6 +16,7 @@ export interface IEvent extends Document {
     price: number;
     places?: number;
     note?: string;
+    options?: string[];
   }[];
   createdAt: Date;
   imageUrl: string;
@@ -43,6 +44,7 @@ const pricePlanSchema = new mongoose.Schema({
   price: { type: Number },
   places: { type: Number },
   note: { type: String },
+  options: { type: [String], default: [] },
 });
 const EventSchema = new Schema({
   title: { type: String, required: true },

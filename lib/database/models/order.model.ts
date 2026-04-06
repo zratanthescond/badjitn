@@ -10,6 +10,7 @@ enum OrderType {
 export type Detail = {
   name: string;
   price: string;
+  option?: string;
 };
 
 export type DiscountType = {
@@ -52,6 +53,7 @@ export interface IOrder extends Document {
 const DetailSchema = new Schema<Detail>({
   name: { type: String, required: true },
   price: { type: String, required: true },
+  option: { type: String },
 });
 
 // Subdocument schema for `DiscountInfo`

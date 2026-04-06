@@ -15,6 +15,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 const CheckoutButton = ({
   event,
   checkPlan,
+  selectedOptions,
   discountInfo,
   requiredUserInfo,
   validateBeforeCheckout,
@@ -22,6 +23,7 @@ const CheckoutButton = ({
 }: {
   event: IEvent;
   checkPlan?: string[];
+  selectedOptions?: Record<string, string>;
   discountInfo?: any;
   requiredUserInfo?: any[];
   validateBeforeCheckout?: () => boolean;
@@ -49,7 +51,8 @@ const CheckoutButton = ({
   }
 
   const discountValue = Number(discountInfo?.value) || 0;
-  const price = initialPriceValue - (initialPriceValue * discountValue) / 100;
+  const priceValue = initialPriceValue - (initialPriceValue * discountValue) / 100;
+  const isActuallyFree = event.isFree || (priceValue === 0 && (checkPlan?.length || 0) > 0);
 
   const allowGuestRegistration = event.allowGuestRegistration !== false;
 
@@ -86,9 +89,9 @@ const CheckoutButton = ({
                     <Ticket size={16} className="text-primary-foreground" />
                   </div>
                   <span>
-                    {event.isFree
+                    {isActuallyFree
                       ? t("inscription")
-                      : `Pay now ${formatPriceByCountry(price, event.country)}`}
+                      : `Pay now ${formatPriceByCountry(priceValue, event.country)}`}
                   </span>
                 </Link>
               </Button>
@@ -96,6 +99,7 @@ const CheckoutButton = ({
           ) : (
             <Checkout
               chekedPlans={checkPlan}
+              selectedOptions={selectedOptions}
               event={event}
               userId={userId || ""}
               discountInfo={discountInfo}

@@ -119,6 +119,7 @@ const baseRegistrationFields = [
 
 export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [checkPlan, setCheckedPlan] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [isProcessing, setIsProcessing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [customFields, setCustomFields] = useState<IField[]>([]);
@@ -253,11 +254,11 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   }, [registrationFields]);
 
   const handleAddPlan = (num: string) => {
-    setCheckedPlan((prevNumbers) =>
-      prevNumbers.includes(num)
-        ? prevNumbers.filter((n) => n !== num)
-        : [...prevNumbers, num]
-    );
+    setCheckedPlan([num]);
+  };
+
+  const handleSelectOption = (planId: string, option: string) => {
+    setSelectedOptions(prev => ({ ...prev, [planId]: option }));
   };
 
   const handleRegistrationValueChange = (fieldId: string, value: string) => {
@@ -403,9 +404,30 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return true;
   };
 
+  const validateOptions = () => {
+    for (const planId of checkPlan) {
+      const plan = event.pricePlan?.find(p => p._id === planId);
+      if (plan?.options?.length && !selectedOptions[planId]) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const validateAll = () => {
     const registrationIsValid = validateRegistration();
     const workIsValid = validateWorkSubmission();
+    const optionsAreValid = validateOptions();
+    
+    if (!optionsAreValid) {
+      toast({
+        title: "Champ requis",
+        description: "Veuillez sélectionner un choix pour le plan sélectionné.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
     return registrationIsValid && workIsValid;
   };
 
@@ -446,11 +468,6 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
   const handleGetPreorder = async () => {
     if (!validateAll()) {
-      toast({
-        title: t("error"),
-        description: text("completeRegistrationInfo", "Veuillez remplir les informations d'inscription."),
-        variant: "destructive",
-      });
       return;
     }
 
@@ -458,12 +475,14 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       setIsProcessing(true);
       const workReady = await persistWorkSummaryIfNeeded();
       if (!workReady) return;
+      
       const details =
         event.pricePlan
           ?.filter((item) => checkPlan.includes(item._id!))
           .map((item) => ({
             name: item.name,
             price: item.price.toString(),
+            option: selectedOptions[item._id!]
           })) || [];
 
       const order = await createOrder({
@@ -638,7 +657,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             </div>
                             <div className="flex flex-col">
                               <span className="font-semibold text-foreground">{plan.name}</span>
-                              {plan.places && (
+                              {plan.places !== undefined && (
                                 <span className="text-xs text-muted-foreground">
                                   {plan.places} {t("availablePlaces")}
                                 </span>
@@ -654,6 +673,35 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             {formatPriceByCountry(plan.price, event.country, "en-US", event.location)}
                           </Badge>
                         </motion.div>
+                        
+                        {isSelected && plan.options && plan.options.length > 0 && (
+                          <div className="mx-4 my-2 p-4 bg-muted/40 rounded-2xl border border-dashed border-primary/20 space-y-3">
+                            <p className="text-xs font-bold uppercase tracking-wider text-primary/70">
+                              Choisissez un choix :
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              {plan.options.map((opt: string, idx: number) => {
+                                const isOptSelected = selectedOptions[plan._id] === opt;
+                                return (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => handleSelectOption(plan._id, opt)}
+                                    className={`flex items-center gap-2 p-2 px-3 rounded-xl border transition-all text-sm ${
+                                      isOptSelected
+                                        ? "border-primary bg-primary/10 text-primary font-medium"
+                                        : "border-border/60 bg-background/50 hover:border-primary/40"
+                                    }`}
+                                  >
+                                    <div className={`w-3 h-3 rounded-full border-2 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
+                                    {opt}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
                         {plan.note && (
                           <div className="px-4 pb-2">
                             <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-3 text-xs text-blue-600 shadow-sm dark:text-blue-400">
@@ -899,6 +947,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 <CheckoutButton
                   event={event}
                   checkPlan={checkPlan}
+                  selectedOptions={selectedOptions}
                   discountInfo={discountInfo}
                   requiredUserInfo={builtRegistrationInfo}
                   validateBeforeCheckout={validateAll}
@@ -982,6 +1031,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           .map((item) => ({
                             name: item.name,
                             price: item.price.toString(),
+                            option: selectedOptions[item._id!]
                           })) || []
                       }
                       requiredUserInfo={builtRegistrationInfo}

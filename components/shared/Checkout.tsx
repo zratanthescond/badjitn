@@ -16,6 +16,7 @@ const Checkout = ({
   event,
   userId,
   chekedPlans,
+  selectedOptions,
   discountInfo,
   requiredUserInfo,
   validateBeforeCheckout,
@@ -24,6 +25,7 @@ const Checkout = ({
   event: IEvent;
   userId?: string;
   chekedPlans?: string[];
+  selectedOptions?: Record<string, string>;
   discountInfo?: any;
   requiredUserInfo?: any[];
   validateBeforeCheckout?: () => boolean;
@@ -54,7 +56,11 @@ const Checkout = ({
       event.pricePlan?.forEach((plan: any) => {
         if (chekedPlans.includes(plan._id)) {
           calculatedPrice += plan.price;
-          detail.push({ name: plan.name, price: plan.price.toString() });
+          detail.push({ 
+            name: plan.name, 
+            price: plan.price.toString(),
+            option: selectedOptions?.[plan._id]
+          });
         }
       });
       setPrice(calculatedPrice);
@@ -72,10 +78,10 @@ const Checkout = ({
       setPrice(calculatedPrice);
     }
 
-    if (event.isFree) {
+    if (event.isFree || (calculatedPrice === 0 && (chekedPlans?.length || 0) > 0)) {
       setPrice(-1);
     }
-  }, [event, chekedPlans, discountInfo]);
+  }, [event, chekedPlans, discountInfo, selectedOptions]);
 
   const onCheckout = async () => {
     if (isSubmitting) return;
@@ -97,7 +103,7 @@ const Checkout = ({
         if (!canContinue) return;
       }
 
-      if (event.isFree) {
+      if (event.isFree || price === -1) {
         const order = await createOrder({
           eventId: event._id,
           totalAmount: "0",
@@ -152,7 +158,7 @@ const Checkout = ({
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Button
-          disabled={price == 0 || isSubmitting}
+          disabled={(price === 0 && !event.isFree) || isSubmitting}
           type="submit"
           role="link"
           className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300 "
@@ -162,7 +168,7 @@ const Checkout = ({
               <Ticket size={16} className="text-primary-foreground" />
             </div>
             <span>
-              {event.isFree
+              {(event.isFree || price === -1)
                 ? isSubmitting
                   ? "Confirmation de l'inscription..."
                   : t("inscription")

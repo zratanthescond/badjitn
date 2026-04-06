@@ -2591,9 +2591,9 @@
     },
     "form": {
       "errors": {
-        "descriptionRequired": "La description du plan doit contenir au moins 10 caractères",
-        "placesRequired": "Le nombre de places doit être supérieur à 0",
-        "priceRequired": "Le prix doit être supérieur à 0"
+        "descriptionRequired": "",
+        "placesRequired": "",
+        "priceRequired": ""
       },
       "labels": {
         "availablePlaces": "Places Disponibles",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2, ArrowLeft, Package } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Package, ListTodo } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type React from "react";
 import { useState } from "react";
@@ -24,6 +24,7 @@ interface PricePlan {
   price: number;
   places?: number;
   note?: string;
+  options?: string[];
 }
 
 interface PricePlanComponentProps {
@@ -46,6 +47,9 @@ export default function PricePlanComponent({
   const [planPrice, setPlanPrice] = useState<string>("");
   const [planPlaces, setPlanPlaces] = useState<string>("");
   const [planNote, setPlanNote] = useState<string>("");
+  const [planOptions, setPlanOptions] = useState<string[]>([]);
+  const [currentOption, setCurrentOption] = useState<string>("");
+
   const [errors, setErrors] = useState<{
     description: string;
     price: string;
@@ -57,41 +61,30 @@ export default function PricePlanComponent({
   });
 
   const validateForm = () => {
-    const newErrors = { description: "", price: "", places: "" };
-    let isValid = true;
+    return true;
+  };
 
-    if (planDescription.trim().length === 0) {
-      newErrors.description = t("form.errors.descriptionRequired");
-      isValid = false;
+  const handleAddOption = () => {
+    if (currentOption.trim()) {
+      setPlanOptions([...planOptions, currentOption.trim()]);
+      setCurrentOption("");
     }
+  };
 
-    const priceNum = Number.parseFloat(planPrice);
-    if (!planPrice || isNaN(priceNum) || priceNum <= 0) {
-      newErrors.price = t("form.errors.priceRequired");
-      isValid = false;
-    }
-
-    const placesNum = Number.parseInt(planPlaces);
-    if (!planPlaces || isNaN(placesNum) || placesNum <= 0) {
-      newErrors.places = t("form.errors.placesRequired");
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+  const removeOption = (index: number) => {
+    setPlanOptions(planOptions.filter((_, i) => i !== index));
   };
 
   const handleAddPlan = (e: React.FormEvent) => {
     e.stopPropagation();
     e.preventDefault();
 
-    if (!validateForm()) return;
-
     const newPlan: PricePlan = {
-      name: planDescription.trim(),
-      price: Number.parseFloat(planPrice),
-      places: Number.parseInt(planPlaces),
+      name: planDescription.trim() || `${t("list.planNumber")} ${pricePlan.length + 1}`,
+      price: Number.parseFloat(planPrice) || 0,
+      places: planPlaces ? Number.parseInt(planPlaces) : undefined,
       note: planNote.trim(),
+      options: planOptions.length > 0 ? planOptions : undefined,
     };
 
     setPricePlan([...pricePlan, newPlan]);
@@ -99,6 +92,8 @@ export default function PricePlanComponent({
     setPlanPrice("");
     setPlanPlaces("");
     setPlanNote("");
+    setPlanOptions([]);
+    setCurrentOption("");
     setErrors({ description: "", price: "", places: "" });
   };
 
@@ -200,7 +195,7 @@ export default function PricePlanComponent({
               <Input
                 id="places"
                 type="number"
-                min="1"
+                min="0"
                 placeholder={t("form.placeholders.places")}
                 value={planPlaces}
                 onChange={(e) => setPlanPlaces(e.target.value)}
@@ -223,6 +218,54 @@ export default function PricePlanComponent({
                 onChange={(e) => setPlanNote(e.target.value)}
                 className="mt-1 rounded-full"
               />
+            </div>
+
+            {/* Choices Section */}
+            <div className="md:col-span-2 space-y-3">
+              <Label className="text-sm font-medium flex items-center gap-2">
+                <ListTodo className="w-4 h-4" />
+                Choix du plan (Optionnel - Sélection unique)
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Ex: Petit déjeuner, VIP, etc."
+                  value={currentOption}
+                  onChange={(e) => setCurrentOption(e.target.value)}
+                  className="rounded-full"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddOption();
+                    }
+                  }}
+                />
+                <Button 
+                  type="button" 
+                  variant="secondary" 
+                  onClick={handleAddOption}
+                  className="rounded-full"
+                >
+                  Ajouter
+                </Button>
+              </div>
+              
+              {planOptions.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2 p-3 bg-muted/30 rounded-2xl border border-dashed">
+                  {planOptions.map((opt, idx) => (
+                    <Badge key={idx} variant="outline" className="pl-3 pr-1 py-1 rounded-full flex items-center gap-1 bg-background">
+                      {opt}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeOption(idx)}
+                        className="h-5 w-5 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -282,6 +325,16 @@ export default function PricePlanComponent({
                           {plan.note}
                         </p>
                       )}
+                      
+                      {plan.options && plan.options.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1">
+                          {plan.options.map((opt, i) => (
+                            <Badge key={i} variant="outline" className="text-[10px] py-0 rounded-full opacity-70">
+                              {opt}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </CardContent>
 
                     <CardFooter className="pt-0 flex items-center justify-between">
@@ -292,7 +345,7 @@ export default function PricePlanComponent({
                         >
                           {plan.price} {currencyCode}
                         </Badge>
-                        {plan.places && (
+                        {plan.places !== undefined && (
                           <Badge
                             variant="secondary"
                             className="text-xs rounded-full"
