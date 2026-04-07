@@ -522,7 +522,7 @@ export async function getEventReportData(eventId: string) {
     // Breakdown by type
     const ordersByType: Record<string, number> = {};
     orders.forEach((o: any) => {
-      const type = o.type || "paid";
+      const type = (Number(o.totalAmount) === 0) ? "free" : (o.type || "paid");
       ordersByType[type] = (ordersByType[type] || 0) + 1;
     });
 
@@ -536,7 +536,7 @@ export async function getEventReportData(eventId: string) {
     // Revenue by ticket type
     const revenueByType: Record<string, number> = {};
     orders.forEach((o: any) => {
-      const type = o.type || "paid";
+      const type = (Number(o.totalAmount) === 0) ? "free" : (o.type || "paid");
       revenueByType[type] = (revenueByType[type] || 0) + Number(o.totalAmount || 0);
     });
 

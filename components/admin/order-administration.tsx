@@ -77,7 +77,8 @@ export default function OrderAdministration({
     bank_transfer: t("ticketTypes.bankTransfer"),
   };
 
-  const getTicketTypeLabel = (value?: string) => {
+  const getTicketTypeLabel = (value?: string, amount?: number) => {
+    if (amount === 0) return t("ticketTypes.free");
     if (!value) return "";
     return ticketTypeLabels[value] || value;
   };
@@ -118,13 +119,13 @@ export default function OrderAdministration({
     },
     {
       header: t("table.headers.ticketType"),
-      accessor: "type",
-      cell: (value: string) => (
+      accessor: "root",
+      cell: (order: any) => (
         <Badge
           variant="secondary"
           className="glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300"
         >
-          {getTicketTypeLabel(value)}
+          {getTicketTypeLabel(order.type, order.totalAmount)}
         </Badge>
       ),
     },
@@ -192,7 +193,7 @@ export default function OrderAdministration({
             variant="secondary"
             className="glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300"
           >
-            {getTicketTypeLabel(item.type)}
+            {getTicketTypeLabel(item.type, item.totalAmount)}
           </Badge>
         </div>
         <CardDescription
@@ -285,7 +286,7 @@ export default function OrderAdministration({
       order?._id ?? "",
       order?.eventTitle ?? "",
       order?.buyer ?? "",
-      getTicketTypeLabel(order?.type),
+      getTicketTypeLabel(order?.type, order?.totalAmount),
       order?.createdAt ? formatDateTime(order.createdAt).dateTime : "",
       typeof order?.totalAmount === "number"
         ? order.totalAmount.toFixed(2)

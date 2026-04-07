@@ -62,6 +62,7 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
 
   const ticketTypeLabels: Record<string, string> = {
     paid: t("ticketTypes.paid"),
+    free: t("ticketTypes.free"),
     hosted: t("ticketTypes.hosted"),
     doorpay: t("ticketTypes.doorpay"),
     bank_transfer: t("ticketTypes.bankTransfer"),
