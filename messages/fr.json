@@ -2516,7 +2516,7 @@
       "rapport": "Rapport",
       "viewDetails": "Voir les Détails"
     },
-    "buyer": "Acheteur",
+    "buyer": "Participant",
     "emptyState": {
       "description": "Il n'y a pas encore d'inscriptions pour cet evenement. Elles apparaitront ici des que les participants commenceront a s'inscrire.",
       "title": "Aucune inscription trouvee"
@@ -2526,13 +2526,13 @@
     "stats": {
       "totalOrders": "Total des inscriptions",
       "totalRevenue": "Chiffre d'Affaires Total",
-      "uniqueBuyers": "Acheteurs Uniques"
+      "uniqueBuyers": "Participants Uniques"
     },
     "subtitle": "Suivre et gerer toutes les inscriptions de l'evenement",
     "table": {
       "headers": {
         "amount": "Montant",
-        "buyer": "Acheteur",
+        "buyer": "Participant",
         "created": "Créé",
         "details": "Détails",
         "eventTitle": "Titre de l'Événement",
@@ -3576,7 +3576,7 @@
     },
     "table": {
       "date": "Date",
-      "buyer": "Acheteur",
+      "buyer": "Participant",
       "amount": "Montant",
       "transferId": "Identifiant du virement",
       "screenshot": "Capture",
@@ -3611,7 +3611,7 @@
       "description": "Examiner et valider ce paiement par virement bancaire",
       "status": "Statut",
       "registrationInfo": "Informations sur l’inscription",
-      "buyer": "Acheteur",
+      "buyer": "Participant",
       "amount": "Montant",
       "event": "Événement",
       "date": "Date",

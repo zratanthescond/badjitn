@@ -43,7 +43,9 @@ export async function POST(request: Request) {
       buyerId: userId?._id || "",
       totalAmount: amount_total ? (amount_total / 100).toString() : "0",
       createdAt: new Date(),
-      details: JSON.parse(metadata?.details) || "[]",
+      details: JSON.parse(metadata?.details || "[]"),
+      requiredUserInfo: JSON.parse(metadata?.requiredUserInfo || "[]"),
+      discountInfo: JSON.parse(metadata?.discountInfo || "null"),
     };
 
     const newOrder = await createOrder(order);

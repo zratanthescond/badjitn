@@ -37,6 +37,8 @@ const Orders = async (props: SearchParamProps) => {
   const totalCertifications = certificationsData ? certificationsData.length : 0;
   const totalWorks = worksData ? worksData.length : 0;
 
+  const isFreeEvent = eventData?.isFree || eventData?.price === "0" || Number(eventData?.price) === 0;
+
   return (
     <div
       className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 ${isRTL ? "rtl" : "ltr"
@@ -138,7 +140,7 @@ const Orders = async (props: SearchParamProps) => {
         <div className="glass bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-3xl p-6 sm:p-8 shadow-xl">
           <Tabs defaultValue="orders" className="w-full">
             <TabsList
-              className={`flex justify-start md:justify-center overflow-x-auto h-auto min-h-[4rem] items-center md:grid w-full md:grid-cols-4 mb-6 sm:mb-8 glass bg-slate-100/80 dark:bg-slate-700/80 backdrop-blur-sm border border-white/20 dark:border-slate-600/50 rounded-2xl p-1 sm:p-2 scroll-smooth scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 ${isRTL ? "font-arabic flex-row-reverse" : ""
+              className={`flex justify-start md:justify-center overflow-x-auto h-auto min-h-[4rem] items-center md:grid w-full ${!isFreeEvent ? 'md:grid-cols-4' : 'md:grid-cols-3'} mb-6 sm:mb-8 glass bg-slate-100/80 dark:bg-slate-700/80 backdrop-blur-sm border border-white/20 dark:border-slate-600/50 rounded-2xl p-1 sm:p-2 scroll-smooth scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 ${isRTL ? "font-arabic flex-row-reverse" : ""
                 }`}
             >
               <TabsTrigger
@@ -177,15 +179,17 @@ const Orders = async (props: SearchParamProps) => {
                 <span className="sm:hidden">{t("tabs.works")}</span>
               </TabsTrigger>
 
-              <TabsTrigger
-                value="bank-transfers"
-                className={`flex flex-row items-center justify-center gap-2 text-sm sm:text-base font-medium whitespace-nowrap shrink-0 px-4 py-2 my-1 data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-md rounded-xl transition-all duration-300 ${isRTL ? "flex-row-reverse font-arabic" : ""
-                  }`}
-              >
-                <Landmark className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
-                <span className="hidden sm:inline">{t("tabs.bankTransfers")}</span>
-                <span className="sm:hidden">{t("tabs.bankTransfersShort")}</span>
-              </TabsTrigger>
+              {!isFreeEvent && (
+                <TabsTrigger
+                  value="bank-transfers"
+                  className={`flex flex-row items-center justify-center gap-2 text-sm sm:text-base font-medium whitespace-nowrap shrink-0 px-4 py-2 my-1 data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-md rounded-xl transition-all duration-300 ${isRTL ? "flex-row-reverse font-arabic" : ""
+                    }`}
+                >
+                  <Landmark className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                  <span className="hidden sm:inline">{t("tabs.bankTransfers")}</span>
+                  <span className="sm:hidden">{t("tabs.bankTransfersShort")}</span>
+                </TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent value="orders" className="rounded-2xl">
@@ -209,6 +213,7 @@ const Orders = async (props: SearchParamProps) => {
                   searchString={searchText}
                   eventCountry={eventData?.country || ""}
                   eventLocation={eventData?.location}
+                  isFreeEvent={isFreeEvent}
                 />
               </div>
             </TabsContent>
@@ -259,32 +264,34 @@ const Orders = async (props: SearchParamProps) => {
               </div>
             </TabsContent>
 
-            <TabsContent value="bank-transfers" className="rounded-2xl">
-              <div className="glass bg-gradient-to-br from-pink-50/50 to-rose-50/50 dark:from-pink-900/20 dark:to-rose-900/20 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30 rounded-2xl p-6">
-                <div
-                  className={`flex items-center gap-3 mb-6 ${isRTL ? "flex-row-reverse" : ""
-                    }`}
-                >
-                  <div className="p-2 rounded-lg bg-pink-500/20">
-                    <Landmark className="h-6 w-6 text-pink-600 dark:text-pink-400" />
-                  </div>
-                  <h2
-                    className={`text-xl font-semibold text-pink-800 dark:text-pink-200 ${isRTL ? "font-arabic" : ""
+            {!isFreeEvent && (
+              <TabsContent value="bank-transfers" className="rounded-2xl">
+                <div className="glass bg-gradient-to-br from-pink-50/50 to-rose-50/50 dark:from-pink-900/20 dark:to-rose-900/20 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30 rounded-2xl p-6">
+                  <div
+                    className={`flex items-center gap-3 mb-6 ${isRTL ? "flex-row-reverse" : ""
                       }`}
                   >
-                    {t("tabs.bankTransfers")}
-                  </h2>
+                    <div className="p-2 rounded-lg bg-pink-500/20">
+                      <Landmark className="h-6 w-6 text-pink-600 dark:text-pink-400" />
+                    </div>
+                    <h2
+                      className={`text-xl font-semibold text-pink-800 dark:text-pink-200 ${isRTL ? "font-arabic" : ""
+                        }`}
+                    >
+                      {t("tabs.bankTransfers")}
+                    </h2>
+                  </div>
+                  <BankTransferAdministration
+                    eventId={eventId}
+                    eventTitle={eventData?.title || ""}
+                    searchString={searchText}
+                    userId={currentUserId}
+                    eventCountry={eventData?.country || ""}
+                    eventLocation={eventData?.location}
+                  />
                 </div>
-                <BankTransferAdministration
-                  eventId={eventId}
-                  eventTitle={eventData?.title || ""}
-                  searchString={searchText}
-                  userId={currentUserId}
-                  eventCountry={eventData?.country || ""}
-                  eventLocation={eventData?.location}
-                />
-              </div>
-            </TabsContent>
+              </TabsContent>
+            )}
           </Tabs>
         </div>
       </div>

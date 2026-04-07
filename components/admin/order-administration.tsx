@@ -47,11 +47,13 @@ export default function OrderAdministration({
   searchString,
   eventCountry,
   eventLocation,
+  isFreeEvent,
 }: {
   eventId: string;
   searchString: string;
   eventCountry?: string;
   eventLocation?: { name?: string; lat?: number; lon?: number };
+  isFreeEvent?: boolean;
 }) {
   const t = useTranslations("orderAdministration");
   const locale = useLocale();
@@ -83,6 +85,60 @@ export default function OrderAdministration({
     return ticketTypeLabels[value] || value;
   };
 
+  const getParticipantNameFromOrder = (order: any) => {
+    const buyerText = String(order?.buyer || "").trim();
+    if (buyerText && buyerText.toLowerCase() !== "guest registration") {
+      return buyerText;
+    }
+
+    const infoList = Array.isArray(order?.requiredUserInfo)
+      ? order.requiredUserInfo
+      : [];
+
+    const normalize = (value: unknown) =>
+      String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "");
+
+    const findValue = (matcher: (field: string, label: string) => boolean) => {
+      const found = infoList.find((info: any) =>
+        matcher(normalize(info?.field), normalize(info?.label))
+      );
+      return String(found?.value || "").trim();
+    };
+
+    const firstName = findValue(
+      (field, label) =>
+        ["firstname", "first_name", "prenom"].includes(field) ||
+        ["firstname", "prenom"].includes(label)
+    );
+    const lastName = findValue(
+      (field, label) =>
+        ["lastname", "last_name", "nom", "familyname", "family_name"].includes(field) ||
+        ["lastname", "nom", "familyname"].includes(label)
+    );
+    const fullName = findValue(
+      (field, label) =>
+        ["name", "fullname", "full_name", "nomcomplet", "nom_complet"].includes(field) ||
+        ["name", "fullname", "nomcomplet"].includes(label)
+    );
+
+    const combined = `${firstName} ${lastName}`.trim();
+    if (combined) return combined;
+    if (fullName) return fullName;
+
+    const fallbackValues = infoList
+      .map((info: any) => String(info?.value || "").trim())
+      .filter(Boolean);
+    const fallbackCombined = `${fallbackValues[0] || ""} ${fallbackValues[1] || ""}`.trim();
+    if (fallbackCombined) return fallbackCombined;
+
+    return buyerText || "Guest registration";
+  };
+
   const columns = [
     {
       header: t("table.headers.orderId"),
@@ -104,18 +160,20 @@ export default function OrderAdministration({
     },
     {
       header: t("table.headers.buyer"),
-      accessor: "buyer",
-      cell: (value: string) => (
+      accessor: "root",
+      cell: (order: any) => {
+        const participantName = getParticipantNameFromOrder(order);
+        return (
         <div
           className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
             }`}
         >
           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-medium">
-            {value.charAt(0).toUpperCase()}
+            {participantName.charAt(0).toUpperCase()}
           </div>
-          <span className={`${isRTL ? "font-arabic" : ""}`}>{value}</span>
+          <span className={`${isRTL ? "font-arabic" : ""}`}>{participantName}</span>
         </div>
-      ),
+      )},
     },
     {
       header: t("table.headers.ticketType"),
@@ -147,27 +205,31 @@ export default function OrderAdministration({
         </div>
       ),
     },
-    {
-      header: t("table.headers.amount"),
-      accessor: "totalAmount",
-      align: "right" as const,
-      cell: (value: number) => (
-        <div
-          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
-            }`}
-        >
-          <CreditCard className="h-4 w-4 text-green-600" />
-          <span className="font-semibold text-green-600 dark:text-green-400">
-            {formatPriceByCountry(
-              value,
-              eventCountry || data?.[0]?.eventCountry,
-              locale,
-              eventLocation
-            )}
-          </span>
-        </div>
-      ),
-    },
+    ...(!isFreeEvent
+      ? [
+          {
+            header: t("table.headers.amount"),
+            accessor: "totalAmount",
+            align: "right" as const,
+            cell: (value: number) => (
+              <div
+                className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
+                  }`}
+              >
+                <CreditCard className="h-4 w-4 text-green-600" />
+                <span className="font-semibold text-green-600 dark:text-green-400">
+                  {formatPriceByCountry(
+                    value,
+                    eventCountry || data?.[0]?.eventCountry,
+                    locale,
+                    eventLocation
+                  )}
+                </span>
+              </div>
+            ),
+          },
+        ]
+      : []),
     {
       header: t("table.headers.details"),
       accessor: "root",
@@ -214,7 +276,7 @@ export default function OrderAdministration({
           </div>
           <div className={isRTL ? "text-right" : ""}>
             <p className={`font-semibold text-foreground ${isRTL ? "font-arabic" : ""}`}>
-              {item.buyer}
+              {getParticipantNameFromOrder(item)}
             </p>
             <p
               className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
@@ -229,23 +291,25 @@ export default function OrderAdministration({
           className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""
             }`}
         >
-          <div
-            className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
-              }`}
-          >
-            <CreditCard className="h-4 w-4 text-green-600" />
-            <span
-              className={`font-semibold text-green-600 dark:text-green-400 ${isRTL ? "font-arabic" : ""
+          {!isFreeEvent && (
+            <div
+              className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
                 }`}
             >
-              {formatPriceByCountry(
-                item.totalAmount,
-                eventCountry || item.eventCountry,
-                locale,
-                eventLocation
-              )}
-            </span>
-          </div>
+              <CreditCard className="h-4 w-4 text-green-600" />
+              <span
+                className={`font-semibold text-green-600 dark:text-green-400 ${isRTL ? "font-arabic" : ""
+                  }`}
+              >
+                {formatPriceByCountry(
+                  item.totalAmount,
+                  eventCountry || item.eventCountry,
+                  locale,
+                  eventLocation
+                )}
+              </span>
+            </div>
+          )}
 
           <div
             className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
@@ -279,22 +343,140 @@ export default function OrderAdministration({
       t("table.headers.buyer"),
       t("table.headers.ticketType"),
       t("table.headers.created"),
-      t("table.headers.amount"),
     ];
+    if (!isFreeEvent) headers.push(t("table.headers.amount"));
+    headers.push(t("table.headers.details") || "Détails");
 
-    const rows = (data || []).map((order: any) => [
-      order?._id ?? "",
-      order?.eventTitle ?? "",
-      order?.buyer ?? "",
-      getTicketTypeLabel(order?.type, order?.totalAmount),
-      order?.createdAt ? formatDateTime(order.createdAt).dateTime : "",
-      typeof order?.totalAmount === "number"
-        ? order.totalAmount.toFixed(2)
-        : "0.00",
-    ]);
+    const rows = (data || []).map((order: any) => {
+      const row = [
+        order?._id ?? "",
+        order?.eventTitle ?? "",
+        order?.buyer ?? "",
+        getTicketTypeLabel(order?.type, order?.totalAmount),
+        order?.createdAt ? formatDateTime(order.createdAt).dateTime : "",
+      ];
+      
+      if (!isFreeEvent) {
+        row.push(
+          typeof order?.totalAmount === "number"
+            ? order.totalAmount.toFixed(2)
+            : "0.00"
+        );
+      }
+
+      const detailsStr = order?.details
+        ?.map((d: any) => `${d.name}${d.option ? ` (${d.option})` : ""}`)
+        .join(", ") || "";
+      row.push(detailsStr);
+
+      return row;
+    });
 
     return { headers, rows };
   };
+
+  const getStructuredExportPayload = () => {
+    const baseHeaders = [
+      t("table.headers.orderId"),
+      t("table.headers.eventTitle"),
+      t("table.headers.buyer"),
+      t("table.headers.ticketType"),
+      t("table.headers.created"),
+    ];
+    if (!isFreeEvent) baseHeaders.push(t("table.headers.amount"));
+
+    const participantColumns: string[] = [];
+    const planColumns: string[] = [];
+    const usedHeaders = new Set<string>(baseHeaders);
+
+    const ensureUniqueHeader = (header: string) => {
+      const normalizedHeader = (header || "").trim() || "Colonne";
+      if (!usedHeaders.has(normalizedHeader)) {
+        usedHeaders.add(normalizedHeader);
+        return normalizedHeader;
+      }
+
+      let index = 2;
+      while (usedHeaders.has(`${normalizedHeader} (${index})`)) {
+        index += 1;
+      }
+      const uniqueHeader = `${normalizedHeader} (${index})`;
+      usedHeaders.add(uniqueHeader);
+      return uniqueHeader;
+    };
+
+    const participantFieldToHeader = new Map<string, string>();
+    const planNameToHeader = new Map<string, string>();
+
+    (data || []).forEach((order: any) => {
+      (order?.requiredUserInfo || []).forEach((info: any) => {
+        const fieldKey = String(info?.field || "").trim();
+        if (!fieldKey || participantFieldToHeader.has(fieldKey)) return;
+
+        const header = ensureUniqueHeader(
+          String(info?.label || fieldKey).trim() || fieldKey
+        );
+        participantFieldToHeader.set(fieldKey, header);
+        participantColumns.push(header);
+      });
+
+      (order?.details || []).forEach((detail: any) => {
+        const planName = String(detail?.name || "").trim();
+        if (!planName || planNameToHeader.has(planName)) return;
+
+        const header = ensureUniqueHeader(planName);
+        planNameToHeader.set(planName, header);
+        planColumns.push(header);
+      });
+    });
+
+    const headers = [...baseHeaders, ...participantColumns, ...planColumns];
+
+    const rows = (data || []).map((order: any) => {
+      const row: (string | number)[] = [
+        order?._id ?? "",
+        order?.eventTitle ?? "",
+        getParticipantNameFromOrder(order),
+        getTicketTypeLabel(order?.type, order?.totalAmount),
+        order?.createdAt ? formatDateTime(order.createdAt).dateTime : "",
+      ];
+
+      if (!isFreeEvent) {
+        row.push(
+          typeof order?.totalAmount === "number"
+            ? order.totalAmount.toFixed(2)
+            : "0.00"
+        );
+      }
+
+      const participantInfoMap = new Map<string, string>();
+      (order?.requiredUserInfo || []).forEach((info: any) => {
+        const fieldKey = String(info?.field || "").trim();
+        if (!fieldKey) return;
+        participantInfoMap.set(fieldKey, String(info?.value || ""));
+      });
+
+      participantFieldToHeader.forEach((_, fieldKey) => {
+        row.push(participantInfoMap.get(fieldKey) || "");
+      });
+
+      const selectedPlanMap = new Map<string, string>();
+      (order?.details || []).forEach((detail: any) => {
+        const planName = String(detail?.name || "").trim();
+        if (!planName) return;
+        selectedPlanMap.set(planName, detail?.option ? String(detail.option) : "Oui");
+      });
+
+      planNameToHeader.forEach((_, planName) => {
+        row.push(selectedPlanMap.get(planName) || "");
+      });
+
+      return row;
+    });
+
+    return { headers, rows };
+  };
+  void getExportPayload;
 
   const handleExportOrders = async (format: ExportFormat) => {
     if (!data || data.length === 0) {
@@ -312,7 +494,7 @@ export default function OrderAdministration({
       .replace(/[^a-zA-Z0-9-_ ]/g, "")
       .replace(/\s+/g, "_");
     const baseFileName = `${safeEventTitle || "orders"}_${safeDate}`;
-    const { headers, rows } = getExportPayload();
+    const { headers, rows } = getStructuredExportPayload();
 
     const downloadBlob = (blob: Blob, fileName: string) => {
       const url = URL.createObjectURL(blob);
@@ -542,7 +724,7 @@ export default function OrderAdministration({
 
         {/* Stats Row */}
         {data && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+          <div className={`grid grid-cols-1 ${!isFreeEvent ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-4 mt-6`}>
             <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-4">
               <div
                 className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
@@ -564,42 +746,43 @@ export default function OrderAdministration({
                   >
                     {t("stats.totalOrders")}
                   </p>
-                </div>
-              </div>
+                </div>              </div>
             </div>
 
-            <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-4">
-              <div
-                className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
-                  }`}
-              >
-                <div className="p-2 rounded-lg bg-green-500/20">
-                  <CreditCard className="h-5 w-5 text-green-600 dark:text-green-400" />
-                </div>
-                <div className={isRTL ? "text-right" : ""}>
-                  <p
-                    className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
-                      }`}
-                  >
-                    {formatPriceByCountry(
-                      data.reduce(
-                        (sum: number, order: any) => sum + (order.totalAmount || 0),
-                        0
-                      ),
-                      eventCountry || data[0]?.eventCountry,
-                      locale,
-                      eventLocation
-                    )}
-                  </p>
-                  <p
-                    className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
-                      }`}
-                  >
-                    {t("stats.totalRevenue")}
-                  </p>
+            {!isFreeEvent && (
+              <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-4">
+                <div
+                  className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+                    }`}
+                >
+                  <div className="p-2 rounded-lg bg-green-500/20">
+                    <CreditCard className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div className={isRTL ? "text-right" : ""}>
+                    <p
+                      className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
+                        }`}
+                    >
+                      {formatPriceByCountry(
+                        data.reduce(
+                          (sum: number, order: any) => sum + (order.totalAmount || 0),
+                          0
+                        ),
+                        eventCountry || data[0]?.eventCountry,
+                        locale,
+                        eventLocation
+                      )}
+                    </p>
+                    <p
+                      className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
+                        }`}
+                    >
+                      {t("stats.totalRevenue")}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="glass bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/20 rounded-xl p-4">
               <div
@@ -614,7 +797,7 @@ export default function OrderAdministration({
                     className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
                       }`}
                   >
-                    {new Set(data.map((order: any) => order.buyer)).size}
+                    {new Set(data.map((order: any) => getParticipantNameFromOrder(order))).size}
                   </p>
                   <p
                     className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""

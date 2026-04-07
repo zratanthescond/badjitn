@@ -111,20 +111,279 @@ export async function getOrdersByEvent({
       },
       {
         $addFields: {
-          buyerDisplay: {
-            $ifNull: [
+          buyerDisplayFromUser: {
+            $trim: {
+              input: {
+                $concat: [
+                  { $ifNull: ["$buyer.firstName", ""] },
+                  " ",
+                  { $ifNull: ["$buyer.lastName", ""] },
+                ],
+              },
+            },
+          },
+          participantFirstName: {
+            $let: {
+              vars: {
+                firstNameItem: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$requiredUserInfo",
+                        as: "info",
+                        cond: {
+                          $or: [
+                            {
+                              $in: [
+                                {
+                                  $toLower: {
+                                    $ifNull: ["$$info.field", ""],
+                                  },
+                                },
+                                ["firstname", "first_name", "prenom", "prénom"],
+                              ],
+                            },
+                            {
+                              $in: [
+                                {
+                                  $toLower: {
+                                    $ifNull: ["$$info.label", ""],
+                                  },
+                                },
+                                ["first name", "firstname", "prenom", "prénom"],
+                              ],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                    0,
+                  ],
+                },
+              },
+              in: { $ifNull: ["$$firstNameItem.value", ""] },
+            },
+          },
+          participantLastName: {
+            $let: {
+              vars: {
+                lastNameItem: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$requiredUserInfo",
+                        as: "info",
+                        cond: {
+                          $or: [
+                            {
+                              $in: [
+                                {
+                                  $toLower: {
+                                    $ifNull: ["$$info.field", ""],
+                                  },
+                                },
+                                ["lastname", "last_name", "nom", "familyname", "family_name"],
+                              ],
+                            },
+                            {
+                              $in: [
+                                {
+                                  $toLower: {
+                                    $ifNull: ["$$info.label", ""],
+                                  },
+                                },
+                                ["last name", "lastname", "nom", "family name"],
+                              ],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                    0,
+                  ],
+                },
+              },
+              in: { $ifNull: ["$$lastNameItem.value", ""] },
+            },
+          },
+          participantFullName: {
+            $let: {
+              vars: {
+                fullNameItem: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$requiredUserInfo",
+                        as: "info",
+                        cond: {
+                          $or: [
+                            {
+                              $in: [
+                                {
+                                  $toLower: {
+                                    $ifNull: ["$$info.field", ""],
+                                  },
+                                },
+                                ["name", "fullname", "full_name", "nomcomplet", "nom_complet"],
+                              ],
+                            },
+                            {
+                              $in: [
+                                {
+                                  $toLower: {
+                                    $ifNull: ["$$info.label", ""],
+                                  },
+                                },
+                                ["name", "full name", "nom", "nom complet"],
+                              ],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                    0,
+                  ],
+                },
+              },
+              in: { $ifNull: ["$$fullNameItem.value", ""] },
+            },
+          },
+          participantNonEmptyValues: {
+            $filter: {
+              input: {
+                $map: {
+                  input: { $ifNull: ["$requiredUserInfo", []] },
+                  as: "info",
+                  in: { $trim: { input: { $ifNull: ["$$info.value", ""] } } },
+                },
+              },
+              as: "val",
+              cond: {
+                $gt: [{ $strLenCP: { $ifNull: ["$$val", ""] } }, 0],
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          participantFallbackFirst: {
+            $ifNull: [{ $arrayElemAt: ["$participantNonEmptyValues", 0] }, ""],
+          },
+          participantFallbackLast: {
+            $ifNull: [{ $arrayElemAt: ["$participantNonEmptyValues", 1] }, ""],
+          },
+          buyerDisplayFromRequiredInfo: {
+            $cond: [
+              {
+                $gt: [
+                  {
+                    $strLenCP: {
+                      $ifNull: [
+                        {
+                          $trim: {
+                            input: {
+                              $concat: [
+                                { $ifNull: ["$participantFirstName", ""] },
+                                " ",
+                                { $ifNull: ["$participantLastName", ""] },
+                              ],
+                            },
+                          },
+                        },
+                        "",
+                      ],
+                    },
+                  },
+                  0,
+                ],
+              },
               {
                 $trim: {
                   input: {
                     $concat: [
-                      { $ifNull: ["$buyer.firstName", ""] },
+                      {
+                        $cond: [
+                          {
+                            $gt: [
+                              { $strLenCP: { $ifNull: ["$participantFirstName", ""] } },
+                              0,
+                            ],
+                          },
+                          "$participantFirstName",
+                          { $ifNull: ["$participantFallbackFirst", ""] },
+                        ],
+                      },
                       " ",
-                      { $ifNull: ["$buyer.lastName", ""] },
+                      {
+                        $cond: [
+                          {
+                            $gt: [
+                              { $strLenCP: { $ifNull: ["$participantLastName", ""] } },
+                              0,
+                            ],
+                          },
+                          "$participantLastName",
+                          { $ifNull: ["$participantFallbackLast", ""] },
+                        ],
+                      },
                     ],
                   },
                 },
               },
-              "",
+              {
+                $cond: [
+                  {
+                    $gt: [
+                      {
+                        $strLenCP: {
+                          $trim: { input: { $ifNull: ["$participantFullName", ""] } },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                  { $trim: { input: { $ifNull: ["$participantFullName", ""] } } },
+                  {
+                    $trim: {
+                      input: {
+                        $concat: [
+                          { $ifNull: ["$participantFallbackFirst", ""] },
+                          " ",
+                          { $ifNull: ["$participantFallbackLast", ""] },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          buyerDisplay: {
+            $cond: [
+              {
+                $gt: [
+                  { $strLenCP: { $ifNull: ["$buyerDisplayFromUser", ""] } },
+                  0,
+                ],
+              },
+              "$buyerDisplayFromUser",
+              {
+                $cond: [
+                  {
+                    $gt: [
+                      {
+                        $strLenCP: {
+                          $ifNull: ["$buyerDisplayFromRequiredInfo", ""],
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                  "$buyerDisplayFromRequiredInfo",
+                  "Guest registration",
+                ],
+              },
             ],
           },
         },
@@ -148,13 +407,7 @@ export async function getOrdersByEvent({
           eventTitle: "$event.title",
           eventId: "$event._id",
           eventCountry: "$event.country",
-          buyer: {
-            $cond: [
-              { $gt: [{ $strLenCP: "$buyerDisplay" }, 0] },
-              "$buyerDisplay",
-              "Guest registration",
-            ],
-          },
+          buyer: "$buyerDisplay",
           type: 1,
           details: 1,
           discountInfo: 1,
