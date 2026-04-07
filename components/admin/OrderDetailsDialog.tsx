@@ -137,13 +137,20 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                         <div className="p-1 rounded-full bg-green-500/20">
                           <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </div>
-                        <span
-                          className={`font-medium ${
-                            isRTL ? "font-arabic" : ""
-                          }`}
-                        >
-                          {detail.name}
-                        </span>
+                        <div className="flex flex-col">
+                          <span
+                            className={`font-medium ${
+                              isRTL ? "font-arabic" : ""
+                            }`}
+                          >
+                            {detail.name}
+                          </span>
+                          {detail.option && (
+                            <span className="text-xs font-semibold text-primary/70 mt-0.5">
+                              {detail.option}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <Badge
                         variant="outline"

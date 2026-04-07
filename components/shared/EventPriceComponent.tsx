@@ -282,14 +282,14 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   }, [registrationFields, event.selectedRepublic]);
 
   const handleAddPlan = (num: string) => {
-    setCheckedPlan([num]);
+    setCheckedPlan((prev) =>
+      prev.includes(num) ? prev.filter((id) => id !== num) : [...prev, num]
+    );
   };
 
   const handleSelectOption = (planId: string, option: string) => {
-    setSelectedOptions(prev => ({ ...prev, [planId]: option }));
-    if (!checkPlan.includes(planId)) {
-      handleAddPlan(planId);
-    }
+    setSelectedOptions((prev) => ({ ...prev, [planId]: option }));
+    setCheckedPlan((prev) => (prev.includes(planId) ? prev : [...prev, planId]));
   };
 
   const handleRegistrationValueChange = (fieldId: string, value: string) => {
