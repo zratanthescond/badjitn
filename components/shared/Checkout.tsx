@@ -28,7 +28,7 @@ const Checkout = ({
   selectedOptions?: Record<string, string>;
   discountInfo?: any;
   requiredUserInfo?: any[];
-  validateBeforeCheckout?: () => boolean;
+  validateBeforeCheckout?: () => Promise<boolean> | boolean;
   beforeCheckout?: () => Promise<boolean> | boolean;
 }) => {
   const [price, setPrice] = useState<number>(0);
@@ -86,7 +86,7 @@ const Checkout = ({
   const onCheckout = async () => {
     if (isSubmitting) return;
 
-    if (validateBeforeCheckout && !validateBeforeCheckout()) {
+    if (validateBeforeCheckout && !(await validateBeforeCheckout())) {
       toast({
         title: "Erreur",
         description: "Veuillez completer les informations d'inscription avant de continuer.",

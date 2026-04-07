@@ -26,7 +26,7 @@ const CheckoutButton = ({
   selectedOptions?: Record<string, string>;
   discountInfo?: any;
   requiredUserInfo?: any[];
-  validateBeforeCheckout?: () => boolean;
+  validateBeforeCheckout?: () => Promise<boolean> | boolean;
   beforeCheckout?: () => Promise<boolean> | boolean;
 }) => {
   const pathname = usePathname();

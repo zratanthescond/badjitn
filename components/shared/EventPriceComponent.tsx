@@ -18,7 +18,7 @@ import {
   Ticket,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { createOrder } from "@/lib/actions/order.actions";
+import { createOrder, checkExistingRegistration } from "@/lib/actions/order.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@clerk/nextjs";
@@ -131,6 +131,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [workSummaryError, setWorkSummaryError] = useState("");
   const [workSummaryId, setWorkSummaryId] = useState("");
   const [successOpen, setSuccessOpen] = useState(false);
+  const [emailAlreadyRegistered, setEmailAlreadyRegistered] = useState(false);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [mongoUserId, setMongoUserId] = useState("");
   const t = useTranslations("eventPrice");
   const profileT = useTranslations("profile");
@@ -301,6 +303,30 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       [fieldId]: "",
       ...(fieldId === "republic" ? { city: "" } : {}),
     }));
+
+    if (fieldId === "email") {
+      setEmailAlreadyRegistered(false);
+    }
+  };
+
+  const handleEmailBlur = async (email: string) => {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+
+    try {
+      setIsCheckingEmail(true);
+      const isRegistered = await checkExistingRegistration(event._id, email);
+      setEmailAlreadyRegistered(isRegistered);
+      if (isRegistered) {
+        setRegistrationErrors((prev) => ({
+          ...prev,
+          email: "Cet email est deja inscrit à cet evenement.",
+        }));
+      }
+    } catch (error) {
+      console.error("Error checking email:", error);
+    } finally {
+      setIsCheckingEmail(false);
+    }
   };
 
   const price =
@@ -397,7 +423,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
   const isFreeEvent = event.isFree || Number(calculatePriceAsNumber(price)) === 0;
 
-  const validateRegistration = () => {
+  const validateRegistration = async () => {
     const nextErrors: Record<string, string> = {};
 
     registrationFields.forEach((field) => {
@@ -410,6 +436,17 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     const email = (registrationValues.email || "").trim();
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       nextErrors.email = text("invalidEmail", "Veuillez saisir une adresse email valide.");
+    } else if (email) {
+      // Final check before proceeding
+      try {
+        const isRegistered = await checkExistingRegistration(event._id, email);
+        setEmailAlreadyRegistered(isRegistered);
+        if (isRegistered) {
+          nextErrors.email = "Cet email est deja inscrit à cet evenement.";
+        }
+      } catch (error) {
+        console.error("Error in final email validation:", error);
+      }
     }
 
     setRegistrationErrors(nextErrors);
@@ -443,8 +480,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return true;
   };
 
-  const validateAll = () => {
-    const registrationIsValid = validateRegistration();
+  const validateAll = async () => {
+    const registrationIsValid = await validateRegistration();
     const workIsValid = validateWorkSubmission();
     const optionsAreValid = validateOptions();
     
@@ -496,7 +533,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   };
 
   const handleGetPreorder = async () => {
-    if (!validateAll()) {
+    if (!(await validateAll())) {
       return;
     }
 
@@ -866,13 +903,21 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         })}
                       </div>
                     ) : (
-                      <Input
-                        type={String(field._id) === "email" ? "email" : field.type === "number" ? "number" : "text"}
-                        value={registrationValues[String(field._id)] || ""}
-                        onChange={(e) => handleRegistrationValueChange(String(field._id), e.target.value)}
-                        placeholder={field.placeholder || getFieldLabel(String(field._id), field.label)}
-                        className="rounded-2xl"
-                      />
+                      <div className="relative">
+                        <Input
+                          type={String(field._id) === "email" ? "email" : field.type === "number" ? "number" : "text"}
+                          value={registrationValues[String(field._id)] || ""}
+                          onChange={(e) => handleRegistrationValueChange(String(field._id), e.target.value)}
+                          onBlur={(e) => String(field._id) === "email" && handleEmailBlur(e.target.value)}
+                          placeholder={field.placeholder || getFieldLabel(String(field._id), field.label)}
+                          className={`rounded-2xl ${String(field._id) === "email" && emailAlreadyRegistered ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                        />
+                        {String(field._id) === "email" && isCheckingEmail && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                          </div>
+                        )}
+                      </div>
                     )}
 
                     {registrationErrors[String(field._id)] && (

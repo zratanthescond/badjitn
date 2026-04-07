@@ -273,3 +273,25 @@ export const getOrderById = async (orderId: string) => {
     handleError(error);
   }
 };
+
+export const checkExistingRegistration = async (eventId: string, email: string) => {
+  try {
+    await connectToDatabase();
+
+    const existingOrder = await Order.findOne({
+      event: eventId,
+      requiredUserInfo: {
+        $elemMatch: {
+          field: "email",
+          value: { $regex: new RegExp(`^${email.trim()}$`, "i") },
+        },
+      },
+    });
+
+    return !!existingOrder;
+  } catch (error) {
+    console.error("Error checking existing registration:", error);
+    return false;
+  }
+};
+

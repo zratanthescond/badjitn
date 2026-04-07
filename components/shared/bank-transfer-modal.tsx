@@ -22,7 +22,7 @@ interface BankTransferModalProps {
   details: any[];
   requiredUserInfo?: any[];
   discountInfo?: any;
-  validateBeforeOpen?: () => boolean;
+  validateBeforeOpen?: () => Promise<boolean> | boolean;
   beforeSubmit?: () => Promise<boolean> | boolean;
 }
 
@@ -48,8 +48,8 @@ export function BankTransferModal({
   const text = (key: string, fallback: string) =>
     t.has(key) ? t(key as any) : fallback;
 
-  const handleOpen = () => {
-    if (validateBeforeOpen && !validateBeforeOpen()) {
+  const handleOpen = async () => {
+    if (validateBeforeOpen && !(await validateBeforeOpen())) {
       toast({
         title: text("error", "Erreur"),
         description: text(
