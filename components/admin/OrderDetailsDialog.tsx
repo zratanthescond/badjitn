@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Eye, Receipt, User, Tag, CreditCard, Gift } from "lucide-react";
+import { Check, Eye, ClipboardCheck, User, Tag, CreditCard, Gift } from "lucide-react";
 import {
   AlertDialogTrigger,
   AlertDialog,
@@ -69,7 +69,7 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
             }`}
           >
             <div className="p-2 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20">
-              <Receipt className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <ClipboardCheck className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
             <AlertDialogTitle
               className={`text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ${
@@ -152,12 +152,14 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                           )}
                         </div>
                       </div>
-                      <Badge
-                        variant="outline"
-                        className="glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300 font-semibold"
-                      >
-                        {formatPriceByCountry(detail.price, value?.eventCountry, locale)}
-                      </Badge>
+                      {Number.parseFloat(detail.price) > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300 font-semibold"
+                        >
+                          {formatPriceByCountry(detail.price, value?.eventCountry, locale)}
+                        </Badge>
+                      )}
                     </div>
                   ))
                 ) : (
@@ -178,82 +180,84 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                 )}
               </CardContent>
 
-              <CardFooter className="pt-4">
-                {value?.type !== "hosted" ? (
-                  <div className="w-full space-y-4">
-                    <Separator className="bg-green-200/50 dark:bg-green-700/50" />
+              {(totalAmount > 0 || value?.type === "hosted") && (
+                <CardFooter className="pt-4">
+                  {value?.type !== "hosted" ? (
+                    <div className="w-full space-y-4">
+                      <Separator className="bg-green-200/50 dark:bg-green-700/50" />
 
-                    <div
-                      className={`flex justify-between items-center ${
-                        isRTL ? "flex-row-reverse" : ""
-                      }`}
-                    >
                       <div
-                        className={`flex items-center gap-2 ${
+                        className={`flex justify-between items-center ${
                           isRTL ? "flex-row-reverse" : ""
                         }`}
                       >
-                        <CreditCard className="h-5 w-5 text-green-600 dark:text-green-400" />
-                        <span
-                          className={`font-semibold text-green-800 dark:text-green-200 ${
-                            isRTL ? "font-arabic" : ""
-                          }`}
-                        >
-                          {t("payment.totalAmount")}
-                        </span>
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className="glass bg-green-500/20 border-green-500/50 text-green-700 dark:text-green-300 text-lg font-bold px-4 py-2"
-                      >
-                        {formatPriceByCountry(totalAmount, value?.eventCountry, locale)}
-                      </Badge>
-                    </div>
-
-                    {value?.discountInfo && (
-                      <div className="space-y-2">
                         <div
-                          className={`flex flex-wrap gap-2 ${
+                          className={`flex items-center gap-2 ${
                             isRTL ? "flex-row-reverse" : ""
                           }`}
                         >
-                          <Badge className="glass bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 font-semibold">
-                            <Gift className="h-3 w-3 mr-1" />
-                            {t("discount.label")}: {value.discountInfo.value}%
-                          </Badge>
-                          <Badge className="glass bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-0 font-semibold">
-                            {value.type === "paid"
-                              ? t("payment.cashPaid")
-                              : t("payment.toPay")}
-                            : {formatPriceByCountry(
-                              (totalAmount / 100) * value.discountInfo.value,
-                              value?.eventCountry,
-                              locale
-                            )}
-                          </Badge>
+                          <CreditCard className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          <span
+                            className={`font-semibold text-green-800 dark:text-green-200 ${
+                              isRTL ? "font-arabic" : ""
+                            }`}
+                          >
+                            {t("payment.totalAmount")}
+                          </span>
                         </div>
+                        <Badge
+                          variant="outline"
+                          className="glass bg-green-500/20 border-green-500/50 text-green-700 dark:text-green-300 text-lg font-bold px-4 py-2"
+                        >
+                          {formatPriceByCountry(totalAmount, value?.eventCountry, locale)}
+                        </Badge>
                       </div>
-                    )}
-                  </div>
-                ) : (
-                  <div
-                    className={`flex items-center gap-3 p-3 glass bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl w-full ${
-                      isRTL ? "flex-row-reverse" : ""
-                    }`}
-                  >
-                    <div className="p-2 rounded-full bg-blue-500/20">
-                      <Gift className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+
+                      {value?.discountInfo && (
+                        <div className="space-y-2">
+                          <div
+                            className={`flex flex-wrap gap-2 ${
+                              isRTL ? "flex-row-reverse" : ""
+                            }`}
+                          >
+                            <Badge className="glass bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 font-semibold">
+                              <Gift className="h-3 w-3 mr-1" />
+                              {t("discount.label")}: {value.discountInfo.value}%
+                            </Badge>
+                            <Badge className="glass bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-0 font-semibold">
+                              {value.type === "paid"
+                                ? t("payment.cashPaid")
+                                : t("payment.toPay")}
+                              : {formatPriceByCountry(
+                                (totalAmount / 100) * value.discountInfo.value,
+                                value?.eventCountry,
+                                locale
+                              )}
+                            </Badge>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <span
-                      className={`font-medium text-blue-800 dark:text-blue-200 ${
-                        isRTL ? "font-arabic" : ""
+                  ) : (
+                    <div
+                      className={`flex items-center gap-3 p-3 glass bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl w-full ${
+                        isRTL ? "flex-row-reverse" : ""
                       }`}
                     >
-                      {t("payment.hostedByAdmin")}
-                    </span>
-                  </div>
-                )}
-              </CardFooter>
+                      <div className="p-2 rounded-full bg-blue-500/20">
+                        <Gift className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <span
+                        className={`font-medium text-blue-800 dark:text-blue-200 ${
+                          isRTL ? "font-arabic" : ""
+                        }`}
+                      >
+                        {t("payment.hostedByAdmin")}
+                      </span>
+                    </div>
+                  )}
+                </CardFooter>
+              )}
             </Card>
 
             {/* Buyer Information Section */}
