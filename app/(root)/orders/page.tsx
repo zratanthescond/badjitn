@@ -214,6 +214,11 @@ const Orders = async (props: SearchParamProps) => {
                   eventCountry={eventData?.country || ""}
                   eventLocation={eventData?.location}
                   isFreeEvent={isFreeEvent}
+                  eventTitle={eventData?.title || ""}
+                  organisationName={eventData?.organisation?.name || ""}
+                  eventStartDateTime={eventData?.startDateTime}
+                  eventEndDateTime={eventData?.endDateTime}
+                  eventPlace={eventData?.location?.name || ""}
                 />
               </div>
             </TabsContent>

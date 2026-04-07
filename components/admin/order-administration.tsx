@@ -48,12 +48,22 @@ export default function OrderAdministration({
   eventCountry,
   eventLocation,
   isFreeEvent,
+  eventTitle,
+  organisationName,
+  eventStartDateTime,
+  eventEndDateTime,
+  eventPlace,
 }: {
   eventId: string;
   searchString: string;
   eventCountry?: string;
   eventLocation?: { name?: string; lat?: number; lon?: number };
   isFreeEvent?: boolean;
+  eventTitle?: string;
+  organisationName?: string;
+  eventStartDateTime?: string | Date;
+  eventEndDateTime?: string | Date;
+  eventPlace?: string;
 }) {
   const t = useTranslations("orderAdministration");
   const locale = useLocale();
@@ -336,6 +346,35 @@ export default function OrderAdministration({
 
   type ExportFormat = "csv" | "xlsx" | "word" | "pdf";
 
+  const normalizeText = (value: unknown) =>
+    String(value ?? "")
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "");
+
+  const getExportEventMeta = () => {
+    const title = eventTitle || String(data?.[0]?.eventTitle || "");
+    const organisation = organisationName || "";
+    const place = eventPlace || eventLocation?.name || "";
+    const eventDate = eventStartDateTime
+      ? formatDateTime(new Date(eventStartDateTime as any)).dateTime
+      : "";
+    const eventEndDate = eventEndDateTime
+      ? formatDateTime(new Date(eventEndDateTime as any)).dateTime
+      : "";
+
+    return {
+      title,
+      organisation,
+      place,
+      eventDate,
+      eventEndDate,
+      exportDate: formatDateTime(new Date()).dateTime,
+    };
+  };
+
   const getExportPayload = () => {
     const headers = [
       t("table.headers.orderId"),
@@ -376,13 +415,38 @@ export default function OrderAdministration({
   };
 
   const getStructuredExportPayload = () => {
-    const baseHeaders = [
+    const hasFirstNameColumn = (data || []).some((order: any) =>
+      (order?.requiredUserInfo || []).some((info: any) => {
+        const field = normalizeText(info?.field);
+        const label = normalizeText(info?.label);
+        return (
+          ["firstname", "first_name", "prenom"].includes(field) ||
+          ["firstname", "prenom"].includes(label)
+        );
+      })
+    );
+
+    const hasLastNameColumn = (data || []).some((order: any) =>
+      (order?.requiredUserInfo || []).some((info: any) => {
+        const field = normalizeText(info?.field);
+        const label = normalizeText(info?.label);
+        return (
+          ["lastname", "last_name", "nom", "familyname", "family_name"].includes(field) ||
+          ["lastname", "nom", "familyname"].includes(label)
+        );
+      })
+    );
+
+    const shouldHideParticipantColumn = hasFirstNameColumn && hasLastNameColumn;
+
+    const baseHeaders: string[] = [
       t("table.headers.orderId"),
-      t("table.headers.eventTitle"),
-      t("table.headers.buyer"),
       t("table.headers.ticketType"),
       t("table.headers.created"),
     ];
+    if (!shouldHideParticipantColumn) {
+      baseHeaders.splice(1, 0, t("table.headers.buyer"));
+    }
     if (!isFreeEvent) baseHeaders.push(t("table.headers.amount"));
 
     const participantColumns: string[] = [];
@@ -433,13 +497,14 @@ export default function OrderAdministration({
     const headers = [...baseHeaders, ...participantColumns, ...planColumns];
 
     const rows = (data || []).map((order: any) => {
-      const row: (string | number)[] = [
-        order?._id ?? "",
-        order?.eventTitle ?? "",
-        getParticipantNameFromOrder(order),
+      const row: (string | number)[] = [order?._id ?? ""];
+      if (!shouldHideParticipantColumn) {
+        row.push(getParticipantNameFromOrder(order));
+      }
+      row.push(
         getTicketTypeLabel(order?.type, order?.totalAmount),
-        order?.createdAt ? formatDateTime(order.createdAt).dateTime : "",
-      ];
+        order?.createdAt ? formatDateTime(order.createdAt).dateTime : ""
+      );
 
       if (!isFreeEvent) {
         row.push(
@@ -495,6 +560,10 @@ export default function OrderAdministration({
       .replace(/\s+/g, "_");
     const baseFileName = `${safeEventTitle || "orders"}_${safeDate}`;
     const { headers, rows } = getStructuredExportPayload();
+    const eventMeta = getExportEventMeta();
+    const logoUrl = `${
+      (process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000").replace(/\/$/, "")
+    }/assets/images/logoDark.png`;
 
     const downloadBlob = (blob: Blob, fileName: string) => {
       const url = URL.createObjectURL(blob);
@@ -510,13 +579,360 @@ export default function OrderAdministration({
     try {
       setIsExporting(true);
 
+      if (format === "xlsx") {
+        const exceljsModule = await import("exceljs");
+        const ExcelJS: any = (exceljsModule as any).default ?? exceljsModule;
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Orders");
+
+        const totalColumns = Math.max(headers.length, 1);
+        const headerRowNumber = 10;
+        const dataStartRowNumber = headerRowNumber + 1;
+        const platformLogoUrl = `${
+          (process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net").replace(/\/$/, "")
+        }/assets/images/logoDark.png`;
+
+        if (totalColumns >= 2) {
+          worksheet.getCell("B1").value = "BADGI - EXPORT INSCRIPTIONS";
+          worksheet.mergeCells(1, 2, 1, totalColumns);
+          worksheet.mergeCells(3, 2, 3, totalColumns);
+          worksheet.mergeCells(4, 2, 4, totalColumns);
+          worksheet.mergeCells(5, 2, 5, totalColumns);
+          worksheet.mergeCells(6, 2, 6, totalColumns);
+          worksheet.mergeCells(7, 2, 7, totalColumns);
+          worksheet.mergeCells(8, 2, 8, totalColumns);
+        } else {
+          worksheet.getCell("A1").value = "BADGI - EXPORT INSCRIPTIONS";
+        }
+
+        worksheet.getCell("A3").value = "Événement";
+        worksheet.getCell("B3").value = eventMeta.title || "-";
+        worksheet.getCell("A4").value = "Organisation";
+        worksheet.getCell("B4").value = eventMeta.organisation || "-";
+        worksheet.getCell("A5").value = "Date début";
+        worksheet.getCell("B5").value = eventMeta.eventDate || "-";
+        worksheet.getCell("A6").value = "Date fin";
+        worksheet.getCell("B6").value = eventMeta.eventEndDate || "-";
+        worksheet.getCell("A7").value = "Lieu";
+        worksheet.getCell("B7").value = eventMeta.place || "-";
+        worksheet.getCell("A8").value = "Exporté le";
+        worksheet.getCell("B8").value = eventMeta.exportDate || "-";
+
+        try {
+          const logoResp = await fetch(platformLogoUrl);
+          if (logoResp.ok) {
+            const logoBlob = await logoResp.blob();
+            const logoBase64: string = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(String(reader.result || ""));
+              reader.readAsDataURL(logoBlob);
+            });
+            if (logoBase64.startsWith("data:image")) {
+              const logoImageId = workbook.addImage({
+                base64: logoBase64,
+                extension: "png",
+              });
+              worksheet.addImage(logoImageId, {
+                tl: { col: 0, row: 0 },
+                ext: { width: 165, height: 50 },
+              });
+            }
+          }
+        } catch (_logoError) {
+          // Non-blocking
+        }
+
+        worksheet.getRow(headerRowNumber).values = headers;
+        rows.forEach((row, idx) => {
+          worksheet.getRow(dataStartRowNumber + idx).values = row as any;
+        });
+
+        for (let c = 1; c <= totalColumns; c += 1) {
+          const header = String(headers[c - 1] || "");
+          const values = rows.map((r: any[]) => String(r?.[c - 1] ?? ""));
+          const maxLen = [header, ...values].reduce((max, v) => Math.max(max, v.length), 8);
+          worksheet.getColumn(c).width = Math.min(48, Math.max(12, maxLen + 2));
+        }
+
+        worksheet.views = [{ state: "frozen", ySplit: headerRowNumber }];
+        worksheet.autoFilter = {
+          from: { row: headerRowNumber, column: 1 },
+          to: { row: headerRowNumber, column: totalColumns },
+        };
+
+        const borderThin = {
+          top: { style: "thin", color: { argb: "FFD1D5DB" } },
+          bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+          left: { style: "thin", color: { argb: "FFD1D5DB" } },
+          right: { style: "thin", color: { argb: "FFD1D5DB" } },
+        };
+
+        const titleCell = worksheet.getCell(totalColumns >= 2 ? "B1" : "A1");
+        titleCell.font = { bold: true, size: 14, color: { argb: "FF0F172A" } };
+        titleCell.alignment = { horizontal: "left", vertical: "middle" };
+        titleCell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFDCEBFF" },
+        };
+        titleCell.border = borderThin as any;
+        worksheet.getRow(1).height = 36;
+
+        for (let r = 3; r <= 8; r += 1) {
+          const labelCell = worksheet.getCell(r, 1);
+          const valueCell = worksheet.getCell(r, 2);
+          labelCell.font = { bold: true, color: { argb: "FF1F2937" } };
+          labelCell.alignment = { horizontal: "left", vertical: "middle" };
+          labelCell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFE5E7EB" },
+          };
+          labelCell.border = borderThin as any;
+
+          valueCell.alignment = { horizontal: "left", vertical: "middle" };
+          valueCell.border = borderThin as any;
+          worksheet.getRow(r).height = 22;
+        }
+
+        const headerRow = worksheet.getRow(headerRowNumber);
+        headerRow.height = 24;
+        headerRow.eachCell((cell: any) => {
+          cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+          cell.alignment = { horizontal: "center", vertical: "middle" };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF2563EB" },
+          };
+          cell.border = borderThin as any;
+        });
+
+        const numericKeywords = [
+          "amount",
+          "montant",
+          "price",
+          "prix",
+          "total",
+          "numero",
+          "telephone",
+          "phone",
+          "tel",
+        ];
+        const numericCols = headers
+          .map((h, idx) => ({ idx: idx + 1, n: normalizeText(h) }))
+          .filter((x) => numericKeywords.some((k) => x.n.includes(k)))
+          .map((x) => x.idx);
+
+        rows.forEach((_row, rowIndex) => {
+          const rowNumber = dataStartRowNumber + rowIndex;
+          const excelRow = worksheet.getRow(rowNumber);
+          const isZebra = rowIndex % 2 === 1;
+          excelRow.height = 20;
+          for (let c = 1; c <= totalColumns; c += 1) {
+            const cell = excelRow.getCell(c);
+            cell.border = borderThin as any;
+            cell.alignment = {
+              horizontal: numericCols.includes(c) ? "right" : "left",
+              vertical: "middle",
+            } as any;
+            if (isZebra) {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFF8FAFC" },
+              };
+            }
+          }
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const xlsxBlob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
+      }
+
+      if (false && format === "xlsx") {
+        const xlsxModule = await import("xlsx");
+        const XLSX: any = (xlsxModule as any).default ?? xlsxModule;
+
+        const metaTableRows: (string | number)[][] = [
+          ["BADGI - EXPORT INSCRIPTIONS"],
+          [""],
+          ["Événement", eventMeta.title || "-"],
+          ["Organisation", eventMeta.organisation || "-"],
+          ["Date début", eventMeta.eventDate || "-"],
+          ["Date fin", eventMeta.eventEndDate || "-"],
+          ["Lieu", eventMeta.place || "-"],
+          ["Exporté le", eventMeta.exportDate || "-"],
+          [""],
+        ];
+
+        const allRows: (string | number)[][] = [...metaTableRows, headers, ...rows];
+        const worksheet = XLSX.utils.aoa_to_sheet(allRows);
+
+        const totalColumns = Math.max(headers.length, 1);
+        const lastColIndex = totalColumns - 1;
+        const headerRowIndex = metaTableRows.length;
+        const dataStartRowIndex = headerRowIndex + 1;
+
+        worksheet["!merges"] = [
+          { s: { r: 0, c: 0 }, e: { r: 0, c: lastColIndex } },
+          { s: { r: 2, c: 1 }, e: { r: 2, c: lastColIndex } },
+          { s: { r: 3, c: 1 }, e: { r: 3, c: lastColIndex } },
+          { s: { r: 4, c: 1 }, e: { r: 4, c: lastColIndex } },
+          { s: { r: 5, c: 1 }, e: { r: 5, c: lastColIndex } },
+          { s: { r: 6, c: 1 }, e: { r: 6, c: lastColIndex } },
+          { s: { r: 7, c: 1 }, e: { r: 7, c: lastColIndex } },
+        ];
+
+        worksheet["!cols"] = headers.map((header: string, colIndex: number) => {
+          const values = [
+            String(header || ""),
+            ...rows.map((row: any[]) => String(row?.[colIndex] ?? "")),
+          ];
+          const maxLen = values.reduce((max, value) => Math.max(max, value.length), 8);
+          return { wch: Math.min(48, Math.max(12, maxLen + 2)) };
+        });
+
+        worksheet["!rows"] = allRows.map((_, rowIndex) => {
+          if (rowIndex === 0) return { hpx: 36 };
+          if (rowIndex >= 2 && rowIndex <= 7) return { hpx: 22 };
+          if (rowIndex === headerRowIndex) return { hpx: 24 };
+          return { hpx: 20 };
+        });
+
+        const borderThin = {
+          top: { style: "thin", color: { rgb: "D1D5DB" } },
+          bottom: { style: "thin", color: { rgb: "D1D5DB" } },
+          left: { style: "thin", color: { rgb: "D1D5DB" } },
+          right: { style: "thin", color: { rgb: "D1D5DB" } },
+        };
+
+        const titleCellRef = XLSX.utils.encode_cell({ r: 0, c: 0 });
+        if (worksheet[titleCellRef]) {
+          worksheet[titleCellRef].s = {
+            font: { bold: true, sz: 14, color: { rgb: "0F172A" } },
+            alignment: { horizontal: "center", vertical: "center" },
+            fill: { fgColor: { rgb: "DCEBFF" } },
+            border: borderThin,
+          };
+        }
+
+        headers.forEach((_, colIndex) => {
+          const cellRef = XLSX.utils.encode_cell({ r: headerRowIndex, c: colIndex });
+          if (!worksheet[cellRef]) return;
+          worksheet[cellRef].s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            alignment: { horizontal: "center", vertical: "center" },
+            fill: { fgColor: { rgb: "2563EB" } },
+            border: borderThin,
+          };
+        });
+
+        for (let r = 2; r <= 7; r += 1) {
+          const metaLabelRef = XLSX.utils.encode_cell({ r, c: 0 });
+          const metaValueRef = XLSX.utils.encode_cell({ r, c: 1 });
+          if (worksheet[metaLabelRef]) {
+            worksheet[metaLabelRef].s = {
+              font: { bold: true, color: { rgb: "1F2937" } },
+              alignment: { horizontal: "left", vertical: "center" },
+              fill: { fgColor: { rgb: "E5E7EB" } },
+              border: borderThin,
+            };
+          }
+          if (worksheet[metaValueRef]) {
+            worksheet[metaValueRef].s = {
+              alignment: { horizontal: "left", vertical: "center" },
+              border: borderThin,
+            };
+          }
+        }
+
+        const numericKeywords = [
+          "amount",
+          "montant",
+          "price",
+          "prix",
+          "total",
+          "numero",
+          "telephone",
+          "phone",
+          "tel",
+        ];
+        const numericColIndexes = headers
+          .map((h, i) => ({ i, n: normalizeText(h) }))
+          .filter((x) => numericKeywords.some((key) => x.n.includes(key)))
+          .map((x) => x.i);
+
+        for (let r = dataStartRowIndex; r < allRows.length; r += 1) {
+          const isZebra = (r - dataStartRowIndex) % 2 === 1;
+          for (let c = 0; c <= lastColIndex; c += 1) {
+            const ref = XLSX.utils.encode_cell({ r, c });
+            if (!worksheet[ref]) continue;
+            const isNumericCol = numericColIndexes.includes(c);
+            worksheet[ref].s = {
+              border: borderThin,
+              alignment: {
+                horizontal: isNumericCol ? "right" : "left",
+                vertical: "center",
+              },
+              fill: isZebra ? { fgColor: { rgb: "F8FAFC" } } : undefined,
+            };
+          }
+        }
+
+        // NOTE: keep output compatible with broad Excel versions.
+        // Some freeze-pane extensions can produce corrupted files with xlsx CE.
+        worksheet["!autofilter"] = {
+          ref: `${XLSX.utils.encode_col(0)}${headerRowIndex + 1}:${XLSX.utils.encode_col(
+            lastColIndex
+          )}${headerRowIndex + 1}`,
+        };
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+        const binary = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "binary",
+        });
+
+        const toArrayBuffer = (s: string) => {
+          const buffer = new ArrayBuffer(s.length);
+          const view = new Uint8Array(buffer);
+          for (let i = 0; i < s.length; i += 1) {
+            view[i] = s.charCodeAt(i) & 0xff;
+          }
+          return buffer;
+        };
+
+        const xlsxBlob = new Blob([toArrayBuffer(binary)], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
+      }
+
       if (format === "csv") {
         const delimiter = locale === "fr" || locale === "ar" ? ";" : ",";
         const escapeCell = (value: unknown) => {
           const text = value == null ? "" : String(value);
           return `"${text.replace(/"/g, '""')}"`;
         };
+        const metaLines = [
+          ["BADGI - EXPORT INSCRIPTIONS"],
+          [eventMeta.title ? `Événement: ${eventMeta.title}` : ""],
+          [eventMeta.organisation ? `Organisation: ${eventMeta.organisation}` : ""],
+          [eventMeta.eventDate ? `Date début: ${eventMeta.eventDate}` : ""],
+          [eventMeta.eventEndDate ? `Date fin: ${eventMeta.eventEndDate}` : ""],
+          [eventMeta.place ? `Lieu: ${eventMeta.place}` : ""],
+          [`Exporté le: ${eventMeta.exportDate}`],
+          [""],
+        ]
+          .filter((line) => line[0] !== "")
+          .map((line) => line.map(escapeCell).join(delimiter));
         const csvContent = [
+          ...metaLines,
           headers.map(escapeCell).join(delimiter),
           ...rows.map((row: any) => row.map(escapeCell).join(delimiter)),
         ].join("\n");
@@ -526,10 +942,98 @@ export default function OrderAdministration({
         downloadBlob(blob, `${baseFileName}.csv`);
       }
 
-      if (format === "xlsx") {
+      if (false && format === "xlsx") {
         const xlsxModule = await import("xlsx");
         const XLSX: any = (xlsxModule as any).default ?? xlsxModule;
-        const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+        const metaTableRows: (string | number)[][] = [
+          ["BADGI - EXPORT INSCRIPTIONS"],
+          ["Événement", eventMeta.title || "-"],
+          ["Organisation", eventMeta.organisation || "-"],
+          ["Date début", eventMeta.eventDate || "-"],
+          ["Date fin", eventMeta.eventEndDate || "-"],
+          ["Lieu", eventMeta.place || "-"],
+          ["Exporté le", eventMeta.exportDate || "-"],
+          [""],
+        ];
+
+        const allRows: (string | number)[][] = [...metaTableRows, headers, ...rows];
+        const worksheet = XLSX.utils.aoa_to_sheet(allRows);
+
+        const totalColumns = Math.max(headers.length, 1);
+        const lastColIndex = totalColumns - 1;
+        const headerRowIndex = metaTableRows.length;
+
+        // Premium layout: merge title and meta values across the table width
+        worksheet["!merges"] = [
+          { s: { r: 0, c: 0 }, e: { r: 0, c: lastColIndex } },
+          { s: { r: 1, c: 1 }, e: { r: 1, c: lastColIndex } },
+          { s: { r: 2, c: 1 }, e: { r: 2, c: lastColIndex } },
+          { s: { r: 3, c: 1 }, e: { r: 3, c: lastColIndex } },
+          { s: { r: 4, c: 1 }, e: { r: 4, c: lastColIndex } },
+          { s: { r: 5, c: 1 }, e: { r: 5, c: lastColIndex } },
+          { s: { r: 6, c: 1 }, e: { r: 6, c: lastColIndex } },
+        ];
+
+        // Column widths auto-fit with sensible min/max
+        worksheet["!cols"] = headers.map((header: string, colIndex: number) => {
+          const values = [
+            String(header || ""),
+            ...rows.map((row: any[]) => String(row?.[colIndex] ?? "")),
+          ];
+          const maxLen = values.reduce(
+            (max, value) => Math.max(max, value.length),
+            8
+          );
+          return { wch: Math.min(48, Math.max(12, maxLen + 2)) };
+        });
+
+        // Row heights for a cleaner "report" look
+        worksheet["!rows"] = allRows.map((_, rowIndex) => {
+          if (rowIndex === 0) return { hpx: 28 };
+          if (rowIndex <= 6) return { hpx: 22 };
+          if (rowIndex === headerRowIndex) return { hpx: 24 };
+          return { hpx: 20 };
+        });
+
+        const titleCellRef = XLSX.utils.encode_cell({ r: 0, c: 0 });
+        const titleCell = worksheet[titleCellRef];
+        if (titleCell) {
+          titleCell.s = {
+            font: { bold: true, sz: 14, color: { rgb: "0F172A" } },
+            alignment: { horizontal: "center", vertical: "center" },
+            fill: { fgColor: { rgb: "DCEBFF" } },
+          };
+        }
+
+        // Header colors and bold text
+        headers.forEach((_, colIndex) => {
+          const cellRef = XLSX.utils.encode_cell({ r: headerRowIndex, c: colIndex });
+          if (!worksheet[cellRef]) return;
+          worksheet[cellRef].s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            alignment: { horizontal: "center", vertical: "center" },
+            fill: { fgColor: { rgb: "2563EB" } },
+          };
+        });
+
+        // Meta labels styling (left column)
+        for (let r = 1; r <= 6; r += 1) {
+          const metaLabelRef = XLSX.utils.encode_cell({ r, c: 0 });
+          const metaValueRef = XLSX.utils.encode_cell({ r, c: 1 });
+          if (worksheet[metaLabelRef]) {
+            worksheet[metaLabelRef].s = {
+              font: { bold: true, color: { rgb: "1F2937" } },
+              alignment: { horizontal: "left", vertical: "center" },
+              fill: { fgColor: { rgb: "E5E7EB" } },
+            };
+          }
+          if (worksheet[metaValueRef]) {
+            worksheet[metaValueRef].s = {
+              alignment: { horizontal: "left", vertical: "center" },
+            };
+          }
+        }
+
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
         const binary = XLSX.write(workbook, {
@@ -565,7 +1069,21 @@ export default function OrderAdministration({
           )
           .join("");
 
-        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>Registrations Export</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
+        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
+        <div style="border:1px solid #d9d9d9;border-radius:8px;padding:12px;margin-bottom:16px;background:#fafafa">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+            <img src="${logoUrl}" alt="badgi" style="height:36px;width:auto;object-fit:contain" />
+            <h2 style="margin:0">Export des inscriptions</h2>
+          </div>
+          <p style="margin:4px 0"><strong>Événement:</strong> ${eventMeta.title || "-"}</p>
+          <p style="margin:4px 0"><strong>Organisation:</strong> ${eventMeta.organisation || "-"}</p>
+          <p style="margin:4px 0"><strong>Date début:</strong> ${eventMeta.eventDate || "-"}</p>
+          <p style="margin:4px 0"><strong>Date fin:</strong> ${eventMeta.eventEndDate || "-"}</p>
+          <p style="margin:4px 0"><strong>Lieu:</strong> ${eventMeta.place || "-"}</p>
+          <p style="margin:4px 0"><strong>Exporté le:</strong> ${eventMeta.exportDate}</p>
+        </div>
+        <table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table>
+        </body></html>`;
         const blob = new Blob(["\uFEFF" + htmlDoc], {
           type: "application/msword;charset=utf-8",
         });
@@ -576,9 +1094,38 @@ export default function OrderAdministration({
         const { jsPDF } = await import("jspdf");
         const doc = new jsPDF({ unit: "pt", format: "a4" });
         let y = 40;
+        try {
+          const response = await fetch(logoUrl);
+          if (response.ok) {
+            const blob = await response.blob();
+            const logoDataUrl: string = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(String(reader.result || ""));
+              reader.readAsDataURL(blob);
+            });
+            if (logoDataUrl.startsWith("data:image")) {
+              doc.addImage(logoDataUrl, "PNG", 40, y - 6, 80, 22);
+            }
+          }
+        } catch (_logoError) {
+          // Non-blocking: continue export even if logo cannot be loaded
+        }
         doc.setFontSize(14);
-        doc.text("Registrations Export", 40, y);
+        doc.text("BADGI - Export des inscriptions", 130, y + 10);
         y += 22;
+        doc.setFontSize(10);
+        doc.text(`Événement: ${eventMeta.title || "-"}`, 40, y);
+        y += 14;
+        doc.text(`Organisation: ${eventMeta.organisation || "-"}`, 40, y);
+        y += 14;
+        doc.text(`Date début: ${eventMeta.eventDate || "-"}`, 40, y);
+        y += 14;
+        doc.text(`Date fin: ${eventMeta.eventEndDate || "-"}`, 40, y);
+        y += 14;
+        doc.text(`Lieu: ${eventMeta.place || "-"}`, 40, y);
+        y += 14;
+        doc.text(`Exporté le: ${eventMeta.exportDate}`, 40, y);
+        y += 12;
         doc.setFontSize(9);
         doc.text(headers.join(" | "), 40, y);
         y += 16;
