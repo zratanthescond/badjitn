@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef } from "react";
+import React, { Fragment, useCallback, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -172,6 +172,14 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
     return lines;
   }, [currency, stats, t]);
 
+  const isFreeEvent = useMemo(() => {
+    if (!event || !stats) return false;
+    const planIsFree = event.pricePlan?.length > 0 && event.pricePlan.every((p: any) => Number(p.price || 0) === 0);
+    const eventIsFreeFlag = event.isFree;
+    const revIsZero = Number(stats.totalRevenue || 0) === 0 && !stats.ordersByType?.paid;
+    return eventIsFreeFlag || planIsFree || revIsZero;
+  }, [event, stats]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className={`max-w-5xl max-h-[92vh] overflow-y-auto p-0 gap-0 bg-slate-950 border border-slate-800 ${isRTL ? "rtl" : "ltr"}`}>
@@ -210,19 +218,22 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                 <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.eventInfo")}</h3>
                 <div className="grid sm:grid-cols-2 gap-2 no-split">
                   <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"><div className="text-[11px] uppercase text-slate-500">{t("fields.category")}</div><div className="font-semibold">{event.category?.name || "-"}</div></div>
-                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"><div className="text-[11px] uppercase text-slate-500">{t("fields.organizer")}</div><div className="font-semibold">{event.organizer ? `${event.organizer.firstName} ${event.organizer.lastName}` : "-"}</div></div>
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                    <div className="text-[11px] uppercase text-slate-500">{t("fields.organizer")}</div>
+                    <div className="font-semibold text-slate-900">{event.organisation?.name || (event.organizer ? `${event.organizer.firstName} ${event.organizer.lastName}` : "-")}</div>
+                  </div>
                   <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"><div className="text-[11px] uppercase text-slate-500">{t("fields.date")}</div><div className="font-semibold">{formatDateTime(event.startDateTime).dateOnly} - {formatDateTime(event.endDateTime).dateOnly}</div></div>
                   <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"><div className="text-[11px] uppercase text-slate-500">{t("fields.location")}</div><div className="font-semibold">{event.location?.name || (event.isOnline ? t("fields.online") : "-")}</div></div>
                 </div>
                 {event.description && (
                   <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 no-split">
                     <div className="text-[11px] uppercase text-slate-500 mb-1">{t("fields.description")}</div>
-                    {event.organizer?.photo && (
+                    {event.organisation?.logo && (
                       <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-2 mb-2">
-                        <img src={event.organizer.photo} alt="Organizer logo" className="h-9 w-9 rounded-full object-cover border border-slate-200" />
+                        <img src={event.organisation.logo} alt="Organization logo" className="h-9 w-9 rounded-full object-cover border border-slate-200" />
                         <div>
-                          <div className="text-xs text-slate-500">{t("creatorLabel")}</div>
-                          <div className="text-sm font-semibold text-slate-800">{event.organizer ? `${event.organizer.firstName} ${event.organizer.lastName}` : "-"}</div>
+                          <div className="text-xs text-slate-500">{t("organizedByLabel") || "Organisateur"}</div>
+                          <div className="text-sm font-semibold text-slate-800">{event.organisation.name}</div>
                         </div>
                       </div>
                     )}
@@ -233,14 +244,27 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
 
               {event.pricePlan?.length > 0 && (
                 <div className="mb-6 report-section">
-                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.pricePlans")}</h3>
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Plans de l'événement</h3>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 no-split">
                     {event.pricePlan.map((plan: any, i: number) => (
-                      <div key={i} className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
-                        <div className="font-semibold text-amber-900">{plan.name}</div>
+                      <div key={i} className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 flex flex-col h-full">
+                        <div className="font-semibold text-amber-900 mb-1">{plan.name}</div>
                         <div className="text-xl font-extrabold text-amber-700">{Number(plan.price) === 0 ? t("free") : currency.format(Number(plan.price || 0))}</div>
-                        {plan.places && <div className="text-xs text-amber-700 mt-1">{plan.places} {t("seats")}</div>}
-                        {plan.note && <div className="text-xs text-amber-800/90 italic mt-1">{plan.note}</div>}
+                        {plan.places && <div className="text-[10px] text-amber-700 mt-1 font-medium">{plan.places} {t("seats")}</div>}
+                        {plan.note && <div className="text-[10px] text-amber-800/80 italic mt-0.5">{plan.note}</div>}
+                        
+                        {plan.options && plan.options.length > 0 && (
+                          <div className="mt-2 pt-2 border-t border-amber-200/50">
+                            <div className="text-[9px] uppercase font-bold text-amber-800/70 mb-1">Choix disponibles :</div>
+                            <div className="flex flex-wrap gap-1">
+                              {plan.options.map((opt: string, optIdx: number) => (
+                                <span key={optIdx} className="text-[9px] bg-white/70 border border-amber-200 text-amber-800 px-1.5 py-0.5 rounded leading-tight">
+                                  {opt}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -251,62 +275,19 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                 <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.orderStats")}</h3>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5 mb-4 no-split">
                   <div className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2.5"><div className="text-[11px] text-blue-700/80">{t("totalOrders")}</div><div className="text-2xl font-extrabold text-blue-700">{stats?.totalOrders || 0}</div></div>
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5"><div className="text-[11px] text-emerald-700/80">{t("totalRevenue")}</div><div className="text-2xl font-extrabold text-emerald-700">{currency.format(Number(stats?.totalRevenue || 0))}</div></div>
+                  {!isFreeEvent && <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5"><div className="text-[11px] text-emerald-700/80">{t("totalRevenue")}</div><div className="text-2xl font-extrabold text-emerald-700">{currency.format(Number(stats?.totalRevenue || 0))}</div></div>}
                   <div className="rounded-xl border border-violet-200 bg-violet-50 px-3 py-2.5"><div className="text-[11px] text-violet-700/80">{t("uniqueAttendees")}</div><div className="text-2xl font-extrabold text-violet-700">{stats?.uniqueBuyers || 0}</div></div>
-                  <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-2.5"><div className="text-[11px] text-cyan-700/80">{t("scanCoverage")}</div><div className="text-2xl font-extrabold text-cyan-700">{scanCoverage.toFixed(1)}%</div></div>
+                  {totalScanEntries > 0 && <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-2.5"><div className="text-[11px] text-cyan-700/80">{t("scanCoverage")}</div><div className="text-2xl font-extrabold text-cyan-700">{scanCoverage.toFixed(1)}%</div></div>}
                 </div>
 
-                {stats?.ordersByType && Object.keys(stats.ordersByType).length > 0 && (
-                  <div className="mb-4 no-split">
-                    <h4 className="text-sm font-semibold text-slate-700 mb-2">{t("breakdownByType")}</h4>
-                    <div className="grid gap-2">
-                      {Object.entries(stats.ordersByType).map(([type, count]) => {
-                        const value = Number(count || 0);
-                        const width = Math.max(8, (value / typeMax) * 100);
-                        return (
-                          <div key={type} className="grid grid-cols-[150px_1fr_42px] items-center gap-2 text-xs">
-                            <div className="text-slate-600">{ticketTypeLabels[type] || type}</div>
-                            <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500" style={{ width: `${width}%` }} /></div>
-                            <div className="text-right font-semibold text-slate-800">{value}</div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="mt-2 text-xs text-slate-500">{getMapTotal(stats.ordersByType)} {t("totalSuffix")}</div>
-                  </div>
-                )}
-
-                {stats?.ordersByCategory && Object.keys(stats.ordersByCategory).length > 0 && (
-                  <div className="no-split">
-                    <h4 className="text-sm font-semibold text-slate-700 mb-2">{t("breakdownByCategory")}</h4>
-                    <div className="grid gap-2">
-                      {Object.entries(stats.ordersByCategory).map(([cat, count]) => {
-                        const value = Number(count || 0);
-                        const width = Math.max(8, (value / categoryMax) * 100);
-                        return (
-                          <div key={cat} className="grid grid-cols-[150px_1fr_42px] items-center gap-2 text-xs">
-                            <div className="text-slate-600">{categoryLabels[cat] || cat}</div>
-                            <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500" style={{ width: `${width}%` }} /></div>
-                            <div className="text-right font-semibold text-slate-800">{value}</div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="mt-2 text-xs text-slate-500">{getMapTotal(stats.ordersByCategory)} {t("totalSuffix")}</div>
-                  </div>
-                )}
               </div>
 
               <div className="mb-6 report-section">
-                <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.executiveTrends")}</h3>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 mb-4 no-split">
-                  <div className="text-xs uppercase tracking-wide text-slate-500 mb-2">{t("highlightsTitle")}</div>
-                  <div className="grid gap-1.5">{highlights.map((line: string, idx: number) => <div key={`hl-${idx}`} className="text-sm text-slate-700">- {line}</div>)}</div>
-                </div>
-
-                <div className="grid lg:grid-cols-2 gap-3 no-split">
+                <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Évolution des inscriptions (3h)</h3>
+                
+                <div className={`grid ${totalScanEntries > 0 ? "lg:grid-cols-2" : "grid-cols-1"} gap-3 no-split`}>
                   <div className="rounded-xl border border-slate-200 bg-white p-3 no-split">
-                    <div className="text-sm font-semibold text-slate-700 mb-2">{t("charts.ordersTrendTitle")}</div>
+                    <div className="text-sm font-semibold text-slate-700 mb-2">Courbe d'activité (inscriptions)</div>
                     {orderTrendValues.length > 0 ? (
                       <div>
                         <svg viewBox="0 0 320 100" className="w-full h-28">
@@ -329,38 +310,40 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                     )}
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 bg-white p-3 no-split">
-                    <div className="text-sm font-semibold text-slate-700 mb-2">{t("charts.scanHourlyTitle")}</div>
-                    <div className="grid gap-1">
-                      {Object.entries(stats?.scanActivityByHour || {})
-                        .filter(([h]) => Number(h) % 3 === 0)
-                        .map(([hour, count]) => {
-                          const value = Number(count || 0);
-                          const width = Math.max(5, (value / hourMax) * 100);
-                          return (
-                            <div key={hour} className="grid grid-cols-[40px_1fr_36px] items-center gap-2 text-xs">
-                              <span className="text-slate-500">{hour}h</span>
-                              <div className="h-2 rounded-full bg-slate-200 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-sky-600" style={{ width: `${width}%` }} /></div>
-                              <span className="text-right font-semibold text-slate-700">{value}</span>
-                            </div>
-                          );
-                        })}
+                  {totalScanEntries > 0 && (
+                    <div className="rounded-xl border border-slate-200 bg-white p-3 no-split">
+                      <div className="text-sm font-semibold text-slate-700 mb-2">{t("charts.scanHourlyTitle")}</div>
+                      <div className="grid gap-1">
+                        {Object.entries(stats?.scanActivityByHour || {})
+                          .filter(([h]) => Number(h) % 3 === 0)
+                          .map(([hour, count]) => {
+                            const value = Number(count || 0);
+                            const width = Math.max(5, (value / hourMax) * 100);
+                            return (
+                              <div key={hour} className="grid grid-cols-[40px_1fr_36px] items-center gap-2 text-xs">
+                                <span className="text-slate-500">{hour}h</span>
+                                <div className="h-2 rounded-full bg-slate-200 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-sky-600" style={{ width: `${width}%` }} /></div>
+                                <span className="text-right font-semibold text-slate-700">{value}</span>
+                              </div>
+                            );
+                          })}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
               {stats?.topPricePlans?.length > 0 && (
                 <div className="mb-6 report-section">
-                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.pricePlanPerformance")}</h3>
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Statistiques des plans</h3>
                   <div className="overflow-x-auto rounded-xl border border-slate-200 no-split">
                     <table className="w-full border-collapse text-xs report-table">
                       <thead>
                         <tr>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{t("tableHeaders.plan")}</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{t("tableHeaders.sales")}</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{t("tableHeaders.revenue")}</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{t("tableHeaders.weight")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Plan</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Participations</th>
+                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-right font-semibold text-slate-700 border-b border-slate-200">Revenu</th>}
+                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200 w-24">Poids %</th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -369,19 +352,130 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                             ? (Number(plan.revenue || 0) / Number(stats.totalRevenue || 1)) * 100
                             : 0;
                           return (
-                            <tr key={plan.name} className="no-split-row">
-                              <td className="px-2.5 py-2 border-b border-slate-100 text-slate-700">{plan.name}</td>
-                              <td className="px-2.5 py-2 border-b border-slate-100 text-slate-700">{plan.orders}</td>
-                              <td className="px-2.5 py-2 border-b border-slate-100 text-slate-700">{currency.format(Number(plan.revenue || 0))}</td>
-                              <td className="px-2.5 py-2 border-b border-slate-100">
-                                <div className="h-2 rounded-full bg-slate-200 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-600" style={{ width: `${Math.min(100, Math.max(3, ratio))}%` }} /></div>
-                              </td>
-                            </tr>
+                            <Fragment key={plan.name}>
+                              <tr className="no-split-row bg-slate-50/50">
+                                <td className="px-2.5 py-2 border-b border-slate-200 text-slate-900 font-bold">{plan.name}</td>
+                                <td className="px-2.5 py-2 border-b border-slate-200 text-slate-900 font-bold">{plan.orders}</td>
+                                {!isFreeEvent && <td className="px-2.5 py-2 border-b border-slate-200 text-slate-900 font-bold">{currency.format(Number(plan.revenue || 0))}</td>}
+                                {!isFreeEvent && <td className="px-2.5 py-2 border-b border-slate-200">
+                                  <div className="h-2 rounded-full bg-slate-200 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-600" style={{ width: `${Math.min(100, Math.max(3, ratio))}%` }} /></div>
+                                </td>}
+                              </tr>
+                              {plan.optionsBreakdown && plan.optionsBreakdown.map((opt: any) => (
+                                <tr key={`${plan.name}-${opt.name}`} className="no-split-row italic">
+                                  <td className="px-6 py-1.5 border-b border-slate-100 text-slate-600 flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                                    {opt.name}
+                                  </td>
+                                  <td className="px-2.5 py-1.5 border-b border-slate-100 text-slate-600">{opt.orders}</td>
+                                  {!isFreeEvent && <td className="px-2.5 py-1.5 border-b border-slate-100 text-slate-600">{currency.format(Number(opt.revenue || 0))}</td>}
+                                  {!isFreeEvent && <td className="px-2.5 py-1.5 border-b border-slate-100" />}
+                                </tr>
+                              ))}
+                            </Fragment>
                           );
                         })}
                       </tbody>
                     </table>
                   </div>
+                </div>
+              )}
+
+              {stats?.participantsList && stats.participantsList.length > 0 && (
+                <div className="mb-6 report-section">
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Liste des Participants</h3>
+                  <div className="overflow-x-auto rounded-xl border border-slate-200 no-split">
+                    <table className="w-full border-collapse text-xs report-table">
+                      <thead>
+                        <tr>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Nom complet</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Email</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Téléphone</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Ville</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Plan / Choix</th>
+                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-right font-semibold text-slate-700 border-b border-slate-200">Montant</th>}
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Date d'inscription</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {stats.participantsList.map((p: any, idx: number) => (
+                          <tr key={`pl-${idx}`} className="no-split-row border-b border-slate-100">
+                            <td className="px-2.5 py-2 text-slate-700 font-medium">
+                              {p.name}
+                            </td>
+                            <td className="px-2.5 py-2 text-slate-700">{p.email}</td>
+                            <td className="px-2.5 py-2 text-slate-700 whitespace-nowrap">{p.phone}</td>
+                            <td className="px-2.5 py-2 text-slate-700">{p.city}</td>
+                            <td className="px-2.5 py-2 text-slate-700 space-y-2">
+                              {p.plans?.map((pl: any, pIdx: number) => (
+                                <div key={pIdx} className="border-l-2 border-blue-200 pl-2 py-0.5">
+                                  <span className="font-semibold block leading-tight text-[11px]">{pl.plan}</span>
+                                  {pl.choice && <span className="block text-[10px] text-blue-600 leading-tight italic">{pl.choice}</span>}
+                                </div>
+                              ))}
+                            </td>
+                            {!isFreeEvent && <td className="px-2.5 py-2 text-right text-slate-700 font-semibold">{currency.format(p.totalAmount)}</td>}
+                            <td className="px-2.5 py-2 text-slate-700 whitespace-nowrap">{formatDateTime(p.createdAt).dateOnly}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {stats?.participantsByPlan && Object.keys(stats.participantsByPlan).length > 0 && (
+                <div className="mb-6 report-section">
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Participants par Plan</h3>
+                  {Object.entries(stats.participantsByPlan).map(([planName, participants]: [string, any], idx: number) => {
+                    const groupedByChoice = participants.reduce((acc: any, p: any) => {
+                      const choice = p.choice || "Sans choix";
+                      if (!acc[choice]) acc[choice] = [];
+                      acc[choice].push(p);
+                      return acc;
+                    }, {} as Record<string, any[]>);
+
+                    return (
+                      <div key={`plan-${idx}`} className="mb-8 no-split">
+                        <h4 className="text-sm font-bold text-slate-900 bg-slate-100 px-3 py-2 rounded-t-lg border-x border-t border-slate-200">
+                          {planName} <span className="text-blue-600 ml-1">({participants.length} inscrits)</span>
+                        </h4>
+                        
+                        {Object.entries(groupedByChoice).map(([choice, pList]: [string, any], cIdx: number) => (
+                          <div key={`${planName}-${choice}`} className="border-x border-b border-slate-200 last:rounded-b-lg overflow-hidden">
+                            <div className="bg-blue-50/50 px-4 py-1.5 border-b border-slate-200 flex items-center justify-between">
+                              <span className="text-[11px] font-bold text-blue-800 uppercase tracking-wider">{choice}</span>
+                              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">{pList.length}</span>
+                            </div>
+                            <div className="overflow-x-auto">
+                              <table className="w-full border-collapse text-[10px] report-table">
+                                <thead>
+                                  <tr className="bg-white">
+                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[25%]">Nom complet</th>
+                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[25%]">Email</th>
+                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[20%]">Téléphone</th>
+                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[15%]">Ville</th>
+                                    {!isFreeEvent && <th className="px-2.5 py-1.5 text-right font-semibold text-slate-500 border-b border-slate-100 w-[15%]">Montant</th>}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {pList.map((p: any, pIdx: number) => (
+                                    <tr key={`p-${idx}-${cIdx}-${pIdx}`} className="no-split-row border-b border-slate-50 last:border-0 hover:bg-slate-50/30">
+                                      <td className="px-2.5 py-1.5 text-slate-700 font-medium">{p.name}</td>
+                                      <td className="px-2.5 py-1.5 text-slate-500">{p.email}</td>
+                                      <td className="px-2.5 py-1.5 text-slate-500">{p.phone}</td>
+                                      <td className="px-2.5 py-1.5 text-slate-500">{p.city}</td>
+                                      {!isFreeEvent && <td className="px-2.5 py-1.5 text-right text-slate-600">{currency.format(p.amount)}</td>}
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
 
@@ -440,25 +534,42 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
               size: A4 portrait;
               margin: 10mm;
             }
+            body {
+              background-color: white !important;
+              print-color-adjust: exact;
+              -webkit-print-color-adjust: exact;
+            }
             .report-root {
               border: none !important;
               box-shadow: none !important;
+              padding: 0 !important;
+              margin: 0 !important;
+              width: 100% !important;
+              min-width: 100% !important;
+            }
+            .overflow-x-auto {
+              overflow: visible !important;
+              width: 100% !important;
+            }
+            .report-table {
+              font-size: 7pt !important;
+              width: 100% !important;
+              table-layout: auto !important;
+            }
+            .report-table th, .report-table td {
+              word-break: break-word !important;
+              white-space: normal !important;
+              padding: 2px 3px !important;
             }
             .report-section,
             .no-split,
             .no-split-row {
               break-inside: avoid !important;
               page-break-inside: avoid !important;
-            }
-            .report-table {
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
+              overflow: visible !important;
             }
             .report-table thead {
               display: table-header-group;
-            }
-            .report-table tfoot {
-              display: table-footer-group;
             }
             .report-table tr {
               break-inside: avoid !important;
