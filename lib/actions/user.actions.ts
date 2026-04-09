@@ -21,8 +21,8 @@ export async function useUser() {
     await connectToDatabase();
     const clerkUser = await currentUser();
     // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
-    const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
-    // const clerkId = clerkUser?.id;
+    // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
+    const clerkId = clerkUser?.id;
     if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
@@ -96,8 +96,8 @@ export async function updateCurrentUserProfile(
     await connectToDatabase();
     const clerkUser = await currentUser();
     // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
-    const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
-    // const clerkId = clerkUser?.id;
+    // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
+    const clerkId = clerkUser?.id;
 
     if (!clerkId) throw new Error("Not authenticated");
 
