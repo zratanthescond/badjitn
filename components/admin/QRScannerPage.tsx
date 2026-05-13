@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Html5Qrcode } from "html5-qrcode";
+import jsQR from "jsqr";
 import { Button } from "@/components/ui/button";
 import {
   QrCode,
@@ -153,16 +154,31 @@ export default function QRScannerPage({
   const startScanner = async (cameraId: string) => {
     setIsCameraStarting(true);
     try {
-      // Ensure element exists before starting
-      const scanner = initializeScanner("reader");
-      if (!scanner) {
-          // Retry once after a short delay if element not found (DOM might be rendering)
-          await new Promise(resolve => setTimeout(resolve, 100));
-          const retryScanner = initializeScanner("reader");
-          if (!retryScanner) throw new Error("Scanner element not found");
+      // Clear any existing scanner to avoid state transition conflicts
+      if (scannerRef.current) {
+        try {
+          if (scannerRef.current.isScanning) {
+            await scannerRef.current.stop();
+          }
+          await scannerRef.current.clear();
+        } catch {
+          // Ignore cleanup errors from stale instances
+        }
+        scannerRef.current = null;
       }
 
-      await scannerRef.current?.start(
+      // Wait for the #reader element to be in the DOM
+      const readerEl = document.getElementById("reader");
+      if (!readerEl) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        if (!document.getElementById("reader")) {
+          throw new Error("Scanner element not found");
+        }
+      }
+
+      scannerRef.current = new Html5Qrcode("reader");
+
+      await scannerRef.current.start(
         cameraId,
         {
           fps: 10,
@@ -174,7 +190,7 @@ export default function QRScannerPage({
           await handleScanSuccess(decodedText);
         },
         (errorMessage) => {
-          // console.log(errorMessage);
+          // Continuous scan - ignore non-match errors
         }
       );
       setIsScanning(true);
@@ -225,30 +241,69 @@ export default function QRScannerPage({
 
     setIsLoading(true);
     setError(null);
-    let tempScanner: Html5Qrcode | null = null;
     try {
-      // File scanning must use a dedicated scanner instance to avoid camera state conflicts.
       if (scannerRef.current?.isScanning) {
         await stopScanner();
       }
-      tempScanner = new Html5Qrcode("reader-hidden", false);
-      const decodedText = await tempScanner.scanFile(file, true);
-      await handleScanSuccess(decodedText);
-    } catch (err) {
+
+      // Read the image file and decode with jsQR (canvas-based, more robust)
+      const decodedText = await decodeQRFromFile(file);
+      if (decodedText) {
+        console.log("[QR File Scan] Decoded:", decodedText);
+        await handleScanSuccess(decodedText);
+      } else {
+        console.warn("[QR File Scan] No QR code found in image");
+        setError(t("notFound"));
+      }
+    } catch (err: any) {
+      console.error("[QR File Scan] Error:", err);
       setError(t("notFound"));
     } finally {
-      if (tempScanner) {
-        try {
-          await tempScanner.clear();
-        } catch {
-          // Ignore clear errors from temporary file scanner
-        }
-      }
       if (e.target) {
         e.target.value = "";
       }
       setIsLoading(false);
     }
+  };
+
+  /**
+   * Decode QR from an image file using canvas + jsQR.
+   * Tries multiple scales to handle small/large QR codes.
+   */
+  const decodeQRFromFile = (file: File): Promise<string | null> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          // Try at original size first, then scaled versions
+          const scales = [1, 2, 0.5, 3];
+          for (const scale of scales) {
+            const canvas = document.createElement("canvas");
+            const w = Math.round(img.naturalWidth * scale);
+            const h = Math.round(img.naturalHeight * scale);
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) continue;
+            ctx.drawImage(img, 0, 0, w, h);
+            const imageData = ctx.getImageData(0, 0, w, h);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+              inversionAttempts: "attemptBoth",
+            });
+            if (code?.data) {
+              resolve(code.data);
+              return;
+            }
+          }
+          resolve(null);
+        };
+        img.onerror = () => resolve(null);
+        img.src = reader.result as string;
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
   };
 
   const extractCandidateOrderIds = (rawValue: string) => {
@@ -314,6 +369,15 @@ export default function QRScannerPage({
       }
     }
 
+    // Pipe-separated payloads: "orderId|name|email" (badge designer format)
+    if (decoded.includes("|")) {
+      const segments = decoded.split("|");
+      for (const segment of segments) {
+        const match = segment.trim().match(MONGO_OBJECT_ID_REGEX);
+        if (match) addCandidate(match[0]);
+      }
+    }
+
     // Keep all ObjectIds found in the payload, prioritize the last one.
     const allMatches = decoded.match(new RegExp(MONGO_OBJECT_ID_REGEX.source, "g")) || [];
     [...allMatches].reverse().forEach((id) => addCandidate(id));
@@ -347,8 +411,10 @@ export default function QRScannerPage({
   const handleScanSuccess = async (rawScanValue: string) => {
     setIsLoading(true);
     setError(null);
+    console.log("[QR Scan] Raw value:", rawScanValue);
     try {
       const candidateOrderIds = extractCandidateOrderIds(rawScanValue);
+      console.log("[QR Scan] Candidate order IDs:", candidateOrderIds);
       if (candidateOrderIds.length === 0) {
         setError(t("notFound"));
         return;
@@ -392,7 +458,8 @@ export default function QRScannerPage({
     setOrderData(null);
     setError(null);
     if (scanMode === "camera" && selectedCameraId) {
-        startScanner(selectedCameraId);
+        // Defer scanner start to allow React to re-render the #reader div
+        setTimeout(() => startScanner(selectedCameraId), 300);
     }
   };
 
@@ -702,8 +769,8 @@ export default function QRScannerPage({
           </div>
         </div>
       </div>
-      {/* Hidden container for file scanning when camera UI is not rendered */}
-      <div id="reader-hidden" className="hidden" aria-hidden="true" />
+      {/* Hidden container for file scanning — must NOT use display:none or the hidden class, otherwise Html5Qrcode can't render into it */}
+      <div id="reader-hidden" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }} aria-hidden="true" />
     </div>
   );
 }
