@@ -112,8 +112,8 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                 name: "Event Badge Design",
                 frontElements: design.front,
                 backElements: design.back,
-                backgroundImage: design.backgroundImage,
-                backBackgroundImage: design.backBackgroundImage,
+                backgroundImage: design.backgroundImage || "",
+                backBackgroundImage: design.backBackgroundImage || "",
                 width: CANVAS_WIDTH,
                 height: CANVAS_HEIGHT,
                 orientation: design.orientation,
@@ -359,7 +359,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                             Upload Image
                         </Button>
                         {(currentSide === "front" ? design.backgroundImage : design.backBackgroundImage) && (
-                            <Button variant="ghost" size="sm" className="w-full justify-start text-red-500 hover:text-red-600" onClick={() => setDesign(prev => ({ ...prev, [currentSide === "front" ? "backgroundImage" : "backBackgroundImage"]: undefined }))}>
+                            <Button variant="ghost" size="sm" className="w-full justify-start text-red-500 hover:text-red-600" onClick={() => setDesign(prev => ({ ...prev, [currentSide === "front" ? "backgroundImage" : "backBackgroundImage"]: "" }))}>
                                 <RotateCcw className="w-4 h-4 mr-2" />
                                 Remove
                             </Button>
