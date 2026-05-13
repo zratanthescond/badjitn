@@ -139,17 +139,29 @@ export default function OrderAdministration({
         ["name", "fullname", "nomcomplet"].includes(label)
     );
 
+    const formatName = (str: string) => {
+      if (!str) return "";
+      return str
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('-');
+    };
+
     const combined = `${firstName} ${lastName}`.trim();
-    if (combined) return combined;
-    if (fullName) return fullName;
+    if (combined) return formatName(combined);
+    if (fullName) return formatName(fullName);
 
     const fallbackValues = infoList
       .map((info: any) => String(info?.value || "").trim())
       .filter(Boolean);
     const fallbackCombined = `${fallbackValues[0] || ""} ${fallbackValues[1] || ""}`.trim();
-    if (fallbackCombined) return fallbackCombined;
+    if (fallbackCombined) return formatName(fallbackCombined);
 
-    return buyerText || "Guest registration";
+    return buyerText ? formatName(buyerText) : "Guest registration";
   };
 
   const columns = [
