@@ -23,6 +23,12 @@ import {
     UserCircle,
     Calendar,
     Home,
+    Bold,
+    Italic,
+    Underline,
+    AlignLeft,
+    AlignCenter,
+    AlignRight,
 } from "lucide-react"
 import { createBadgeDesign, updateBadgeDesign } from "@/lib/actions/badge.actions"
 import { toast } from "sonner"
@@ -38,12 +44,18 @@ interface BadgeElement {
     height: number
     fontSize?: number
     fontWeight?: string
+    fontFamily?: string
+    fontStyle?: string
+    textDecoration?: string
+    letterSpacing?: number
     textAlign?: "left" | "center" | "right"
     color?: string
     backgroundColor?: string
     borderRadius?: number
     imageUrl?: string
     qrData?: string
+    qrMargin?: number
+    qrFgColor?: string
     rotation?: number
 }
 
@@ -414,44 +426,142 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                         {selectedEl.type === "text" && (
                             <>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Content</Label>
+                                    <Label className="text-xs">Contenu</Label>
                                     <Input value={selectedEl.content} onChange={(e) => updateElement(selectedEl.id, { content: e.target.value })} />
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">Police</Label>
+                                    <select
+                                        className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
+                                        value={selectedEl.fontFamily || "Arial"}
+                                        onChange={(e) => updateElement(selectedEl.id, { fontFamily: e.target.value })}
+                                    >
+                                        <option value="Arial">Arial</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Times New Roman">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Courier New">Courier New</option>
+                                        <option value="Impact">Impact</option>
+                                        <option value="Trebuchet MS">Trebuchet MS</option>
+                                        <option value="Palatino">Palatino</option>
+                                        <option value="Garamond">Garamond</option>
+                                    </select>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="space-y-1">
-                                        <Label className="text-xs">Font Size</Label>
-                                        <Input type="number" value={selectedEl.fontSize} onChange={(e) => updateElement(selectedEl.id, { fontSize: Number(e.target.value) })} />
+                                        <Label className="text-xs">Taille</Label>
+                                        <Input type="number" min={6} max={120} value={selectedEl.fontSize} onChange={(e) => updateElement(selectedEl.id, { fontSize: Number(e.target.value) })} />
                                     </div>
                                     <div className="space-y-1">
-                                        <Label className="text-xs">Color</Label>
+                                        <Label className="text-xs">Couleur</Label>
                                         <Input type="color" className="h-10 p-1" value={selectedEl.color} onChange={(e) => updateElement(selectedEl.id, { color: e.target.value })} />
                                     </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">Style</Label>
+                                    <div className="flex gap-1">
+                                        <Button
+                                            type="button" variant={selectedEl.fontWeight === "bold" ? "default" : "outline"} size="sm"
+                                            className="flex-1 h-8"
+                                            onClick={() => updateElement(selectedEl.id, { fontWeight: selectedEl.fontWeight === "bold" ? "normal" : "bold" })}
+                                        ><Bold className="w-3.5 h-3.5" /></Button>
+                                        <Button
+                                            type="button" variant={selectedEl.fontStyle === "italic" ? "default" : "outline"} size="sm"
+                                            className="flex-1 h-8"
+                                            onClick={() => updateElement(selectedEl.id, { fontStyle: selectedEl.fontStyle === "italic" ? "normal" : "italic" })}
+                                        ><Italic className="w-3.5 h-3.5" /></Button>
+                                        <Button
+                                            type="button" variant={selectedEl.textDecoration === "underline" ? "default" : "outline"} size="sm"
+                                            className="flex-1 h-8"
+                                            onClick={() => updateElement(selectedEl.id, { textDecoration: selectedEl.textDecoration === "underline" ? "none" : "underline" })}
+                                        ><Underline className="w-3.5 h-3.5" /></Button>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">Alignement</Label>
+                                    <div className="flex gap-1">
+                                        <Button
+                                            type="button" variant={selectedEl.textAlign === "left" ? "default" : "outline"} size="sm"
+                                            className="flex-1 h-8"
+                                            onClick={() => updateElement(selectedEl.id, { textAlign: "left" })}
+                                        ><AlignLeft className="w-3.5 h-3.5" /></Button>
+                                        <Button
+                                            type="button" variant={selectedEl.textAlign === "center" ? "default" : "outline"} size="sm"
+                                            className="flex-1 h-8"
+                                            onClick={() => updateElement(selectedEl.id, { textAlign: "center" })}
+                                        ><AlignCenter className="w-3.5 h-3.5" /></Button>
+                                        <Button
+                                            type="button" variant={selectedEl.textAlign === "right" ? "default" : "outline"} size="sm"
+                                            className="flex-1 h-8"
+                                            onClick={() => updateElement(selectedEl.id, { textAlign: "right" })}
+                                        ><AlignRight className="w-3.5 h-3.5" /></Button>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">Espacement lettres (px)</Label>
+                                    <Input type="number" min={-2} max={20} value={selectedEl.letterSpacing ?? 0} onChange={(e) => updateElement(selectedEl.id, { letterSpacing: Number(e.target.value) })} />
                                 </div>
                             </>
                         )}
                         {selectedEl.type === "qr" && (
-                            <div className="space-y-1">
-                                <Label className="text-xs">QR Data (use {"{qr_code}"} for ID)</Label>
-                                <Input value={selectedEl.qrData} onChange={(e) => updateElement(selectedEl.id, { qrData: e.target.value })} />
-                            </div>
+                            <>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">Contenu du QR Code</Label>
+                                    <select
+                                        className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm mb-2"
+                                        value=""
+                                        onChange={(e) => {
+                                            if (e.target.value) updateElement(selectedEl.id, { qrData: e.target.value })
+                                        }}
+                                    >
+                                        <option value="">— Insérer un modèle —</option>
+                                        <option value="{qr_code}">ID participant</option>
+                                        <option value="{email}">Email</option>
+                                        <option value="{name}">Nom</option>
+                                        <option value="{name} - {email}">Nom + Email</option>
+                                        <option value="{qr_code}|{name}|{email}">ID + Nom + Email</option>
+                                    </select>
+                                    <Input value={selectedEl.qrData || "{qr_code}"} onChange={(e) => updateElement(selectedEl.id, { qrData: e.target.value })} placeholder="ex: {qr_code}" />
+                                    <p className="text-[10px] text-muted-foreground mt-1">Variables : {"{qr_code}"}, {"{name}"}, {"{email}"}, {"{company}"}, {"{event_title}"}</p>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">Marge blanche (quiet zone) : {selectedEl.qrMargin ?? 1}</Label>
+                                    <input
+                                        type="range"
+                                        min={0} max={10} step={1}
+                                        value={selectedEl.qrMargin ?? 1}
+                                        onChange={(e) => updateElement(selectedEl.id, { qrMargin: Number(e.target.value) })}
+                                        className="w-full accent-primary h-2"
+                                    />
+                                    <div className="flex justify-between text-[10px] text-muted-foreground">
+                                        <span>0 (aucune)</span>
+                                        <span>10 (large)</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">Couleur du QR</Label>
+                                    <Input type="color" className="h-10 p-1" value={selectedEl.qrFgColor || "#000000"} onChange={(e) => updateElement(selectedEl.id, { qrFgColor: e.target.value })} />
+                                </div>
+                            </>
                         )}
                         <div className="grid grid-cols-2 gap-2">
                             <div className="space-y-1">
-                                <Label className="text-xs">Width</Label>
+                                <Label className="text-xs">Largeur</Label>
                                 <Input type="number" value={selectedEl.width} onChange={(e) => updateElement(selectedEl.id, { width: Number(e.target.value) })} />
                             </div>
                             <div className="space-y-1">
-                                <Label className="text-xs">Height</Label>
+                                <Label className="text-xs">Hauteur</Label>
                                 <Input type="number" value={selectedEl.height} onChange={(e) => updateElement(selectedEl.id, { height: Number(e.target.value) })} />
                             </div>
                         </div>
                         {selectedEl.type === "shape" && (
                             <div className="space-y-1">
-                                <Label className="text-xs">Bg Color</Label>
+                                <Label className="text-xs">Couleur fond</Label>
                                 <Input type="color" className="h-10 p-1" value={selectedEl.backgroundColor} onChange={(e) => updateElement(selectedEl.id, { backgroundColor: e.target.value })} />
                             </div>
                         )}
-                        <Button variant="destructive" size="sm" className="w-full" onClick={() => deleteElement(selectedEl.id)}>Delete</Button>
+                        <Button variant="destructive" size="sm" className="w-full" onClick={() => deleteElement(selectedEl.id)}>Supprimer</Button>
                     </Card>
                 )}
             </div>
@@ -492,7 +602,12 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                         style={{
                                             fontSize: el.fontSize,
                                             fontWeight: el.fontWeight,
+                                            fontFamily: el.fontFamily || "Arial",
+                                            fontStyle: el.fontStyle || "normal",
+                                            textDecoration: el.textDecoration || "none",
+                                            letterSpacing: el.letterSpacing ? `${el.letterSpacing}px` : undefined,
                                             textAlign: el.textAlign,
+                                            justifyContent: el.textAlign === "center" ? "center" : el.textAlign === "right" ? "flex-end" : "flex-start",
                                             color: el.color,
                                             padding: "4px",
                                             wordBreak: "break-word",
@@ -520,10 +635,11 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                     </div>
                                 )}
                                 {el.type === "qr" && (
-                                    <div className="w-full h-full bg-white p-1" style={{ borderRadius: el.borderRadius }}>
+                                    <div className="w-full h-full bg-white flex items-center justify-center" style={{ borderRadius: el.borderRadius, padding: `${el.qrMargin ?? 1}px` }}>
                                         <QRCode
                                             value={el.qrData || "badge"}
-                                            size={Math.min(el.width, el.height) - 8}
+                                            size={Math.min(el.width, el.height) - ((el.qrMargin ?? 1) * 2)}
+                                            fgColor={el.qrFgColor || "#000000"}
                                             className="w-full h-full"
                                         />
                                     </div>

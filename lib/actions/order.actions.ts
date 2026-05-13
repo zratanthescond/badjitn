@@ -8,6 +8,7 @@ import {
   GetOrdersByUserParams,
 } from "@/types";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { handleError } from "../utils";
 import { connectToDatabase } from "../database";
 import Order from "../database/models/order.model";
@@ -548,3 +549,89 @@ export const checkExistingRegistration = async (eventId: string, email: string) 
   }
 };
 
+// BULK IMPORT PARTICIPANTS
+export type ImportedParticipantRow = {
+  fields: { label: string; field: string; value: string }[];
+  planName?: string;
+  planPrice?: string;
+  category?: string;
+};
+
+export const bulkImportParticipants = async ({
+  eventId,
+  participants,
+}: {
+  eventId: string;
+  participants: ImportedParticipantRow[];
+}) => {
+  try {
+    await connectToDatabase();
+
+    const event = await Event.findById(eventId);
+    if (!event) throw new Error("Event not found");
+
+    const results = { created: 0, skipped: 0, errors: [] as string[] };
+
+    for (let i = 0; i < participants.length; i++) {
+      const row = participants[i];
+      try {
+        const emailField = row.fields.find(
+          (f) => f.field.toLowerCase() === "email"
+        );
+        // Skip duplicate emails if present
+        if (emailField?.value) {
+          const existing = await Order.findOne({
+            event: eventId,
+            requiredUserInfo: {
+              $elemMatch: {
+                field: "email",
+                value: {
+                  $regex: new RegExp(
+                    `^${emailField.value.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`,
+                    "i"
+                  ),
+                },
+              },
+            },
+          });
+          if (existing) {
+            results.skipped++;
+            continue;
+          }
+        }
+
+        const requiredUserInfo = row.fields.map((f) => ({
+          label: f.label,
+          field: f.field,
+          type: "text",
+          value: f.value || "",
+        }));
+
+        const planName = row.planName || "Import";
+        const planPrice = row.planPrice || "0";
+        const totalAmount = Number(planPrice) || 0;
+
+        const newOrder = await Order.create({
+          stripeId: `import_${eventId}_${Date.now()}_${i}_${Math.random().toString(36).slice(2, 8)}`,
+          event: eventId,
+          totalAmount,
+          type: totalAmount > 0 ? "paid" : "hosted",
+          details: [{ name: planName, price: planPrice }],
+          requiredUserInfo,
+          category: row.category || "attendee",
+          badgePrinted: false,
+          createdAt: new Date(),
+        });
+
+        if (newOrder) results.created++;
+      } catch (rowError: any) {
+        results.errors.push(`Row ${i + 1}: ${rowError.message}`);
+      }
+    }
+
+    revalidatePath(`/orders`);
+    return results;
+  } catch (error: any) {
+    return { created: 0, skipped: 0, errors: [error.message] };
+  }
+};

@@ -10,6 +10,10 @@ export interface IBadgeElement {
     content?: string;
     fontSize?: number;
     fontWeight?: string;
+    fontFamily?: string;
+    fontStyle?: string;
+    textDecoration?: string;
+    letterSpacing?: number;
     textAlign?: "left" | "center" | "right";
     color?: string;
     backgroundColor?: string;
@@ -17,6 +21,8 @@ export interface IBadgeElement {
     rotation?: number;
     imageUrl?: string;
     qrData?: string;
+    qrMargin?: number;
+    qrFgColor?: string;
 }
 
 export interface IBadgeDesign extends Document {
@@ -43,6 +49,10 @@ const BadgeElementSchema = new Schema({
     content: { type: String },
     fontSize: { type: Number },
     fontWeight: { type: String },
+    fontFamily: { type: String },
+    fontStyle: { type: String },
+    textDecoration: { type: String },
+    letterSpacing: { type: Number },
     textAlign: { type: String, enum: ["left", "center", "right"] },
     color: { type: String },
     backgroundColor: { type: String },
@@ -50,6 +60,8 @@ const BadgeElementSchema = new Schema({
     rotation: { type: Number },
     imageUrl: { type: String },
     qrData: { type: String },
+    qrMargin: { type: Number },
+    qrFgColor: { type: String },
 });
 
 const BadgeDesignSchema = new Schema({

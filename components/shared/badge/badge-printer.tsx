@@ -16,12 +16,18 @@ interface BadgeElement {
     height: number
     fontSize?: number
     fontWeight?: string
+    fontFamily?: string
+    fontStyle?: string
+    textDecoration?: string
+    letterSpacing?: number
     textAlign?: "left" | "center" | "right"
     color?: string
     backgroundColor?: string
     borderRadius?: number
     imageUrl?: string
     qrData?: string
+    qrMargin?: number
+    qrFgColor?: string
     rotation?: number
 }
 
@@ -109,7 +115,12 @@ export function BadgePrinter({
                         style={{
                             fontSize: el.fontSize,
                             fontWeight: el.fontWeight,
+                            fontFamily: el.fontFamily || "Arial",
+                            fontStyle: el.fontStyle || "normal",
+                            textDecoration: el.textDecoration || "none",
+                            letterSpacing: el.letterSpacing ? `${el.letterSpacing}px` : undefined,
                             textAlign: el.textAlign,
+                            justifyContent: el.textAlign === "center" ? "center" : el.textAlign === "right" ? "flex-end" : "flex-start",
                             color: el.color,
                             wordBreak: "break-word",
                         }}
@@ -146,10 +157,11 @@ export function BadgePrinter({
                     </div>
                 )}
                 {el.type === "qr" && (
-                    <div className="w-full h-full bg-white p-1" style={{ borderRadius: el.borderRadius }}>
+                    <div className="w-full h-full bg-white flex items-center justify-center" style={{ borderRadius: el.borderRadius, padding: `${el.qrMargin ?? 1}px` }}>
                         <QRCode
                             value={replacePlaceholders(el.qrData || "{qr_code}", attendee)}
-                            size={Math.min(el.width, el.height) - 4}
+                            size={Math.min(el.width, el.height) - ((el.qrMargin ?? 1) * 2)}
+                            fgColor={el.qrFgColor || "#000000"}
                             className="w-full h-full"
                         />
                     </div>

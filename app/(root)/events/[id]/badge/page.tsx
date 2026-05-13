@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
 import { getEventById } from "@/lib/actions/event.actions";
 import { IntegratedBadgeSystem } from "@/components/shared/badge/integrated-badge-system";
 import { redirect } from "next/navigation";
@@ -6,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/actions/user.actions";
+import { checkOrgPermission } from "@/lib/actions/organisation.actions";
 import { getTranslations } from "next-intl/server";
 
 type BadgePageProps = {
@@ -26,7 +26,7 @@ export default async function BadgePage(props: BadgePageProps) {
     if (!user) {
         return redirect("/sign-in");
     }
-    const userId = user?._id;
+    const userId = user?._id?.toString();
     const event = await getEventById(id);
 
     if (!event) {
@@ -40,11 +40,16 @@ export default async function BadgePage(props: BadgePageProps) {
         );
     }
 
-    // Security check: Only organizer or admin should see this
-    const isOrganizer = event.organizer.clerkId === user.clerkId;
+    // Security check: Only organizer or org admin/creator should see this
+    const isOrganizer = event.organizer?._id === userId;
+    let hasOrgAccess = false;
 
-    // Note: Depending on the project, you might have a global admin check too.
-    if (!isOrganizer) {
+    if (event.organisation?._id) {
+        const permission = await checkOrgPermission(event.organisation._id, userId);
+        hasOrgAccess = permission.hasAccess;
+    }
+
+    if (!isOrganizer && !hasOrgAccess) {
         redirect("/");
     }
 

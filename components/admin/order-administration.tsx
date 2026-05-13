@@ -27,10 +27,12 @@ import {
   Printer,
   QrCode,
   FileText,
+  Upload,
 } from "lucide-react";
 import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
 import EventReportDialog from "./EventReportDialog";
+import ImportParticipantsDialog from "./ImportParticipantsDialog";
 import { CardSkeleton } from "./CardSkeleton";
 import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
@@ -69,6 +71,7 @@ export default function OrderAdministration({
   const locale = useLocale();
   const isRTL = locale === "ar";
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { toast } = useToast();
@@ -1248,6 +1251,14 @@ export default function OrderAdministration({
               <>
                 <Button
                   variant="outline"
+                  onClick={() => setIsImportOpen(true)}
+                  className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-emerald-500/10 to-teal-500/10 backdrop-blur-sm border-emerald-300/50 dark:border-emerald-700/50 hover:from-emerald-500/20 hover:to-teal-500/20 text-emerald-700 dark:text-emerald-400"
+                >
+                  <Upload className="h-4 w-4" />
+                  <span>Importer</span>
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={() => setIsReportOpen(true)}
                   className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border-amber-300/50 dark:border-amber-700/50 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-700 dark:text-amber-400"
                 >
@@ -1415,6 +1426,15 @@ export default function OrderAdministration({
           eventId={eventId}
           isOpen={isReportOpen}
           onClose={() => setIsReportOpen(false)}
+        />
+      )}
+
+      {/* Import Participants Dialog */}
+      {eventId && (
+        <ImportParticipantsDialog
+          eventId={eventId}
+          isOpen={isImportOpen}
+          onClose={() => setIsImportOpen(false)}
         />
       )}
     </div>
