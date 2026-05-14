@@ -635,3 +635,56 @@ export const bulkImportParticipants = async ({
     return { created: 0, skipped: 0, errors: [error.message] };
   }
 };
+
+// ADD MANUAL PARTICIPANT
+export const addManualParticipant = async ({
+  eventId,
+  firstName,
+  lastName,
+  email,
+  planName = "Manuel",
+  planPrice = "0",
+  category = "attendee",
+  ticketType = "paid",
+}: {
+  eventId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  planName?: string;
+  planPrice?: string;
+  category?: string;
+  ticketType?: string;
+}) => {
+  try {
+    await connectToDatabase();
+
+    const event = await Event.findById(eventId);
+    if (!event) throw new Error("Event not found");
+
+    const totalAmount = Number(planPrice) || 0;
+
+    const requiredUserInfo = [
+      { label: "Prénom", field: "firstname", type: "text", value: firstName },
+      { label: "Nom", field: "lastname", type: "text", value: lastName },
+      { label: "Email", field: "email", type: "email", value: email },
+    ];
+
+    const newOrder = await Order.create({
+      stripeId: `manual_${eventId}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      event: eventId,
+      totalAmount,
+      type: ticketType,
+      details: [{ name: planName || "Manuel", price: planPrice || "0" }],
+      requiredUserInfo,
+      category: category,
+      badgePrinted: false,
+      createdAt: new Date(),
+    });
+
+    revalidatePath(`/orders`);
+    return JSON.parse(JSON.stringify(newOrder));
+  } catch (error: any) {
+    handleError(error);
+  }
+};

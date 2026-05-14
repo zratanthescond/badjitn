@@ -28,11 +28,13 @@ import {
   QrCode,
   FileText,
   Upload,
+  UserPlus,
 } from "lucide-react";
 import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
 import EventReportDialog from "./EventReportDialog";
 import ImportParticipantsDialog from "./ImportParticipantsDialog";
+import AddParticipantDialog from "./AddParticipantDialog";
 import { CardSkeleton } from "./CardSkeleton";
 import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
@@ -72,6 +74,7 @@ export default function OrderAdministration({
   const isRTL = locale === "ar";
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isAddParticipantOpen, setIsAddParticipantOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { toast } = useToast();
@@ -1263,6 +1266,14 @@ export default function OrderAdministration({
               <>
                 <Button
                   variant="outline"
+                  onClick={() => setIsAddParticipantOpen(true)}
+                  className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-blue-500/10 to-indigo-500/10 backdrop-blur-sm border-blue-300/50 dark:border-blue-700/50 hover:from-blue-500/20 hover:to-indigo-500/20 text-blue-700 dark:text-blue-400"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  <span>Ajouter</span>
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={() => setIsImportOpen(true)}
                   className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-emerald-500/10 to-teal-500/10 backdrop-blur-sm border-emerald-300/50 dark:border-emerald-700/50 hover:from-emerald-500/20 hover:to-teal-500/20 text-emerald-700 dark:text-emerald-400"
                 >
@@ -1447,6 +1458,16 @@ export default function OrderAdministration({
           eventId={eventId}
           isOpen={isImportOpen}
           onClose={() => setIsImportOpen(false)}
+        />
+      )}
+
+      {/* Add Participant Dialog */}
+      {eventId && (
+        <AddParticipantDialog
+          eventId={eventId}
+          isOpen={isAddParticipantOpen}
+          onClose={() => setIsAddParticipantOpen(false)}
+          isFreeEvent={isFreeEvent}
         />
       )}
     </div>
