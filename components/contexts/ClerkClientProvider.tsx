@@ -27,6 +27,7 @@ export function ClientProvider({
 
   return (
     <ClerkProvider
+      dynamic
       localization={clerkLocale}
       appearance={{
         baseTheme: userTheme,
@@ -38,7 +39,7 @@ export function ClientProvider({
           headerTitle: "text-2xl font-semibold text-foreground",
           headerSubtitle: "text-sm text-muted-foreground",
         },
-      }}
+      } as any}
     >
       {children}
     </ClerkProvider>

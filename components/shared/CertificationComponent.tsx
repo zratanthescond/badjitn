@@ -69,7 +69,7 @@ export default function CertificationComponent({
 
   useEffect(() => {
     if (certification && certification.status === "approved") {
-      setQrcodeContent(certification._id);
+      setQrcodeContent(certification._id.toString());
     }
   }, [certification]);
 

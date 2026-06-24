@@ -10,7 +10,7 @@ export interface IClientInfo {
 }
 
 interface IEventWork extends mongoose.Document {
-  _id: mongoose.Schema.Types.ObjectId;
+  _id: any;
   eventId: mongoose.Schema.Types.ObjectId;
   userId: mongoose.Schema.Types.ObjectId;
   title?: string;

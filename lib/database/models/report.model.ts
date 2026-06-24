@@ -13,7 +13,7 @@ import mongoose, { Document } from "mongoose";
  */
 
 interface IReport extends Document {
-  _id: mongoose.Schema.Types.ObjectId;
+  _id: any;
   userId: mongoose.Schema.Types.ObjectId;
   eventId: mongoose.Schema.Types.ObjectId;
   cause: string;

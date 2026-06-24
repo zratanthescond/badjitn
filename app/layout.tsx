@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
 import { ClientProvider } from "@/components/contexts/ClerkClientProvider";

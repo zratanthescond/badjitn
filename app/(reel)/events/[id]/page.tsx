@@ -1,4 +1,3 @@
-import CheckoutButton from "@/components/shared/CheckoutButton";
 import Collection from "@/components/shared/Collection";
 import HomePostContainer from "@/components/shared/HomePostContainer";
 import ShortsScroll from "@/components/shorts/shorts-scroll";

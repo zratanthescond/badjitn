@@ -5,9 +5,11 @@ import AIToolConfig from "@/lib/database/models/ai-tool-config.model";
 import { connectToDatabase } from "@/lib/database";
 import { readAIToolConfig } from "@/lib/ai-tool-config";
 import { handleError } from "@/lib/utils";
+import { verifyAdmin, verifyUser } from "./auth.actions";
 
 export async function getAIToolConfig() {
   try {
+    await verifyUser();
     return await readAIToolConfig();
   } catch (error) {
     handleError(error);
@@ -22,6 +24,7 @@ export async function updateAIToolConfig(data: {
   }[] 
 }) {
   try {
+    await verifyAdmin();
     await connectToDatabase();
     
     const updatedConfig = await AIToolConfig.findOneAndUpdate(

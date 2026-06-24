@@ -20,6 +20,7 @@ import Sponsor from "../database/models/sponor.model";
 import Report from "../database/models/report.model";
 import Order from "../database/models/order.model";
 import Attendance from "../database/models/attendance.model";
+import { verifyAdmin, verifyOrganizerOrAdmin } from "./auth.actions";
 
 // HELPERS
 const getCategoryByName = async (name: string) => {
@@ -343,6 +344,7 @@ export const createSponsorAction = async ({
 
 export async function restrictEvent(eventId: string) {
   try {
+    await verifyAdmin();
     await connectToDatabase();
     const event = await Event.findById(eventId);
     if (!event) throw new Error("Event not found");
@@ -358,6 +360,7 @@ export async function restrictEvent(eventId: string) {
 
 export async function adminBanEventCreator(eventId: string) {
   try {
+    await verifyAdmin();
     await connectToDatabase();
     const event = await Event.findById(eventId);
     if (!event) throw new Error("Event not found");
@@ -377,6 +380,7 @@ export async function adminBanEventCreator(eventId: string) {
 // SCANNING AND REPORTING
 export async function addScanPoint(eventId: string, scanPoint: string) {
   try {
+    await verifyOrganizerOrAdmin(eventId);
     await connectToDatabase();
     const event = await Event.findById(eventId);
     if (!event) throw new Error("Event not found");
@@ -396,6 +400,7 @@ export async function addScanPoint(eventId: string, scanPoint: string) {
 
 export async function removeScanPoint(eventId: string, scanPoint: string) {
   try {
+    await verifyOrganizerOrAdmin(eventId);
     await connectToDatabase();
     const event = await Event.findById(eventId);
     if (!event) throw new Error("Event not found");

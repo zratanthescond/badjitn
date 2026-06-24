@@ -7,11 +7,12 @@ import WorkAdministration from "@/components/admin/work-administration";
 import BankTransferAdministration from "@/components/admin/bank-transfer-administration";
 import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 import { getOrdersByEvent } from "@/lib/actions/order.actions";
 import { getEventById } from "@/lib/actions/event.actions";
 import { getCertificationByEventId } from "@/lib/actions/certification.actions";
-import { getUserWorkByEventId } from "@/lib/actions/user.actions";
+import { getUserWorkByEventId, useUser } from "@/lib/actions/user.actions";
 import OrdersEvolutionChart from "@/components/admin/OrdersEvolutionChart";
 
 const Orders = async (props: SearchParamProps) => {
@@ -23,13 +24,34 @@ const Orders = async (props: SearchParamProps) => {
   const eventId = (searchParams?.eventId as string) || "";
   const searchText = (searchParams?.query as string) || "";
 
-  // Get user ID for verification tracking
-  const { userId } = await auth();
-  const currentUserId = userId || "";
+  // Get database user
+  const user = await useUser();
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  // Fetch event data and verify permissions
+  const eventData = eventId ? await getEventById(eventId) : null;
+  if (eventId) {
+    if (!eventData) {
+      redirect("/");
+    }
+    const isOrganizer = eventData.organizer?._id?.toString() === user._id.toString();
+    const isAdmin = user.role === "admin";
+    if (!isOrganizer && !isAdmin) {
+      redirect("/");
+    }
+  } else {
+    // If no eventId is provided, only allow admin to load
+    if (user.role !== "admin") {
+      redirect("/");
+    }
+  }
+
+  const currentUserId = user.clerkId || "";
 
   // Fetch actual stats data
   const ordersData = await getOrdersByEvent({ eventId, searchString: "" });
-  const eventData = eventId ? await getEventById(eventId) : null;
   const certificationsData = await getCertificationByEventId({ eventId, searchString: "" });
   const worksData = await getUserWorkByEventId({ eventId, searchString: "" });
 

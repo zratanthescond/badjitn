@@ -41,7 +41,7 @@ export default function Page() {
             },
             variables: {
               colorPrimary: "#0ea5e9",
-              colorTextOnPrimaryBackground: "white",
+              colorPrimaryForeground: "white",
             },
           }}
         />

@@ -60,7 +60,7 @@ export default function DiscountDialog({
   setRequiredUserInfo,
   setDiscountInfo,
 }: MyDialogProps) {
-  const [fields, setFields] = useState<IField[]>([]);
+  const [fields, setFields] = useState<any[]>([]);
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isDiscountApplied, setIsDiscountApplied] = useState(false);
@@ -69,12 +69,16 @@ export default function DiscountDialog({
     const loadFields = async () => {
       const fetchedFields = await getEventFields(requiredInfo);
       if (fetchedFields.success) {
-        setFields(fetchedFields.data);
+        const mappedFields = fetchedFields.data.map((field: any) => ({
+          ...field,
+          _id: field._id.toString(),
+        }));
+        setFields(mappedFields);
 
         // Initialize formData and errors state
         const initialFormData: { [key: string]: string } = {};
         const initialErrors: { [key: string]: string } = {};
-        fetchedFields.data.forEach((field: IField) => {
+        mappedFields.forEach((field: any) => {
           initialFormData[field._id] = "";
           initialErrors[field._id] = "";
         });
@@ -180,7 +184,7 @@ export default function DiscountDialog({
                         <SelectValue placeholder="Select an option" />
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
-                        {field.options?.map((option, idx) => (
+                        {(field.options as string[] | undefined)?.map((option: string, idx: number) => (
                           <SelectItem key={idx} value={option}>
                             {option}
                           </SelectItem>
@@ -197,7 +201,7 @@ export default function DiscountDialog({
                 ) : field.type === "radio" ? (
                   <>
                     <div className="space-y-2 pt-1">
-                      {field.options?.map((option, idx) => (
+                      {(field.options as string[] | undefined)?.map((option: string, idx: number) => (
                         <div
                           key={idx}
                           className={`flex items-center gap-3 p-3 rounded-lg border border-input hover:border-primary/50 transition-colors cursor-pointer ${

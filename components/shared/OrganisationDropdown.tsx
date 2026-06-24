@@ -40,8 +40,8 @@ const OrganisationDropdown = ({ value, onChangeHandler, userId }: OrganisationDr
         {organisations.length > 0 ? (
           organisations.map((org) => (
             <SelectItem
-              key={org._id}
-              value={org._id}
+              key={org._id.toString()}
+              value={org._id.toString()}
               className={`select-item p-regular-14 cursor-pointer focus:bg-pink-500/20 ${!org.isVerified ? "opacity-70" : ""}`}
             >
               <div className="flex items-center justify-between w-full gap-2">

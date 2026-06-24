@@ -15,14 +15,14 @@ import Stripe from "stripe";
 import { ObjectId } from "mongodb";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { sendWorkStatusEmail } from "../mail";
+import { verifyAdmin, verifyOrganizerOrAdmin } from "./auth.actions";
 
 export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-    // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
-    // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
-    const clerkId = clerkUser?.id;
+  //  const clerkId = clerkUser?.id;
+  const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
     if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
@@ -95,8 +95,6 @@ export async function updateCurrentUserProfile(
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-    // const clerkId = "user_36qyB68Vql8zas2YEAZZBGN4LtS";
-    // const clerkId = "user_3AEFVZHsnv5tU20eCHEzYtjcnYB";  // Ayoub_id
     const clerkId = clerkUser?.id;
 
     if (!clerkId) throw new Error("Not authenticated");
@@ -337,6 +335,7 @@ export async function approveWork(workId: string) {
     await connectToDatabase();
     const work = await EventWork.findById(workId);
     if (!work) throw new Error("Work not found");
+    await verifyOrganizerOrAdmin(String(work.eventId));
     work.summaryStatus = "approved";
     work.approvedAt = new Date();
     await work.save();
@@ -485,6 +484,7 @@ export async function getUserWorkByEventId({
   searchString: string;
 }) {
   try {
+    await verifyOrganizerOrAdmin(eventId);
     await connectToDatabase();
     const eventObjectId = new ObjectId(eventId);
     if (!eventId) throw new Error("Event ID is required");
@@ -551,6 +551,7 @@ export async function getUserWorkByEventId({
 }
 export async function admingetUsers() {
   try {
+    await verifyAdmin();
     await connectToDatabase();
     const users = await User.find({});
     return JSON.parse(JSON.stringify(users));
@@ -560,6 +561,7 @@ export async function admingetUsers() {
 }
 export async function banUser(userId: string) {
   try {
+    await verifyAdmin();
     await connectToDatabase();
 
     const user = await User.findById(userId);
@@ -573,6 +575,7 @@ export async function banUser(userId: string) {
 }
 export async function unbanUser(userId: string) {
   try {
+    await verifyAdmin();
     await connectToDatabase();
     const user = await User.findById(userId);
     user.isBanned = false;
@@ -586,6 +589,7 @@ export async function unbanUser(userId: string) {
 
 export async function admingetReports() {
   try {
+    await verifyAdmin();
     await connectToDatabase();
     const reports = await Report.find({})
       .populate({
@@ -610,6 +614,7 @@ export async function admingetReports() {
 }
 export async function adminDiscardReport(reportId: string) {
   try {
+    await verifyAdmin();
     await connectToDatabase();
     const report = await Report.findByIdAndUpdate(reportId, {
       status: "reviewed",

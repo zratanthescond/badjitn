@@ -124,10 +124,13 @@ export async function getComments(postId: string): Promise<CommentType[]> {
         .sort({ createdAt: 1 });
 
       return await Promise.all(
-        replies.map(async (reply) => ({
-          ...reply.toObject(),
-          replies: await fetchReplies(reply._id), // Recursively get replies
-        }))
+        replies.map(async (reply) => {
+          const converted = await convertComment(reply);
+          return {
+            ...converted,
+            replies: await fetchReplies(reply._id), // Recursively get replies
+          };
+        })
       );
     };
 

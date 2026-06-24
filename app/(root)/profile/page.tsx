@@ -14,7 +14,7 @@ const ProfilePage = async (props: SearchParamProps) => {
   const searchParams = await props.searchParams;
   const user = await useUser();
   if (!user) {
-    // return redirect("/sign-in");
+    return redirect("/sign-in");
   }
   const userId = user?._id;
   const ordersPage = Number(searchParams?.ordersPage) || 1;

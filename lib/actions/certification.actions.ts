@@ -5,6 +5,7 @@ import Certificate from "../database/models/certification.model";
 import { handleError } from "../utils";
 import { revalidate } from "@/app/api/contrebuters/route";
 import { revalidatePath } from "next/cache";
+import { verifyOrganizerOrAdmin } from "./auth.actions";
 type CreateCertificationParams = {
   userId: string;
   eventId: string;
@@ -53,6 +54,7 @@ export async function getCertificationByEventId({
   searchString: string;
 }) {
   try {
+    await verifyOrganizerOrAdmin(eventId);
     await connectToDatabase();
 
     if (!eventId) throw new Error("Event ID is required");
@@ -112,11 +114,15 @@ export async function getCertificationByEventId({
 export async function approveCertification(certificationId: string) {
   try {
     await connectToDatabase();
-    const certificate = await Certificate.findOneAndUpdate(
-      { _id: certificationId },
-      { status: "approved" },
-      { approvedAt: new Date() }
-    );
+    const certificate = await Certificate.findById(certificationId);
+    if (!certificate) throw new Error("Certificate not found");
+ 
+    await verifyOrganizerOrAdmin(String(certificate.eventId));
+ 
+    certificate.status = "approved";
+    certificate.approvedAt = new Date();
+    await certificate.save();
+ 
     return JSON.parse(JSON.stringify(certificate));
   } catch (error) {
     console.log(error);
@@ -126,10 +132,14 @@ export async function approveCertification(certificationId: string) {
 export async function rejectCertification(certificationId: string) {
   try {
     await connectToDatabase();
-    const certificate = await Certificate.findOneAndUpdate(
-      { _id: certificationId },
-      { status: "rejected" }
-    );
+    const certificate = await Certificate.findById(certificationId);
+    if (!certificate) throw new Error("Certificate not found");
+ 
+    await verifyOrganizerOrAdmin(String(certificate.eventId));
+ 
+    certificate.status = "rejected";
+    await certificate.save();
+ 
     revalidatePath("/orders?eventId=" + certificate.eventId);
     return JSON.parse(JSON.stringify(certificate));
   } catch (error) {

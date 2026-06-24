@@ -7,6 +7,14 @@ import mongoose, { Mongoose } from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
+  const webhookSecret = req.headers.get("x-webhook-secret");
+  if (webhookSecret !== process.env.WEBHOOK_SECRET) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   const body = await req.json();
 
   const data = body.metadata;

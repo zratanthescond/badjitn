@@ -118,7 +118,7 @@ export function ModifyVideo({ video, setVideo, userId }: any) {
     data.append("video", video);
     if (usedTrack) {
       data.append("usedTrack", JSON.stringify(usedTrack));
-      data.append("selectedTime", selectedTime);
+      data.append("selectedTime", String(selectedTime));
     }
     data.append("vDuration", String(vDuration));
     try {

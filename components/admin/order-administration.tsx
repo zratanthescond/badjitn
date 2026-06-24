@@ -661,7 +661,7 @@ export default function OrderAdministration({
         }
 
         worksheet.getRow(headerRowNumber).values = headers;
-        rows.forEach((row, idx) => {
+        rows.forEach((row: any, idx: number) => {
           worksheet.getRow(dataStartRowNumber + idx).values = row as any;
         });
 
@@ -742,7 +742,7 @@ export default function OrderAdministration({
           .filter((x) => numericKeywords.some((k) => x.n.includes(k)))
           .map((x) => x.idx);
 
-        rows.forEach((_row, rowIndex) => {
+        rows.forEach((_row: any, rowIndex: number) => {
           const rowNumber = dataStartRowNumber + rowIndex;
           const excelRow = worksheet.getRow(rowNumber);
           const isZebra = rowIndex % 2 === 1;

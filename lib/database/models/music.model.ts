@@ -1,7 +1,7 @@
 import { Document, Schema, model, models } from "mongoose";
 
 export interface IMusic extends Document {
-  _id: string;
+  _id: any;
   title: string;
   artist: string;
   album: string;

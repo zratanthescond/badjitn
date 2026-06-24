@@ -2,7 +2,7 @@ import mongoose, { Document, Schema, model, models } from "mongoose";
 import { number, string } from "zod";
 
 export interface IEvent extends Document {
-  _id: string;
+  _id: any;
   title: string;
   description?: string;
   location?: {

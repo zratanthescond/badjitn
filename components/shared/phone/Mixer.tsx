@@ -152,11 +152,9 @@ export function Mixer({
             <Framer src={src} duration={duration} remPerSec={remPerSec} />
             <MusicWave
               selectedTime={selectedTime}
-              setSelectedTime={setSelectedTime}
               usedTrack={usedTrack}
               isPlaying={isPlaying}
               vDuration={vDuration}
-              setVDuration={setVDuration}
               currentTime={currentTime}
               remPerSec={remPerSec}
             />

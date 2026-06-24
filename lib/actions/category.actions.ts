@@ -6,11 +6,13 @@ import { connectToDatabase } from "../database";
 import Category from "../database/models/category.model";
 import Event from "../database/models/event.model";
 import { CATEGORY_KEYS } from "@/constants";
+import { verifyAdmin } from "./auth.actions";
 
 export const createCategory = async ({
   categoryName,
 }: CreateCategoryParams) => {
   try {
+    await verifyAdmin();
     await connectToDatabase();
 
     const newCategory = await Category.create({ name: categoryName });
@@ -68,15 +70,16 @@ export async function getCategotiesWithEventsCount() {
 
 export const deleteCategory = async (categoryId: string) => {
   try {
+    await verifyAdmin();
     await connectToDatabase();
-
+ 
     await Event.updateMany(
       { category: categoryId },
       { $set: { category: null } }
     );
-
+ 
     const deletedCategory = await Category.findByIdAndDelete(categoryId);
-
+ 
     return JSON.parse(JSON.stringify(deletedCategory));
   } catch (error) {
     handleError(error);
@@ -90,6 +93,7 @@ export async function updateCategory({
   name: string;
 }) {
   try {
+    await verifyAdmin();
     await connectToDatabase();
     const category = await Category.findByIdAndUpdate(id, { name });
     return JSON.parse(JSON.stringify(category));

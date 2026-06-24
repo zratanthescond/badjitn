@@ -16,6 +16,7 @@ import Event from "../database/models/event.model";
 import { ObjectId } from "mongodb";
 import User from "../database/models/user.model";
 import { getCurrencyCodeByCountry } from "../utils";
+import { verifyOrganizerOrAdmin } from "./auth.actions";
 
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -90,6 +91,7 @@ export async function getOrdersByEvent({
   eventId,
 }: GetOrdersByEventParams) {
   try {
+    await verifyOrganizerOrAdmin(eventId);
     await connectToDatabase();
 
     if (!eventId) throw new Error("Event ID is required");
@@ -565,6 +567,7 @@ export const bulkImportParticipants = async ({
   participants: ImportedParticipantRow[];
 }) => {
   try {
+    await verifyOrganizerOrAdmin(eventId);
     await connectToDatabase();
 
     const event = await Event.findById(eventId);
@@ -657,6 +660,7 @@ export const addManualParticipant = async ({
   ticketType?: string;
 }) => {
   try {
+    await verifyOrganizerOrAdmin(eventId);
     await connectToDatabase();
 
     const event = await Event.findById(eventId);

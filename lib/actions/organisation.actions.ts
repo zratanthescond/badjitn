@@ -5,6 +5,7 @@ import { connectToDatabase } from "@/lib/database";
 import Organisation from "@/lib/database/models/organisation.model";
 import User from "@/lib/database/models/user.model";
 import { handleError } from "@/lib/utils";
+import { verifyAdmin } from "./auth.actions";
 
 // ==========================================
 // HELPER: generate a URL-safe slug
@@ -380,6 +381,7 @@ export async function checkOrgPermission(
 // ==========================================
 export async function adminGetAllOrganisations() {
     try {
+        await verifyAdmin();
         await connectToDatabase();
 
         const organisations = await Organisation.find({})
@@ -401,6 +403,7 @@ export async function adminGetAllOrganisations() {
 // ==========================================
 export async function toggleOrganisationVerification(organisationId: string) {
     try {
+        await verifyAdmin();
         await connectToDatabase();
 
         const organisation = await Organisation.findById(organisationId);

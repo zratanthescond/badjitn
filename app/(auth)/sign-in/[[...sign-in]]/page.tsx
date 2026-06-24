@@ -36,7 +36,7 @@ export default function Page() {
             },
             variables: {
               colorPrimary: "#6366f1",
-              colorTextOnPrimaryBackground: "white",
+              colorPrimaryForeground: "white",
             }
           }}
         />

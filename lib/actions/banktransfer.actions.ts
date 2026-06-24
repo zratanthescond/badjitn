@@ -4,6 +4,7 @@ import { connectToDatabase } from "../database";
 import BankTransfer from "../database/models/banktransfer.model";
 import { handleError } from "../utils";
 import { revalidatePath } from "next/cache";
+import { verifyAdmin, verifyOrganizerOrAdmin } from "./auth.actions";
 
 export interface GetBankTransfersParams {
     eventId?: string;
@@ -31,6 +32,11 @@ export async function getBankTransfers({
     limit = 10,
 }: GetBankTransfersParams) {
     try {
+        if (eventId) {
+            await verifyOrganizerOrAdmin(eventId);
+        } else {
+            await verifyAdmin();
+        }
         await connectToDatabase();
 
         const query: any = {};
@@ -134,6 +140,8 @@ export async function verifyBankTransfer({
                 message: "Bank transfer not found",
             };
         }
+
+        await verifyOrganizerOrAdmin(String(transfer.eventId));
 
         if (transfer.status !== "pending") {
             return {
