@@ -43,7 +43,7 @@ export default function HomePostContainer({
           muted
           autoPlay
           className={className}
-          poster={poster || ""}
+          poster={resolvedSrc || ""}
           isActive={hovred}
         />
       ) : (
