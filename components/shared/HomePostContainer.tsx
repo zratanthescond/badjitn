@@ -14,20 +14,22 @@ export default function HomePostContainer({
   fallbackImage?: string;
 }) {
   const [hovred, setHovered] = useState<boolean>(false);
-  const [imageSrc, setImageSrc] = useState<string>(fallbackImage);
-  
+
   // Detect if the src is an HLS manifest (video) or a static image
   const isVideo = src?.includes(".m3u8");
-  
+
   // Only attempt video preview for manifests
   const videoPoster = useSinglePreview(isVideo ? src : "", 2);
-  
-  // Use extracted video poster if video, otherwise use src directly as image
-  const poster = isVideo ? videoPoster : src;
+
+  // For static images use src directly; for video use extracted poster
+  const resolvedSrc = (isVideo ? videoPoster : src) || fallbackImage;
+
+  // Init directly from resolvedSrc to avoid iOS Safari double-render flash
+  const [imageSrc, setImageSrc] = useState<string>(resolvedSrc);
 
   useEffect(() => {
-    setImageSrc(poster || fallbackImage);
-  }, [fallbackImage, poster]);
+    setImageSrc(resolvedSrc);
+  }, [resolvedSrc]);
 
   return (
     <div
@@ -51,7 +53,7 @@ export default function HomePostContainer({
               alt="Event visual"
               src={imageSrc}
               className={`absolute inset-0 h-full w-full rounded-lg object-cover transition-opacity duration-300 ${className || ""}`}
-              loading="lazy"
+              loading="eager"
               decoding="async"
               draggable={false}
               onError={() => {
