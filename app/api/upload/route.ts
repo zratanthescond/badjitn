@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { UTApi } from "uploadthing/server";
 
 const utapi = new UTApi({
-  token: process.env.UPLOADTHING_SECRET,
+  apiKey: process.env.UPLOADTHING_SECRET,
 });
 
 export async function POST(req: NextRequest) {
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: response.error.message }, { status: 500 });
     }
 
-    const url = response.data.ufsUrl;
+    const url = response.data.ufsUrl ?? response.data.url;
     return NextResponse.json({ success: true, url });
   } catch (error: any) {
     console.error("Upload error:", error);

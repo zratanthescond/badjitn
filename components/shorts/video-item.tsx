@@ -23,25 +23,16 @@ export const VideoItem = forwardRef<HTMLDivElement, VideoItemProps>(
       >
         {/* Video Player */}
         <div className="flex h-full w-full md:max-w-[450px] lg:max-w-[500px] relative shadow-2xl">
-          {video.imageUrl?.includes(".m3u8") ? (
-            <HLSPlayer
-              manifest={video.imageUrl}
-              ref={videoRef}
-              isActive={true}
-              autoPlay
-              loop
-              muted
-              controls
-              className="md:rounded-2xl object-cover w-full h-full"
-            />
-          ) : (
-            <img
-              src={video.imageUrl || "/assets/images/placeholder.png"}
-              alt={video.title}
-              className="md:rounded-2xl object-cover w-full h-full"
-              onError={(e) => { (e.target as HTMLImageElement).src = "/assets/images/placeholder.png"; }}
-            />
-          )}
+          <HLSPlayer
+            manifest={video.imageUrl}
+            ref={videoRef}
+            isActive={true}
+            autoPlay
+            loop
+            muted
+            controls
+            className="md:rounded-2xl object-cover w-full h-full"
+          />
           {/* Video Title */}
           <div className="absolute bottom-8 left-6 right-16">
             <h4 className="text-white font-syne font-bold text-2xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] tracking-tight">
