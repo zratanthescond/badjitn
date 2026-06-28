@@ -34,6 +34,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "*.ufs.sh",
+        port: "",
+      },
+      {
+        protocol: "https",
         hostname: "fileserver.badgi.net",
         port: "",
       },
