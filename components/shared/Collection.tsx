@@ -1,9 +1,8 @@
 "use client";
 import { IEvent } from "@/lib/database/models/event.model";
-import React from "react";
+import React, { useMemo } from "react";
 import Card from "./Card";
 import Pagination from "./Pagination";
-import { da } from "date-fns/locale";
 
 type CollectionProps = {
   data: IEvent[];
@@ -29,32 +28,73 @@ const Collection = ({
   userPhoto,
   currentUserId,
 }: CollectionProps) => {
+  const hasOrderLink = collectionType === "Events_Organized";
+  const hidePrice   = collectionType === "My_Tickets";
+
+  // Group events by year (startDateTime), current year first, future years ascending, past years descending
+  const groupedByYear = useMemo(() => {
+    if (!data?.length) return [];
+
+    const currentYear = new Date().getFullYear();
+    const map = new Map<number, IEvent[]>();
+    for (const event of data) {
+      const year = new Date(event.startDateTime).getFullYear();
+      if (!map.has(year)) map.set(year, []);
+      map.get(year)!.push(event);
+    }
+
+    return Array.from(map.entries()).sort(([a], [b]) => {
+      if (a === currentYear) return -1;
+      if (b === currentYear) return 1;
+      if (a > currentYear && b > currentYear) return a - b; // future: ascending
+      if (a < currentYear && b < currentYear) return b - a; // past: most recent first
+      return a > currentYear ? -1 : 1; // future before past
+    });
+  }, [data]);
+
+  let globalIndex = 0;
+
   return (
     <>
       {data && data.length > 0 ? (
-        <div className="flex flex-col items-center gap-12 font-outfit">
-          <ul className="grid w-full grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-8">
-            {data.map((event, index) => {
-              const hasOrderLink = collectionType === "Events_Organized";
-              const hidePrice = collectionType === "My_Tickets";
+        <div className="flex flex-col gap-12 font-outfit">
+          {groupedByYear.map(([year, events]) => (
+            <section key={year}>
+              {/* ── Year separator ── */}
+              <div className="flex items-center gap-4 mb-8">
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-600 to-transparent" />
+                <div className="flex items-center gap-2 px-5 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <span className="text-sm font-syne font-bold tracking-widest text-primary uppercase">
+                    {year}
+                  </span>
+                </div>
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-600 to-transparent" />
+              </div>
 
-              return (
-                <li
-                  key={event?._id}
-                  className="flex justify-center animate-in fade-in slide-in-from-bottom-5"
-                  style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
-                >
-                  <Card
-                    event={event}
-                    hasOrderLink={hasOrderLink}
-                    hidePrice={hidePrice}
-                    userPhoto={userPhoto}
-                    currentUserId={currentUserId}
-                  />
-                </li>
-              );
-            })}
-          </ul>
+              {/* ── Event cards grid ── */}
+              <ul className="grid w-full grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-8">
+                {events.map((event) => {
+                  const idx = globalIndex++;
+                  return (
+                    <li
+                      key={event?._id}
+                      className="flex justify-center animate-in fade-in slide-in-from-bottom-5"
+                      style={{ animationDelay: `${idx * 50}ms`, animationFillMode: "both" }}
+                    >
+                      <Card
+                        event={event}
+                        hasOrderLink={hasOrderLink}
+                        hidePrice={hidePrice}
+                        userPhoto={userPhoto}
+                        currentUserId={currentUserId}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ))}
+
           {totalPages > 1 && (
             <div className="mt-8">
               <Pagination

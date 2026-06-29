@@ -215,7 +215,7 @@ export async function getAllEvents({
 
     const skipAmount = (Number(page) - 1) * limit;
     const eventsQuery = Event.find(conditions)
-      .sort({ createdAt: "desc" })
+      .sort({ startDateTime: "asc" })
       .skip(skipAmount)
       .limit(limit);
 
