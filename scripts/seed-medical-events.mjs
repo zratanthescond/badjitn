@@ -369,6 +369,7 @@ async function main() {
       allowGuestRegistration: true,
       showProfileButton: true,
       showReturnButton: true,
+      isFromOtherPlatform: true,
     });
     console.log(`  ✔  ${ev.title.slice(0, 70)}…`);
     created++;

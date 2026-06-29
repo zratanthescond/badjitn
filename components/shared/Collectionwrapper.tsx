@@ -26,7 +26,7 @@ export default function CollectionWrapper({
   const t = useTranslations("homePage");
   const { data: events, isPending } = useGetAllEvents({
     page,
-    limit: 30,
+    limit: 500,
     country,
     category,
     query,
@@ -55,7 +55,7 @@ export default function CollectionWrapper({
       emptyTitle={t("noEvents")}
       emptyStateSubtext={t("noEventsDescription")}
       collectionType="All_Events"
-      limit={30}
+      limit={500}
       page={page}
       totalPages={events?.totalPages}
       currentUserId={currentUserId}

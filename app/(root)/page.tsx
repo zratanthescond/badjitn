@@ -33,7 +33,7 @@ export default async function Home(props: SearchParamProps) {
           query: searchText,
           category,
           page,
-          limit: 30,
+          limit: 500,
           date,
         })
       : undefined;

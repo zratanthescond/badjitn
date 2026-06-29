@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 30;
   const query = searchParams.get("query") || "";
   const category = searchParams.get("category") || "";
   const country = searchParams.get("country") || "";
@@ -16,7 +17,7 @@ export async function GET(req: Request) {
     query,
     category,
     country,
-    limit: 30,
+    limit,
     date,
   });
   return NextResponse.json(result, { status: 200 });
