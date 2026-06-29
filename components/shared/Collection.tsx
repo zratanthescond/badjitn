@@ -76,13 +76,22 @@ const Collection = ({
       if (!map.has(year)) map.set(year, []);
       map.get(year)!.push(event);
     }
-    return Array.from(map.entries()).sort(([a], [b]) => {
-      if (a === currentYear) return -1;
-      if (b === currentYear) return 1;
-      if (a > currentYear && b > currentYear) return a - b;
-      if (a < currentYear && b < currentYear) return b - a;
-      return a > currentYear ? -1 : 1;
-    });
+    return Array.from(map.entries())
+      .map(([year, events]): [number, IEvent[]] => [
+        year,
+        events.sort(
+          (a, b) =>
+            new Date(b.startDateTime).getTime() -
+            new Date(a.startDateTime).getTime()
+        ),
+      ])
+      .sort(([a], [b]) => {
+        if (a === currentYear) return -1;
+        if (b === currentYear) return 1;
+        if (a > currentYear && b > currentYear) return a - b;
+        if (a < currentYear && b < currentYear) return b - a;
+        return a > currentYear ? -1 : 1;
+      });
   }, [filtered, currentYear]);
 
   const SOURCE_FILTERS: { key: SourceFilter; label: string }[] = [
