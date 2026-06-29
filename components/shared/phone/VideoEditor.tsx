@@ -46,14 +46,17 @@ export default function VideoEditor({
   }, [data]);
 
   useEffect(() => {
-    if (url && url.toString().indexOf(".m3u8") !== -1) {
+    if (!url) return;
+    const urlStr = url.toString();
+    if (urlStr.includes(".m3u8")) {
+      // Already an HLS stream — display directly
       setVideoUrl(url);
-      //alert(url);
+    } else if (url instanceof File) {
+      // New file selected by user — send to server to generate HLS
+      mutate();
     } else {
-      if (url) {
-        //alert("mutating");
-        mutate();
-      }
+      // Existing image/video URL string — display as-is without reprocessing
+      setVideoUrl(url);
     }
   }, [url]);
 

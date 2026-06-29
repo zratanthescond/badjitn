@@ -12,9 +12,10 @@ const uploadVideo = async (file: File) => {
       },
       responseType: "json",
     }
-  );
-  // console.log(video);
-  // const blob = await video.blob();
+  ).catch((err) => {
+    console.error("process-video error:", err.response?.status, err.response?.data);
+    throw err;
+  });
   return video.data;
 };
 

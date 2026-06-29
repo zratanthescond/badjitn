@@ -1413,6 +1413,7 @@
     "eventDate": "Fecha del Evento",
     "joinButton": "Me apunto",
     "joining": "Uniéndose...",
+    "pastEvent": "Evento pasado",
     "schedule": "Horario del Evento",
     "startDate": "Fecha de inicio",
     "stats": {

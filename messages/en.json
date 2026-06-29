@@ -1411,6 +1411,7 @@
     "eventDate": "Event Date",
     "joinButton": "I'm in",
     "joining": "Joining...",
+    "pastEvent": "Past event",
     "schedule": "Event Schedule",
     "startDate": "Start date",
     "stats": {

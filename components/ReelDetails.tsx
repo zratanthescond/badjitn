@@ -71,6 +71,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
   const pathname = usePathname();
   const [section, setSection] = useState<SectionType>("details");
   const [isJoining, setIsJoining] = useState(false);
+  const isPast = new Date(event.endDateTime) < new Date();
 
   // Get the appropriate date-fns locale object
   const dateLocale =
@@ -134,33 +135,51 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
 
           {/* Join Button */}
           <div className="pt-4">
-            <SignedIn>
+            {isPast ? (
               <Button
-                onClick={() => setSection("registration")}
+                disabled
                 size="lg"
-                variant="elite"
-                className="rounded-2xl min-w-[200px] h-14 text-lg"
+                className="rounded-2xl min-w-[200px] h-14 text-lg cursor-not-allowed opacity-60 bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
               >
-                {isJoining ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-3 animate-spin" />
-                    {t("joining")}
-                  </>
-                ) : (
-                  t("joinButton")
-                )}
+                {t("pastEvent")}
               </Button>
-            </SignedIn>
-            <SignedOut>
-              <Button
-                onClick={() => setSection("registration")}
-                size="lg"
-                variant="elite"
-                className="rounded-2xl min-w-[200px] h-14 text-lg"
-              >
-                {t("joinButton")}
-              </Button>
-            </SignedOut>
+            ) : event.url ? (
+              <a href={event.url} target="_blank" rel="noopener noreferrer">
+                <Button size="lg" variant="elite" className="rounded-2xl min-w-[200px] h-14 text-lg">
+                  {t("joinButton")}
+                </Button>
+              </a>
+            ) : (
+              <>
+                <SignedIn>
+                  <Button
+                    onClick={() => setSection("registration")}
+                    size="lg"
+                    variant="elite"
+                    className="rounded-2xl min-w-[200px] h-14 text-lg"
+                  >
+                    {isJoining ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-3 animate-spin" />
+                        {t("joining")}
+                      </>
+                    ) : (
+                      t("joinButton")
+                    )}
+                  </Button>
+                </SignedIn>
+                <SignedOut>
+                  <Button
+                    onClick={() => setSection("registration")}
+                    size="lg"
+                    variant="elite"
+                    className="rounded-2xl min-w-[200px] h-14 text-lg"
+                  >
+                    {t("joinButton")}
+                  </Button>
+                </SignedOut>
+              </>
+            )}
           </div>
         </div>
 
@@ -272,10 +291,10 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
       { value: "details", label: t("tabs.details"), icon: Menu },
       { value: "date", label: t("tabs.date"), icon: CalendarDays },
       { value: "location", label: t("tabs.location"), icon: MapPin },
-      { value: "registration", label: registrationTabLabel, icon: Wallet },
+      ...(!event.url ? [{ value: "registration", label: registrationTabLabel, icon: Wallet }] : []),
       { value: "feedback", label: t("tabs.feedback"), icon: MessageSquareIcon },
     ],
-    [registrationTabLabel, t]
+    [registrationTabLabel, t, event.url]
   );
 
   return (

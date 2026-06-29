@@ -90,16 +90,35 @@ export function VideoDetailsPanel({
           </div>
 
           {isMobile && (
-            <div className="overflow-hidden rounded-2xl border border-border/60 bg-black/70 shadow-xl">
+            <div className="md:hidden overflow-hidden rounded-2xl border border-border/60 shadow-xl">
               <div className="mx-auto w-full max-w-[380px]">
-                <HLSPlayer
-                  manifest={video.imageUrl}
-                  isActive={isVisible}
-                  autoPlay={false}
-                  controls
-                  muted
-                  className="aspect-[9/16] h-auto w-full object-cover"
-                />
+                {video.imageUrl?.includes(".m3u8") ? (
+                  <HLSPlayer
+                    manifest={video.imageUrl}
+                    isActive={isVisible}
+                    autoPlay={false}
+                    controls
+                    muted
+                    className="aspect-[9/16] h-auto w-full object-cover"
+                  />
+                ) : /\.(mp4|webm|ogg|mov)(\?|$)/i.test(video.imageUrl ?? "") ? (
+                  <video
+                    src={video.imageUrl}
+                    controls
+                    muted
+                    playsInline
+                    className="aspect-[9/16] h-auto w-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={video.imageUrl || "/assets/images/placeholder.png"}
+                    alt={video.title}
+                    className="aspect-[9/16] h-auto w-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/assets/images/placeholder.png";
+                    }}
+                  />
+                )}
               </div>
             </div>
           )}

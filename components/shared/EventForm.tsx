@@ -183,7 +183,7 @@ const EventForm = ({
             country: resolvedCountry,
             pricePlan: pricePlan,
             location: { name: address, lon: longitude, lat: latitude },
-            imageUrl: values.imageUrl,
+            imageUrl: reel || values.imageUrl,
             _id: eventId,
             scanPoints: values.scanPoints,
           },

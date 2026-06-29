@@ -69,20 +69,10 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
           const videoElement = entry.target as HTMLVideoElement;
 
           if (entry.isIntersecting) {
-            videoElement
-              .play()
-              .then(() => {
-                // Unmute after successful play to avoid autoplay restrictions
-                videoElement.muted = false;
-              })
-              .catch((error) => {
-                console.warn(t("video.playError"), error);
-                toast({
-                  title: t("video.autoplayBlocked"),
-                  variant: "destructive",
-                  duration: 3000,
-                });
-              });
+            videoElement.muted = true; // keep muted so browser allows autoplay
+            videoElement.play().catch(() => {
+              // Autoplay blocked silently — user can tap to play
+            });
           } else {
             videoElement.pause();
           }

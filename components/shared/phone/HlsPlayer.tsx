@@ -24,6 +24,9 @@ const HLSPlayer = forwardRef<HTMLVideoElement, Props>(
       const video = videoRef.current;
       if (!video) return;
 
+      // Force muted via DOM property (React JSX muted attr is unreliable)
+      video.muted = true;
+
       // Destroy existing HLS instance if any
       if (hlsRef.current) {
         hlsRef.current.destroy();
