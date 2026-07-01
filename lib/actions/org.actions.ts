@@ -14,7 +14,6 @@ export async function getOrgWithEvents(slug: string) {
     const org = await Organisation.findOne({
       $or: [{ subdomain: slug }, { slug }],
     }).lean();
-    console.log(`[getOrgWithEvents] query="${slug}" → found:`, org ? (org as any).name : "null", "| subdomain in doc:", (org as any)?.subdomain);
     if (!org) return null;
 
     const events = await Event.find({ organisation: (org as any)._id })
@@ -30,7 +29,6 @@ export async function getOrgWithEvents(slug: string) {
 
     return JSON.parse(JSON.stringify({ org, events }));
   } catch (error) {
-    console.error("[getOrgWithEvents]", error);
     return null;
   }
 }

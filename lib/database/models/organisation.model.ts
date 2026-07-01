@@ -3,11 +3,15 @@ import { Schema, model, models, Document } from "mongoose";
 export interface IOrganisation extends Document {
     name: string;
     slug: string;
-    subdomain?: string; // short custom subdomain, e.g. "awgho" for awgho.badgi.net
+    subdomain?: string;
     description: string;
     logo: string;
     website: string;
     coverImage: string;
+    bannerTitle?: string;
+    bannerContent?: string;
+    bannerImage?: string;
+    partners?: { name: string; logo?: string; website?: string }[];
     socialLinks: {
         facebook?: string;
         twitter?: string;
@@ -28,6 +32,14 @@ const OrganisationSchema = new Schema<IOrganisation>({
     logo: { type: String },
     website: { type: String },
     coverImage: { type: String },
+    bannerTitle: { type: String },
+    bannerContent: { type: String },
+    bannerImage: { type: String },
+    partners: [{
+        name: { type: String },
+        logo: { type: String },
+        website: { type: String },
+    }],
     socialLinks: {
         facebook: { type: String },
         twitter: { type: String },

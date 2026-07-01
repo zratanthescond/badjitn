@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { Loader2, Building2, Globe, Link as LinkIcon, Globe2 } from "lucide-react";
+import { Loader2, Building2, Globe, Link as LinkIcon, Globe2, Megaphone, HandshakeIcon, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -49,6 +49,14 @@ const organisationSchema = z.object({
             message: "Uniquement des lettres minuscules, chiffres et tirets (ex: awgho)",
         })
         .optional(),
+    bannerTitle: z.string().max(80, "Maximum 80 caractères").optional(),
+    bannerContent: z.string().max(400, "Maximum 400 caractères").optional(),
+    bannerImage: z.string().optional(),
+    partners: z.array(z.object({
+        name: z.string().min(1, "Nom requis"),
+        logo: z.string().optional(),
+        website: z.string().url("URL invalide").or(z.literal("")).optional(),
+    })).optional(),
     logo: z.string().optional(),
     coverImage: z.string().optional(),
     facebook: z.string().optional(),
@@ -68,6 +76,10 @@ interface OrganisationFormProps {
         description: string;
         website?: string;
         subdomain?: string;
+        bannerTitle?: string;
+        bannerContent?: string;
+        bannerImage?: string;
+        partners?: { name: string; logo?: string; website?: string }[];
         logo?: string;
         coverImage?: string;
         socialLinks?: {
@@ -94,6 +106,10 @@ export default function OrganisationForm({
             description: organisation?.description || "",
             website: organisation?.website || "",
             subdomain: organisation?.subdomain || "",
+            bannerTitle: organisation?.bannerTitle || "",
+            bannerContent: organisation?.bannerContent || "",
+            bannerImage: organisation?.bannerImage || "",
+            partners: organisation?.partners || [],
             logo: organisation?.logo || "",
             coverImage: organisation?.coverImage || "",
             facebook: organisation?.socialLinks?.facebook || "",
@@ -101,6 +117,12 @@ export default function OrganisationForm({
             instagram: organisation?.socialLinks?.instagram || "",
             linkedin: organisation?.socialLinks?.linkedin || "",
         },
+    });
+
+    const { fields: partnerFields, append: appendPartner, remove: removePartner } = useFieldArray({
+        // @ts-ignore
+        control: form.control,
+        name: "partners",
     });
 
     const onSubmit = async (values: OrganisationFormValues) => {
@@ -113,6 +135,10 @@ export default function OrganisationForm({
                     description: values.description,
                     website: values.website,
                     subdomain: values.subdomain || undefined,
+                    bannerTitle: values.bannerTitle || undefined,
+                    bannerContent: values.bannerContent || undefined,
+                    bannerImage: values.bannerImage || undefined,
+                    partners: values.partners || [],
                     logo: values.logo,
                     coverImage: values.coverImage,
                     socialLinks: {
@@ -139,6 +165,10 @@ export default function OrganisationForm({
                         description: values.description,
                         website: values.website,
                         subdomain: values.subdomain || undefined,
+                        bannerTitle: values.bannerTitle || undefined,
+                        bannerContent: values.bannerContent || undefined,
+                        bannerImage: values.bannerImage || undefined,
+                        partners: values.partners || [],
                         logo: values.logo,
                         coverImage: values.coverImage,
                         socialLinks: {
@@ -429,6 +459,142 @@ export default function OrganisationForm({
                                         </FormItem>
                                     )}
                                 />
+                            </div>
+                        </div>
+
+                        {/* ── Bannière roulante ── */}
+                        <div className="space-y-4 border border-indigo-100 dark:border-indigo-900/40 rounded-2xl p-5 bg-indigo-50/30 dark:bg-indigo-950/20">
+                            <h3 className="text-sm font-semibold flex items-center gap-2">
+                                <Megaphone className="h-4 w-4 text-indigo-500" />
+                                Bannière roulante
+                                <span className="text-muted-foreground font-normal">(optionnel)</span>
+                            </h3>
+                            <FormField
+                                control={form.control}
+                                name="bannerImage"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <ImageUploader
+                                                value={field.value || ""}
+                                                onChange={field.onChange}
+                                                aspectRatio="wide"
+                                                label="Image de bannière"
+                                                placeholder="Téléchargez une image promotionnelle pour votre bannière"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField control={form.control} name="bannerTitle"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-xs text-muted-foreground">Titre de la bannière</FormLabel>
+                                        <FormControl>
+                                            <Input className="input-field glass rounded-xl" placeholder="ex: ACTUALITÉS, INFO, ANNONCE…" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField control={form.control} name="bannerContent"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-xs text-muted-foreground">Texte défilant</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="Ce texte défilera en boucle sur votre page. Ex: Inscriptions ouvertes pour le congrès 2026 · Nouvelle date annoncée…"
+                                                className="min-h-[80px] glass rounded-xl resize-none"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        {/* ── Sponsors & Partenaires ── */}
+                        <div className="space-y-4 border border-indigo-100 dark:border-indigo-900/40 rounded-2xl p-5 bg-indigo-50/30 dark:bg-indigo-950/20">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-sm font-semibold flex items-center gap-2">
+                                    <HandshakeIcon className="h-4 w-4 text-indigo-500" />
+                                    Sponsors &amp; Partenaires
+                                    <span className="text-muted-foreground font-normal">(optionnel)</span>
+                                </h3>
+                                <button
+                                    type="button"
+                                    onClick={() => appendPartner({ name: "", logo: "", website: "" })}
+                                    className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-700 rounded-full px-3 py-1 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
+                                >
+                                    <Plus className="h-3 w-3" />
+                                    Ajouter
+                                </button>
+                            </div>
+
+                            {partnerFields.length === 0 && (
+                                <p className="text-xs text-muted-foreground text-center py-4 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl">
+                                    Aucun partenaire · Cliquez sur &quot;Ajouter&quot; pour en ajouter un
+                                </p>
+                            )}
+
+                            <div className="flex flex-col gap-3">
+                                {partnerFields.map((field, index) => (
+                                    <div key={field.id} className="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                                        <div className="flex items-start gap-3">
+                                            {/* Logo uploader compact */}
+                                            <FormField control={form.control} name={`partners.${index}.logo`}
+                                                render={({ field }) => (
+                                                    <FormItem className="shrink-0">
+                                                        <FormLabel className="text-xs text-muted-foreground">Logo</FormLabel>
+                                                        <FormControl>
+                                                            <ImageUploader
+                                                                value={field.value || ""}
+                                                                onChange={field.onChange}
+                                                                aspectRatio="square"
+                                                                size="sm"
+                                                                placeholder=""
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <div className="flex-1 space-y-2 min-w-0">
+                                                <FormField control={form.control} name={`partners.${index}.name`}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel className="text-xs text-muted-foreground">Nom *</FormLabel>
+                                                            <FormControl>
+                                                                <Input className="h-8 text-sm rounded-lg" placeholder="Nom du partenaire" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <div className="flex gap-2 items-end">
+                                                    <FormField control={form.control} name={`partners.${index}.website`}
+                                                        render={({ field }) => (
+                                                            <FormItem className="flex-1">
+                                                                <FormLabel className="text-xs text-muted-foreground">Site web</FormLabel>
+                                                                <FormControl>
+                                                                    <Input className="h-8 text-sm rounded-lg" placeholder="https://…" {...field} />
+                                                                </FormControl>
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removePartner(index)}
+                                                        className="mb-0.5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
