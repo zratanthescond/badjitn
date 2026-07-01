@@ -26,6 +26,7 @@ export async function createOrganisation({
     description,
     logo,
     website,
+    subdomain,
     coverImage,
     socialLinks,
 }: {
@@ -34,6 +35,7 @@ export async function createOrganisation({
     description?: string;
     logo?: string;
     website?: string;
+    subdomain?: string;
     coverImage?: string;
     socialLinks?: {
         facebook?: string;
@@ -55,6 +57,13 @@ export async function createOrganisation({
             slug = `${slug}-${Date.now()}`;
         }
 
+        // Validate subdomain uniqueness
+        const sub = subdomain?.trim().toLowerCase() || undefined;
+        if (sub) {
+            const conflict = await Organisation.findOne({ subdomain: sub });
+            if (conflict) throw new Error("Ce sous-domaine est déjà utilisé.");
+        }
+
         const newOrganisation = await Organisation.create({
             name,
             slug,
@@ -62,9 +71,10 @@ export async function createOrganisation({
             logo: logo || "",
             website: website || "",
             coverImage: coverImage || "",
+            ...(sub ? { subdomain: sub } : {}),
             socialLinks: socialLinks || {},
             creator: userId,
-            admins: [userId], // Creator is automatically the first admin
+            admins: [userId],
         });
 
         revalidatePath("/organisations");
@@ -169,6 +179,7 @@ export async function updateOrganisation({
         logo?: string;
         website?: string;
         coverImage?: string;
+        subdomain?: string;
         socialLinks?: {
             facebook?: string;
             twitter?: string;
@@ -191,6 +202,21 @@ export async function updateOrganisation({
 
         if (!isCreator && !isAdmin) {
             throw new Error("Unauthorized: You do not have permission to update this organisation");
+        }
+
+        // Validate subdomain uniqueness
+        if (updateData.subdomain !== undefined) {
+            const sub = updateData.subdomain.trim().toLowerCase();
+            if (sub) {
+                const conflict = await Organisation.findOne({
+                    subdomain: sub,
+                    _id: { $ne: organisationId },
+                });
+                if (conflict) throw new Error("Ce sous-domaine est déjà utilisé par une autre organisation.");
+                updateData.subdomain = sub;
+            } else {
+                updateData.subdomain = undefined; // clear it
+            }
         }
 
         // Update slug if name changed

@@ -63,7 +63,9 @@ const nextConfig = {
         "http://127.0.0.1:5500",
         "*",
         "https://maps.googleapis.com",
-        // "https://73twcr2k-3000.euw.devtunnels.ms",
+        // org subdomains – local dev (*.localhost:3000)
+        "http://badgi-agenda-medical-tunisie.localhost:3000",
+        "http://awgho-african-alliance-for-women-s-global-health-in-oncology.localhost:3000",
       ],
     },
   },

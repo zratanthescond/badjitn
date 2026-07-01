@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { Loader2, Building2, Globe, Image as ImageIcon, Link as LinkIcon } from "lucide-react";
+import { Loader2, Building2, Globe, Link as LinkIcon, Globe2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +32,8 @@ import {
 } from "@/lib/actions/organisation.actions";
 import { ImageUploader } from "./ImageUploader";
 
+const subdomainRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
+
 const organisationSchema = z.object({
     name: z.string().min(2, "Organisation name must be at least 2 characters"),
     description: z.string().min(10, "Description must be at least 10 characters"),
@@ -39,6 +41,13 @@ const organisationSchema = z.object({
         .string()
         .url("Please enter a valid URL")
         .or(z.literal(""))
+        .optional(),
+    subdomain: z
+        .string()
+        .max(30, "Maximum 30 caractères")
+        .refine((v) => !v || subdomainRegex.test(v), {
+            message: "Uniquement des lettres minuscules, chiffres et tirets (ex: awgho)",
+        })
         .optional(),
     logo: z.string().optional(),
     coverImage: z.string().optional(),
@@ -58,6 +67,7 @@ interface OrganisationFormProps {
         name: string;
         description: string;
         website?: string;
+        subdomain?: string;
         logo?: string;
         coverImage?: string;
         socialLinks?: {
@@ -83,6 +93,7 @@ export default function OrganisationForm({
             name: organisation?.name || "",
             description: organisation?.description || "",
             website: organisation?.website || "",
+            subdomain: organisation?.subdomain || "",
             logo: organisation?.logo || "",
             coverImage: organisation?.coverImage || "",
             facebook: organisation?.socialLinks?.facebook || "",
@@ -101,6 +112,7 @@ export default function OrganisationForm({
                     name: values.name,
                     description: values.description,
                     website: values.website,
+                    subdomain: values.subdomain || undefined,
                     logo: values.logo,
                     coverImage: values.coverImage,
                     socialLinks: {
@@ -126,6 +138,7 @@ export default function OrganisationForm({
                         name: values.name,
                         description: values.description,
                         website: values.website,
+                        subdomain: values.subdomain || undefined,
                         logo: values.logo,
                         coverImage: values.coverImage,
                         socialLinks: {
@@ -262,6 +275,48 @@ export default function OrganisationForm({
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {/* Subdomain */}
+                                <FormField
+                                    control={form.control}
+                                    name="subdomain"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm font-semibold flex items-center gap-2">
+                                                <Globe2 className="h-4 w-4 text-indigo-500" />
+                                                Sous-domaine Badgi
+                                                <span className="text-muted-foreground font-normal">(optionnel)</span>
+                                            </FormLabel>
+                                            <FormControl>
+                                                <div className="flex items-center rounded-xl overflow-hidden border border-input bg-white/60 dark:bg-slate-800/60 focus-within:ring-2 focus-within:ring-indigo-400">
+                                                    <Input
+                                                        className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none lowercase"
+                                                        placeholder="awgho"
+                                                        {...field}
+                                                        onChange={(e) => {
+                                                            const v = e.target.value
+                                                                .toLowerCase()
+                                                                .replace(/\s+/g, "-")
+                                                                .replace(/[^a-z0-9-]/g, "");
+                                                            field.onChange(v);
+                                                        }}
+                                                    />
+                                                    <span className="px-3 py-2 text-sm text-muted-foreground bg-slate-100 dark:bg-slate-700 border-l border-input whitespace-nowrap select-none">
+                                                        .badgi.net
+                                                    </span>
+                                                </div>
+                                            </FormControl>
+                                            {field.value && subdomainRegex.test(field.value) && (
+                                                <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                                                    Votre page sera accessible à{" "}
+                                                    <strong>{field.value}.badgi.net</strong>
+                                                </p>
+                                            )}
                                             <FormMessage />
                                         </FormItem>
                                     )}
