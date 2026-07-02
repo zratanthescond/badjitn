@@ -49,7 +49,8 @@ const Checkout = ({
   }, []);
 
   useEffect(() => {
-    let calculatedPrice = 0;
+    const baseFee = event.price ? parseFloat(event.price) : 0;
+    let calculatedPrice = baseFee;
     let detail: Detail[] = [];
 
     if (chekedPlans && chekedPlans.length > 0) {
@@ -68,11 +69,7 @@ const Checkout = ({
           });
         }
       });
-      setPrice(calculatedPrice);
       setDetails(detail);
-    } else if (event.price && parseFloat(event.price) > 0) {
-      calculatedPrice = parseFloat(event.price);
-      setPrice(calculatedPrice);
     }
 
     const discountValue = Number(discountInfo?.value) || 0;
@@ -177,7 +174,7 @@ const Checkout = ({
                 ? isSubmitting
                   ? "Confirmation de l'inscription..."
                   : t("inscription")
-                : `Pay now ${formatPriceByCountry(price, event.country)}`}
+                : `${t("payNow")} ${formatPriceByCountry(price, event.country)}`}
             </span>
           </div>
         </Button>

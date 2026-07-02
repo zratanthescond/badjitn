@@ -16,6 +16,7 @@ import {
   LogIn,
   ShoppingBag,
   Ticket,
+  X,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { createOrder, checkExistingRegistration } from "@/lib/actions/order.actions";
@@ -282,9 +283,16 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   }, [registrationFields, event.selectedRepublic]);
 
   const handleAddPlan = (num: string) => {
-    setCheckedPlan((prev) =>
-      prev.includes(num) ? prev.filter((id) => id !== num) : [...prev, num]
-    );
+    setCheckedPlan((prev) => (prev.includes(num) ? prev : [...prev, num]));
+  };
+
+  const handleRemovePlan = (num: string) => {
+    setCheckedPlan((prev) => prev.filter((id) => id !== num));
+    setSelectedOptions((opts) => {
+      const next = { ...opts };
+      delete next[num];
+      return next;
+    });
   };
 
   const handleSelectOption = (planId: string, option: string) => {
@@ -329,7 +337,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     }
   };
 
-  const price =
+  const baseFee = Number(event.price) || 0;
+  const planSum =
     event.pricePlan && event.pricePlan.length > 0
       ? event.pricePlan.reduce((sum, item: any) => {
           if (!checkPlan?.includes(item._id!)) return sum;
@@ -339,7 +348,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             : 0;
           return sum + item.price + optionExtra;
         }, 0)
-      : Number(event.price) || 0;
+      : 0;
+  const price = baseFee + planSum;
   const allowGuestRegistration = event.allowGuestRegistration !== false;
   const shouldShowWorkSubmission = event.showWorkSubmissionPopup === true;
   const workSummaryClientInfo = {
@@ -677,7 +687,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       <Card className="relative w-full overflow-hidden rounded-2xl border bg-card/90 shadow-2xl backdrop-blur-sm">
         <div className="absolute left-0 top-0 h-2 w-full rounded-t-[2rem] bg-gradient-to-r from-blue-500 via-pink-500 to-red-500" />
 
-        <CardHeader className="items-center px-6 pb-2 pt-6">
+        <CardHeader className="items-center px-4 pb-1 pt-4">
           <div className="mb-2 flex items-center gap-2 rounded-full shadow-md">
             <span className="inline-flex items-center justify-center rounded-full bg-card/10 px-3 py-1 text-xs font-semibold text-foreground/80">
               <Ticket size={12} className="mr-1" />
@@ -689,8 +699,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-4 px-6 pb-6">
-          <div className="space-y-4">
+        <CardContent className="space-y-3 px-3 pb-4">
+          <div className="space-y-3">
             {!isFreeEvent && (
               <div className="rounded-[2rem] border border-border/50 bg-card/5 p-6 text-center backdrop-blur-sm">
                 <p className="text-lg font-bold text-foreground">{t("eventTotalPrice")}</p>
@@ -718,121 +728,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               </div>
             )}
 
-            {event.pricePlan && event.pricePlan.length > 0 && (
-              <div className="space-y-3">
-                <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  {t("selectPlans")}
-                </p>
-                {(event as any).pricePlanNote && (
-                  <div className="flex gap-2 rounded-2xl border border-amber-400/30 bg-amber-50/40 dark:bg-amber-900/10 p-3 text-sm text-amber-800 dark:text-amber-300">
-                    <span className="shrink-0 mt-0.5">ℹ️</span>
-                    <p>{(event as any).pricePlanNote}</p>
-                  </div>
-                )}
-                <div className="grid gap-3">
-                  {event.pricePlan.map((plan: any) => {
-                    const isSelected = checkPlan.includes(plan._id);
-                    return (
-                      <div key={plan._id} className="flex flex-col gap-2">
-                        <motion.div
-                          whileHover={{ scale: 1.01 }}
-                          whileTap={{ scale: 0.99 }}
-                          onClick={() => handleAddPlan(plan._id)}
-                          className={`relative flex cursor-pointer items-center justify-between rounded-2xl border-2 p-3 transition-all duration-200 ${
-                            isSelected
-                              ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
-                              : "border-border/50 bg-card/5 hover:border-primary/30 hover:bg-primary/[0.02]"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all duration-200 ${
-                                isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
-                              }`}
-                            >
-                              {isSelected && <CheckCircle size={14} className="text-primary-foreground" />}
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="font-semibold text-foreground">{plan.name}</span>
-                              {plan.places !== undefined && (
-                                <span className="text-xs text-muted-foreground">
-                                  {plan.places} {t("availablePlaces")}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <Badge
-                            variant={isSelected ? "default" : "secondary"}
-                            className={`rounded-full px-3 py-1 text-sm font-bold ${
-                              isSelected ? "bg-primary text-primary-foreground" : ""
-                            }`}
-                          >
-                            {formatPriceByCountry(plan.price, event.country, "en-US", event.location)}
-                          </Badge>
-                        </motion.div>
-                        
-                        {plan.note && (
-                          <div className="px-2 pb-1">
-                            <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-2 text-xs text-blue-600 shadow-sm dark:text-blue-400">
-                              <p className="font-medium">
-                                {t("note")}: {plan.note}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-
-                        {plan.options && plan.options.length > 0 && (
-                          <div className="mx-2 my-1 p-3 bg-muted/40 rounded-2xl border border-dashed border-primary/20 space-y-2">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-primary/70">
-                              Choisissez un choix :
-                            </p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              {plan.options.map((opt: any, idx: number) => {
-                                const optName = typeof opt === "object" ? opt.name : opt;
-                                const optPrice = typeof opt === "object" ? (opt.price || 0) : 0;
-                                const optPlaces = typeof opt === "object" ? opt.places : undefined;
-                                const isOptSelected = selectedOptions[plan._id] === optName;
-                                return (
-                                  <button
-                                    key={idx}
-                                    type="button"
-                                    onClick={() => handleSelectOption(plan._id, optName)}
-                                    className={`flex items-center justify-between gap-2 p-2 px-3 rounded-xl border transition-all text-xs ${
-                                      isOptSelected
-                                        ? "border-primary bg-primary/10 text-primary font-medium"
-                                        : "border-border/60 bg-background/50 hover:border-primary/40"
-                                    }`}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <div className={`w-3 h-3 rounded-full border-2 shrink-0 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
-                                      <span>{optName}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 shrink-0">
-                                      {optPrice > 0 && (
-                                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${isOptSelected ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
-                                          +{formatPriceByCountry(optPrice, event.country, "en-US", event.location)}
-                                        </span>
-                                      )}
-                                      {optPlaces !== undefined && (
-                                        <span className="text-[10px] text-muted-foreground">
-                                          {optPlaces} pl.
-                                        </span>
-                                      )}
-                                    </div>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-4 rounded-3xl border border-border/60 bg-background/40 p-5">
+            <div className="space-y-3 rounded-3xl border border-border/60 bg-background/40 p-3">
               <div className="space-y-1">
                 <h3 className="text-lg font-semibold text-foreground">
                   {text("personalInformation", "Informations personnelles")}
@@ -1064,6 +960,131 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               )}
             </div>
 
+            {event.pricePlan && event.pricePlan.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t("selectPlans")}
+                </p>
+                {(event as any).pricePlanNote && (
+                  <div className="flex gap-2 rounded-2xl border border-amber-400/30 bg-amber-50/40 dark:bg-amber-900/10 p-3 text-sm text-amber-800 dark:text-amber-300">
+                    <span className="shrink-0 mt-0.5">ℹ️</span>
+                    <p>{(event as any).pricePlanNote}</p>
+                  </div>
+                )}
+                <div className="grid gap-3">
+                  {event.pricePlan.map((plan: any) => {
+                    const isSelected = checkPlan.includes(plan._id);
+                    return (
+                      <div key={plan._id} className="flex flex-col gap-2">
+                        <motion.div
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
+                          onClick={() => !isSelected && handleAddPlan(plan._id)}
+                          className={`relative flex cursor-pointer items-center justify-between rounded-2xl border-2 p-3 transition-all duration-200 ${
+                            isSelected
+                              ? "border-primary bg-primary/5 shadow-md shadow-primary/10 cursor-default"
+                              : "border-border/50 bg-card/5 hover:border-primary/30 hover:bg-primary/[0.02]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all duration-200 ${
+                                isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
+                              }`}
+                            >
+                              {isSelected && <CheckCircle size={14} className="text-primary-foreground" />}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-semibold text-foreground">{plan.name}</span>
+                              {plan.places !== undefined && (
+                                <span className="text-xs text-muted-foreground">
+                                  {plan.places} {t("availablePlaces")}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant={isSelected ? "default" : "secondary"}
+                              className={`rounded-full px-3 py-1 text-sm font-bold ${
+                                isSelected ? "bg-primary text-primary-foreground" : ""
+                              }`}
+                            >
+                              {formatPriceByCountry(plan.price, event.country, "en-US", event.location)}
+                            </Badge>
+                            {isSelected && (
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); handleRemovePlan(plan._id); }}
+                                className="flex h-6 w-6 items-center justify-center rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-white transition-colors"
+                              >
+                                <X size={12} />
+                              </button>
+                            )}
+                          </div>
+                        </motion.div>
+
+                        {plan.note && (
+                          <div className="px-2 pb-1">
+                            <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-2 text-xs text-blue-600 shadow-sm dark:text-blue-400">
+                              <p className="font-medium">
+                                {t("note")}: {plan.note}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {plan.options && plan.options.length > 0 && (
+                          <div className="mx-2 my-1 p-3 bg-muted/40 rounded-2xl border border-dashed border-primary/20 space-y-2">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-primary/70">
+                              Choisissez un choix :
+                            </p>
+                            <div className="flex flex-col gap-2">
+                              {plan.options.map((opt: any, idx: number) => {
+                                const optName = typeof opt === "object" ? opt.name : opt;
+                                const optPrice = typeof opt === "object" ? (opt.price || 0) : 0;
+                                const optPlaces = typeof opt === "object" ? opt.places : undefined;
+                                const isOptSelected = selectedOptions[plan._id] === optName;
+                                return (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => handleSelectOption(plan._id, optName)}
+                                    className={`flex items-center justify-between gap-2 p-2 px-3 rounded-xl border transition-all text-xs ${
+                                      isOptSelected
+                                        ? "border-primary bg-primary/10 text-primary font-medium"
+                                        : "border-border/60 bg-background/50 hover:border-primary/40"
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <div className={`w-3 h-3 rounded-full border-2 shrink-0 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
+                                      <span>{optName}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                      {optPrice > 0 && (
+                                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${isOptSelected ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+                                          +{formatPriceByCountry(optPrice, event.country, "en-US", event.location)}
+                                        </span>
+                                      )}
+                                      {optPlaces !== undefined && (
+                                        <span className="text-[10px] text-muted-foreground">
+                                          {optPlaces} pl.
+                                        </span>
+                                      )}
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {isAvailable() && (
               <>
                 <CheckoutButton
@@ -1176,7 +1197,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/50 px-4 py-2">
               <CheckCircle size={14} className="text-green-500" />
               <span className="font-bold text-foreground">
-                {isFreeEvent ? text("freeRegistration", "Inscription gratuite") : t("secureCheckout")}
+                {event.isFree ? text("freeRegistration", "Inscription gratuite") : t("secureCheckout")}
               </span>
             </div>
             {!isFreeEvent && (

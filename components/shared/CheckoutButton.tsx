@@ -40,15 +40,19 @@ const CheckoutButton = ({
 
   const hasEventFinished = new Date(event.endDateTime) < new Date();
 
-  // Ensure event.pricePlan exists before reducing
-  let initialPriceValue = 0;
-  if (event.price) {
-    initialPriceValue = parseFloat(event.price);
-  } else if (event.pricePlan) {
-    initialPriceValue = event.pricePlan.reduce((sum, item: any) => {
-      return checkPlan?.includes(item._id!) ? sum + item.price : sum;
-    }, 0);
-  }
+  const baseFee = event.price ? parseFloat(event.price) : 0;
+  const planSum =
+    checkPlan && checkPlan.length > 0 && event.pricePlan && event.pricePlan.length > 0
+      ? event.pricePlan.reduce((sum, item: any) => {
+          if (!checkPlan.includes(item._id!)) return sum;
+          const selectedOptName = selectedOptions?.[item._id!];
+          const optExtra = selectedOptName
+            ? (item.options?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName)?.price || 0)
+            : 0;
+          return sum + item.price + optExtra;
+        }, 0)
+      : 0;
+  const initialPriceValue = baseFee + planSum;
 
   const discountValue = Number(discountInfo?.value) || 0;
   const priceValue = initialPriceValue - (initialPriceValue * discountValue) / 100;
@@ -91,7 +95,7 @@ const CheckoutButton = ({
                   <span>
                     {isActuallyFree
                       ? t("inscription")
-                      : `Pay now ${formatPriceByCountry(priceValue, event.country)}`}
+                      : `${t("payNow")} ${formatPriceByCountry(priceValue, event.country)}`}
                   </span>
                 </Link>
               </Button>
