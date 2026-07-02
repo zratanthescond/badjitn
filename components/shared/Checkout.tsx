@@ -55,11 +55,16 @@ const Checkout = ({
     if (chekedPlans && chekedPlans.length > 0) {
       event.pricePlan?.forEach((plan: any) => {
         if (chekedPlans.includes(plan._id)) {
-          calculatedPrice += plan.price;
-          detail.push({ 
-            name: plan.name, 
-            price: plan.price.toString(),
-            option: selectedOptions?.[plan._id]
+          const selectedOptName = selectedOptions?.[plan._id];
+          const optExtra = selectedOptName
+            ? (plan.options?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName)?.price || 0)
+            : 0;
+          const totalPlanPrice = plan.price + optExtra;
+          calculatedPrice += totalPlanPrice;
+          detail.push({
+            name: plan.name,
+            price: totalPlanPrice.toString(),
+            option: selectedOptName,
           });
         }
       });

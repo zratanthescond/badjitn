@@ -332,7 +332,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const price =
     event.pricePlan && event.pricePlan.length > 0
       ? event.pricePlan.reduce((sum, item: any) => {
-          return checkPlan?.includes(item._id!) ? sum + item.price : sum;
+          if (!checkPlan?.includes(item._id!)) return sum;
+          const selectedOptName = selectedOptions[item._id!];
+          const optionExtra = selectedOptName
+            ? (item.options?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName)?.price || 0)
+            : 0;
+          return sum + item.price + optionExtra;
         }, 0)
       : Number(event.price) || 0;
   const allowGuestRegistration = event.allowGuestRegistration !== false;
@@ -545,11 +550,17 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       const details =
         event.pricePlan
           ?.filter((item) => checkPlan.includes(item._id!))
-          .map((item) => ({
-            name: item.name,
-            price: item.price.toString(),
-            option: selectedOptions[item._id!]
-          })) || [];
+          .map((item) => {
+            const selectedOptName = selectedOptions[item._id!];
+            const optExtra = selectedOptName
+              ? ((item.options as any[])?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName)?.price || 0)
+              : 0;
+            return {
+              name: item.name,
+              price: (item.price + optExtra).toString(),
+              option: selectedOptName,
+            };
+          }) || [];
 
       const order = await createOrder({
         eventId: event._id,
@@ -712,6 +723,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("selectPlans")}
                 </p>
+                {(event as any).pricePlanNote && (
+                  <div className="flex gap-2 rounded-2xl border border-amber-400/30 bg-amber-50/40 dark:bg-amber-900/10 p-3 text-sm text-amber-800 dark:text-amber-300">
+                    <span className="shrink-0 mt-0.5">ℹ️</span>
+                    <p>{(event as any).pricePlanNote}</p>
+                  </div>
+                )}
                 <div className="grid gap-3">
                   {event.pricePlan.map((plan: any) => {
                     const isSelected = checkPlan.includes(plan._id);
@@ -770,21 +787,38 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                               Choisissez un choix :
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              {plan.options.map((opt: string, idx: number) => {
-                                const isOptSelected = selectedOptions[plan._id] === opt;
+                              {plan.options.map((opt: any, idx: number) => {
+                                const optName = typeof opt === "object" ? opt.name : opt;
+                                const optPrice = typeof opt === "object" ? (opt.price || 0) : 0;
+                                const optPlaces = typeof opt === "object" ? opt.places : undefined;
+                                const isOptSelected = selectedOptions[plan._id] === optName;
                                 return (
                                   <button
                                     key={idx}
                                     type="button"
-                                    onClick={() => handleSelectOption(plan._id, opt)}
-                                    className={`flex items-center gap-2 p-1.5 px-3 rounded-xl border transition-all text-xs ${
+                                    onClick={() => handleSelectOption(plan._id, optName)}
+                                    className={`flex items-center justify-between gap-2 p-2 px-3 rounded-xl border transition-all text-xs ${
                                       isOptSelected
                                         ? "border-primary bg-primary/10 text-primary font-medium"
                                         : "border-border/60 bg-background/50 hover:border-primary/40"
                                     }`}
                                   >
-                                    <div className={`w-3 h-3 rounded-full border-2 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
-                                    {opt}
+                                    <div className="flex items-center gap-2">
+                                      <div className={`w-3 h-3 rounded-full border-2 shrink-0 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
+                                      <span>{optName}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                      {optPrice > 0 && (
+                                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${isOptSelected ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+                                          +{formatPriceByCountry(optPrice, event.country, "en-US", event.location)}
+                                        </span>
+                                      )}
+                                      {optPlaces !== undefined && (
+                                        <span className="text-[10px] text-muted-foreground">
+                                          {optPlaces} pl.
+                                        </span>
+                                      )}
+                                    </div>
                                   </button>
                                 );
                               })}
@@ -1116,11 +1150,17 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       details={
                         event.pricePlan
                           ?.filter((item) => checkPlan.includes(item._id!))
-                          .map((item) => ({
-                            name: item.name,
-                            price: item.price.toString(),
-                            option: selectedOptions[item._id!]
-                          })) || []
+                          .map((item) => {
+                            const selectedOptName = selectedOptions[item._id!];
+                            const optExtra = selectedOptName
+                              ? ((item.options as any[])?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName)?.price || 0)
+                              : 0;
+                            return {
+                              name: item.name,
+                              price: (item.price + optExtra).toString(),
+                              option: selectedOptName,
+                            };
+                          }) || []
                       }
                       requiredUserInfo={builtRegistrationInfo}
                       discountInfo={discountInfo}

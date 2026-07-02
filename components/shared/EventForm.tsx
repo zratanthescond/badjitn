@@ -88,6 +88,7 @@ const EventForm = ({
   const [longitude, setLongitude] = useState(10.7600196);
   const [files, setFiles] = useState<File[]>([]);
   const [pricePlan, setPricePlan] = useState<pricePlan[]>([]);
+  const [pricePlanNote, setPricePlanNote] = useState<string>("");
   const [isPricePlan, setIsPricePlan] = useState<boolean>(false);
   const [reel, setReel] = useState<string>("");
 
@@ -120,6 +121,7 @@ const EventForm = ({
     if (event?.pricePlan && event.pricePlan.length > 0 && type === "Update") {
       setIsPricePlan(true);
       setPricePlan(event.pricePlan);
+      if ((event as any).pricePlanNote) setPricePlanNote((event as any).pricePlanNote);
     }
   }, []);
 
@@ -151,6 +153,7 @@ const EventForm = ({
             ...values,
             country: resolvedCountry,
             pricePlan: pricePlan,
+            pricePlanNote: pricePlanNote || undefined,
             location: { name: address, lon: longitude, lat: latitude },
             imageUrl: reel,
             scanPoints: values.scanPoints,
@@ -182,6 +185,7 @@ const EventForm = ({
             ...values,
             country: resolvedCountry,
             pricePlan: pricePlan,
+            pricePlanNote: pricePlanNote || undefined,
             location: { name: address, lon: longitude, lat: latitude },
             imageUrl: reel || values.imageUrl,
             _id: eventId,
@@ -505,6 +509,8 @@ const EventForm = ({
                 pricePlan={pricePlan}
                 setIsPricePlan={handleSetIsPricePlan}
                 currencyCode={currencyCode}
+                globalNote={pricePlanNote}
+                setGlobalNote={setPricePlanNote}
               />
             ) : (
               <FormField

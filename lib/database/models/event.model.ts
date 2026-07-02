@@ -21,8 +21,9 @@ export interface IEvent extends Document {
     price: number;
     places?: number;
     note?: string;
-    options?: string[];
+    options?: { _id?: string; name: string; price: number; places?: number }[];
   }[];
+  pricePlanNote?: string;
   createdAt: Date;
   imageUrl: string;
   startDateTime: Date;
@@ -48,12 +49,18 @@ export interface IEvent extends Document {
   showReturnButton?: boolean;
   isFromOtherPlatform?: boolean;
 }
+const planOptionSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, default: 0 },
+  places: { type: Number },
+});
+
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
   price: { type: Number },
   places: { type: Number },
   note: { type: String },
-  options: { type: [String], default: [] },
+  options: { type: [planOptionSchema], default: [] },
 });
 const EventSchema = new Schema({
   title: { type: String, required: true },
@@ -74,6 +81,7 @@ const EventSchema = new Schema({
   sponsors: { type: [String], default: [] },
   scanPoints: { type: [String], default: [] },
   pricePlan: { type: [pricePlanSchema], default: [] },
+  pricePlanNote: { type: String },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },
   startDateTime: { type: Date, default: Date.now },

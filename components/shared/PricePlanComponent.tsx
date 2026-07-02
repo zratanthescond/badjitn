@@ -1,30 +1,35 @@
 "use client";
 
-import { Plus, Trash2, ArrowLeft, Package, ListTodo } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Package, ListTodo, Pencil, X, StickyNote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
 
-// Type definition
+interface PlanOption {
+  name: string;
+  price: number;
+  places?: number;
+}
+
 interface PricePlan {
   name: string;
   price: number;
   places?: number;
   note?: string;
-  options?: string[];
+  options?: PlanOption[];
 }
 
 interface PricePlanComponentProps {
@@ -32,6 +37,8 @@ interface PricePlanComponentProps {
   setPricePlan: React.Dispatch<React.SetStateAction<PricePlan[]>>;
   setIsPricePlan: React.Dispatch<React.SetStateAction<boolean>>;
   currencyCode: string;
+  globalNote: string;
+  setGlobalNote: (note: string) => void;
 }
 
 export default function PricePlanComponent({
@@ -39,66 +46,90 @@ export default function PricePlanComponent({
   setPricePlan,
   setIsPricePlan,
   currencyCode,
+  globalNote,
+  setGlobalNote,
 }: PricePlanComponentProps) {
   const t = useTranslations("pricePlan");
   const priceLabel = t("form.labels.price").replace(/\s*\([^)]*\)\s*$/, "");
 
-  const [planDescription, setPlanDescription] = useState<string>("");
-  const [planPrice, setPlanPrice] = useState<string>("");
-  const [planPlaces, setPlanPlaces] = useState<string>("");
-  const [planNote, setPlanNote] = useState<string>("");
-  const [planOptions, setPlanOptions] = useState<string[]>([]);
-  const [currentOption, setCurrentOption] = useState<string>("");
+  // ── form state ──────────────────────────────────────────────────────────
+  const [planDescription, setPlanDescription] = useState("");
+  const [planPrice, setPlanPrice] = useState("");
+  const [planPlaces, setPlanPlaces] = useState("");
+  const [planNote, setPlanNote] = useState("");
+  const [planOptions, setPlanOptions] = useState<PlanOption[]>([]);
+  const [currentOption, setCurrentOption] = useState("");
+  const [currentOptionPrice, setCurrentOptionPrice] = useState("");
+  const [currentOptionPlaces, setCurrentOptionPlaces] = useState("");
 
-  const [errors, setErrors] = useState<{
-    description: string;
-    price: string;
-    places: string;
-  }>({
-    description: "",
-    price: "",
-    places: "",
-  });
+  // ── edit mode ────────────────────────────────────────────────────────────
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
-  const validateForm = () => {
-    return true;
-  };
-
-  const handleAddOption = () => {
-    if (currentOption.trim()) {
-      setPlanOptions([...planOptions, currentOption.trim()]);
-      setCurrentOption("");
-    }
-  };
-
-  const removeOption = (index: number) => {
-    setPlanOptions(planOptions.filter((_, i) => i !== index));
-  };
-
-  const handleAddPlan = (e: React.FormEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const newPlan: PricePlan = {
-      name: planDescription.trim() || `${t("list.planNumber")} ${pricePlan.length + 1}`,
-      price: Number.parseFloat(planPrice) || 0,
-      places: planPlaces ? Number.parseInt(planPlaces) : undefined,
-      note: planNote.trim(),
-      options: planOptions.length > 0 ? planOptions : undefined,
-    };
-
-    setPricePlan([...pricePlan, newPlan]);
+  const resetForm = () => {
     setPlanDescription("");
     setPlanPrice("");
     setPlanPlaces("");
     setPlanNote("");
     setPlanOptions([]);
     setCurrentOption("");
-    setErrors({ description: "", price: "", places: "" });
+    setCurrentOptionPrice("");
+    setCurrentOptionPlaces("");
+    setEditingIndex(null);
+  };
+
+  const startEdit = (index: number) => {
+    const plan = pricePlan[index];
+    setPlanDescription(plan.name);
+    setPlanPrice(plan.price.toString());
+    setPlanPlaces(plan.places?.toString() ?? "");
+    setPlanNote(plan.note ?? "");
+    setPlanOptions(plan.options ?? []);
+    setEditingIndex(index);
+    // scroll form into view
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  };
+
+  const handleAddOption = () => {
+    if (!currentOption.trim()) return;
+    setPlanOptions([...planOptions, {
+      name: currentOption.trim(),
+      price: parseFloat(currentOptionPrice) || 0,
+      places: currentOptionPlaces ? parseInt(currentOptionPlaces) : undefined,
+    }]);
+    setCurrentOption("");
+    setCurrentOptionPrice("");
+    setCurrentOptionPlaces("");
+  };
+
+  const removeOption = (index: number) => {
+    setPlanOptions(planOptions.filter((_, i) => i !== index));
+  };
+
+  const handleSavePlan = (e: React.FormEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const plan: PricePlan = {
+      name: planDescription.trim() || `${t("list.planNumber")} ${editingIndex !== null ? editingIndex + 1 : pricePlan.length + 1}`,
+      price: parseFloat(planPrice) || 0,
+      places: planPlaces ? parseInt(planPlaces) : undefined,
+      note: planNote.trim() || undefined,
+      options: planOptions.length > 0 ? planOptions : undefined,
+    };
+
+    if (editingIndex !== null) {
+      setPricePlan((prev) => prev.map((p, i) => (i === editingIndex ? plan : p)));
+    } else {
+      setPricePlan((prev) => [...prev, plan]);
+    }
+
+    resetForm();
   };
 
   const removePlan = (index: number) => {
-    setPricePlan((prevPlans) => prevPlans.filter((_, i) => i !== index));
+    setPricePlan((prev) => prev.filter((_, i) => i !== index));
+    if (editingIndex === index) resetForm();
   };
 
   const EmptyState = () => (
@@ -107,14 +138,8 @@ export default function PricePlanComponent({
         <Package className="w-8 h-8 text-muted-foreground" />
       </div>
       <h3 className="text-lg font-semibold mb-2">{t("emptyState.title")}</h3>
-      <p className="text-muted-foreground mb-4 max-w-sm">
-        {t("emptyState.description")}
-      </p>
-      <Button
-        variant="outline"
-        onClick={() => setIsPricePlan(false)}
-        className="rounded-full"
-      >
+      <p className="text-muted-foreground mb-4 max-w-sm">{t("emptyState.description")}</p>
+      <Button variant="outline" onClick={() => setIsPricePlan(false)} className="rounded-full">
         <ArrowLeft className="w-4 h-4 mr-2" />
         {t("emptyState.action")}
       </Button>
@@ -124,31 +149,61 @@ export default function PricePlanComponent({
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg border-0 bg-gradient-to-br from-background to-muted/20 rounded-3xl">
       {/* Header */}
-      <CardHeader className="pb-4">
+      <div className="px-6 pt-6 pb-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               {t("title")}
-            </CardTitle>
+            </h2>
             <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => setIsPricePlan(false)}
-            className="shrink-0 rounded-full"
-          >
+          <Button variant="outline" onClick={() => setIsPricePlan(false)} className="shrink-0 rounded-full">
             <ArrowLeft className="w-4 h-4 mr-2" />
             {t("buttons.simplePrice")}
           </Button>
         </div>
-      </CardHeader>
+      </div>
 
       <Separator />
 
-      <CardContent className="p-6">
-        {/* Add Plan Form */}
-        <div className="space-y-6 mb-8">
-          <div className="grid gap-6 md:grid-cols-2">
+      <CardContent className="p-6 space-y-8">
+
+        {/* ── Global note ─────────────────────────────────────────────── */}
+        <div className="space-y-2 p-4 rounded-2xl border border-dashed border-amber-400/40 bg-amber-50/30 dark:bg-amber-900/10">
+          <Label className="text-sm font-medium flex items-center gap-2 text-amber-700 dark:text-amber-400">
+            <StickyNote className="w-4 h-4" />
+            Note globale pour la section tarification
+            <span className="text-muted-foreground font-normal text-xs">(optionnel — visible par les participants)</span>
+          </Label>
+          <Textarea
+            placeholder="Ex: Les prix indiqués incluent l'accès à toutes les sessions. Hébergement non inclus."
+            value={globalNote}
+            onChange={(e) => setGlobalNote(e.target.value)}
+            className="resize-none rounded-2xl min-h-[72px] text-sm"
+            maxLength={400}
+          />
+          {globalNote && (
+            <p className="text-xs text-muted-foreground text-right">{globalNote.length}/400</p>
+          )}
+        </div>
+
+        {/* ── Plan form ───────────────────────────────────────────────── */}
+        <div ref={formRef} className={`space-y-5 p-5 rounded-3xl border-2 transition-colors duration-200 ${editingIndex !== null ? "border-primary/30 bg-primary/[0.03]" : "border-transparent"}`}>
+          {editingIndex !== null && (
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-primary flex items-center gap-2">
+                <Pencil className="w-4 h-4" />
+                Modifier le Plan n°{editingIndex + 1}
+              </p>
+              <Button type="button" size="sm" variant="ghost" onClick={resetForm} className="rounded-full h-8 px-3 text-muted-foreground">
+                <X className="w-3.5 h-3.5 mr-1" />
+                Annuler
+              </Button>
+            </div>
+          )}
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Description */}
             <div className="md:col-span-2">
               <Label htmlFor="description" className="text-sm font-medium">
                 {t("form.labels.planDescription")}
@@ -158,16 +213,11 @@ export default function PricePlanComponent({
                 placeholder={t("form.placeholders.planDescription")}
                 value={planDescription}
                 onChange={(e) => setPlanDescription(e.target.value)}
-                className={`mt-1 rounded-full ${errors.description ? "border-destructive" : ""
-                  }`}
+                className="mt-1 rounded-full"
               />
-              {errors.description && (
-                <p className="text-sm text-destructive mt-1">
-                  {errors.description}
-                </p>
-              )}
             </div>
 
+            {/* Price */}
             <div>
               <Label htmlFor="price" className="text-sm font-medium">
                 {priceLabel} ({currencyCode})
@@ -180,14 +230,11 @@ export default function PricePlanComponent({
                 placeholder={t("form.placeholders.price")}
                 value={planPrice}
                 onChange={(e) => setPlanPrice(e.target.value)}
-                className={`mt-1 rounded-full ${errors.price ? "border-destructive" : ""
-                  }`}
+                className="mt-1 rounded-full"
               />
-              {errors.price && (
-                <p className="text-sm text-destructive mt-1">{errors.price}</p>
-              )}
             </div>
 
+            {/* Places */}
             <div>
               <Label htmlFor="places" className="text-sm font-medium">
                 {t("form.labels.availablePlaces")}
@@ -199,14 +246,11 @@ export default function PricePlanComponent({
                 placeholder={t("form.placeholders.places")}
                 value={planPlaces}
                 onChange={(e) => setPlanPlaces(e.target.value)}
-                className={`mt-1 rounded-full ${errors.places ? "border-destructive" : ""
-                  }`}
+                className="mt-1 rounded-full"
               />
-              {errors.places && (
-                <p className="text-sm text-destructive mt-1">{errors.places}</p>
-              )}
             </div>
 
+            {/* Note */}
             <div className="md:col-span-2">
               <Label htmlFor="note" className="text-sm font-medium">
                 {t("form.labels.note")}
@@ -224,64 +268,103 @@ export default function PricePlanComponent({
             <div className="md:col-span-2 space-y-3">
               <Label className="text-sm font-medium flex items-center gap-2">
                 <ListTodo className="w-4 h-4" />
-                Choix du plan (Optionnel - Sélection unique)
+                Choix du plan
+                <span className="text-muted-foreground font-normal text-xs">(optionnel — sélection unique)</span>
               </Label>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Ex: Petit déjeuner, VIP, etc."
-                  value={currentOption}
-                  onChange={(e) => setCurrentOption(e.target.value)}
-                  className="rounded-full"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleAddOption();
-                    }
-                  }}
-                />
-                <Button 
-                  type="button" 
-                  variant="secondary" 
-                  onClick={handleAddOption}
-                  className="rounded-full"
-                >
+
+              <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto_auto] gap-2 items-end">
+                <div>
+                  <Label className="text-xs text-muted-foreground mb-1 block">Libellé du choix</Label>
+                  <Input
+                    placeholder="Ex: Petit déjeuner, VIP, etc."
+                    value={currentOption}
+                    onChange={(e) => setCurrentOption(e.target.value)}
+                    className="rounded-full"
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddOption(); } }}
+                  />
+                </div>
+                <div className="w-full sm:w-28">
+                  <Label className="text-xs text-muted-foreground mb-1 block">Supplément ({currencyCode})</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
+                    value={currentOptionPrice}
+                    onChange={(e) => setCurrentOptionPrice(e.target.value)}
+                    className="rounded-full"
+                  />
+                </div>
+                <div className="w-full sm:w-24">
+                  <Label className="text-xs text-muted-foreground mb-1 block">Places</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    placeholder="∞"
+                    value={currentOptionPlaces}
+                    onChange={(e) => setCurrentOptionPlaces(e.target.value)}
+                    className="rounded-full"
+                  />
+                </div>
+                <Button type="button" variant="secondary" onClick={handleAddOption} className="rounded-full self-end">
                   Ajouter
                 </Button>
               </div>
-              
+
               {planOptions.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2 p-3 bg-muted/30 rounded-2xl border border-dashed">
+                <div className="flex flex-col gap-1.5 p-3 bg-muted/30 rounded-2xl border border-dashed">
                   {planOptions.map((opt, idx) => (
-                    <Badge key={idx} variant="outline" className="pl-3 pr-1 py-1 rounded-full flex items-center gap-1 bg-background">
-                      {opt}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeOption(idx)}
-                        className="h-5 w-5 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </Badge>
+                    <div key={idx} className="flex items-center justify-between gap-2 bg-background rounded-xl px-3 py-1.5 border border-border/50">
+                      <span className="text-sm font-medium">{opt.name}</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {opt.price > 0 && (
+                          <Badge variant="secondary" className="rounded-full text-xs">+{opt.price} {currencyCode}</Badge>
+                        )}
+                        {opt.places !== undefined && (
+                          <Badge variant="outline" className="rounded-full text-xs">{opt.places} places</Badge>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeOption(idx)}
+                          className="h-6 w-6 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}
             </div>
           </div>
 
-          <Button
-            type="button"
-            className="w-full sm:w-auto rounded-full"
-            onClick={handleAddPlan}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            {t("buttons.addPlan")}{" "}
-          </Button>
+          <div className="flex gap-2">
+            <Button type="button" className="rounded-full" onClick={handleSavePlan}>
+              {editingIndex !== null ? (
+                <>
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Mettre à jour le Plan
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  {t("buttons.addPlan")}
+                </>
+              )}
+            </Button>
+            {editingIndex !== null && (
+              <Button type="button" variant="outline" onClick={resetForm} className="rounded-full">
+                <X className="w-4 h-4 mr-2" />
+                Annuler
+              </Button>
+            )}
+          </div>
         </div>
 
-        <Separator className="mb-6" />
+        <Separator />
 
-        {/* Plans List */}
+        {/* ── Plans List ─────────────────────────────────────────────── */}
         <div>
           <h3 className="text-lg font-semibold mb-4">
             {t("list.title")} ({pricePlan.length})
@@ -293,67 +376,72 @@ export default function PricePlanComponent({
                 {pricePlan.map((plan, index) => (
                   <Card
                     key={index}
-                    className="bg-background/80 backdrop-blur-sm border shadow-sm hover:shadow-md transition-shadow rounded-3xl"
+                    className={`bg-background/80 backdrop-blur-sm border shadow-sm hover:shadow-md transition-all rounded-3xl ${editingIndex === index ? "border-primary/40 ring-1 ring-primary/20" : ""}`}
                   >
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
-                        <Badge
-                          variant="secondary"
-                          className="text-xs rounded-full"
-                        >
-                          {t("list.planNumber")}
-                          {index + 1}
+                        <Badge variant={editingIndex === index ? "default" : "secondary"} className="text-xs rounded-full">
+                          {t("list.planNumber")}{index + 1}
+                          {editingIndex === index && " — en cours de modification"}
                         </Badge>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => removePlan(index)}
-                          className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full"
-                          title={t("actions.delete")}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => startEdit(index)}
+                            className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-full"
+                            title="Modifier"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => removePlan(index)}
+                            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full"
+                            title={t("actions.delete")}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </CardHeader>
 
                     <CardContent className="pt-0 pb-3">
-                      <p className="font-medium text-sm leading-relaxed">
-                        {plan.name}
-                      </p>
+                      <p className="font-medium text-sm leading-relaxed">{plan.name}</p>
                       {plan.note && (
-                        <p className="text-muted-foreground text-xs mt-2 italic">
-                          {plan.note}
-                        </p>
+                        <p className="text-muted-foreground text-xs mt-2 italic">{plan.note}</p>
                       )}
-                      
                       {plan.options && plan.options.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-1">
+                        <div className="mt-3 flex flex-col gap-1">
                           {plan.options.map((opt, i) => (
-                            <Badge key={i} variant="outline" className="text-[10px] py-0 rounded-full opacity-70">
-                              {opt}
-                            </Badge>
+                            <div key={i} className="flex items-center gap-1.5 flex-wrap">
+                              <Badge variant="outline" className="text-[10px] py-0 rounded-full opacity-70">
+                                {opt.name}
+                              </Badge>
+                              {opt.price > 0 && (
+                                <Badge variant="secondary" className="text-[10px] py-0 rounded-full">
+                                  +{opt.price} {currencyCode}
+                                </Badge>
+                              )}
+                              {opt.places !== undefined && (
+                                <span className="text-[10px] text-muted-foreground">{opt.places} places</span>
+                              )}
+                            </div>
                           ))}
                         </div>
                       )}
                     </CardContent>
 
-                    <CardFooter className="pt-0 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Badge
-                          variant="outline"
-                          className="font-semibold rounded-full"
-                        >
-                          {plan.price} {currencyCode}
+                    <CardFooter className="pt-0 flex items-center gap-3">
+                      <Badge variant="outline" className="font-semibold rounded-full">
+                        {plan.price} {currencyCode}
+                      </Badge>
+                      {plan.places !== undefined && (
+                        <Badge variant="secondary" className="text-xs rounded-full">
+                          {plan.places} {t("list.places")}
                         </Badge>
-                        {plan.places !== undefined && (
-                          <Badge
-                            variant="secondary"
-                            className="text-xs rounded-full"
-                          >
-                            {plan.places} {t("list.places")}
-                          </Badge>
-                        )}
-                      </div>
+                      )}
                     </CardFooter>
                   </Card>
                 ))}

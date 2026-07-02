@@ -28,11 +28,19 @@ export type UpdateUserParams = {
   username?: string;
   photo?: string;
 };
+export type PlanOption = {
+  _id?: string;
+  name: string;
+  price: number;
+  places?: number;
+};
+
 export type pricePlan = {
   name: string;
   price: number;
   places?: number;
   note?: string;
+  options?: PlanOption[];
 };
 // ====== EVENT PARAMS
 export type CreateEventParams = {
