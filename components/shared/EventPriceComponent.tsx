@@ -1079,14 +1079,24 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge
-                              variant={isSelected ? "default" : "secondary"}
-                              className={`rounded-full px-3 py-1 text-sm font-bold ${
-                                isSelected ? "bg-primary text-primary-foreground" : ""
-                              }`}
-                            >
-                              {formatPriceByCountry(plan.price, event.country, "en-US", event.location)}
-                            </Badge>
+                            {(() => {
+                              const hasPricedOptions = (plan.options || []).some(
+                                (o: any) => (typeof o === "object" ? o.price || 0 : 0) > 0
+                              );
+                              // Hide the "0.00 TND" badge when the plan itself is free
+                              // but its choices carry a price (shown per-option instead).
+                              if (Number(plan.price) === 0 && hasPricedOptions) return null;
+                              return (
+                                <Badge
+                                  variant={isSelected ? "default" : "secondary"}
+                                  className={`rounded-full px-3 py-1 text-sm font-bold ${
+                                    isSelected ? "bg-primary text-primary-foreground" : ""
+                                  }`}
+                                >
+                                  {formatPriceByCountry(plan.price, event.country, "en-US", event.location)}
+                                </Badge>
+                              );
+                            })()}
                             {isSelected && (
                               <button
                                 type="button"
