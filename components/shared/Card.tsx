@@ -1,6 +1,6 @@
 "use client";
 import { IEvent } from "@/lib/database/models/event.model";
-import { formatDateTime, getLastTwoWords } from "@/lib/utils";
+import { eventUrl, formatDateTime, getLastTwoWords } from "@/lib/utils";
 import Link from "next/link";
 import React, { useMemo } from "react";
 import HomePostContainer from "./HomePostContainer";
@@ -57,7 +57,7 @@ const Card = ({
         </div>
       )}
       <Link
-        href={hidePrice ? {} : `/events/${event._id}`}
+        href={hidePrice ? {} : eventUrl(event)}
         className="flex-center flex-grow bg-cover bg-center text-grey-500 w-full h-full relative"
       >
         <div className="ios-card-media absolute inset-0 z-0">

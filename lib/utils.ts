@@ -12,6 +12,28 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+export function eventUrl(event: { _id: string; title: string }): string {
+  const slug = slugify(event.title);
+  return `/events/${slug ? `${slug}-` : ""}${event._id}`;
+}
+
+export function extractEventId(param: string): string {
+  // MongoDB ObjectIds are exactly 24 hex chars; strip any slug prefix
+  return param.length === 24 ? param : param.slice(-24);
+}
+
 export const formatDateTime = (dateString: Date, locale: string = "en-US") => {
   const dateTimeOptions: Intl.DateTimeFormatOptions = {
     weekday: "short", // abbreviated weekday name (e.g., 'Mon')

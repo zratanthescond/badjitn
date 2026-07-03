@@ -57,7 +57,7 @@ import DiscountDialog from "./DiscountDialogComponenet";
 import { useLocale, useTranslations } from "next-intl";
 import { useLoadScript } from "@react-google-maps/api";
 import ScanPointsConfig from "./ScanPointsConfig";
-import { getCurrencyCodeByCountry } from "@/lib/utils";
+import { eventUrl, getCurrencyCodeByCountry } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -165,7 +165,7 @@ const EventForm = ({
 
         if (newEvent) {
           form.reset();
-          router.push(`/events/${newEvent._id}`);
+          router.push(eventUrl(newEvent));
         }
       } catch (error) {
         console.log(error);
