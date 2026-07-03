@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Skeleton } from "@/components/ui/skeleton";
 import { VideoItem } from "./video-item";
-import { NavigationControls } from "./navigation-controls";
 import { ShareDialog } from "./share-dialog";
 import { useTranslations } from "next-intl";
 import { toast } from "@/hooks/use-toast";
@@ -156,12 +155,6 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
           })}
         </div>
       </div>
-
-      {/* Navigation controls for desktop */}
-      <NavigationControls
-        onScrollUp={scrollToPrevious}
-        onScrollDown={scrollToNext}
-      />
 
       {/* Share dialog */}
       <ShareDialog
