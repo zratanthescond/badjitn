@@ -9,10 +9,11 @@ const discountSchema = z.object({
   value: z.string(),
   discount: z
     .string()
-    .refine((val) => !isNaN(Number(val)), {
-      message: "Must be a valid number",
-    })
+    .refine((val) => !isNaN(Number(val)), { message: "Must be a valid number" })
     .transform((val) => Number(val)),
+  discountType: z.enum(["percentage", "fixed"]).optional().default("percentage"),
+  discountTarget: z.enum(["all", "inscription", "plan"]).optional().default("all"),
+  discountPlanId: z.string().optional(),
 });
 // export const eventFormSchema = z
 //   .object({

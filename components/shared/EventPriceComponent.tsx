@@ -47,7 +47,7 @@ import {
 } from "../ui/dialog";
 import { countries } from "country-data-list";
 import { countryGovernorates } from "@/constants/country-governorates";
-import { formatPriceByCountry, getCurrencyCodeByCountry } from "@/lib/utils";
+import { calcFinalPrice, formatPriceByCountry, getCurrencyCodeByCountry } from "@/lib/utils";
 import { useSubmitWorkSummary, type ClientInfo } from "@/hooks/useUploadWork";
 
 type RegistrationInfoItem = {
@@ -425,15 +425,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       type: "discount",
       value: isApplied ? event.discount.discount : 0,
       fieldValue,
+      discountType: event.discount.discountType || "percentage",
+      discountTarget: event.discount.discountTarget || "all",
+      discountPlanId: event.discount.discountPlanId,
     };
   }, [event.discount, registrationFields, registrationValues]);
 
-  const calculatePriceAsNumber = (basePrice: number) => {
-    let finalPrice = basePrice;
-    if (discountInfo && Number(discountInfo.value) > 0) {
-      finalPrice = basePrice - (basePrice * Number(discountInfo.value)) / 100;
-    }
-    return Number.parseFloat(String(finalPrice)).toFixed(2);
+  const calculatePriceAsNumber = (_unused?: number) => {
+    const final = calcFinalPrice(baseFee, planSum, discountInfo, event.pricePlan as any[], checkPlan);
+    return Number.parseFloat(String(final)).toFixed(2);
   };
 
   const isFreeEvent = event.isFree || Number(calculatePriceAsNumber(price)) === 0;

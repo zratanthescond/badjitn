@@ -24,14 +24,44 @@ export function slugify(text: string): string {
     .replace(/-+/g, "-");
 }
 
-export function eventUrl(event: { _id: string; title: string }): string {
-  const slug = slugify(event.title);
-  return `/events/${slug ? `${slug}-` : ""}${event._id}`;
+export function eventUrl(event: { _id: string; title: string; slug?: string }): string {
+  return `/events/${event.slug || event._id}`;
 }
 
-export function extractEventId(param: string): string {
-  // MongoDB ObjectIds are exactly 24 hex chars; strip any slug prefix
-  return param.length === 24 ? param : param.slice(-24);
+export function applyDiscount(
+  amount: number,
+  discountValue: number,
+  discountType: "percentage" | "fixed" = "percentage"
+): number {
+  if (discountType === "fixed") return Math.max(0, amount - discountValue);
+  return amount - (amount * discountValue) / 100;
+}
+
+export function calcFinalPrice(
+  baseFee: number,
+  planSum: number,
+  discountInfo: any,
+  pricePlan?: any[],
+  checkedPlans?: string[]
+): number {
+  const total = baseFee + planSum;
+  const v = Number(discountInfo?.value) || 0;
+  if (!discountInfo || v <= 0) return total;
+
+  const type: "percentage" | "fixed" = discountInfo.discountType || "percentage";
+  const target: string = discountInfo.discountTarget || "all";
+
+  if (target === "inscription") {
+    return applyDiscount(baseFee, v, type) + planSum;
+  }
+  if (target === "plan" && discountInfo.discountPlanId) {
+    const planId = discountInfo.discountPlanId;
+    if (!checkedPlans?.includes(planId)) return total;
+    const planItem = pricePlan?.find((p: any) => p._id === planId);
+    if (!planItem) return total;
+    return total - planItem.price + applyDiscount(planItem.price, v, type);
+  }
+  return applyDiscount(total, v, type);
 }
 
 export const formatDateTime = (dateString: Date, locale: string = "en-US") => {

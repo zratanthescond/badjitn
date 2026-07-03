@@ -8,7 +8,7 @@ import Checkout from "./Checkout";
 import { useAuth } from "@clerk/nextjs";
 import { AlertCircle, Ticket } from "lucide-react";
 import { motion } from "framer-motion";
-import { formatPriceByCountry } from "@/lib/utils";
+import { calcFinalPrice, formatPriceByCountry } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -52,10 +52,7 @@ const CheckoutButton = ({
           return sum + item.price + optExtra;
         }, 0)
       : 0;
-  const initialPriceValue = baseFee + planSum;
-
-  const discountValue = Number(discountInfo?.value) || 0;
-  const priceValue = initialPriceValue - (initialPriceValue * discountValue) / 100;
+  const priceValue = calcFinalPrice(baseFee, planSum, discountInfo, event.pricePlan as any[], checkPlan);
   const isActuallyFree = event.isFree || (priceValue === 0 && (checkPlan?.length || 0) > 0);
 
   const allowGuestRegistration = event.allowGuestRegistration !== false;

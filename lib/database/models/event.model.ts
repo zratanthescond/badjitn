@@ -39,7 +39,14 @@ export interface IEvent extends Document {
   category: { _id: string; name: string };
   organizer: { _id: string; firstName: string; lastName: string; photo: string };
   organisation?: { _id: string; name: string; slug: string; logo: string };
-  discount: { field: string; value: string; discount: number };
+  discount: {
+    field: string;
+    value: string;
+    discount: number;
+    discountType?: "percentage" | "fixed";
+    discountTarget?: "all" | "inscription" | "plan";
+    discountPlanId?: string;
+  };
   restricted: boolean;
   scanPoints?: string[];
   showWorkSubmissionPopup?: boolean;
@@ -98,6 +105,9 @@ const EventSchema = new Schema({
     field: { type: String },
     value: { type: String },
     discount: { type: Number },
+    discountType: { type: String, default: "percentage" },
+    discountTarget: { type: String, default: "all" },
+    discountPlanId: { type: String },
   },
   restricted: { type: Boolean, default: false },
   showWorkSubmissionPopup: { type: Boolean, default: false },

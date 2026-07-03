@@ -6,7 +6,7 @@ import { checkoutOrder, createOrder } from "@/lib/actions/order.actions";
 import { Detail } from "@/lib/database/models/order.model";
 import { motion } from "framer-motion";
 import { Ticket } from "lucide-react";
-import { formatPriceByCountry } from "@/lib/utils";
+import { calcFinalPrice, formatPriceByCountry } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
@@ -74,7 +74,14 @@ const Checkout = ({
 
     const discountValue = Number(discountInfo?.value) || 0;
     if (discountValue > 0 && calculatedPrice > 0) {
-      const discountedPrice = calculatedPrice - (calculatedPrice * discountValue) / 100;
+      const baseFee = event.price ? parseFloat(event.price) : 0;
+      const discountedPrice = calcFinalPrice(
+        baseFee,
+        calculatedPrice - baseFee,
+        discountInfo,
+        event.pricePlan as any[],
+        chekedPlans
+      );
       setPrice(discountedPrice);
     } else {
       setPrice(calculatedPrice);
