@@ -409,6 +409,24 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     0
   );
   const price = hasPackage ? packageTotal : baseFee + planSum;
+
+  // Payment methods enabled by the organizer (default: all enabled)
+  const pm = (event.paymentMethods as any) || {};
+  const showCardPayment = pm.card !== false;
+  const showDoorpayPayment = pm.doorpay !== false;
+  const showBankPayment = pm.bankTransfer !== false;
+
+  // "Registration request only": a selected choice asks to hide payment buttons
+  // and submit a pending registration request instead (e.g. lab payment by cheque).
+  const isRegistrationRequest = (event.pricePlan || []).some((p: any) => {
+    if (!checkPlan.includes(p._id)) return false;
+    const optName = selectedOptions[p._id];
+    const opt = (p.options as any[])?.find(
+      (o: any) => (typeof o === "object" ? o.name : o) === optName
+    );
+    return opt && typeof opt === "object" && opt.registrationRequestOnly;
+  });
+
   const allowGuestRegistration = event.allowGuestRegistration !== false;
   const shouldShowWorkSubmission = event.showWorkSubmissionPopup === true;
   const workSummaryClientInfo = {
@@ -683,7 +701,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     router.push(`${pathname}?registered=1`);
   };
 
-  const handleGetPreorder = async () => {
+  const handleGetPreorder = async (asRequest = false) => {
     if (!(await validateAll())) {
       return;
     }
@@ -692,7 +710,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       setIsProcessing(true);
       const workReady = await persistWorkSummaryIfNeeded();
       if (!workReady) return;
-      
+
       const details =
         event.pricePlan
           ?.filter((item) => checkPlan.includes(item._id!))
@@ -717,6 +735,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         ...(discountIsApplied ? { discountInfo } : {}),
         ...(discountIsApplied ? { originalAmount: price } : {}),
         ...(discountIsApplied && discountProofUrl ? { discountProofUrl } : {}),
+        ...(asRequest ? { pendingReview: true } : {}),
         details,
         buyerId: userId || "",
         stripeId: `${uuidv4()}`,
@@ -1326,19 +1345,39 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             )}
 
             {isAvailable() && (
+              isRegistrationRequest ? (
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    onClick={() => void handleGetPreorder(true)}
+                    disabled={isProcessing}
+                    className="h-14 w-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 font-semibold text-white shadow-lg transition-all hover:from-amber-600 hover:to-orange-600"
+                  >
+                    {isProcessing ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        {text("sendRegistrationRequest", "Envoyer la demande d'inscription")}
+                      </div>
+                    )}
+                  </Button>
+                </motion.div>
+              ) : (
               <>
-                <CheckoutButton
-                  event={event}
-                  checkPlan={checkPlan}
-                  selectedOptions={selectedOptions}
-                  discountInfo={discountInfo}
-                  discountProofUrl={discountProofUrl}
-                  requiredUserInfo={builtRegistrationInfo}
-                  validateBeforeCheckout={validateAll}
-                  beforeCheckout={persistWorkSummaryIfNeeded}
-                />
+                {(isFreeEvent || showCardPayment) && (
+                  <CheckoutButton
+                    event={event}
+                    checkPlan={checkPlan}
+                    selectedOptions={selectedOptions}
+                    discountInfo={discountInfo}
+                    discountProofUrl={discountProofUrl}
+                    requiredUserInfo={builtRegistrationInfo}
+                    validateBeforeCheckout={validateAll}
+                    beforeCheckout={persistWorkSummaryIfNeeded}
+                  />
+                )}
 
-                {!isFreeEvent && (
+                {!isFreeEvent && showDoorpayPayment && (
                   <>
                     {(!userId && !allowGuestRegistration) ? (
                       <Button
@@ -1393,7 +1432,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   </>
                 )}
 
-                {!isFreeEvent &&
+                {!isFreeEvent && showBankPayment &&
                   ((!userId && !allowGuestRegistration) ? (
                     <Button
                       onClick={() => router.push("/sign-in")}
@@ -1431,6 +1470,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                     />
                   ))}
               </>
+              )
             )}
           </div>
 

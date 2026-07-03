@@ -40,7 +40,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import GoogleMapComponent from "./GoogleMap";
-import { CalendarIcon, Disc, LinkIcon, ListChecks, MapPin, Plus, StickyNote, Trash2 } from "lucide-react";
+import { CalendarIcon, Disc, Landmark, LinkIcon, ListChecks, MapPin, Plus, StickyNote, Trash2 } from "lucide-react";
 import PricePlanComponent from "./PricePlanComponent";
 import { pricePlan } from "@/types";
 import FormBuilder from "./FormBuilder";
@@ -617,6 +617,36 @@ const EventForm = ({
                 </FormItem>
               )}
             />
+            <div className="w-full rounded-2xl glass px-4 py-3 space-y-2">
+              <Label className="text-sm font-medium flex items-center gap-2">
+                <Landmark className="w-4 h-4" />
+                {t.has("paymentMethodsLabel") ? t("paymentMethodsLabel") : "Méthodes de paiement affichées"}
+              </Label>
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-4">
+                {([
+                  { key: "card", label: "Paiement en ligne (carte)" },
+                  { key: "doorpay", label: "Paiement à la porte" },
+                  { key: "bankTransfer", label: "Virement bancaire" },
+                ] as const).map((m) => {
+                  const pm = (form.watch("paymentMethods") as any) || {};
+                  const checked = pm[m.key] !== false; // default enabled
+                  return (
+                    <label key={m.key} className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={(v) =>
+                          form.setValue("paymentMethods", {
+                            ...((form.getValues("paymentMethods") as any) || {}),
+                            [m.key]: v === true,
+                          })
+                        }
+                      />
+                      <span className="text-sm">{m.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
             <FormField
               control={form.control}
               name="url"

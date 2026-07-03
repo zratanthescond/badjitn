@@ -20,6 +20,7 @@ import { verifyOrganizerOrAdmin } from "./auth.actions";
 import {
   sendEligibilityApprovedEmail,
   sendEligibilityRejectedEmail,
+  sendRegistrationConfirmationEmail,
 } from "../mail";
 
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
@@ -78,17 +79,19 @@ export const createOrder = async (order: CreateOrderParams) => {
       ? await User.findOne({ clerkId: order.buyerId })
       : null;
 
-    // Determine if this registration needs admin eligibility review:
-    // a discount was actually applied AND the organizer requires a proof document.
+    const event = await Event.findById(order.eventId).select(
+      "title country location discount"
+    );
+
+    // Determine if this registration needs admin review:
+    //  - a discount was applied AND the organizer requires a proof document, OR
+    //  - the registration was submitted as a request (e.g. lab payment by cheque).
     const discountApplied =
       !!order.discountInfo && Number(order.discountInfo.value) > 0;
-    let eligibilityStatus: "pending" | undefined;
-    if (discountApplied) {
-      const event = await Event.findById(order.eventId).select("discount");
-      if (event?.discount?.requireProof) {
-        eligibilityStatus = "pending";
-      }
-    }
+    const needsReview =
+      order.pendingReview === true ||
+      (discountApplied && event?.discount?.requireProof);
+    const eligibilityStatus: "pending" | undefined = needsReview ? "pending" : undefined;
 
     const newOrder = await Order.create({
       ...order,
@@ -103,9 +106,86 @@ export const createOrder = async (order: CreateOrderParams) => {
       ...(eligibilityStatus ? { eligibilityStatus } : {}),
     });
 
+    // Confirmation email with chosen plans + registration status (best-effort).
+    await sendRegistrationStatusEmail({
+      eventTitle: event?.title || "",
+      country: event?.country,
+      location: event?.location,
+      requiredUserInfo: order.requiredUserInfo,
+      details: order.details,
+      totalAmount: order.totalAmount,
+      type: order.type,
+      eligibilityStatus,
+    });
+
     return JSON.parse(JSON.stringify(newOrder));
   } catch (error) {
     handleError(error);
+  }
+};
+
+// Sends the participant a registration confirmation email describing the chosen
+// plans and the current status. Best-effort: swallows errors so it never blocks
+// the registration. Reused by every path that creates a registration order.
+export const sendRegistrationStatusEmail = async ({
+  eventTitle,
+  country,
+  location,
+  requiredUserInfo,
+  details,
+  totalAmount,
+  type,
+  eligibilityStatus,
+}: {
+  eventTitle: string;
+  country?: string | null;
+  location?: any;
+  requiredUserInfo?: any[];
+  details?: any[];
+  totalAmount: string | number;
+  type?: string;
+  eligibilityStatus?: "pending" | "approved" | "rejected";
+}) => {
+  try {
+    const emailInfo = (requiredUserInfo || []).find(
+      (info: any) => String(info.field).toLowerCase() === "email"
+    );
+    const participantEmail = emailInfo?.value?.trim();
+    if (!participantEmail) return;
+
+    const currency = getCurrencyCodeByCountry(country, location);
+    const amountNum = Number(totalAmount) || 0;
+
+    let statusLabel: string;
+    let statusColor: string;
+    if (eligibilityStatus === "pending") {
+      statusLabel = "En attente de validation par l'organisateur";
+      statusColor = "#d97706";
+    } else if (type === "bank_transfer") {
+      statusLabel = "En attente de vérification du paiement";
+      statusColor = "#d97706";
+    } else if (type === "doorpay") {
+      statusLabel = "Confirmée — paiement à l'accueil";
+      statusColor = "#059669";
+    } else {
+      statusLabel = "Confirmée";
+      statusColor = "#059669";
+    }
+
+    await sendRegistrationConfirmationEmail({
+      to: participantEmail,
+      eventTitle,
+      details: (details || []).map((d: any) => ({
+        name: d.name,
+        option: d.option,
+        price: `${Number(d.price || 0).toFixed(2)} ${currency}`,
+      })),
+      totalAmount: `${amountNum.toFixed(2)} ${currency}`,
+      statusLabel,
+      statusColor,
+    });
+  } catch (mailError) {
+    console.error("Registration confirmation email failed:", mailError);
   }
 };
 

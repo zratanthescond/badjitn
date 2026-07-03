@@ -6,6 +6,7 @@ import BankTransfer from '../database/models/banktransfer.model'
 import Order from '../database/models/order.model'
 import Event from '../database/models/event.model'
 import User from '../database/models/user.model'
+import { sendRegistrationStatusEmail } from './order.actions'
 import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
 
@@ -155,6 +156,17 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
       orderId: newOrder._id,
       transferId: bankTransfer._id,
       status: 'pending',
+    })
+
+    // Confirmation email with chosen plans + status (best-effort)
+    await sendRegistrationStatusEmail({
+      eventTitle: event.title,
+      country: event.country,
+      location: event.location,
+      requiredUserInfo: requiredUserInfo || [],
+      details: details || [],
+      totalAmount: Number(totalAmount),
+      type: 'bank_transfer',
     })
 
     return {

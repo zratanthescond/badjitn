@@ -35,6 +35,13 @@ export type PlanOption = {
   places?: number;
   description?: string;
   requireEmail?: boolean;
+  registrationRequestOnly?: boolean;
+};
+
+export type PaymentMethods = {
+  card?: boolean;
+  doorpay?: boolean;
+  bankTransfer?: boolean;
 };
 
 export type pricePlan = {
@@ -86,6 +93,7 @@ export type CreateEventParams = {
     customRegistrationFields?: { label: string; isRequired: boolean }[];
     pricePlanNote?: string;
     registrationFeeNote?: string;
+    paymentMethods?: PaymentMethods;
   };
   path: string;
 };
@@ -131,6 +139,7 @@ export type UpdateEventParams = {
     customRegistrationFields?: { label: string; isRequired: boolean }[];
     pricePlanNote?: string;
     registrationFeeNote?: string;
+    paymentMethods?: PaymentMethods;
   };
   path: string;
 };
@@ -245,6 +254,7 @@ export type CreateOrderParams = {
   discountInfo?: any;
   originalAmount?: string | number;
   discountProofUrl?: string;
+  pendingReview?: boolean;
 };
 
 export type GetOrdersByEventParams = {

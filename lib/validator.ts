@@ -70,6 +70,13 @@ export const eventFormSchema = z
     city: z.string().optional(),
     village: z.string().optional(),
     registrationFeeNote: z.string().optional(),
+    paymentMethods: z
+      .object({
+        card: z.boolean().optional(),
+        doorpay: z.boolean().optional(),
+        bankTransfer: z.boolean().optional(),
+      })
+      .optional(),
     jobTitleLabel: z.string().optional(),
     selectedRepublic: z.string().optional(),
     customRegistrationFields: z.array(z.object({

@@ -25,6 +25,7 @@ interface PlanOption {
   places?: number;
   description?: string;
   requireEmail?: boolean;
+  registrationRequestOnly?: boolean;
 }
 
 interface PricePlan {
@@ -68,6 +69,7 @@ export default function PricePlanComponent({
   const [currentOptionPlaces, setCurrentOptionPlaces] = useState("");
   const [currentOptionDescription, setCurrentOptionDescription] = useState("");
   const [currentOptionRequireEmail, setCurrentOptionRequireEmail] = useState(false);
+  const [currentOptionRequestOnly, setCurrentOptionRequestOnly] = useState(false);
 
   // ── edit mode ────────────────────────────────────────────────────────────
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -85,6 +87,7 @@ export default function PricePlanComponent({
     setCurrentOptionPlaces("");
     setCurrentOptionDescription("");
     setCurrentOptionRequireEmail(false);
+    setCurrentOptionRequestOnly(false);
     setEditingIndex(null);
   };
 
@@ -109,12 +112,14 @@ export default function PricePlanComponent({
       places: currentOptionPlaces ? parseInt(currentOptionPlaces) : undefined,
       description: currentOptionDescription.trim() || undefined,
       requireEmail: currentOptionRequireEmail || undefined,
+      registrationRequestOnly: currentOptionRequestOnly || undefined,
     }]);
     setCurrentOption("");
     setCurrentOptionPrice("");
     setCurrentOptionPlaces("");
     setCurrentOptionDescription("");
     setCurrentOptionRequireEmail(false);
+    setCurrentOptionRequestOnly(false);
   };
 
   const removeOption = (index: number) => {
@@ -366,6 +371,15 @@ export default function PricePlanComponent({
                     Demander une adresse email si ce choix est sélectionné
                   </span>
                 </label>
+                <label className="mt-1 flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={currentOptionRequestOnly}
+                    onCheckedChange={(v) => setCurrentOptionRequestOnly(v === true)}
+                  />
+                  <span className="text-xs text-muted-foreground">
+                    Demande d'inscription uniquement (masque les boutons de paiement, un seul bouton « Envoyer la demande » — inscription en attente de validation)
+                  </span>
+                </label>
               </div>
 
               {planOptions.length > 0 && (
@@ -383,6 +397,9 @@ export default function PricePlanComponent({
                           )}
                           {opt.requireEmail && (
                             <Badge variant="outline" className="rounded-full text-xs border-blue-400/50 text-blue-600">email requis</Badge>
+                          )}
+                          {opt.registrationRequestOnly && (
+                            <Badge variant="outline" className="rounded-full text-xs border-amber-400/50 text-amber-600">demande seule</Badge>
                           )}
                           <Button
                             variant="ghost"

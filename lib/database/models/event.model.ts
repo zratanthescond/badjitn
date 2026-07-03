@@ -22,10 +22,11 @@ export interface IEvent extends Document {
     places?: number;
     note?: string;
     isPackage?: boolean;
-    options?: { _id?: string; name: string; price: number; places?: number; description?: string; requireEmail?: boolean }[];
+    options?: { _id?: string; name: string; price: number; places?: number; description?: string; requireEmail?: boolean; registrationRequestOnly?: boolean }[];
   }[];
   pricePlanNote?: string;
   registrationFeeNote?: string;
+  paymentMethods?: { card?: boolean; doorpay?: boolean; bankTransfer?: boolean };
   createdAt: Date;
   imageUrl: string;
   startDateTime: Date;
@@ -66,6 +67,7 @@ const planOptionSchema = new mongoose.Schema({
   places: { type: Number },
   description: { type: String },
   requireEmail: { type: Boolean, default: false },
+  registrationRequestOnly: { type: Boolean, default: false },
 });
 
 const pricePlanSchema = new mongoose.Schema({
@@ -97,6 +99,11 @@ const EventSchema = new Schema({
   pricePlan: { type: [pricePlanSchema], default: [] },
   pricePlanNote: { type: String },
   registrationFeeNote: { type: String },
+  paymentMethods: {
+    card: { type: Boolean, default: true },
+    doorpay: { type: Boolean, default: true },
+    bankTransfer: { type: Boolean, default: true },
+  },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },
   startDateTime: { type: Date, default: Date.now },

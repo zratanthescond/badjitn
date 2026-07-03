@@ -22,6 +22,75 @@ export async function sendVerificationEmail(email: string, token: string) {
   });
 }
 
+export async function sendRegistrationConfirmationEmail({
+  to,
+  eventTitle,
+  details,
+  totalAmount,
+  statusLabel,
+  statusColor,
+}: {
+  to: string;
+  eventTitle: string;
+  details: { name: string; option?: string; price: string }[];
+  totalAmount: string;
+  statusLabel: string;
+  statusColor: string;
+}) {
+  const rows =
+    details.length > 0
+      ? details
+          .map(
+            (d) => `
+        <tr>
+          <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">
+            ${d.name}${d.option ? `<br/><span style="color:#6b7280;font-size:12px;">${d.option}</span>` : ""}
+          </td>
+          <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:right;white-space:nowrap;">${d.price}</td>
+        </tr>`
+          )
+          .join("")
+      : `<tr><td colspan="2" style="padding:8px 12px;color:#6b7280;">Inscription</td></tr>`;
+
+  await transporter.sendMail({
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: `Confirmation de votre inscription — ${eventTitle}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <h2 style="margin:0 0 8px;">Inscription enregistrée</h2>
+        <p style="margin:0 0 16px;color:#374151;">Merci pour votre inscription à <strong>${eventTitle}</strong>. Voici le récapitulatif :</p>
+
+        <div style="margin:0 0 16px;">
+          <span style="display:inline-block;padding:6px 14px;border-radius:999px;background:${statusColor}1a;color:${statusColor};font-weight:600;font-size:14px;">
+            Statut : ${statusLabel}
+          </span>
+        </div>
+
+        <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+          <thead>
+            <tr style="background:#f9fafb;">
+              <th style="padding:8px 12px;text-align:left;font-size:13px;color:#374151;">Détails</th>
+              <th style="padding:8px 12px;text-align:right;font-size:13px;color:#374151;">Montant</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+            <tr>
+              <td style="padding:10px 12px;font-weight:700;">Total</td>
+              <td style="padding:10px 12px;text-align:right;font-weight:700;">${totalAmount}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style="margin:16px 0 0;color:#6b7280;font-size:13px;">
+          Vous recevrez une mise à jour par email si le statut de votre inscription évolue.
+        </p>
+      </div>
+    `,
+  });
+}
+
 export async function sendEligibilityApprovedEmail({
   to,
   eventTitle,
