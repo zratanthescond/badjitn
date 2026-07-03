@@ -11,6 +11,7 @@ type ImageUploaderProps = {
     value: string;
     onChange: (url: string) => void;
     aspectRatio?: "square" | "wide";
+    size?: "sm" | "md";
     label?: string;
     placeholder?: string;
 };
@@ -19,6 +20,7 @@ export function ImageUploader({
     value,
     onChange,
     aspectRatio = "square",
+    size = "md",
     label,
     placeholder = "Drag & drop an image, or click to select",
 }: ImageUploaderProps) {
@@ -81,6 +83,8 @@ export function ImageUploader({
     const containerClasses =
         aspectRatio === "wide"
             ? "w-full aspect-[3/1] min-h-[140px]"
+            : size === "sm"
+            ? "w-16 h-16"
             : "w-40 h-40";
 
     const imageClasses =
