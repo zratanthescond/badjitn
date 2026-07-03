@@ -5,20 +5,7 @@ import { connectToDatabase } from "../database";
 import EventForm, { IFormField } from "../database/models/eventform.model";
 import FormSubmission from "../database/models/formsubmission.model";
 import { randomUUID } from "crypto";
-import nodemailer from "nodemailer";
-
-// ====== TRANSPORTER (reuse same config as lib/mail.ts)
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: "honcongs1@gmail.com", pass: "eaqa ozzh qtfr qmzl",
-
-
-
-    },
-});
+import { transporter } from "../mail";
 
 // ====== TYPES
 
@@ -300,7 +287,7 @@ export async function sendFormInvitations(params: SendInvitationsParams) {
         for (const email of allEmails) {
             try {
                 await transporter.sendMail({
-                    from: '"badgiTn" <mail@badgi.tn>',
+                    from: process.env.SMTP_FROM?.replace(/^["']|["']$/g, "") || '"badgiTn" <mail@badgi.tn>',
                     to: email,
                     subject: `You're invited to register for: ${formTitle}`,
                     html: `

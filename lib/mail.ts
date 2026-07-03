@@ -1,19 +1,21 @@
 import nodemailer from "nodemailer";
 
+const cleanEnvVar = (val?: string) => val?.replace(/^["']|["']$/g, "") || "";
+
 export const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  host: cleanEnvVar(process.env.SMTP_HOST) || "smtp.gmail.com",
+  port: parseInt(cleanEnvVar(process.env.SMTP_PORT) || "587"),
+  secure: cleanEnvVar(process.env.SMTP_SECURE) === "true", // true for 465, false for other ports
   auth: {
-    user: "honcongs1@gmail.com",
-    pass: "eaqa ozzh qtfr qmzl",
+    user: cleanEnvVar(process.env.SMTP_USER),
+    pass: cleanEnvVar(process.env.SMTP_PASS),
   },
 });
 
 export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `http://localhost:3000/api/auth/activate/${token}`; // Nowy format URL
   await transporter.sendMail({
-    from: '"badgiTn" <mail@badgi.tn>',
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
     to: email,
     subject: "Verify Your Email",
     html: `Please click on the following link to verify your email: <a href="${verificationUrl}">${verificationUrl}</a>`,
@@ -50,7 +52,7 @@ export async function sendWorkStatusEmail({
     : "";
 
   await transporter.sendMail({
-    from: '"badgiTn" <mail@badgi.tn>',
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
     to,
     subject,
     html: `
