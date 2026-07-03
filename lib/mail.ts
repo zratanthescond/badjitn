@@ -20,6 +20,63 @@ export async function sendVerificationEmail(email: string, token: string) {
   });
 }
 
+export async function sendEligibilityApprovedEmail({
+  to,
+  eventTitle,
+  amount,
+}: {
+  to: string;
+  eventTitle: string;
+  amount: string;
+}) {
+  await transporter.sendMail({
+    from: '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: "Votre remise a été validée",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <h2 style="margin:0 0 16px;color:#059669;">Remise validée ✅</h2>
+        <p style="margin:0 0 16px;">Bonne nouvelle ! Votre éligibilité à la remise a été confirmée par l'organisateur.</p>
+        <div style="border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#f0fdf4;">
+          <p style="margin:0 0 8px;"><strong>Événement :</strong> ${eventTitle}</p>
+          <p style="margin:0;"><strong>Montant à régler :</strong> ${amount}</p>
+        </div>
+        <p style="margin:16px 0 0;">Votre inscription est désormais confirmée. Merci et à bientôt.</p>
+      </div>
+    `,
+  });
+}
+
+export async function sendEligibilityRejectedEmail({
+  to,
+  eventTitle,
+  remainingAmount,
+  fullAmount,
+}: {
+  to: string;
+  eventTitle: string;
+  remainingAmount: string;
+  fullAmount: string;
+}) {
+  await transporter.sendMail({
+    from: '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: "Mise à jour de votre inscription — remise non validée",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <h2 style="margin:0 0 16px;color:#dc2626;">Remise non validée</h2>
+        <p style="margin:0 0 16px;">Après vérification, votre éligibilité à la remise n'a pas pu être confirmée pour cet événement.</p>
+        <div style="border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#fef2f2;">
+          <p style="margin:0 0 8px;"><strong>Événement :</strong> ${eventTitle}</p>
+          <p style="margin:0 0 8px;"><strong>Tarif plein :</strong> ${fullAmount}</p>
+          <p style="margin:0;"><strong>Reste à payer :</strong> ${remainingAmount}</p>
+        </div>
+        <p style="margin:16px 0 0;">Merci de régler le montant restant afin de finaliser votre inscription au tarif plein.</p>
+      </div>
+    `,
+  });
+}
+
 export async function sendWorkStatusEmail({
   to,
   subject,

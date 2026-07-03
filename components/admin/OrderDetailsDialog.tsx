@@ -1,6 +1,22 @@
 "use client";
 
-import { Check, Eye, ClipboardCheck, User, Tag, CreditCard, Gift } from "lucide-react";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  Check,
+  Eye,
+  ClipboardCheck,
+  User,
+  Tag,
+  CreditCard,
+  Gift,
+  FileText,
+  ShieldCheck,
+  ShieldX,
+  Clock,
+} from "lucide-react";
+import { updateOrderEligibility } from "@/lib/actions/order.actions";
+import { toast } from "@/hooks/use-toast";
 import {
   AlertDialogTrigger,
   AlertDialog,
@@ -30,6 +46,37 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
   const t = useTranslations("orderDetailsDialog");
   const locale = useLocale();
   const isRTL = locale === "ar";
+  const queryClient = useQueryClient();
+  const [isUpdating, setIsUpdating] = useState<"approved" | "rejected" | null>(null);
+
+  // Safe translation with fallback (avoids MISSING_MESSAGE crashes for new keys)
+  const tx = (key: string, fallback: string) =>
+    t.has(key as any) ? t(key as any) : fallback;
+
+  const eligibilityStatus: "pending" | "approved" | "rejected" | undefined =
+    value?.eligibilityStatus;
+
+  const handleEligibility = async (status: "approved" | "rejected") => {
+    try {
+      setIsUpdating(status);
+      await updateOrderEligibility({ orderId: value._id, status });
+      await queryClient.invalidateQueries({ queryKey: ["orders"] });
+      toast({
+        title:
+          status === "approved"
+            ? tx("eligibility.approvedToast", "Remise validée")
+            : tx("eligibility.rejectedToast", "Remise refusée"),
+      });
+    } catch (error) {
+      toast({
+        title: tx("eligibility.errorToast", "Une erreur est survenue"),
+        description: error instanceof Error ? error.message : undefined,
+        variant: "destructive",
+      });
+    } finally {
+      setIsUpdating(null);
+    }
+  };
 
   const totalAmount =
     Number.parseFloat(value?.totalAmount) === 0
@@ -90,6 +137,95 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
 
         <ScrollArea className="max-h-96 pr-4">
           <div className="flex flex-col gap-6">
+            {/* Discount Eligibility Section */}
+            {eligibilityStatus && (
+              <Card className="glass bg-gradient-to-br from-amber-50/60 to-orange-50/60 dark:from-amber-900/20 dark:to-orange-900/20 backdrop-blur-sm border border-amber-200/40 dark:border-amber-700/30">
+                <CardHeader className="pb-3">
+                  <div className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
+                    <div className="p-2 rounded-lg bg-amber-500/20">
+                      <ShieldCheck className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <div className={isRTL ? "text-right" : ""}>
+                      <CardTitle className={`text-lg text-amber-800 dark:text-amber-200 ${isRTL ? "font-arabic" : ""}`}>
+                        {tx("eligibility.title", "Éligibilité à la remise")}
+                      </CardTitle>
+                      <CardDescription className={`text-amber-700 dark:text-amber-300 ${isRTL ? "font-arabic" : ""}`}>
+                        {tx("eligibility.description", "Vérifiez le justificatif avant de valider la remise.")}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  {/* Current status */}
+                  <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+                    {eligibilityStatus === "pending" && (
+                      <Badge className="glass bg-amber-500/20 border-amber-500/40 text-amber-700 dark:text-amber-300 font-semibold">
+                        <Clock className="h-3 w-3 mr-1" />
+                        {tx("eligibility.statusPending", "En attente de validation")}
+                      </Badge>
+                    )}
+                    {eligibilityStatus === "approved" && (
+                      <Badge className="glass bg-green-500/20 border-green-500/40 text-green-700 dark:text-green-300 font-semibold">
+                        <ShieldCheck className="h-3 w-3 mr-1" />
+                        {tx("eligibility.statusApproved", "Remise validée")}
+                      </Badge>
+                    )}
+                    {eligibilityStatus === "rejected" && (
+                      <Badge className="glass bg-red-500/20 border-red-500/40 text-red-700 dark:text-red-300 font-semibold">
+                        <ShieldX className="h-3 w-3 mr-1" />
+                        {tx("eligibility.statusRejected", "Remise refusée — tarif plein")}
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Proof document */}
+                  {value?.discountProofUrl ? (
+                    <a
+                      href={value.discountProofUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-3 rounded-xl border border-amber-300/40 bg-white/50 dark:bg-slate-800/40 text-amber-700 dark:text-amber-300 font-medium hover:bg-white/80 transition-all"
+                    >
+                      <FileText className="h-4 w-4" />
+                      {tx("eligibility.viewProof", "Voir le justificatif")}
+                    </a>
+                  ) : (
+                    <p className="text-sm text-muted-foreground italic">
+                      {tx("eligibility.noProof", "Aucun justificatif fourni par le participant.")}
+                    </p>
+                  )}
+
+                  {/* Actions (only while pending) */}
+                  {eligibilityStatus === "pending" && (
+                    <div className={`flex gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
+                      <Button
+                        onClick={() => handleEligibility("approved")}
+                        disabled={isUpdating !== null}
+                        className="flex-1 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600"
+                      >
+                        <ShieldCheck className="h-4 w-4 mr-1" />
+                        {isUpdating === "approved"
+                          ? tx("eligibility.processing", "Traitement...")
+                          : tx("eligibility.approve", "Valider la remise")}
+                      </Button>
+                      <Button
+                        onClick={() => handleEligibility("rejected")}
+                        disabled={isUpdating !== null}
+                        variant="outline"
+                        className="flex-1 rounded-full border-red-500/40 text-red-600 hover:bg-red-500/10"
+                      >
+                        <ShieldX className="h-4 w-4 mr-1" />
+                        {isUpdating === "rejected"
+                          ? tx("eligibility.processing", "Traitement...")
+                          : tx("eligibility.reject", "Refuser (tarif plein)")}
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Order Plans Section */}
             <Card className="glass bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-900/20 dark:to-emerald-900/20 backdrop-blur-sm border border-green-200/30 dark:border-green-700/30">
               <CardHeader className="pb-4">

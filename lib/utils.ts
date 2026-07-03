@@ -42,7 +42,8 @@ export function calcFinalPrice(
   planSum: number,
   discountInfo: any,
   pricePlan?: any[],
-  checkedPlans?: string[]
+  checkedPlans?: string[],
+  selectedOptions?: Record<string, string>
 ): number {
   const total = baseFee + planSum;
   const v = Number(discountInfo?.value) || 0;
@@ -54,12 +55,22 @@ export function calcFinalPrice(
   if (target === "inscription") {
     return applyDiscount(baseFee, v, type) + planSum;
   }
-  if (target === "plan" && discountInfo.discountPlanId) {
-    const planId = discountInfo.discountPlanId;
-    if (!checkedPlans?.includes(planId)) return total;
-    const planItem = pricePlan?.find((p: any) => p._id === planId);
-    if (!planItem) return total;
-    return total - planItem.price + applyDiscount(planItem.price, v, type);
+  if (target === "plan") {
+    const planIds: string[] = discountInfo.discountPlanIds || (discountInfo.discountPlanId ? [discountInfo.discountPlanId] : []);
+    if (!planIds.length) return total;
+    let saving = 0;
+    planIds.forEach((planId: string) => {
+      if (!checkedPlans?.includes(planId)) return;
+      const planItem = pricePlan?.find((p: any) => p._id === planId);
+      if (!planItem) return;
+      const optionName = selectedOptions?.[planId];
+      const optionExtra = optionName
+        ? (planItem.options?.find((o: any) => (typeof o === "object" ? o.name : o) === optionName)?.price || 0)
+        : 0;
+      const planCost = planItem.price + optionExtra;
+      saving += planCost - applyDiscount(planCost, v, type);
+    });
+    return Math.max(0, total - saving);
   }
   return applyDiscount(total, v, type);
 }

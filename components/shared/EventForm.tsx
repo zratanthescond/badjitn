@@ -105,11 +105,17 @@ const EventForm = ({
       ? {
         ...event,
         organisationId: (event.organisation as any)?._id || organisationId || "",
+        categoryId: (event.category as any)?._id || (event as any).categoryId || "",
         country: event.country || "TUN",
         allowGuestRegistration: event.allowGuestRegistration ?? true,
-
         startDateTime: new Date(event.startDateTime),
         endDateTime: new Date(event.endDateTime),
+        discount: event.discount
+          ? {
+              ...event.discount,
+              discount: String(event.discount.discount ?? ""),
+            }
+          : undefined,
       }
       : {
         ...eventDefaultValues,
@@ -663,7 +669,7 @@ const EventForm = ({
                     />
                     <Separator className="my-4" />
 
-                    <DiscountDialog form={form} fields={fields} />
+                    <DiscountDialog form={form} fields={fields} pricePlans={pricePlan} />
                   </CardContent>
                 </Card>
               )}

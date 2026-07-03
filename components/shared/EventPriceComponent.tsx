@@ -16,6 +16,7 @@ import {
   LogIn,
   ShoppingBag,
   Ticket,
+  Upload,
   X,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -159,21 +160,53 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     []
   );
 
+  const [discountProofUrl, setDiscountProofUrl] = useState<string>("");
+  const [isUploadingProof, setIsUploadingProof] = useState(false);
+
   useEffect(() => {
     const loadFields = async () => {
-      if (!event.requiredInfo?.length) {
+      const ids = [...(event.requiredInfo || [])];
+      // Always load the discount-trigger field so the user can fill it in
+      if (event.discount?.field && !ids.includes(event.discount.field)) {
+        ids.push(event.discount.field);
+      }
+      if (!ids.length) {
         setCustomFields([]);
         return;
       }
-
-      const response = await getEventFields(event.requiredInfo);
+      const response = await getEventFields(ids);
       if (response.success) {
-        setCustomFields(response.data);
+        const discountFieldId = event.discount?.field;
+        const data = response.data.map((f: any) => {
+          // Discount trigger field is always optional — participant may or may not qualify
+          if (discountFieldId && String(f._id) === discountFieldId) {
+            return { ...f, required: false };
+          }
+          return f;
+        });
+        setCustomFields(data);
       }
     };
-
     void loadFields();
-  }, [event.requiredInfo]);
+  }, [event.requiredInfo, event.discount?.field]);
+
+  const handleProofUpload = async (file: File) => {
+    setIsUploadingProof(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setDiscountProofUrl(data.url);
+        setRegistrationValues((prev) => ({ ...prev, discountProof: data.url }));
+      }
+    } catch {
+      // upload failed silently
+    } finally {
+      setIsUploadingProof(false);
+    }
+  };
 
   useEffect(() => {
     if (!userId) {
@@ -427,12 +460,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       fieldValue,
       discountType: event.discount.discountType || "percentage",
       discountTarget: event.discount.discountTarget || "all",
-      discountPlanId: event.discount.discountPlanId,
+      discountPlanIds: event.discount.discountPlanIds || [],
     };
   }, [event.discount, registrationFields, registrationValues]);
 
   const calculatePriceAsNumber = (_unused?: number) => {
-    const final = calcFinalPrice(baseFee, planSum, discountInfo, event.pricePlan as any[], checkPlan);
+    const final = calcFinalPrice(baseFee, planSum, discountInfo, event.pricePlan as any[], checkPlan, selectedOptions);
     return Number.parseFloat(String(final)).toFixed(2);
   };
 
@@ -572,12 +605,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             };
           }) || [];
 
+      const discountIsApplied = discountInfo && Number(discountInfo.value) > 0;
       const order = await createOrder({
         eventId: event._id,
         totalAmount: calculatePriceAsNumber(price),
         type: "doorpay",
         requiredUserInfo: builtRegistrationInfo,
-        ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
+        ...(discountIsApplied ? { discountInfo } : {}),
+        ...(discountIsApplied ? { originalAmount: price } : {}),
+        ...(discountIsApplied && discountProofUrl ? { discountProofUrl } : {}),
         details,
         buyerId: userId || "",
         stripeId: `${uuidv4()}`,
@@ -820,7 +856,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             <button
                               key={option}
                               type="button"
-                              onClick={() => handleRegistrationValueChange(String(field._id), option)}
+                              onClick={() =>
+                                handleRegistrationValueChange(
+                                  String(field._id),
+                                  isSelected ? "" : option
+                                )
+                              }
                               className={`rounded-2xl border p-3 text-left transition-all ${
                                 isSelected
                                   ? "border-primary bg-primary/10 text-primary"
@@ -948,6 +989,40 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       )}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Proof upload — shown when discount is triggered AND organizer requires proof */}
+              {discountInfo && Number(discountInfo.value) > 0 && (event.discount?.requireProof || !!event.discount?.proofDescription) && (
+                <div className="rounded-2xl border border-amber-400/40 bg-amber-50/40 dark:bg-amber-900/10 p-4 space-y-3">
+                  <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    {text("discountEligibility", "Éligibilité à la remise")}
+                  </p>
+                  {event.discount.proofDescription && (
+                    <p className="text-xs text-amber-700 dark:text-amber-400">{event.discount.proofDescription}</p>
+                  )}
+                  <label className="flex flex-col gap-2 cursor-pointer">
+                    <div className={`flex items-center justify-center gap-2 h-11 rounded-xl border-2 border-dashed text-sm font-medium transition-all ${
+                      discountProofUrl
+                        ? "border-green-400 bg-green-50 text-green-700"
+                        : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
+                    }`}>
+                      {isUploadingProof ? (
+                        <span className="animate-pulse">Téléchargement...</span>
+                      ) : discountProofUrl ? (
+                        <><CheckCircle className="h-4 w-4" /> {text("proofUploaded", "Justificatif téléchargé")}</>
+                      ) : (
+                        <><FileText className="h-4 w-4" /> {text("uploadProof", "Télécharger le justificatif")}</>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      className="hidden"
+                      onChange={(e) => e.target.files?.[0] && handleProofUpload(e.target.files[0])}
+                    />
+                  </label>
                 </div>
               )}
 
@@ -1092,6 +1167,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   checkPlan={checkPlan}
                   selectedOptions={selectedOptions}
                   discountInfo={discountInfo}
+                  discountProofUrl={discountProofUrl}
                   requiredUserInfo={builtRegistrationInfo}
                   validateBeforeCheckout={validateAll}
                   beforeCheckout={persistWorkSummaryIfNeeded}

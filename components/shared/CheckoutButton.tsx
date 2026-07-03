@@ -17,6 +17,7 @@ const CheckoutButton = ({
   checkPlan,
   selectedOptions,
   discountInfo,
+  discountProofUrl,
   requiredUserInfo,
   validateBeforeCheckout,
   beforeCheckout,
@@ -25,6 +26,7 @@ const CheckoutButton = ({
   checkPlan?: string[];
   selectedOptions?: Record<string, string>;
   discountInfo?: any;
+  discountProofUrl?: string;
   requiredUserInfo?: any[];
   validateBeforeCheckout?: () => Promise<boolean> | boolean;
   beforeCheckout?: () => Promise<boolean> | boolean;
@@ -52,7 +54,7 @@ const CheckoutButton = ({
           return sum + item.price + optExtra;
         }, 0)
       : 0;
-  const priceValue = calcFinalPrice(baseFee, planSum, discountInfo, event.pricePlan as any[], checkPlan);
+  const priceValue = calcFinalPrice(baseFee, planSum, discountInfo, event.pricePlan as any[], checkPlan, selectedOptions);
   const isActuallyFree = event.isFree || (priceValue === 0 && (checkPlan?.length || 0) > 0);
 
   const allowGuestRegistration = event.allowGuestRegistration !== false;
@@ -104,6 +106,7 @@ const CheckoutButton = ({
               event={event}
               userId={userId || ""}
               discountInfo={discountInfo}
+              discountProofUrl={discountProofUrl}
               requiredUserInfo={requiredUserInfo}
               validateBeforeCheckout={validateBeforeCheckout}
               beforeCheckout={beforeCheckout}

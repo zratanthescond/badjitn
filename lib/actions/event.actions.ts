@@ -104,8 +104,24 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
       showWorkSubmissionPopup: Boolean(event.showWorkSubmissionPopup),
       allowGuestRegistration: event.allowGuestRegistration !== false,
     });
-    revalidatePath(path);
 
+    // Remap index-based discountPlanIds ("0","1",...) to real MongoDB plan _ids
+    if (newEvent.discount?.discountPlanIds?.length && newEvent.pricePlan?.length) {
+      const hasIndexIds = newEvent.discount.discountPlanIds.some((id: string) => /^\d+$/.test(id));
+      if (hasIndexIds) {
+        const fixedIds = newEvent.discount.discountPlanIds.map((id: string) => {
+          if (/^\d+$/.test(id)) {
+            const idx = parseInt(id, 10);
+            return newEvent.pricePlan[idx]?._id?.toString() || id;
+          }
+          return id;
+        });
+        await Event.findByIdAndUpdate(newEvent._id, { "discount.discountPlanIds": fixedIds });
+        newEvent.discount.discountPlanIds = fixedIds;
+      }
+    }
+
+    revalidatePath(path);
     return JSON.parse(JSON.stringify(newEvent));
   } catch (error) {
     handleError(error);
@@ -176,8 +192,24 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
       },
       { new: true }
     );
-    revalidatePath(path);
 
+    // Remap index-based discountPlanIds ("0","1",...) to real MongoDB plan _ids
+    if (updatedEvent?.discount?.discountPlanIds?.length && updatedEvent.pricePlan?.length) {
+      const hasIndexIds = updatedEvent.discount.discountPlanIds.some((id: string) => /^\d+$/.test(id));
+      if (hasIndexIds) {
+        const fixedIds = updatedEvent.discount.discountPlanIds.map((id: string) => {
+          if (/^\d+$/.test(id)) {
+            const idx = parseInt(id, 10);
+            return updatedEvent.pricePlan[idx]?._id?.toString() || id;
+          }
+          return id;
+        });
+        await Event.findByIdAndUpdate(updatedEvent._id, { "discount.discountPlanIds": fixedIds });
+        updatedEvent.discount.discountPlanIds = fixedIds;
+      }
+    }
+
+    revalidatePath(path);
     return JSON.parse(JSON.stringify(updatedEvent));
   } catch (error) {
     handleError(error);

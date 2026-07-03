@@ -17,6 +17,10 @@ import { ObjectId } from "mongodb";
 import User from "../database/models/user.model";
 import { getCurrencyCodeByCountry } from "../utils";
 import { verifyOrganizerOrAdmin } from "./auth.actions";
+import {
+  sendEligibilityApprovedEmail,
+  sendEligibilityRejectedEmail,
+} from "../mail";
 
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -73,13 +77,102 @@ export const createOrder = async (order: CreateOrderParams) => {
     const buyer = order.buyerId
       ? await User.findOne({ clerkId: order.buyerId })
       : null;
+
+    // Determine if this registration needs admin eligibility review:
+    // a discount was actually applied AND the organizer requires a proof document.
+    const discountApplied =
+      !!order.discountInfo && Number(order.discountInfo.value) > 0;
+    let eligibilityStatus: "pending" | undefined;
+    if (discountApplied) {
+      const event = await Event.findById(order.eventId).select("discount");
+      if (event?.discount?.requireProof) {
+        eligibilityStatus = "pending";
+      }
+    }
+
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,
       ...(buyer ? { buyer: buyer._id } : {}),
+      ...(order.originalAmount !== undefined
+        ? { originalAmount: Number(order.originalAmount) }
+        : {}),
+      ...(order.discountProofUrl
+        ? { discountProofUrl: order.discountProofUrl }
+        : {}),
+      ...(eligibilityStatus ? { eligibilityStatus } : {}),
     });
 
     return JSON.parse(JSON.stringify(newOrder));
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+// UPDATE DISCOUNT ELIGIBILITY (admin approves or rejects a pending registration)
+export const updateOrderEligibility = async ({
+  orderId,
+  status,
+}: {
+  orderId: string;
+  status: "approved" | "rejected";
+}) => {
+  try {
+    await connectToDatabase();
+
+    const order = await Order.findById(orderId);
+    if (!order) throw new Error("Order not found");
+
+    await verifyOrganizerOrAdmin(String(order.event));
+
+    const event = await Event.findById(order.event).select("title country location");
+
+    const currency = getCurrencyCodeByCountry(event?.country, event?.location);
+    const emailInfo = (order.requiredUserInfo || []).find(
+      (info: any) => String(info.field).toLowerCase() === "email"
+    );
+    const participantEmail = emailInfo?.value?.trim();
+
+    const discountedAmount = Number(order.totalAmount) || 0;
+    const fullAmount =
+      order.originalAmount !== undefined && order.originalAmount !== null
+        ? Number(order.originalAmount)
+        : discountedAmount;
+
+    order.eligibilityStatus = status;
+
+    if (status === "rejected") {
+      // Bill the full price; the remainder is what the participant still owes.
+      order.totalAmount = fullAmount;
+    }
+
+    await order.save();
+
+    // Notify the participant by email (best-effort — never block the admin action)
+    if (participantEmail) {
+      try {
+        if (status === "approved") {
+          await sendEligibilityApprovedEmail({
+            to: participantEmail,
+            eventTitle: event?.title || "",
+            amount: `${discountedAmount.toFixed(2)} ${currency}`,
+          });
+        } else {
+          const remaining = Math.max(0, fullAmount - discountedAmount);
+          await sendEligibilityRejectedEmail({
+            to: participantEmail,
+            eventTitle: event?.title || "",
+            remainingAmount: `${remaining.toFixed(2)} ${currency}`,
+            fullAmount: `${fullAmount.toFixed(2)} ${currency}`,
+          });
+        }
+      } catch (mailError) {
+        console.error("Eligibility email failed:", mailError);
+      }
+    }
+
+    revalidatePath(`/orders`);
+    return JSON.parse(JSON.stringify(order));
   } catch (error) {
     handleError(error);
   }
@@ -415,6 +508,9 @@ export async function getOrdersByEvent({
           details: 1,
           discountInfo: 1,
           requiredUserInfo: 1,
+          eligibilityStatus: 1,
+          originalAmount: 1,
+          discountProofUrl: 1,
         },
       },
       {

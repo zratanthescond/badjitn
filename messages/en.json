@@ -1288,6 +1288,13 @@
     "targetAll": "Total Price",
     "targetInscription": "Registration Fee",
     "targetPlan": "Specific Plan",
+    "requireProof": "Require proof document",
+    "proofDescription": "Required document description",
+    "proofDescriptionPlaceholder": "E.g. Medical ID card, attestation...",
+    "uploadProof": "Upload proof document",
+    "proofUploaded": "Proof uploaded",
+    "proofRequired": "A proof document is required to benefit from the discount",
+    "discountEligibility": "Discount eligibility",
     "title": "Apply Discount by Profile"
   },
   "documentation": {
@@ -2539,6 +2546,21 @@
     "discount": {
       "eligible": "Discount Eligible",
       "label": "Discount"
+    },
+    "eligibility": {
+      "title": "Discount eligibility",
+      "description": "Review the proof document before approving the discount.",
+      "statusPending": "Awaiting validation",
+      "statusApproved": "Discount approved",
+      "statusRejected": "Discount rejected — full price",
+      "viewProof": "View proof document",
+      "noProof": "No proof document provided by the participant.",
+      "approve": "Approve discount",
+      "reject": "Reject (full price)",
+      "processing": "Processing...",
+      "approvedToast": "Discount approved",
+      "rejectedToast": "Discount rejected",
+      "errorToast": "An error occurred"
     },
     "orderPlans": {
       "allPlansAvailable": "All event plans are available",

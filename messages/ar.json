@@ -2541,6 +2541,21 @@
       "eligible": "مؤهل للخصم",
       "label": "خصم"
     },
+    "eligibility": {
+      "title": "أهلية الخصم",
+      "description": "راجع الوثيقة المبررة قبل الموافقة على الخصم.",
+      "statusPending": "في انتظار التحقق",
+      "statusApproved": "تمت الموافقة على الخصم",
+      "statusRejected": "تم رفض الخصم — السعر الكامل",
+      "viewProof": "عرض الوثيقة المبررة",
+      "noProof": "لم يقدم المشارك أي وثيقة مبررة.",
+      "approve": "الموافقة على الخصم",
+      "reject": "رفض (السعر الكامل)",
+      "processing": "جارٍ المعالجة...",
+      "approvedToast": "تمت الموافقة على الخصم",
+      "rejectedToast": "تم رفض الخصم",
+      "errorToast": "حدث خطأ"
+    },
     "orderPlans": {
       "allPlansAvailable": "جميع خطط الفعالية متاحة",
       "description": "الخطط المتاحة المشمولة في هذا الطلب",

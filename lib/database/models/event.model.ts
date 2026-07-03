@@ -45,7 +45,9 @@ export interface IEvent extends Document {
     discount: number;
     discountType?: "percentage" | "fixed";
     discountTarget?: "all" | "inscription" | "plan";
-    discountPlanId?: string;
+    discountPlanIds?: string[];
+    requireProof?: boolean;
+    proofDescription?: string;
   };
   restricted: boolean;
   scanPoints?: string[];
@@ -107,7 +109,9 @@ const EventSchema = new Schema({
     discount: { type: Number },
     discountType: { type: String, default: "percentage" },
     discountTarget: { type: String, default: "all" },
-    discountPlanId: { type: String },
+    discountPlanIds: { type: [String], default: [] },
+    requireProof: { type: Boolean, default: false },
+    proofDescription: { type: String },
   },
   restricted: { type: Boolean, default: false },
   showWorkSubmissionPopup: { type: Boolean, default: false },

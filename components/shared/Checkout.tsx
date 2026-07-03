@@ -18,6 +18,7 @@ const Checkout = ({
   chekedPlans,
   selectedOptions,
   discountInfo,
+  discountProofUrl,
   requiredUserInfo,
   validateBeforeCheckout,
   beforeCheckout,
@@ -27,6 +28,7 @@ const Checkout = ({
   chekedPlans?: string[];
   selectedOptions?: Record<string, string>;
   discountInfo?: any;
+  discountProofUrl?: string;
   requiredUserInfo?: any[];
   validateBeforeCheckout?: () => Promise<boolean> | boolean;
   beforeCheckout?: () => Promise<boolean> | boolean;
@@ -80,7 +82,8 @@ const Checkout = ({
         calculatedPrice - baseFee,
         discountInfo,
         event.pricePlan as any[],
-        chekedPlans
+        chekedPlans,
+        selectedOptions
       );
       setPrice(discountedPrice);
     } else {
@@ -113,6 +116,10 @@ const Checkout = ({
       }
 
       if (event.isFree || price === -1) {
+        const discountIsApplied = discountInfo && Number(discountInfo.value) > 0;
+        const fullAmount =
+          (event.price ? parseFloat(event.price) : 0) +
+          details.reduce((s, d) => s + (Number.parseFloat(d.price) || 0), 0);
         const order = await createOrder({
           eventId: event._id,
           totalAmount: "0",
@@ -120,7 +127,9 @@ const Checkout = ({
           details,
           buyerId: userId || "",
           requiredUserInfo: requiredUserInfo || [],
-          ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
+          ...(discountIsApplied ? { discountInfo } : {}),
+          ...(discountIsApplied ? { originalAmount: fullAmount } : {}),
+          ...(discountIsApplied && discountProofUrl ? { discountProofUrl } : {}),
           stripeId: uuidv4(),
           createdAt: new Date(),
         });
