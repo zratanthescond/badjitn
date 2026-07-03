@@ -1,12 +1,11 @@
 import ShortsScroll from "@/components/shorts/shorts-scroll";
-import { getEventById } from "@/lib/actions/event.actions";
-import { extractEventId } from "@/lib/utils";
+import { getEventBySlug } from "@/lib/actions/event.actions";
 import { SearchParamProps } from "@/types";
 import { Metadata } from "next";
 
 export async function generateMetadata(props: SearchParamProps): Promise<Metadata> {
   const params = await props.params;
-  const event = await getEventById(extractEventId(params.id));
+  const event = await getEventBySlug(params.id);
 
   return {
     title: event?.title || "Event",
@@ -18,7 +17,7 @@ export async function generateMetadata(props: SearchParamProps): Promise<Metadat
 
 const EventDetails = async (props: SearchParamProps) => {
   const params = await props.params;
-  const event = await getEventById(extractEventId(params.id));
+  const event = await getEventBySlug(params.id);
 
   return <ShortsScroll videos={{ data: [event], totalPages: 1 }} />;
 };

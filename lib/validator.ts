@@ -8,11 +8,14 @@ const discountSchema = z.object({
   field: z.string(),
   value: z.string(),
   discount: z
-    .string()
-    .refine((val) => !isNaN(Number(val)), {
-      message: "Must be a valid number",
-    })
-    .transform((val) => Number(val)),
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, { message: "Must be a valid number" }),
+  discountType: z.enum(["percentage", "fixed"]).optional().default("percentage"),
+  discountTarget: z.enum(["all", "inscription", "plan"]).optional().default("all"),
+  discountPlanIds: z.array(z.string()).optional().default([]),
+  requireProof: z.boolean().optional().default(false),
+  proofDescription: z.string().optional(),
 });
 // export const eventFormSchema = z
 //   .object({

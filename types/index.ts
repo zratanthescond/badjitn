@@ -236,6 +236,8 @@ export type CreateOrderParams = {
   details?: any[];
   requiredUserInfo?: any[];
   discountInfo?: any;
+  originalAmount?: string | number;
+  discountProofUrl?: string;
 };
 
 export type GetOrdersByEventParams = {

@@ -24,14 +24,55 @@ export function slugify(text: string): string {
     .replace(/-+/g, "-");
 }
 
-export function eventUrl(event: { _id: string; title: string }): string {
-  const slug = slugify(event.title);
-  return `/events/${slug ? `${slug}-` : ""}${event._id}`;
+export function eventUrl(event: { _id: string; title: string; slug?: string }): string {
+  return `/events/${event.slug || event._id}`;
 }
 
-export function extractEventId(param: string): string {
-  // MongoDB ObjectIds are exactly 24 hex chars; strip any slug prefix
-  return param.length === 24 ? param : param.slice(-24);
+export function applyDiscount(
+  amount: number,
+  discountValue: number,
+  discountType: "percentage" | "fixed" = "percentage"
+): number {
+  if (discountType === "fixed") return Math.max(0, amount - discountValue);
+  return amount - (amount * discountValue) / 100;
+}
+
+export function calcFinalPrice(
+  baseFee: number,
+  planSum: number,
+  discountInfo: any,
+  pricePlan?: any[],
+  checkedPlans?: string[],
+  selectedOptions?: Record<string, string>
+): number {
+  const total = baseFee + planSum;
+  const v = Number(discountInfo?.value) || 0;
+  if (!discountInfo || v <= 0) return total;
+
+  const type: "percentage" | "fixed" = discountInfo.discountType || "percentage";
+  const target: string = discountInfo.discountTarget || "all";
+
+  if (target === "inscription") {
+    return applyDiscount(baseFee, v, type) + planSum;
+  }
+  if (target === "plan") {
+    const planIds: string[] = discountInfo.discountPlanIds || (discountInfo.discountPlanId ? [discountInfo.discountPlanId] : []);
+    if (!planIds.length) return total;
+    let saving = 0;
+    planIds.forEach((planId: string) => {
+      if (!checkedPlans?.includes(planId)) return;
+      const planItem = pricePlan?.find((p: any) => p._id === planId);
+      if (!planItem) return;
+      const optionName = selectedOptions?.[planId];
+      const optionExtra = optionName
+        ? (planItem.options?.find((o: any) => (typeof o === "object" ? o.name : o) === optionName)?.price || 0)
+        : 0;
+      const planCost = planItem.price + optionExtra;
+      saving += planCost - applyDiscount(planCost, v, type);
+    });
+    return Math.max(0, total - saving);
+  }
+  return applyDiscount(total, v, type);
 }
 
 export const formatDateTime = (dateString: Date, locale: string = "en-US") => {
