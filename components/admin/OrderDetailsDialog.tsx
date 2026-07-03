@@ -53,8 +53,19 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
   const tx = (key: string, fallback: string) =>
     t.has(key as any) ? t(key as any) : fallback;
 
+  // A discount was actually applied to this registration.
+  const discountApplied =
+    !!value?.discountInfo && Number(value?.discountInfo?.value) > 0;
+  // Whether the event configured a justificatif requirement for its discount.
+  const requiresProof = value?.discountRequireProof === true;
+  // Show the eligibility-review section when a status was stored, or when a
+  // discount was applied to an event that requires a justificatif (covers
+  // registrations created before eligibility tracking existed).
+  const showEligibility =
+    !!value?.eligibilityStatus || (discountApplied && requiresProof);
+  // Effective status: stored one, or "pending" when review is needed but none set.
   const eligibilityStatus: "pending" | "approved" | "rejected" | undefined =
-    value?.eligibilityStatus;
+    value?.eligibilityStatus || (showEligibility ? "pending" : undefined);
 
   const handleEligibility = async (status: "approved" | "rejected") => {
     try {
@@ -138,7 +149,7 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
         <ScrollArea className="max-h-96 pr-4">
           <div className="flex flex-col gap-6">
             {/* Discount Eligibility Section */}
-            {eligibilityStatus && (
+            {showEligibility && (
               <Card className="glass bg-gradient-to-br from-amber-50/60 to-orange-50/60 dark:from-amber-900/20 dark:to-orange-900/20 backdrop-blur-sm border border-amber-200/40 dark:border-amber-700/30">
                 <CardHeader className="pb-3">
                   <div className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>

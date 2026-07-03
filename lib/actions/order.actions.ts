@@ -591,6 +591,7 @@ export async function getOrdersByEvent({
           eligibilityStatus: 1,
           originalAmount: 1,
           discountProofUrl: 1,
+          discountRequireProof: "$event.discount.requireProof",
         },
       },
       {
