@@ -40,7 +40,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import GoogleMapComponent from "./GoogleMap";
-import { CalendarIcon, Disc, LinkIcon, ListChecks, MapPin, Plus, Trash2 } from "lucide-react";
+import { CalendarIcon, Disc, LinkIcon, ListChecks, MapPin, Plus, StickyNote, Trash2 } from "lucide-react";
 import PricePlanComponent from "./PricePlanComponent";
 import { pricePlan } from "@/types";
 import FormBuilder from "./FormBuilder";
@@ -597,6 +597,26 @@ const EventForm = ({
                 )}
               />
             )}
+            <FormField
+              control={form.control}
+              name="registrationFeeNote"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <div className="flex-center h-[54px] w-full overflow-hidden rounded-full glass px-4 py-2">
+                      <StickyNote className="text-muted-foreground" />
+                      <Input
+                        placeholder={t.has("registrationFeeNote") ? t("registrationFeeNote") : "Note des frais d'inscription (ex: Inscription + congrès + déjeuner + pauses café)"}
+                        {...field}
+                        value={field.value ?? ""}
+                        className="input-field !bg-transparent"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="url"

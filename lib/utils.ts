@@ -45,6 +45,17 @@ export function calcFinalPrice(
   checkedPlans?: string[],
   selectedOptions?: Record<string, string>
 ): number {
+  // All-inclusive package plan: when selected, its flat price overrides
+  // the base fee, every other plan, and any discount.
+  if (pricePlan && checkedPlans) {
+    const packagePlans = pricePlan.filter(
+      (p: any) => checkedPlans.includes(p._id) && p.isPackage
+    );
+    if (packagePlans.length > 0) {
+      return packagePlans.reduce((s: number, p: any) => s + (Number(p.price) || 0), 0);
+    }
+  }
+
   const total = baseFee + planSum;
   const v = Number(discountInfo?.value) || 0;
   if (!discountInfo || v <= 0) return total;

@@ -33,6 +33,8 @@ export type PlanOption = {
   name: string;
   price: number;
   places?: number;
+  description?: string;
+  requireEmail?: boolean;
 };
 
 export type pricePlan = {
@@ -41,6 +43,7 @@ export type pricePlan = {
   places?: number;
   note?: string;
   options?: PlanOption[];
+  isPackage?: boolean;
 };
 // ====== EVENT PARAMS
 export type CreateEventParams = {
@@ -81,6 +84,8 @@ export type CreateEventParams = {
     jobTitleLabel?: string;
     selectedRepublic?: string;
     customRegistrationFields?: { label: string; isRequired: boolean }[];
+    pricePlanNote?: string;
+    registrationFeeNote?: string;
   };
   path: string;
 };
@@ -124,6 +129,8 @@ export type UpdateEventParams = {
     jobTitleLabel?: string;
     selectedRepublic?: string;
     customRegistrationFields?: { label: string; isRequired: boolean }[];
+    pricePlanNote?: string;
+    registrationFeeNote?: string;
   };
   path: string;
 };

@@ -69,6 +69,7 @@ export const eventFormSchema = z
     disabledBaseFields: z.array(z.string()).optional().default([]),
     city: z.string().optional(),
     village: z.string().optional(),
+    registrationFeeNote: z.string().optional(),
     jobTitleLabel: z.string().optional(),
     selectedRepublic: z.string().optional(),
     customRegistrationFields: z.array(z.object({
