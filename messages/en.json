@@ -28,6 +28,7 @@
       "fieldLabel": "Field Label",
       "id": "ID",
       "labelPlaceholder": "Enter field label",
+      "options": "Options",
       "optionsPlaceholder": "Comma-separated options (e.g., Option 1, Option 2)",
       "placeholder": "Placeholder",
       "placeholderText": "Enter placeholder text",

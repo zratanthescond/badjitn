@@ -28,6 +28,7 @@
       "fieldLabel": "Etiqueta del campo",
       "id": "ID",
       "labelPlaceholder": "Introduce la etiqueta del campo",
+      "options": "Opciones",
       "optionsPlaceholder": "Opciones separadas por comas (ej. Opción 1, Opción 2)",
       "placeholder": "Marcador de posición",
       "placeholderText": "Introduce el texto del marcador",

@@ -28,6 +28,7 @@
       "fieldLabel": "تسمية الحقل",
       "id": "المعرف",
       "labelPlaceholder": "أدخل تسمية الحقل",
+      "options": "الخيارات",
       "optionsPlaceholder": "خيارات مفصولة بفواصل (مثل: الخيار 1، الخيار 2)",
       "placeholder": "النص التوضيحي",
       "placeholderText": "أدخل النص التوضيحي",

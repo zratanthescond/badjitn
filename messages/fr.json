@@ -28,6 +28,7 @@
       "fieldLabel": "Libellé du Champ",
       "id": "ID",
       "labelPlaceholder": "Entrez le libellé du champ",
+      "options": "Options",
       "optionsPlaceholder": "Options séparées par des virgules (ex: Option 1, Option 2)",
       "placeholder": "Texte d'Aide",
       "placeholderText": "Entrez le texte d'aide",
