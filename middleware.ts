@@ -1,6 +1,21 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
+// Extracts org slug from *.localhost, *.lvh.me (local dev) or *.badgi.net (prod)
+function extractOrgSubdomain(host: string): string | null {
+  const hostname = host.split(":")[0]; // strip port
+  const SKIP = ["www", "api", "app", "localhost", "badgi"];
+
+  const suffixes = [".localhost", ".lvh.me", ".badgi.net"];
+  for (const suffix of suffixes) {
+    if (hostname.endsWith(suffix)) {
+      const sub = hostname.slice(0, -suffix.length);
+      return sub && !SKIP.includes(sub) ? sub : null;
+    }
+  }
+  return null;
+}
+
 const isPublicRoute = createRouteMatcher([
   /^\/(?:[a-z]{2}\/)?$/,
   /^\/(?:[a-z]{2}\/)?events\/?$/,
@@ -17,9 +32,24 @@ const isPublicRoute = createRouteMatcher([
   "/api/events(.*)",
   /^\/(?:[a-z]{2}\/)?sign-in(.*)/,
   /^\/(?:[a-z]{2}\/)?sign-up(.*)/,
+  /^\/org\/.*/,  // org subdomain pages are always public
 ]);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
+  const host = req.headers.get("host") ?? "";
+  const orgSlug = extractOrgSubdomain(host);
+
+  if (orgSlug) {
+    const url = req.nextUrl.clone();
+    // Only rewrite the root path to the org homepage.
+    // All other paths (/events/[id], /api/*, etc.) are served normally.
+    if (url.pathname === "/" || url.pathname === "") {
+      url.pathname = `/org/${orgSlug}`;
+      return NextResponse.rewrite(url);
+    }
+    return NextResponse.next();
+  }
+
   const { userId } = await auth();
   const url = req.nextUrl;
   if (!isPublicRoute(req)) {

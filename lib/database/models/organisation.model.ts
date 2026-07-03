@@ -3,10 +3,15 @@ import { Schema, model, models, Document } from "mongoose";
 export interface IOrganisation extends Document {
     name: string;
     slug: string;
+    subdomain?: string;
     description: string;
     logo: string;
     website: string;
     coverImage: string;
+    bannerTitle?: string;
+    bannerContent?: string;
+    bannerImage?: string;
+    partners?: { name: string; logo?: string; website?: string }[];
     socialLinks: {
         facebook?: string;
         twitter?: string;
@@ -22,10 +27,19 @@ export interface IOrganisation extends Document {
 const OrganisationSchema = new Schema<IOrganisation>({
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
+    subdomain: { type: String, unique: true, sparse: true, lowercase: true, trim: true },
     description: { type: String },
     logo: { type: String },
     website: { type: String },
     coverImage: { type: String },
+    bannerTitle: { type: String },
+    bannerContent: { type: String },
+    bannerImage: { type: String },
+    partners: [{
+        name: { type: String },
+        logo: { type: String },
+        website: { type: String },
+    }],
     socialLinks: {
         facebook: { type: String },
         twitter: { type: String },
@@ -37,6 +51,9 @@ const OrganisationSchema = new Schema<IOrganisation>({
     isVerified: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
 });
+
+// In dev, delete cached model so schema changes take effect without full restart
+if (process.env.NODE_ENV === "development") delete (models as any).Organisation;
 
 const Organisation =
     models.Organisation || model<IOrganisation>("Organisation", OrganisationSchema);
