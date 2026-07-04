@@ -202,7 +202,7 @@ export default async function OrgPage({
       {/* ══════════════════════════════════════════════
           HERO — cinematic full screen
       ══════════════════════════════════════════════ */}
-      <section className="relative flex flex-col" style={{ minHeight: "92vh" }}>
+      <section className="relative flex flex-col min-h-[78vh] sm:min-h-[88vh] lg:min-h-[92vh]">
 
         {/* BG layers */}
         <div className="absolute inset-0">
@@ -232,11 +232,8 @@ export default async function OrgPage({
         </div>
 
         {/* Hero content */}
-        <div
-          className="relative z-10 flex-1 flex flex-col justify-end max-w-7xl mx-auto w-full px-4 sm:px-6 pb-16 pt-28"
-          style={{ minHeight: "92vh" }}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-end">
+        <div className="relative z-10 flex-1 flex flex-col justify-end max-w-7xl mx-auto w-full px-4 sm:px-6 pb-10 sm:pb-16 pt-24 sm:pt-28">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-10 items-end">
 
             {/* Left 3/5 — Org identity */}
             <div className="lg:col-span-3 flex flex-col gap-5">
