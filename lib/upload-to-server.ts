@@ -25,7 +25,7 @@ export async function uploadToFileServer(
     SelectedTargetURL: fileServerUrl
   });
 
-  const webhookSecret = process.env.WEBHOOK_SECRET || "whsec_BMEOzFF0h1hx/pBvNAHoXJVhz/UIJkte";
+  const webhookSecret = process.env.FILE_SERVER_SECRET || process.env.WEBHOOK_SECRET || "whsec_BMEOzFF0h1hx/pBvNAHoXJVhz/UIJkte";
   const maskedSecret = webhookSecret ? `${webhookSecret.slice(0, 8)}...[length: ${webhookSecret.length}]` : "none";
   console.log("[uploadToFileServer] Using Webhook Secret:", maskedSecret);
 
