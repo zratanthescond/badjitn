@@ -22,6 +22,8 @@ interface BankTransferModalProps {
   details: any[];
   requiredUserInfo?: any[];
   discountInfo?: any;
+  discountProofUrl?: string;
+  originalAmount?: number;
   validateBeforeOpen?: () => Promise<boolean> | boolean;
   beforeSubmit?: () => Promise<boolean> | boolean;
 }
@@ -34,6 +36,8 @@ export function BankTransferModal({
   details,
   requiredUserInfo,
   discountInfo,
+  discountProofUrl,
+  originalAmount,
   validateBeforeOpen,
   beforeSubmit,
 }: BankTransferModalProps) {
@@ -121,6 +125,8 @@ export function BankTransferModal({
         details,
         ...(requiredUserInfo && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
         ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
+        ...(discountInfo && Number(discountInfo.value) > 0 && discountProofUrl ? { discountProofUrl } : {}),
+        ...(discountInfo && Number(discountInfo.value) > 0 && originalAmount !== undefined ? { originalAmount } : {}),
         transferId: transferId.trim(),
         screenshotBase64: null,
       });
@@ -198,6 +204,8 @@ export function BankTransferModal({
         details,
         ...(requiredUserInfo && requiredUserInfo.length > 0 ? { requiredUserInfo } : {}),
         ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
+        ...(discountInfo && Number(discountInfo.value) > 0 && discountProofUrl ? { discountProofUrl } : {}),
+        ...(discountInfo && Number(discountInfo.value) > 0 && originalAmount !== undefined ? { originalAmount } : {}),
         transferId: null,
         screenshotUrl,
         screenshotBase64: null,

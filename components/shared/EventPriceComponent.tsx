@@ -166,6 +166,10 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
   const [discountProofUrl, setDiscountProofUrl] = useState<string>("");
   const [isUploadingProof, setIsUploadingProof] = useState(false);
+  // Local preview of the uploaded justificatif (reliable regardless of remote URL)
+  const [discountProofPreview, setDiscountProofPreview] = useState<string>("");
+  const [discountProofName, setDiscountProofName] = useState<string>("");
+  const [discountProofIsImage, setDiscountProofIsImage] = useState(false);
 
   useEffect(() => {
     const loadFields = async () => {
@@ -204,12 +208,34 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       if (data.success && data.url) {
         setDiscountProofUrl(data.url);
         setRegistrationValues((prev) => ({ ...prev, discountProof: data.url }));
+        // Build a local preview of the selected file (reliable regardless of remote URL)
+        setDiscountProofPreview((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return URL.createObjectURL(file);
+        });
+        setDiscountProofName(file.name);
+        setDiscountProofIsImage(file.type.startsWith("image/"));
       }
     } catch {
       // upload failed silently
     } finally {
       setIsUploadingProof(false);
     }
+  };
+
+  const handleRemoveProof = () => {
+    setDiscountProofPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return "";
+    });
+    setDiscountProofUrl("");
+    setDiscountProofName("");
+    setDiscountProofIsImage(false);
+    setRegistrationValues((prev) => {
+      const next = { ...prev };
+      delete next.discountProof;
+      return next;
+    });
   };
 
   useEffect(() => {
@@ -1157,6 +1183,54 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           onChange={(e) => e.target.files?.[0] && handleProofUpload(e.target.files[0])}
                         />
                       </label>
+
+                      {/* Preview of the uploaded justificatif */}
+                      {discountProofUrl && discountProofPreview && (
+                        <div className="flex items-center gap-3 rounded-xl border border-green-300/50 bg-green-50/60 dark:bg-green-900/10 p-2">
+                          {discountProofIsImage ? (
+                            <a href={discountProofPreview} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={discountProofPreview}
+                                alt={discountProofName || "justificatif"}
+                                className="h-16 w-16 rounded-lg object-cover border border-green-300/60"
+                              />
+                            </a>
+                          ) : (
+                            <a
+                              href={discountProofPreview}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-green-300/60 bg-white/60 text-green-700"
+                            >
+                              <FileText className="h-7 w-7" />
+                            </a>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-xs font-medium text-green-800 dark:text-green-300">
+                              {discountProofName || text("proofUploaded", "Justificatif téléchargé")}
+                            </p>
+                            <a
+                              href={discountProofPreview}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[11px] text-green-700/80 underline hover:text-green-800"
+                            >
+                              {text("viewProof", "Aperçu")}
+                            </a>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleRemoveProof}
+                            className="shrink-0 flex items-center gap-1 rounded-full border border-red-300/60 bg-white/60 px-2.5 py-1 text-[11px] font-medium text-red-600 transition-colors hover:bg-red-50"
+                            title={text("removeProof", "Retirer le justificatif")}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                            {text("removeProof", "Retirer")}
+                          </button>
+                        </div>
+                      )}
+
                       <p className="text-[11px] leading-relaxed text-amber-700/80 dark:text-amber-400/80">
                         {text(
                           "pendingValidationNote",
@@ -1462,6 +1536,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       }
                       requiredUserInfo={builtRegistrationInfo}
                       discountInfo={discountInfo}
+                      discountProofUrl={discountProofUrl}
+                      originalAmount={price}
                       validateBeforeOpen={validateAll}
                       beforeSubmit={persistWorkSummaryIfNeeded}
                     />

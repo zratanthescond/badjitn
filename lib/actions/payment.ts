@@ -17,6 +17,8 @@ interface BankTransferInput {
   details: any[]
   requiredUserInfo?: any[]
   discountInfo?: any
+  discountProofUrl?: string | null
+  originalAmount?: number | string
   transferId: string | null
   screenshotBase64?: string | null
   screenshotUrl?: string | null
@@ -37,6 +39,8 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
       details,
       requiredUserInfo,
       discountInfo,
+      discountProofUrl,
+      originalAmount,
       transferId,
       screenshotBase64,
       screenshotUrl: inputScreenshotUrl
@@ -115,6 +119,8 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
       details: details || [],
       requiredUserInfo: requiredUserInfo || [],
       discountInfo: discountInfo || null,
+      ...(discountProofUrl ? { discountProofUrl } : {}),
+      ...(originalAmount !== undefined ? { originalAmount: Number(originalAmount) } : {}),
     })
 
     if (!newOrder) {
