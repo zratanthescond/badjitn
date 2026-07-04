@@ -101,7 +101,7 @@ export async function sendEligibilityApprovedEmail({
   amount: string;
 }) {
   await transporter.sendMail({
-    from: '"badgiTn" <mail@badgi.tn>',
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
     to,
     subject: "Votre remise a été validée",
     html: `
@@ -130,7 +130,7 @@ export async function sendEligibilityRejectedEmail({
   fullAmount: string;
 }) {
   await transporter.sendMail({
-    from: '"badgiTn" <mail@badgi.tn>',
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
     to,
     subject: "Mise à jour de votre inscription — remise non validée",
     html: `
