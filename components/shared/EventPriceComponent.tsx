@@ -15,7 +15,9 @@ import {
   Landmark,
   LogIn,
   ShoppingBag,
+  Sparkles,
   Ticket,
+  Upload,
   X,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -47,7 +49,7 @@ import {
 } from "../ui/dialog";
 import { countries } from "country-data-list";
 import { countryGovernorates } from "@/constants/country-governorates";
-import { formatPriceByCountry, getCurrencyCodeByCountry } from "@/lib/utils";
+import { calcFinalPrice, formatPriceByCountry, getCurrencyCodeByCountry } from "@/lib/utils";
 import { useSubmitWorkSummary, type ClientInfo } from "@/hooks/useUploadWork";
 
 type RegistrationInfoItem = {
@@ -121,6 +123,9 @@ const baseRegistrationFields = [
 export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [checkPlan, setCheckedPlan] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  // Email captured for options flagged requireEmail (keyed by plan id)
+  const [optionEmails, setOptionEmails] = useState<Record<string, string>>({});
+  const [optionEmailErrors, setOptionEmailErrors] = useState<Record<string, string>>({});
   const [isProcessing, setIsProcessing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [customFields, setCustomFields] = useState<IField[]>([]);
@@ -159,21 +164,53 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     []
   );
 
+  const [discountProofUrl, setDiscountProofUrl] = useState<string>("");
+  const [isUploadingProof, setIsUploadingProof] = useState(false);
+
   useEffect(() => {
     const loadFields = async () => {
-      if (!event.requiredInfo?.length) {
+      const ids = [...(event.requiredInfo || [])];
+      // Always load the discount-trigger field so the user can fill it in
+      if (event.discount?.field && !ids.includes(event.discount.field)) {
+        ids.push(event.discount.field);
+      }
+      if (!ids.length) {
         setCustomFields([]);
         return;
       }
-
-      const response = await getEventFields(event.requiredInfo);
+      const response = await getEventFields(ids);
       if (response.success) {
-        setCustomFields(response.data);
+        const discountFieldId = event.discount?.field;
+        const data = response.data.map((f: any) => {
+          // Discount trigger field is always optional — participant may or may not qualify
+          if (discountFieldId && String(f._id) === discountFieldId) {
+            return { ...f, required: false };
+          }
+          return f;
+        });
+        setCustomFields(data);
       }
     };
-
     void loadFields();
-  }, [event.requiredInfo]);
+  }, [event.requiredInfo, event.discount?.field]);
+
+  const handleProofUpload = async (file: File) => {
+    setIsUploadingProof(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setDiscountProofUrl(data.url);
+        setRegistrationValues((prev) => ({ ...prev, discountProof: data.url }));
+      }
+    } catch {
+      // upload failed silently
+    } finally {
+      setIsUploadingProof(false);
+    }
+  };
 
   useEffect(() => {
     if (!userId) {
@@ -293,11 +330,24 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       delete next[num];
       return next;
     });
+    setOptionEmails((prev) => {
+      const next = { ...prev };
+      delete next[num];
+      return next;
+    });
+    setOptionEmailErrors((prev) => {
+      const next = { ...prev };
+      delete next[num];
+      return next;
+    });
   };
 
   const handleSelectOption = (planId: string, option: string) => {
     setSelectedOptions((prev) => ({ ...prev, [planId]: option }));
     setCheckedPlan((prev) => (prev.includes(planId) ? prev : [...prev, planId]));
+    // Reset any captured email if switching to a different choice
+    setOptionEmails((prev) => ({ ...prev, [planId]: "" }));
+    setOptionEmailErrors((prev) => ({ ...prev, [planId]: "" }));
   };
 
   const handleRegistrationValueChange = (fieldId: string, value: string) => {
@@ -349,7 +399,34 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           return sum + item.price + optionExtra;
         }, 0)
       : 0;
-  const price = baseFee + planSum;
+  // All-inclusive package plan overrides base fee + à-la-carte plans.
+  const selectedPackagePlans = (event.pricePlan || []).filter(
+    (p: any) => checkPlan.includes(p._id) && p.isPackage
+  );
+  const hasPackage = selectedPackagePlans.length > 0;
+  const packageTotal = selectedPackagePlans.reduce(
+    (s: number, p: any) => s + (Number(p.price) || 0),
+    0
+  );
+  const price = hasPackage ? packageTotal : baseFee + planSum;
+
+  // Payment methods enabled by the organizer (default: all enabled)
+  const pm = (event.paymentMethods as any) || {};
+  const showCardPayment = pm.card !== false;
+  const showDoorpayPayment = pm.doorpay !== false;
+  const showBankPayment = pm.bankTransfer !== false;
+
+  // "Registration request only": a selected choice asks to hide payment buttons
+  // and submit a pending registration request instead (e.g. lab payment by cheque).
+  const isRegistrationRequest = (event.pricePlan || []).some((p: any) => {
+    if (!checkPlan.includes(p._id)) return false;
+    const optName = selectedOptions[p._id];
+    const opt = (p.options as any[])?.find(
+      (o: any) => (typeof o === "object" ? o.name : o) === optName
+    );
+    return opt && typeof opt === "object" && opt.registrationRequestOnly;
+  });
+
   const allowGuestRegistration = event.allowGuestRegistration !== false;
   const shouldShowWorkSubmission = event.showWorkSubmissionPopup === true;
   const workSummaryClientInfo = {
@@ -397,6 +474,23 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       }
     }
 
+    // Emails captured for options flagged requireEmail (e.g. lab payment)
+    checkPlan.forEach((planId) => {
+      const plan = event.pricePlan?.find((p) => p._id === planId);
+      const selectedOptName = selectedOptions[planId];
+      const selectedOpt = (plan?.options as any[])?.find(
+        (o: any) => (typeof o === "object" ? o.name : o) === selectedOptName
+      );
+      if (selectedOpt && typeof selectedOpt === "object" && selectedOpt.requireEmail) {
+        items.push({
+          field: `optionEmail_${planId}`,
+          label: `Email — ${selectedOptName}`,
+          type: "email",
+          value: (optionEmails[planId] || "").trim(),
+        });
+      }
+    });
+
     return items;
   }, [
     getFieldLabel,
@@ -406,6 +500,10 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     workChoice,
     workSummaryNote,
     workSummaryTitle,
+    checkPlan,
+    selectedOptions,
+    optionEmails,
+    event.pricePlan,
   ]);
 
   const discountInfo = useMemo(() => {
@@ -425,18 +523,42 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       type: "discount",
       value: isApplied ? event.discount.discount : 0,
       fieldValue,
+      discountType: event.discount.discountType || "percentage",
+      discountTarget: event.discount.discountTarget || "all",
+      discountPlanIds: event.discount.discountPlanIds || [],
     };
   }, [event.discount, registrationFields, registrationValues]);
 
-  const calculatePriceAsNumber = (basePrice: number) => {
-    let finalPrice = basePrice;
-    if (discountInfo && Number(discountInfo.value) > 0) {
-      finalPrice = basePrice - (basePrice * Number(discountInfo.value)) / 100;
-    }
-    return Number.parseFloat(String(finalPrice)).toFixed(2);
+  const calculatePriceAsNumber = (_unused?: number) => {
+    const final = calcFinalPrice(baseFee, planSum, discountInfo, event.pricePlan as any[], checkPlan, selectedOptions);
+    return Number.parseFloat(String(final)).toFixed(2);
   };
 
   const isFreeEvent = event.isFree || Number(calculatePriceAsNumber(price)) === 0;
+
+  // Human-readable summary of what the applied preferential rate includes,
+  // derived from how the organizer configured the discount.
+  const discountBenefitText = (() => {
+    if (!event.discount) return "";
+    const type = event.discount.discountType || "percentage";
+    const target = event.discount.discountTarget || "all";
+    const val = Number(event.discount.discount) || 0;
+    const isFull = type === "percentage" && val >= 100;
+    const amount = type === "percentage" ? `${val}%` : `${val} ${currencyCode}`;
+    if (target === "plan") {
+      return isFull
+        ? text("benefitPlansFree", "Vos plans/ateliers sélectionnés sont offerts.")
+        : text("benefitPlans", `Remise de ${amount} sur les plans sélectionnés.`, { amount });
+    }
+    if (target === "inscription") {
+      return isFull
+        ? text("benefitInscriptionFree", "Frais d'inscription offerts.")
+        : text("benefitInscription", `Remise de ${amount} sur les frais d'inscription.`, { amount });
+    }
+    return isFull
+      ? text("benefitAllFree", "Inscription offerte.")
+      : text("benefitAll", `Remise de ${amount} sur le total.`, { amount });
+  })();
 
   const validateRegistration = async () => {
     const nextErrors: Record<string, string> = {};
@@ -495,15 +617,47 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return true;
   };
 
+  // Validate emails required by selected options (requireEmail flag).
+  const validateOptionEmails = () => {
+    const nextErrors: Record<string, string> = {};
+    for (const planId of checkPlan) {
+      const plan = event.pricePlan?.find((p) => p._id === planId);
+      const selectedOptName = selectedOptions[planId];
+      const selectedOpt = (plan?.options as any[])?.find(
+        (o: any) => (typeof o === "object" ? o.name : o) === selectedOptName
+      );
+      if (selectedOpt && typeof selectedOpt === "object" && selectedOpt.requireEmail) {
+        const value = (optionEmails[planId] || "").trim();
+        if (!value) {
+          nextErrors[planId] = text("requiredField", "Ce champ est obligatoire.");
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          nextErrors[planId] = text("invalidEmail", "Veuillez saisir une adresse email valide.");
+        }
+      }
+    }
+    setOptionEmailErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const validateAll = async () => {
     const registrationIsValid = await validateRegistration();
     const workIsValid = validateWorkSubmission();
     const optionsAreValid = validateOptions();
-    
+    const optionEmailsAreValid = validateOptionEmails();
+
     if (!optionsAreValid) {
       toast({
         title: "Champ requis",
         description: "Veuillez sélectionner un choix pour le plan sélectionné.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!optionEmailsAreValid) {
+      toast({
+        title: "Champ requis",
+        description: "Veuillez saisir l'adresse email demandée pour le choix sélectionné.",
         variant: "destructive",
       });
       return false;
@@ -547,7 +701,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     router.push(`${pathname}?registered=1`);
   };
 
-  const handleGetPreorder = async () => {
+  const handleGetPreorder = async (asRequest = false) => {
     if (!(await validateAll())) {
       return;
     }
@@ -556,7 +710,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       setIsProcessing(true);
       const workReady = await persistWorkSummaryIfNeeded();
       if (!workReady) return;
-      
+
       const details =
         event.pricePlan
           ?.filter((item) => checkPlan.includes(item._id!))
@@ -572,12 +726,16 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             };
           }) || [];
 
+      const discountIsApplied = discountInfo && Number(discountInfo.value) > 0;
       const order = await createOrder({
         eventId: event._id,
         totalAmount: calculatePriceAsNumber(price),
         type: "doorpay",
         requiredUserInfo: builtRegistrationInfo,
-        ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
+        ...(discountIsApplied ? { discountInfo } : {}),
+        ...(discountIsApplied ? { originalAmount: price } : {}),
+        ...(discountIsApplied && discountProofUrl ? { discountProofUrl } : {}),
+        ...(asRequest ? { pendingReview: true } : {}),
         details,
         buyerId: userId || "",
         stripeId: `${uuidv4()}`,
@@ -701,30 +859,21 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
         <CardContent className="space-y-3 px-3 pb-4">
           <div className="space-y-3">
-            {!isFreeEvent && (
+            {baseFee > 0 && (
               <div className="rounded-[2rem] border border-border/50 bg-card/5 p-6 text-center backdrop-blur-sm">
-                <p className="text-lg font-bold text-foreground">{t("eventTotalPrice")}</p>
+                <p className="text-lg font-bold text-foreground">
+                  {text("registrationFee", "Frais d'inscription")}
+                </p>
                 <div className="mt-2 text-center">
-                  {discountInfo && Number(discountInfo.value) > 0 ? (
-                    <div className="flex flex-col items-center">
-                      <span className="text-sm font-medium text-destructive line-through opacity-80">
-                        {formatPriceByCountry(price, event.country, "en-US", event.location)}
-                      </span>
-                      <span className="text-4xl font-black text-primary">
-                        {formatPriceByCountry(
-                          calculatePriceAsNumber(price),
-                          event.country,
-                          "en-US",
-                          event.location
-                        )}
-                      </span>
-                    </div>
-                  ) : (
-                    <span className="text-4xl font-black text-foreground">
-                      {formatPriceByCountry(price, event.country, "en-US", event.location)}
-                    </span>
-                  )}
+                  <span className="text-4xl font-black text-foreground">
+                    {formatPriceByCountry(baseFee, event.country, "en-US", event.location)}
+                  </span>
                 </div>
+                {(event as any).registrationFeeNote && (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {(event as any).registrationFeeNote}
+                  </p>
+                )}
               </div>
             )}
 
@@ -820,7 +969,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             <button
                               key={option}
                               type="button"
-                              onClick={() => handleRegistrationValueChange(String(field._id), option)}
+                              onClick={() =>
+                                handleRegistrationValueChange(
+                                  String(field._id),
+                                  isSelected ? "" : option
+                                )
+                              }
                               className={`rounded-2xl border p-3 text-left transition-all ${
                                 isSelected
                                   ? "border-primary bg-primary/10 text-primary"
@@ -951,11 +1105,66 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 </div>
               )}
 
-              {discountInfo && Number(discountInfo.value) > 0 && (
-                <div className="rounded-2xl border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-700 dark:text-green-300">
-                  {text("discountApplied", `Reduction appliquee : ${discountInfo.value}% OFF`, {
-                    value: Number(discountInfo.value),
-                  })}
+              {/* Unified preferential-rate card: what's applied, what it includes,
+                  the required proof, and the pending-validation notice. */}
+              {discountInfo && Number(discountInfo.value) > 0 && !hasPackage && (
+                <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-50/70 to-green-50/40 dark:from-emerald-900/15 dark:to-green-900/10 p-4 space-y-3">
+                  {/* Header: applied offer + benefit */}
+                  <div className="flex items-start gap-3">
+                    <div className="rounded-xl bg-emerald-500/15 p-2 shrink-0">
+                      <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="font-semibold text-emerald-800 dark:text-emerald-200">
+                        {text("preferentialRateTitle", "Tarif préférentiel appliqué")}
+                      </p>
+                      <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                        {discountInfo.fieldValue
+                          ? `${discountInfo.fieldValue} — ${discountBenefitText}`
+                          : discountBenefitText}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Proof requirement + upload + pending notice */}
+                  {(event.discount?.requireProof || !!event.discount?.proofDescription) && (
+                    <div className="rounded-xl border border-amber-400/40 bg-amber-50/70 dark:bg-amber-900/10 p-3 space-y-2">
+                      <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                        <FileText className="h-4 w-4" />
+                        {text("proofRequiredTitle", "Justificatif requis")}
+                      </p>
+                      {event.discount?.proofDescription && (
+                        <p className="text-xs text-amber-700 dark:text-amber-400">{event.discount.proofDescription}</p>
+                      )}
+                      <label className="flex flex-col gap-2 cursor-pointer">
+                        <div className={`flex items-center justify-center gap-2 h-11 rounded-xl border-2 border-dashed text-sm font-medium transition-all ${
+                          discountProofUrl
+                            ? "border-green-400 bg-green-50 text-green-700"
+                            : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
+                        }`}>
+                          {isUploadingProof ? (
+                            <span className="animate-pulse">{text("uploading", "Téléchargement...")}</span>
+                          ) : discountProofUrl ? (
+                            <><CheckCircle className="h-4 w-4" /> {text("proofUploaded", "Justificatif téléchargé")}</>
+                          ) : (
+                            <><FileText className="h-4 w-4" /> {text("uploadProof", "Télécharger le justificatif")}</>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*,.pdf"
+                          className="hidden"
+                          onChange={(e) => e.target.files?.[0] && handleProofUpload(e.target.files[0])}
+                        />
+                      </label>
+                      <p className="text-[11px] leading-relaxed text-amber-700/80 dark:text-amber-400/80">
+                        {text(
+                          "pendingValidationNote",
+                          "Votre inscription sera enregistrée puis validée après vérification de votre justificatif par l'organisateur. En cas de refus, le tarif plein s'appliquera."
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -1004,14 +1213,24 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge
-                              variant={isSelected ? "default" : "secondary"}
-                              className={`rounded-full px-3 py-1 text-sm font-bold ${
-                                isSelected ? "bg-primary text-primary-foreground" : ""
-                              }`}
-                            >
-                              {formatPriceByCountry(plan.price, event.country, "en-US", event.location)}
-                            </Badge>
+                            {(() => {
+                              const hasPricedOptions = (plan.options || []).some(
+                                (o: any) => (typeof o === "object" ? o.price || 0 : 0) > 0
+                              );
+                              // Hide the "0.00 TND" badge when the plan itself is free
+                              // but its choices carry a price (shown per-option instead).
+                              if (Number(plan.price) === 0 && hasPricedOptions) return null;
+                              return (
+                                <Badge
+                                  variant={isSelected ? "default" : "secondary"}
+                                  className={`rounded-full px-3 py-1 text-sm font-bold ${
+                                    isSelected ? "bg-primary text-primary-foreground" : ""
+                                  }`}
+                                >
+                                  {formatPriceByCountry(plan.price, event.country, "en-US", event.location)}
+                                </Badge>
+                              );
+                            })()}
                             {isSelected && (
                               <button
                                 type="button"
@@ -1044,38 +1263,78 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                 const optName = typeof opt === "object" ? opt.name : opt;
                                 const optPrice = typeof opt === "object" ? (opt.price || 0) : 0;
                                 const optPlaces = typeof opt === "object" ? opt.places : undefined;
+                                const optDescription = typeof opt === "object" ? opt.description : undefined;
                                 const isOptSelected = selectedOptions[plan._id] === optName;
                                 return (
                                   <button
                                     key={idx}
                                     type="button"
                                     onClick={() => handleSelectOption(plan._id, optName)}
-                                    className={`flex items-center justify-between gap-2 p-2 px-3 rounded-xl border transition-all text-xs ${
+                                    className={`flex flex-col gap-1 p-2 px-3 rounded-xl border transition-all text-xs text-left ${
                                       isOptSelected
                                         ? "border-primary bg-primary/10 text-primary font-medium"
                                         : "border-border/60 bg-background/50 hover:border-primary/40"
                                     }`}
                                   >
-                                    <div className="flex items-center gap-2">
-                                      <div className={`w-3 h-3 rounded-full border-2 shrink-0 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
-                                      <span>{optName}</span>
+                                    <div className="flex items-center justify-between gap-2 w-full">
+                                      <div className="flex items-center gap-2">
+                                        <div className={`w-3 h-3 rounded-full border-2 shrink-0 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
+                                        <span>{optName}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1.5 shrink-0">
+                                        {optPrice > 0 && (
+                                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${isOptSelected ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+                                            +{formatPriceByCountry(optPrice, event.country, "en-US", event.location)}
+                                          </span>
+                                        )}
+                                        {optPlaces !== undefined && (
+                                          <span className="text-[10px] text-muted-foreground">
+                                            {optPlaces} pl.
+                                          </span>
+                                        )}
+                                      </div>
                                     </div>
-                                    <div className="flex items-center gap-1.5 shrink-0">
-                                      {optPrice > 0 && (
-                                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${isOptSelected ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
-                                          +{formatPriceByCountry(optPrice, event.country, "en-US", event.location)}
-                                        </span>
-                                      )}
-                                      {optPlaces !== undefined && (
-                                        <span className="text-[10px] text-muted-foreground">
-                                          {optPlaces} pl.
-                                        </span>
-                                      )}
-                                    </div>
+                                    {optDescription && (
+                                      <p className={`text-[11px] leading-relaxed pl-5 font-normal ${isOptSelected ? "text-primary/80" : "text-muted-foreground"}`}>
+                                        {optDescription}
+                                      </p>
+                                    )}
                                   </button>
                                 );
                               })}
                             </div>
+
+                            {/* Required email input when the selected choice asks for it */}
+                            {(() => {
+                              const selectedOptName = selectedOptions[plan._id];
+                              const selectedOpt = (plan.options as any[])?.find(
+                                (o: any) => (typeof o === "object" ? o.name : o) === selectedOptName
+                              );
+                              if (!selectedOpt || typeof selectedOpt !== "object" || !selectedOpt.requireEmail) {
+                                return null;
+                              }
+                              return (
+                                <div className="mt-2 space-y-1">
+                                  <Label className="text-xs font-medium text-foreground">
+                                    {text("confirmationEmail", "Adresse email de confirmation")}
+                                    <span className="ml-1 text-destructive">*</span>
+                                  </Label>
+                                  <Input
+                                    type="email"
+                                    value={optionEmails[plan._id] || ""}
+                                    onChange={(e) => {
+                                      setOptionEmails((prev) => ({ ...prev, [plan._id]: e.target.value }));
+                                      setOptionEmailErrors((prev) => ({ ...prev, [plan._id]: "" }));
+                                    }}
+                                    placeholder="email@laboratoire.tn"
+                                    className="rounded-xl text-sm"
+                                  />
+                                  {optionEmailErrors[plan._id] && (
+                                    <p className="text-xs text-destructive">{optionEmailErrors[plan._id]}</p>
+                                  )}
+                                </div>
+                              );
+                            })()}
                           </div>
                         )}
                       </div>
@@ -1086,18 +1345,39 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             )}
 
             {isAvailable() && (
+              isRegistrationRequest ? (
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    onClick={() => void handleGetPreorder(true)}
+                    disabled={isProcessing}
+                    className="h-14 w-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 font-semibold text-white shadow-lg transition-all hover:from-amber-600 hover:to-orange-600"
+                  >
+                    {isProcessing ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        {text("sendRegistrationRequest", "Envoyer la demande d'inscription")}
+                      </div>
+                    )}
+                  </Button>
+                </motion.div>
+              ) : (
               <>
-                <CheckoutButton
-                  event={event}
-                  checkPlan={checkPlan}
-                  selectedOptions={selectedOptions}
-                  discountInfo={discountInfo}
-                  requiredUserInfo={builtRegistrationInfo}
-                  validateBeforeCheckout={validateAll}
-                  beforeCheckout={persistWorkSummaryIfNeeded}
-                />
+                {(isFreeEvent || showCardPayment) && (
+                  <CheckoutButton
+                    event={event}
+                    checkPlan={checkPlan}
+                    selectedOptions={selectedOptions}
+                    discountInfo={discountInfo}
+                    discountProofUrl={discountProofUrl}
+                    requiredUserInfo={builtRegistrationInfo}
+                    validateBeforeCheckout={validateAll}
+                    beforeCheckout={persistWorkSummaryIfNeeded}
+                  />
+                )}
 
-                {!isFreeEvent && (
+                {!isFreeEvent && showDoorpayPayment && (
                   <>
                     {(!userId && !allowGuestRegistration) ? (
                       <Button
@@ -1152,7 +1432,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   </>
                 )}
 
-                {!isFreeEvent &&
+                {!isFreeEvent && showBankPayment &&
                   ((!userId && !allowGuestRegistration) ? (
                     <Button
                       onClick={() => router.push("/sign-in")}
@@ -1190,6 +1470,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                     />
                   ))}
               </>
+              )
             )}
           </div>
 

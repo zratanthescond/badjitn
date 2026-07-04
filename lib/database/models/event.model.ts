@@ -21,9 +21,12 @@ export interface IEvent extends Document {
     price: number;
     places?: number;
     note?: string;
-    options?: { _id?: string; name: string; price: number; places?: number }[];
+    isPackage?: boolean;
+    options?: { _id?: string; name: string; price: number; places?: number; description?: string; requireEmail?: boolean; registrationRequestOnly?: boolean }[];
   }[];
   pricePlanNote?: string;
+  registrationFeeNote?: string;
+  paymentMethods?: { card?: boolean; doorpay?: boolean; bankTransfer?: boolean };
   createdAt: Date;
   imageUrl: string;
   startDateTime: Date;
@@ -39,7 +42,16 @@ export interface IEvent extends Document {
   category: { _id: string; name: string };
   organizer: { _id: string; firstName: string; lastName: string; photo: string };
   organisation?: { _id: string; name: string; slug: string; logo: string };
-  discount: { field: string; value: string; discount: number };
+  discount: {
+    field: string;
+    value: string;
+    discount: number;
+    discountType?: "percentage" | "fixed";
+    discountTarget?: "all" | "inscription" | "plan";
+    discountPlanIds?: string[];
+    requireProof?: boolean;
+    proofDescription?: string;
+  };
   restricted: boolean;
   scanPoints?: string[];
   showWorkSubmissionPopup?: boolean;
@@ -53,6 +65,9 @@ const planOptionSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, default: 0 },
   places: { type: Number },
+  description: { type: String },
+  requireEmail: { type: Boolean, default: false },
+  registrationRequestOnly: { type: Boolean, default: false },
 });
 
 const pricePlanSchema = new mongoose.Schema({
@@ -60,6 +75,7 @@ const pricePlanSchema = new mongoose.Schema({
   price: { type: Number },
   places: { type: Number },
   note: { type: String },
+  isPackage: { type: Boolean, default: false },
   options: { type: [planOptionSchema], default: [] },
 });
 const EventSchema = new Schema({
@@ -82,6 +98,12 @@ const EventSchema = new Schema({
   scanPoints: { type: [String], default: [] },
   pricePlan: { type: [pricePlanSchema], default: [] },
   pricePlanNote: { type: String },
+  registrationFeeNote: { type: String },
+  paymentMethods: {
+    card: { type: Boolean, default: true },
+    doorpay: { type: Boolean, default: true },
+    bankTransfer: { type: Boolean, default: true },
+  },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },
   startDateTime: { type: Date, default: Date.now },
@@ -98,6 +120,11 @@ const EventSchema = new Schema({
     field: { type: String },
     value: { type: String },
     discount: { type: Number },
+    discountType: { type: String, default: "percentage" },
+    discountTarget: { type: String, default: "all" },
+    discountPlanIds: { type: [String], default: [] },
+    requireProof: { type: Boolean, default: false },
+    proofDescription: { type: String },
   },
   restricted: { type: Boolean, default: false },
   showWorkSubmissionPopup: { type: Boolean, default: false },

@@ -33,6 +33,15 @@ export type PlanOption = {
   name: string;
   price: number;
   places?: number;
+  description?: string;
+  requireEmail?: boolean;
+  registrationRequestOnly?: boolean;
+};
+
+export type PaymentMethods = {
+  card?: boolean;
+  doorpay?: boolean;
+  bankTransfer?: boolean;
 };
 
 export type pricePlan = {
@@ -41,6 +50,7 @@ export type pricePlan = {
   places?: number;
   note?: string;
   options?: PlanOption[];
+  isPackage?: boolean;
 };
 // ====== EVENT PARAMS
 export type CreateEventParams = {
@@ -81,6 +91,9 @@ export type CreateEventParams = {
     jobTitleLabel?: string;
     selectedRepublic?: string;
     customRegistrationFields?: { label: string; isRequired: boolean }[];
+    pricePlanNote?: string;
+    registrationFeeNote?: string;
+    paymentMethods?: PaymentMethods;
   };
   path: string;
 };
@@ -124,6 +137,9 @@ export type UpdateEventParams = {
     jobTitleLabel?: string;
     selectedRepublic?: string;
     customRegistrationFields?: { label: string; isRequired: boolean }[];
+    pricePlanNote?: string;
+    registrationFeeNote?: string;
+    paymentMethods?: PaymentMethods;
   };
   path: string;
 };
@@ -236,6 +252,9 @@ export type CreateOrderParams = {
   details?: any[];
   requiredUserInfo?: any[];
   discountInfo?: any;
+  originalAmount?: string | number;
+  discountProofUrl?: string;
+  pendingReview?: boolean;
 };
 
 export type GetOrdersByEventParams = {

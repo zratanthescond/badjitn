@@ -17,6 +17,11 @@ import { ObjectId } from "mongodb";
 import User from "../database/models/user.model";
 import { getCurrencyCodeByCountry } from "../utils";
 import { verifyOrganizerOrAdmin } from "./auth.actions";
+import {
+  sendEligibilityApprovedEmail,
+  sendEligibilityRejectedEmail,
+  sendRegistrationConfirmationEmail,
+} from "../mail";
 
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -73,13 +78,181 @@ export const createOrder = async (order: CreateOrderParams) => {
     const buyer = order.buyerId
       ? await User.findOne({ clerkId: order.buyerId })
       : null;
+
+    const event = await Event.findById(order.eventId).select(
+      "title country location discount"
+    );
+
+    // Determine if this registration needs admin review:
+    //  - a discount was applied AND the organizer requires a proof document, OR
+    //  - the registration was submitted as a request (e.g. lab payment by cheque).
+    const discountApplied =
+      !!order.discountInfo && Number(order.discountInfo.value) > 0;
+    const needsReview =
+      order.pendingReview === true ||
+      (discountApplied && event?.discount?.requireProof);
+    const eligibilityStatus: "pending" | undefined = needsReview ? "pending" : undefined;
+
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,
       ...(buyer ? { buyer: buyer._id } : {}),
+      ...(order.originalAmount !== undefined
+        ? { originalAmount: Number(order.originalAmount) }
+        : {}),
+      ...(order.discountProofUrl
+        ? { discountProofUrl: order.discountProofUrl }
+        : {}),
+      ...(eligibilityStatus ? { eligibilityStatus } : {}),
+    });
+
+    // Confirmation email with chosen plans + registration status (best-effort).
+    await sendRegistrationStatusEmail({
+      eventTitle: event?.title || "",
+      country: event?.country,
+      location: event?.location,
+      requiredUserInfo: order.requiredUserInfo,
+      details: order.details,
+      totalAmount: order.totalAmount,
+      type: order.type,
+      eligibilityStatus,
     });
 
     return JSON.parse(JSON.stringify(newOrder));
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+// Sends the participant a registration confirmation email describing the chosen
+// plans and the current status. Best-effort: swallows errors so it never blocks
+// the registration. Reused by every path that creates a registration order.
+export const sendRegistrationStatusEmail = async ({
+  eventTitle,
+  country,
+  location,
+  requiredUserInfo,
+  details,
+  totalAmount,
+  type,
+  eligibilityStatus,
+}: {
+  eventTitle: string;
+  country?: string | null;
+  location?: any;
+  requiredUserInfo?: any[];
+  details?: any[];
+  totalAmount: string | number;
+  type?: string;
+  eligibilityStatus?: "pending" | "approved" | "rejected";
+}) => {
+  try {
+    const emailInfo = (requiredUserInfo || []).find(
+      (info: any) => String(info.field).toLowerCase() === "email"
+    );
+    const participantEmail = emailInfo?.value?.trim();
+    if (!participantEmail) return;
+
+    const currency = getCurrencyCodeByCountry(country, location);
+    const amountNum = Number(totalAmount) || 0;
+
+    let statusLabel: string;
+    let statusColor: string;
+    if (eligibilityStatus === "pending") {
+      statusLabel = "En attente de validation par l'organisateur";
+      statusColor = "#d97706";
+    } else if (type === "bank_transfer") {
+      statusLabel = "En attente de vérification du paiement";
+      statusColor = "#d97706";
+    } else if (type === "doorpay") {
+      statusLabel = "Confirmée — paiement à l'accueil";
+      statusColor = "#059669";
+    } else {
+      statusLabel = "Confirmée";
+      statusColor = "#059669";
+    }
+
+    await sendRegistrationConfirmationEmail({
+      to: participantEmail,
+      eventTitle,
+      details: (details || []).map((d: any) => ({
+        name: d.name,
+        option: d.option,
+        price: `${Number(d.price || 0).toFixed(2)} ${currency}`,
+      })),
+      totalAmount: `${amountNum.toFixed(2)} ${currency}`,
+      statusLabel,
+      statusColor,
+    });
+  } catch (mailError) {
+    console.error("Registration confirmation email failed:", mailError);
+  }
+};
+
+// UPDATE DISCOUNT ELIGIBILITY (admin approves or rejects a pending registration)
+export const updateOrderEligibility = async ({
+  orderId,
+  status,
+}: {
+  orderId: string;
+  status: "approved" | "rejected";
+}) => {
+  try {
+    await connectToDatabase();
+
+    const order = await Order.findById(orderId);
+    if (!order) throw new Error("Order not found");
+
+    await verifyOrganizerOrAdmin(String(order.event));
+
+    const event = await Event.findById(order.event).select("title country location");
+
+    const currency = getCurrencyCodeByCountry(event?.country, event?.location);
+    const emailInfo = (order.requiredUserInfo || []).find(
+      (info: any) => String(info.field).toLowerCase() === "email"
+    );
+    const participantEmail = emailInfo?.value?.trim();
+
+    const discountedAmount = Number(order.totalAmount) || 0;
+    const fullAmount =
+      order.originalAmount !== undefined && order.originalAmount !== null
+        ? Number(order.originalAmount)
+        : discountedAmount;
+
+    order.eligibilityStatus = status;
+
+    if (status === "rejected") {
+      // Bill the full price; the remainder is what the participant still owes.
+      order.totalAmount = fullAmount;
+    }
+
+    await order.save();
+
+    // Notify the participant by email (best-effort — never block the admin action)
+    if (participantEmail) {
+      try {
+        if (status === "approved") {
+          await sendEligibilityApprovedEmail({
+            to: participantEmail,
+            eventTitle: event?.title || "",
+            amount: `${discountedAmount.toFixed(2)} ${currency}`,
+          });
+        } else {
+          const remaining = Math.max(0, fullAmount - discountedAmount);
+          await sendEligibilityRejectedEmail({
+            to: participantEmail,
+            eventTitle: event?.title || "",
+            remainingAmount: `${remaining.toFixed(2)} ${currency}`,
+            fullAmount: `${fullAmount.toFixed(2)} ${currency}`,
+          });
+        }
+      } catch (mailError) {
+        console.error("Eligibility email failed:", mailError);
+      }
+    }
+
+    revalidatePath(`/orders`);
+    return JSON.parse(JSON.stringify(order));
   } catch (error) {
     handleError(error);
   }
@@ -415,6 +588,10 @@ export async function getOrdersByEvent({
           details: 1,
           discountInfo: 1,
           requiredUserInfo: 1,
+          eligibilityStatus: 1,
+          originalAmount: 1,
+          discountProofUrl: 1,
+          discountRequireProof: "$event.discount.requireProof",
         },
       },
       {

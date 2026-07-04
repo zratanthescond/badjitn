@@ -16,12 +16,16 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslations } from "next-intl";
 
 interface PlanOption {
   name: string;
   price: number;
   places?: number;
+  description?: string;
+  requireEmail?: boolean;
+  registrationRequestOnly?: boolean;
 }
 
 interface PricePlan {
@@ -30,6 +34,7 @@ interface PricePlan {
   places?: number;
   note?: string;
   options?: PlanOption[];
+  isPackage?: boolean;
 }
 
 interface PricePlanComponentProps {
@@ -57,10 +62,14 @@ export default function PricePlanComponent({
   const [planPrice, setPlanPrice] = useState("");
   const [planPlaces, setPlanPlaces] = useState("");
   const [planNote, setPlanNote] = useState("");
+  const [planIsPackage, setPlanIsPackage] = useState(false);
   const [planOptions, setPlanOptions] = useState<PlanOption[]>([]);
   const [currentOption, setCurrentOption] = useState("");
   const [currentOptionPrice, setCurrentOptionPrice] = useState("");
   const [currentOptionPlaces, setCurrentOptionPlaces] = useState("");
+  const [currentOptionDescription, setCurrentOptionDescription] = useState("");
+  const [currentOptionRequireEmail, setCurrentOptionRequireEmail] = useState(false);
+  const [currentOptionRequestOnly, setCurrentOptionRequestOnly] = useState(false);
 
   // ── edit mode ────────────────────────────────────────────────────────────
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -71,10 +80,14 @@ export default function PricePlanComponent({
     setPlanPrice("");
     setPlanPlaces("");
     setPlanNote("");
+    setPlanIsPackage(false);
     setPlanOptions([]);
     setCurrentOption("");
     setCurrentOptionPrice("");
     setCurrentOptionPlaces("");
+    setCurrentOptionDescription("");
+    setCurrentOptionRequireEmail(false);
+    setCurrentOptionRequestOnly(false);
     setEditingIndex(null);
   };
 
@@ -84,6 +97,7 @@ export default function PricePlanComponent({
     setPlanPrice(plan.price.toString());
     setPlanPlaces(plan.places?.toString() ?? "");
     setPlanNote(plan.note ?? "");
+    setPlanIsPackage(plan.isPackage ?? false);
     setPlanOptions(plan.options ?? []);
     setEditingIndex(index);
     // scroll form into view
@@ -96,10 +110,16 @@ export default function PricePlanComponent({
       name: currentOption.trim(),
       price: parseFloat(currentOptionPrice) || 0,
       places: currentOptionPlaces ? parseInt(currentOptionPlaces) : undefined,
+      description: currentOptionDescription.trim() || undefined,
+      requireEmail: currentOptionRequireEmail || undefined,
+      registrationRequestOnly: currentOptionRequestOnly || undefined,
     }]);
     setCurrentOption("");
     setCurrentOptionPrice("");
     setCurrentOptionPlaces("");
+    setCurrentOptionDescription("");
+    setCurrentOptionRequireEmail(false);
+    setCurrentOptionRequestOnly(false);
   };
 
   const removeOption = (index: number) => {
@@ -115,6 +135,7 @@ export default function PricePlanComponent({
       price: parseFloat(planPrice) || 0,
       places: planPlaces ? parseInt(planPlaces) : undefined,
       note: planNote.trim() || undefined,
+      isPackage: planIsPackage || undefined,
       options: planOptions.length > 0 ? planOptions : undefined,
     };
 
@@ -264,6 +285,23 @@ export default function PricePlanComponent({
               />
             </div>
 
+            {/* All-inclusive package toggle */}
+            <div className="md:col-span-2">
+              <label className="flex items-start gap-3 p-3 rounded-2xl border border-dashed border-primary/30 bg-primary/[0.03] cursor-pointer">
+                <Checkbox
+                  checked={planIsPackage}
+                  onCheckedChange={(v) => setPlanIsPackage(v === true)}
+                  className="mt-0.5"
+                />
+                <span className="text-sm">
+                  <span className="font-medium">Tarif tout inclus (package)</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">
+                    Quand ce plan est sélectionné, son prix remplace les frais d'inscription et tous les autres plans/ateliers (total fixe).
+                  </span>
+                </span>
+              </label>
+            </div>
+
             {/* Choices Section */}
             <div className="md:col-span-2 space-y-3">
               <Label className="text-sm font-medium flex items-center gap-2">
@@ -311,27 +349,71 @@ export default function PricePlanComponent({
                 </Button>
               </div>
 
+              {/* Optional instructions/description for the choice (e.g. payment modality details) */}
+              <div>
+                <Label className="text-xs text-muted-foreground mb-1 block">
+                  Instructions / description du choix
+                  <span className="ml-1 font-normal">(optionnel — ex: modalité de paiement, email de confirmation, date limite)</span>
+                </Label>
+                <Textarea
+                  placeholder="Ex: Le laboratoire doit envoyer un mail de confirmation à contact@labo.tn et procéder au paiement par chèque avant le 15/09/2026."
+                  value={currentOptionDescription}
+                  onChange={(e) => setCurrentOptionDescription(e.target.value)}
+                  className="resize-none rounded-2xl min-h-[60px] text-sm"
+                  maxLength={500}
+                />
+                <label className="mt-2 flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={currentOptionRequireEmail}
+                    onCheckedChange={(v) => setCurrentOptionRequireEmail(v === true)}
+                  />
+                  <span className="text-xs text-muted-foreground">
+                    Demander une adresse email si ce choix est sélectionné
+                  </span>
+                </label>
+                <label className="mt-1 flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={currentOptionRequestOnly}
+                    onCheckedChange={(v) => setCurrentOptionRequestOnly(v === true)}
+                  />
+                  <span className="text-xs text-muted-foreground">
+                    Demande d'inscription uniquement (masque les boutons de paiement, un seul bouton « Envoyer la demande » — inscription en attente de validation)
+                  </span>
+                </label>
+              </div>
+
               {planOptions.length > 0 && (
                 <div className="flex flex-col gap-1.5 p-3 bg-muted/30 rounded-2xl border border-dashed">
                   {planOptions.map((opt, idx) => (
-                    <div key={idx} className="flex items-center justify-between gap-2 bg-background rounded-xl px-3 py-1.5 border border-border/50">
-                      <span className="text-sm font-medium">{opt.name}</span>
-                      <div className="flex items-center gap-2 shrink-0">
-                        {opt.price > 0 && (
-                          <Badge variant="secondary" className="rounded-full text-xs">+{opt.price} {currencyCode}</Badge>
-                        )}
-                        {opt.places !== undefined && (
-                          <Badge variant="outline" className="rounded-full text-xs">{opt.places} places</Badge>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeOption(idx)}
-                          className="h-6 w-6 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
+                    <div key={idx} className="flex flex-col gap-1 bg-background rounded-xl px-3 py-2 border border-border/50">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-medium">{opt.name}</span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {opt.price > 0 && (
+                            <Badge variant="secondary" className="rounded-full text-xs">+{opt.price} {currencyCode}</Badge>
+                          )}
+                          {opt.places !== undefined && (
+                            <Badge variant="outline" className="rounded-full text-xs">{opt.places} places</Badge>
+                          )}
+                          {opt.requireEmail && (
+                            <Badge variant="outline" className="rounded-full text-xs border-blue-400/50 text-blue-600">email requis</Badge>
+                          )}
+                          {opt.registrationRequestOnly && (
+                            <Badge variant="outline" className="rounded-full text-xs border-amber-400/50 text-amber-600">demande seule</Badge>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeOption(idx)}
+                            className="h-6 w-6 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
+                      {opt.description && (
+                        <p className="text-xs text-muted-foreground leading-relaxed">{opt.description}</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -415,17 +497,22 @@ export default function PricePlanComponent({
                       {plan.options && plan.options.length > 0 && (
                         <div className="mt-3 flex flex-col gap-1">
                           {plan.options.map((opt, i) => (
-                            <div key={i} className="flex items-center gap-1.5 flex-wrap">
-                              <Badge variant="outline" className="text-[10px] py-0 rounded-full opacity-70">
-                                {opt.name}
-                              </Badge>
-                              {opt.price > 0 && (
-                                <Badge variant="secondary" className="text-[10px] py-0 rounded-full">
-                                  +{opt.price} {currencyCode}
+                            <div key={i} className="flex flex-col gap-0.5">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <Badge variant="outline" className="text-[10px] py-0 rounded-full opacity-70">
+                                  {opt.name}
                                 </Badge>
-                              )}
-                              {opt.places !== undefined && (
-                                <span className="text-[10px] text-muted-foreground">{opt.places} places</span>
+                                {opt.price > 0 && (
+                                  <Badge variant="secondary" className="text-[10px] py-0 rounded-full">
+                                    +{opt.price} {currencyCode}
+                                  </Badge>
+                                )}
+                                {opt.places !== undefined && (
+                                  <span className="text-[10px] text-muted-foreground">{opt.places} places</span>
+                                )}
+                              </div>
+                              {opt.description && (
+                                <p className="text-[10px] text-muted-foreground/80 italic leading-snug">{opt.description}</p>
                               )}
                             </div>
                           ))}
@@ -437,6 +524,11 @@ export default function PricePlanComponent({
                       <Badge variant="outline" className="font-semibold rounded-full">
                         {plan.price} {currencyCode}
                       </Badge>
+                      {plan.isPackage && (
+                        <Badge className="text-xs rounded-full bg-primary/15 text-primary border-primary/30">
+                          Tout inclus
+                        </Badge>
+                      )}
                       {plan.places !== undefined && (
                         <Badge variant="secondary" className="text-xs rounded-full">
                           {plan.places} {t("list.places")}

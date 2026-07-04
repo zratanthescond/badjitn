@@ -27,6 +27,31 @@ const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: "i" } });
 };
 
+function slugifyTitle(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+async function generateUniqueSlug(title: string, excludeId?: string): Promise<string> {
+  const base = slugifyTitle(title);
+  let slug = base;
+  let counter = 2;
+  while (true) {
+    const query: any = { slug };
+    if (excludeId) query._id = { $ne: excludeId };
+    const existing = await Event.findOne(query).select("_id");
+    if (!existing) return slug;
+    slug = `${base}-${counter++}`;
+  }
+}
+
 const populateEvent = (query: any) => {
   return query
     .populate({
@@ -68,16 +93,35 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
       throw new Error("This organisation must be verified by an admin before you can create events.");
     }
 
+    const slug = await generateUniqueSlug(event.title);
+
     const newEvent = await Event.create({
       ...event,
+      slug,
       category: event.categoryId,
       organizer: userId,
       organisation: organisationId,
       showWorkSubmissionPopup: Boolean(event.showWorkSubmissionPopup),
       allowGuestRegistration: event.allowGuestRegistration !== false,
     });
-    revalidatePath(path);
 
+    // Remap index-based discountPlanIds ("0","1",...) to real MongoDB plan _ids
+    if (newEvent.discount?.discountPlanIds?.length && newEvent.pricePlan?.length) {
+      const hasIndexIds = newEvent.discount.discountPlanIds.some((id: string) => /^\d+$/.test(id));
+      if (hasIndexIds) {
+        const fixedIds = newEvent.discount.discountPlanIds.map((id: string) => {
+          if (/^\d+$/.test(id)) {
+            const idx = parseInt(id, 10);
+            return newEvent.pricePlan[idx]?._id?.toString() || id;
+          }
+          return id;
+        });
+        await Event.findByIdAndUpdate(newEvent._id, { "discount.discountPlanIds": fixedIds });
+        newEvent.discount.discountPlanIds = fixedIds;
+      }
+    }
+
+    revalidatePath(path);
     return JSON.parse(JSON.stringify(newEvent));
   } catch (error) {
     handleError(error);
@@ -89,6 +133,21 @@ export async function getEventById(eventId: string) {
   try {
     await connectToDatabase();
     const event = await populateEvent(Event.findById(eventId));
+    if (!event) throw new Error("Event not found");
+    return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// GET ONE EVENT BY SLUG (falls back to ObjectId for legacy URLs)
+export async function getEventBySlug(param: string) {
+  try {
+    await connectToDatabase();
+    let event = await populateEvent(Event.findOne({ slug: param }));
+    if (!event && /^[a-f\d]{24}$/i.test(param)) {
+      event = await populateEvent(Event.findById(param));
+    }
     if (!event) throw new Error("Event not found");
     return JSON.parse(JSON.stringify(event));
   } catch (error) {
@@ -120,18 +179,37 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
       throw new Error("Unauthorized: you do not have permission to update this event");
     }
 
+    const slug = await generateUniqueSlug(event.title, event._id);
+
     const updatedEvent = await Event.findByIdAndUpdate(
       event._id,
       {
         ...event,
+        slug,
         category: event.categoryId,
         showWorkSubmissionPopup: Boolean(event.showWorkSubmissionPopup),
         allowGuestRegistration: event.allowGuestRegistration !== false,
       },
       { new: true }
     );
-    revalidatePath(path);
 
+    // Remap index-based discountPlanIds ("0","1",...) to real MongoDB plan _ids
+    if (updatedEvent?.discount?.discountPlanIds?.length && updatedEvent.pricePlan?.length) {
+      const hasIndexIds = updatedEvent.discount.discountPlanIds.some((id: string) => /^\d+$/.test(id));
+      if (hasIndexIds) {
+        const fixedIds = updatedEvent.discount.discountPlanIds.map((id: string) => {
+          if (/^\d+$/.test(id)) {
+            const idx = parseInt(id, 10);
+            return updatedEvent.pricePlan[idx]?._id?.toString() || id;
+          }
+          return id;
+        });
+        await Event.findByIdAndUpdate(updatedEvent._id, { "discount.discountPlanIds": fixedIds });
+        updatedEvent.discount.discountPlanIds = fixedIds;
+      }
+    }
+
+    revalidatePath(path);
     return JSON.parse(JSON.stringify(updatedEvent));
   } catch (error) {
     handleError(error);

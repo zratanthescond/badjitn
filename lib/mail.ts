@@ -22,6 +22,132 @@ export async function sendVerificationEmail(email: string, token: string) {
   });
 }
 
+export async function sendRegistrationConfirmationEmail({
+  to,
+  eventTitle,
+  details,
+  totalAmount,
+  statusLabel,
+  statusColor,
+}: {
+  to: string;
+  eventTitle: string;
+  details: { name: string; option?: string; price: string }[];
+  totalAmount: string;
+  statusLabel: string;
+  statusColor: string;
+}) {
+  const rows =
+    details.length > 0
+      ? details
+          .map(
+            (d) => `
+        <tr>
+          <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">
+            ${d.name}${d.option ? `<br/><span style="color:#6b7280;font-size:12px;">${d.option}</span>` : ""}
+          </td>
+          <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:right;white-space:nowrap;">${d.price}</td>
+        </tr>`
+          )
+          .join("")
+      : `<tr><td colspan="2" style="padding:8px 12px;color:#6b7280;">Inscription</td></tr>`;
+
+  await transporter.sendMail({
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: `Confirmation de votre inscription — ${eventTitle}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <h2 style="margin:0 0 8px;">Inscription enregistrée</h2>
+        <p style="margin:0 0 16px;color:#374151;">Merci pour votre inscription à <strong>${eventTitle}</strong>. Voici le récapitulatif :</p>
+
+        <div style="margin:0 0 16px;">
+          <span style="display:inline-block;padding:6px 14px;border-radius:999px;background:${statusColor}1a;color:${statusColor};font-weight:600;font-size:14px;">
+            Statut : ${statusLabel}
+          </span>
+        </div>
+
+        <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+          <thead>
+            <tr style="background:#f9fafb;">
+              <th style="padding:8px 12px;text-align:left;font-size:13px;color:#374151;">Détails</th>
+              <th style="padding:8px 12px;text-align:right;font-size:13px;color:#374151;">Montant</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+            <tr>
+              <td style="padding:10px 12px;font-weight:700;">Total</td>
+              <td style="padding:10px 12px;text-align:right;font-weight:700;">${totalAmount}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style="margin:16px 0 0;color:#6b7280;font-size:13px;">
+          Vous recevrez une mise à jour par email si le statut de votre inscription évolue.
+        </p>
+      </div>
+    `,
+  });
+}
+
+export async function sendEligibilityApprovedEmail({
+  to,
+  eventTitle,
+  amount,
+}: {
+  to: string;
+  eventTitle: string;
+  amount: string;
+}) {
+  await transporter.sendMail({
+    from: '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: "Votre remise a été validée",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <h2 style="margin:0 0 16px;color:#059669;">Remise validée ✅</h2>
+        <p style="margin:0 0 16px;">Bonne nouvelle ! Votre éligibilité à la remise a été confirmée par l'organisateur.</p>
+        <div style="border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#f0fdf4;">
+          <p style="margin:0 0 8px;"><strong>Événement :</strong> ${eventTitle}</p>
+          <p style="margin:0;"><strong>Montant à régler :</strong> ${amount}</p>
+        </div>
+        <p style="margin:16px 0 0;">Votre inscription est désormais confirmée. Merci et à bientôt.</p>
+      </div>
+    `,
+  });
+}
+
+export async function sendEligibilityRejectedEmail({
+  to,
+  eventTitle,
+  remainingAmount,
+  fullAmount,
+}: {
+  to: string;
+  eventTitle: string;
+  remainingAmount: string;
+  fullAmount: string;
+}) {
+  await transporter.sendMail({
+    from: '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: "Mise à jour de votre inscription — remise non validée",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <h2 style="margin:0 0 16px;color:#dc2626;">Remise non validée</h2>
+        <p style="margin:0 0 16px;">Après vérification, votre éligibilité à la remise n'a pas pu être confirmée pour cet événement.</p>
+        <div style="border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#fef2f2;">
+          <p style="margin:0 0 8px;"><strong>Événement :</strong> ${eventTitle}</p>
+          <p style="margin:0 0 8px;"><strong>Tarif plein :</strong> ${fullAmount}</p>
+          <p style="margin:0;"><strong>Reste à payer :</strong> ${remainingAmount}</p>
+        </div>
+        <p style="margin:16px 0 0;">Merci de régler le montant restant afin de finaliser votre inscription au tarif plein.</p>
+      </div>
+    `,
+  });
+}
+
 export async function sendWorkStatusEmail({
   to,
   subject,

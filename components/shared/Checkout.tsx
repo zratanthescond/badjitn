@@ -6,7 +6,7 @@ import { checkoutOrder, createOrder } from "@/lib/actions/order.actions";
 import { Detail } from "@/lib/database/models/order.model";
 import { motion } from "framer-motion";
 import { Ticket } from "lucide-react";
-import { formatPriceByCountry } from "@/lib/utils";
+import { calcFinalPrice, formatPriceByCountry } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
@@ -18,6 +18,7 @@ const Checkout = ({
   chekedPlans,
   selectedOptions,
   discountInfo,
+  discountProofUrl,
   requiredUserInfo,
   validateBeforeCheckout,
   beforeCheckout,
@@ -27,6 +28,7 @@ const Checkout = ({
   chekedPlans?: string[];
   selectedOptions?: Record<string, string>;
   discountInfo?: any;
+  discountProofUrl?: string;
   requiredUserInfo?: any[];
   validateBeforeCheckout?: () => Promise<boolean> | boolean;
   beforeCheckout?: () => Promise<boolean> | boolean;
@@ -74,7 +76,15 @@ const Checkout = ({
 
     const discountValue = Number(discountInfo?.value) || 0;
     if (discountValue > 0 && calculatedPrice > 0) {
-      const discountedPrice = calculatedPrice - (calculatedPrice * discountValue) / 100;
+      const baseFee = event.price ? parseFloat(event.price) : 0;
+      const discountedPrice = calcFinalPrice(
+        baseFee,
+        calculatedPrice - baseFee,
+        discountInfo,
+        event.pricePlan as any[],
+        chekedPlans,
+        selectedOptions
+      );
       setPrice(discountedPrice);
     } else {
       setPrice(calculatedPrice);
@@ -106,6 +116,10 @@ const Checkout = ({
       }
 
       if (event.isFree || price === -1) {
+        const discountIsApplied = discountInfo && Number(discountInfo.value) > 0;
+        const fullAmount =
+          (event.price ? parseFloat(event.price) : 0) +
+          details.reduce((s, d) => s + (Number.parseFloat(d.price) || 0), 0);
         const order = await createOrder({
           eventId: event._id,
           totalAmount: "0",
@@ -113,7 +127,9 @@ const Checkout = ({
           details,
           buyerId: userId || "",
           requiredUserInfo: requiredUserInfo || [],
-          ...(discountInfo && Number(discountInfo.value) > 0 ? { discountInfo } : {}),
+          ...(discountIsApplied ? { discountInfo } : {}),
+          ...(discountIsApplied ? { originalAmount: fullAmount } : {}),
+          ...(discountIsApplied && discountProofUrl ? { discountProofUrl } : {}),
           stripeId: uuidv4(),
           createdAt: new Date(),
         });

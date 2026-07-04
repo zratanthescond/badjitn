@@ -9,6 +9,8 @@ const useGetFields = (userId: string) => {
       const formattedFields = sponsors.data.map((field: any) => ({
         id: field._id,
         name: field.label,
+        type: field.type,
+        options: field.options || [],
       }));
       return formattedFields;
     }, // Calls the server action
