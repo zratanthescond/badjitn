@@ -8,11 +8,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   const webhookSecret = req.headers.get("x-webhook-secret");
-  const expectedSecret = process.env.FILE_SERVER_SECRET || process.env.WEBHOOK_SECRET || "whsec_BMEOzFF0h1hx/pBvNAHoXJVhz/UIJkte";
+  const expectedSecret = process.env.FILE_SERVER_SECRET || "whsec_BMEOzFF0h1hx/pBvNAHoXJVhz/UIJkte";
   
   console.log("[Webhook FileServer] Verifying secret:", {
     hasWebhookSecret: !!webhookSecret,
-    expectedSecretSource: process.env.FILE_SERVER_SECRET ? "FILE_SERVER_SECRET" : (process.env.WEBHOOK_SECRET ? "WEBHOOK_SECRET" : "default"),
+    expectedSecretSource: process.env.FILE_SERVER_SECRET ? "FILE_SERVER_SECRET" : "default",
     matches: webhookSecret === expectedSecret
   });
 

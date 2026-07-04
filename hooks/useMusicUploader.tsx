@@ -10,7 +10,7 @@ const uploadMusic = async (file: File, userId: string) => {
     {
       headers: {
         "Content-Type": "multipart/form-data",
-        "x-webhook-secret": process.env.NEXT_PUBLIC_FILE_SERVER_SECRET || process.env.NEXT_PUBLIC_WEBHOOK_SECRET || "whsec_BMEOzFF0h1hx/pBvNAHoXJVhz/UIJkte",
+        "x-webhook-secret": process.env.NEXT_PUBLIC_FILE_SERVER_SECRET || "whsec_BMEOzFF0h1hx/pBvNAHoXJVhz/UIJkte",
       },
       responseType: "json",
     }
