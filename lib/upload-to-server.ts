@@ -56,8 +56,11 @@ export async function uploadToFileServer(
     console.log("[uploadToFileServer] Response payload data:", response.data);
 
     if (response.data && response.data.success && response.data.url) {
-      console.log("[uploadToFileServer] Upload validation passed. Returning URL:", response.data.url);
-      return response.data.url;
+      const relativeUrl = response.data.url;
+      const fileServerUrl = process.env.NEXT_PUBLIC_FILE_SERVER_URL || "https://fileserver.badgi.net";
+      const absoluteUrl = `${fileServerUrl.replace(/\/$/, "")}${relativeUrl}`;
+      console.log("[uploadToFileServer] Upload validation passed. Returning absolute URL:", absoluteUrl);
+      return absoluteUrl;
     } else {
       console.error("[uploadToFileServer] Validation failed. Success is false or url is missing in payload:", response.data);
       throw new Error(response.data?.error || "Invalid response format from file server");
