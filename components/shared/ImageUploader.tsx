@@ -29,9 +29,18 @@ export function ImageUploader({
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
-            if (acceptedFiles.length === 0) return;
+            if (acceptedFiles.length === 0) {
+                console.log("[ImageUploader] No files accepted in onDrop");
+                return;
+            }
 
             const file = acceptedFiles[0];
+            console.log("[ImageUploader] onDrop triggered with file:", {
+                name: file.name,
+                size: file.size,
+                type: file.type
+            });
+
             const localPreview = convertFileToUrl(file);
             setPreview(localPreview);
             setIsUploading(true);
@@ -40,27 +49,36 @@ export function ImageUploader({
                 const formData = new FormData();
                 formData.append("file", file);
 
+                console.log("[ImageUploader] Dispatched POST request to /api/upload...");
                 const response = await fetch("/api/upload", {
                     method: "POST",
                     body: formData,
                 });
 
+                console.log("[ImageUploader] Received response status:", response.status, response.statusText);
+
                 if (!response.ok) {
-                    throw new Error("Upload failed");
+                    const errText = await response.text().catch(() => "");
+                    console.error("[ImageUploader] Response is not ok:", errText);
+                    throw new Error(`Upload failed with status ${response.status}`);
                 }
 
                 const data = await response.json();
+                console.log("[ImageUploader] Parsed response JSON:", data);
                 
                 if (data.success && data.url) {
+                    console.log("[ImageUploader] Upload succeeded! URL:", data.url);
                     onChange(data.url);
                     setPreview(data.url);
                 } else {
+                    console.error("[ImageUploader] Success flag is false or missing URL:", data);
                     throw new Error(data.message || "Upload failed");
                 }
             } catch (error) {
-                console.error("Upload failed:", error);
+                console.error("[ImageUploader] Caught error during upload:", error);
                 setPreview(value || "");
             } finally {
+                console.log("[ImageUploader] Upload sequence finished. Setting isUploading to false.");
                 setIsUploading(false);
             }
         },

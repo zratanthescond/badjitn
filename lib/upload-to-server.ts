@@ -14,34 +14,69 @@ export async function uploadToFileServer(
   filename: string,
   mimeType: string
 ): Promise<string> {
-  const fileServerUrl = process.env.NEXT_PUBLIC_FILE_SERVER_URL || "http://localhost:4000";
-  const webhookSecret = process.env.WEBHOOK_SECRET || "whsec_BMEOzFF0h1hx/pBvNAHoXJVhz/UIJkte";
+  const internalUrl = process.env.FILE_SERVER_INTERNAL_URL;
+  const publicUrl = process.env.NEXT_PUBLIC_FILE_SERVER_URL;
+  
+  const fileServerUrl = internalUrl || publicUrl || "http://localhost:4000";
 
-  // Convert buffer to a standard Blob so FormData wraps it correctly
+  console.log("[uploadToFileServer] Environment variable inspection:", {
+    FILE_SERVER_INTERNAL_URL: internalUrl || "undefined/empty",
+    NEXT_PUBLIC_FILE_SERVER_URL: publicUrl || "undefined/empty",
+    SelectedTargetURL: fileServerUrl
+  });
+
+  const webhookSecret = process.env.WEBHOOK_SECRET || "whsec_BMEOzFF0h1hx/pBvNAHoXJVhz/UIJkte";
+  const maskedSecret = webhookSecret ? `${webhookSecret.slice(0, 8)}...[length: ${webhookSecret.length}]` : "none";
+  console.log("[uploadToFileServer] Using Webhook Secret:", maskedSecret);
+
+  console.log("[uploadToFileServer] Preparing binary payload. Filename:", filename, "Mime:", mimeType, "Buffer length:", fileBuffer.byteLength);
   const blob = new Blob([fileBuffer], { type: mimeType });
+  console.log("[uploadToFileServer] Blob successfully constructed. Size:", blob.size, "Type:", blob.type);
 
   const formData = new FormData();
   formData.append("file", blob, filename);
+  console.log("[uploadToFileServer] FormData object created and file field appended.");
+
+  const url = `${fileServerUrl.replace(/\/$/, "")}/upload-image`;
+  console.log("[uploadToFileServer] Final resolved request endpoint:", url);
 
   try {
-    const url = `${fileServerUrl.replace(/\/$/, "")}/upload-image`;
-    
-    // Use axios to bypass Node's native fetch (undici) FormData serialization bugs in server runtimes.
-    // IMPORTANT: Do NOT set "Content-Type" header manually. 
-    // Allowing axios to set it automatically ensures the boundary parameter is generated and appended.
+    console.log("[uploadToFileServer] Dispatching axios.post request now (with 15s timeout)...");
+    const startTime = Date.now();
     const response = await axios.post(url, formData, {
       headers: {
         "x-webhook-secret": webhookSecret,
       },
+      timeout: 15000, 
     });
 
+    const duration = Date.now() - startTime;
+    console.log("[uploadToFileServer] Axios request completed in", duration, "ms. Status:", response.status);
+    console.log("[uploadToFileServer] Response headers:", response.headers);
+    console.log("[uploadToFileServer] Response payload data:", response.data);
+
     if (response.data && response.data.success && response.data.url) {
+      console.log("[uploadToFileServer] Upload validation passed. Returning URL:", response.data.url);
       return response.data.url;
     } else {
-      throw new Error(response.data?.error || "Invalid response from file server");
+      console.error("[uploadToFileServer] Validation failed. Success is false or url is missing in payload:", response.data);
+      throw new Error(response.data?.error || "Invalid response format from file server");
     }
   } catch (error: any) {
-    console.error("Error uploading file to file server:", error.response?.data || error.message);
+    console.error("[uploadToFileServer] Caught axios exception during dispatch.");
+    if (error.response) {
+      console.error("[uploadToFileServer] Server responded with error status:", error.response.status);
+      console.error("[uploadToFileServer] Server response headers:", error.response.headers);
+      console.error("[uploadToFileServer] Server response payload:", error.response.data);
+    } else if (error.request) {
+      console.error("[uploadToFileServer] No response received from server. Request object:", {
+        _headers: error.request._headers || "none",
+        connection: error.request.connection ? "connected" : "not-connected"
+      });
+    } else {
+      console.error("[uploadToFileServer] Error config setup failed:", error.message);
+    }
+    console.error("[uploadToFileServer] Full error stringified:", error.toString());
     throw new Error(error.response?.data?.error || error.message || "File server upload failed");
   }
 }
