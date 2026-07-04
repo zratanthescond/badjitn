@@ -1,5 +1,3 @@
-import axios from "axios";
-
 /**
  * Uploads a file buffer directly to the media/HLS server's /upload-image endpoint.
  * This runs entirely on the server-side, keeping the WEBHOOK_SECRET secure.
@@ -25,20 +23,31 @@ export async function uploadToFileServer(
 
   try {
     const url = `${fileServerUrl.replace(/\/$/, "")}/upload-image`;
-    const response = await axios.post(url, formData, {
+    
+    // Use native fetch instead of axios to avoid boundary/FormData issues in Node.js.
+    // IMPORTANT: Do NOT set "Content-Type" header manually. 
+    // Allowing fetch to set it automatically ensures the boundary boundary parameter is included.
+    const response = await fetch(url, {
+      method: "POST",
       headers: {
         "x-webhook-secret": webhookSecret,
-        "Content-Type": "multipart/form-data",
       },
+      body: formData,
     });
 
-    if (response.data && response.data.success && response.data.url) {
-      return response.data.url;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`File server returned ${response.status}: ${errorText}`);
+    }
+
+    const resData = await response.json();
+    if (resData && resData.success && resData.url) {
+      return resData.url;
     } else {
-      throw new Error(response.data?.error || "Invalid response from file server");
+      throw new Error(resData?.error || "Invalid response from file server");
     }
   } catch (error: any) {
-    console.error("Error uploading file to file server:", error.response?.data || error.message);
-    throw new Error(error.response?.data?.error || error.message || "File server upload failed");
+    console.error("Error uploading file to file server:", error.message || error);
+    throw new Error(error.message || "File server upload failed");
   }
 }
