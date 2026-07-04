@@ -73,7 +73,18 @@ export default function PricePlanComponent({
 
   // ── edit mode ────────────────────────────────────────────────────────────
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingOptionIndex, setEditingOptionIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
+
+  const resetOptionForm = () => {
+    setCurrentOption("");
+    setCurrentOptionPrice("");
+    setCurrentOptionPlaces("");
+    setCurrentOptionDescription("");
+    setCurrentOptionRequireEmail(false);
+    setCurrentOptionRequestOnly(false);
+    setEditingOptionIndex(null);
+  };
 
   const resetForm = () => {
     setPlanDescription("");
@@ -82,12 +93,7 @@ export default function PricePlanComponent({
     setPlanNote("");
     setPlanIsPackage(false);
     setPlanOptions([]);
-    setCurrentOption("");
-    setCurrentOptionPrice("");
-    setCurrentOptionPlaces("");
-    setCurrentOptionDescription("");
-    setCurrentOptionRequireEmail(false);
-    setCurrentOptionRequestOnly(false);
+    resetOptionForm();
     setEditingIndex(null);
   };
 
@@ -99,31 +105,51 @@ export default function PricePlanComponent({
     setPlanNote(plan.note ?? "");
     setPlanIsPackage(plan.isPackage ?? false);
     setPlanOptions(plan.options ?? []);
+    resetOptionForm();
     setEditingIndex(index);
     // scroll form into view
     setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
   };
 
+  const startEditOption = (index: number) => {
+    const opt = planOptions[index];
+    setCurrentOption(opt.name);
+    setCurrentOptionPrice(opt.price ? opt.price.toString() : "");
+    setCurrentOptionPlaces(opt.places?.toString() ?? "");
+    setCurrentOptionDescription(opt.description ?? "");
+    setCurrentOptionRequireEmail(!!opt.requireEmail);
+    setCurrentOptionRequestOnly(!!opt.registrationRequestOnly);
+    setEditingOptionIndex(index);
+  };
+
   const handleAddOption = () => {
     if (!currentOption.trim()) return;
-    setPlanOptions([...planOptions, {
+    const nextOption: PlanOption = {
       name: currentOption.trim(),
       price: parseFloat(currentOptionPrice) || 0,
       places: currentOptionPlaces ? parseInt(currentOptionPlaces) : undefined,
       description: currentOptionDescription.trim() || undefined,
       requireEmail: currentOptionRequireEmail || undefined,
       registrationRequestOnly: currentOptionRequestOnly || undefined,
-    }]);
+    };
+    if (editingOptionIndex !== null) {
+      setPlanOptions((prev) => prev.map((o, i) => (i === editingOptionIndex ? nextOption : o)));
+    } else {
+      setPlanOptions((prev) => [...prev, nextOption]);
+    }
     setCurrentOption("");
     setCurrentOptionPrice("");
     setCurrentOptionPlaces("");
     setCurrentOptionDescription("");
     setCurrentOptionRequireEmail(false);
     setCurrentOptionRequestOnly(false);
+    setEditingOptionIndex(null);
   };
 
   const removeOption = (index: number) => {
     setPlanOptions(planOptions.filter((_, i) => i !== index));
+    // If we were editing an option, reset the form to avoid a stale index.
+    if (editingOptionIndex !== null) resetOptionForm();
   };
 
   const handleSavePlan = (e: React.FormEvent) => {
@@ -344,9 +370,16 @@ export default function PricePlanComponent({
                     className="rounded-full"
                   />
                 </div>
-                <Button type="button" variant="secondary" onClick={handleAddOption} className="rounded-full self-end">
-                  Ajouter
-                </Button>
+                <div className="flex gap-2 self-end">
+                  <Button type="button" variant="secondary" onClick={handleAddOption} className="rounded-full">
+                    {editingOptionIndex !== null ? "Mettre à jour" : "Ajouter"}
+                  </Button>
+                  {editingOptionIndex !== null && (
+                    <Button type="button" variant="ghost" onClick={resetOptionForm} className="rounded-full">
+                      Annuler
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {/* Optional instructions/description for the choice (e.g. payment modality details) */}
@@ -385,7 +418,12 @@ export default function PricePlanComponent({
               {planOptions.length > 0 && (
                 <div className="flex flex-col gap-1.5 p-3 bg-muted/30 rounded-2xl border border-dashed">
                   {planOptions.map((opt, idx) => (
-                    <div key={idx} className="flex flex-col gap-1 bg-background rounded-xl px-3 py-2 border border-border/50">
+                    <div
+                      key={idx}
+                      className={`flex flex-col gap-1 bg-background rounded-xl px-3 py-2 border transition-colors ${
+                        editingOptionIndex === idx ? "border-primary/50 ring-1 ring-primary/20" : "border-border/50"
+                      }`}
+                    >
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-sm font-medium">{opt.name}</span>
                         <div className="flex items-center gap-2 shrink-0">
@@ -402,10 +440,22 @@ export default function PricePlanComponent({
                             <Badge variant="outline" className="rounded-full text-xs border-amber-400/50 text-amber-600">demande seule</Badge>
                           )}
                           <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => startEditOption(idx)}
+                            className="h-6 w-6 p-0 rounded-full text-primary hover:bg-primary/10"
+                            title="Modifier le choix"
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            type="button"
                             variant="ghost"
                             size="sm"
                             onClick={() => removeOption(idx)}
                             className="h-6 w-6 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
+                            title="Supprimer le choix"
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>

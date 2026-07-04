@@ -1255,9 +1255,6 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
                         {plan.options && plan.options.length > 0 && (
                           <div className="mx-2 my-1 p-3 bg-muted/40 rounded-2xl border border-dashed border-primary/20 space-y-2">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-primary/70">
-                              Choisissez un choix :
-                            </p>
                             <div className="flex flex-col gap-2">
                               {plan.options.map((opt: any, idx: number) => {
                                 const optName = typeof opt === "object" ? opt.name : opt;
