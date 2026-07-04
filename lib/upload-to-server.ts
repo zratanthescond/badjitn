@@ -17,7 +17,7 @@ export async function uploadToFileServer(
   const internalUrl = process.env.FILE_SERVER_INTERNAL_URL;
   const publicUrl = process.env.NEXT_PUBLIC_FILE_SERVER_URL;
   
-  const fileServerUrl = internalUrl || publicUrl || "http://localhost:4000";
+  const fileServerUrl = internalUrl || publicUrl || "https://fileserver.badgi.net";
 
   console.log("[uploadToFileServer] Environment variable inspection:", {
     FILE_SERVER_INTERNAL_URL: internalUrl || "undefined/empty",
