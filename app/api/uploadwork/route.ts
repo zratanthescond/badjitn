@@ -8,6 +8,7 @@ import {
   appendWorkSubmissionImage,
 } from "@/lib/actions/user.actions";
 import { v4 as uuidv4 } from "uuid";
+import { uploadToFileServer } from "@/lib/upload-to-server";
 
 const UPLOAD_DIR = path.resolve(process.env.ROOT_PATH ?? "", "public/uploads");
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
@@ -38,14 +39,8 @@ export const POST = async (req: Request) => {
         );
       }
       const buffer = Buffer.from(await (file as Blob).arrayBuffer());
-      const fileExtension = path.extname(fileName);
-      const newFileName = `${path.basename(fileName, fileExtension)}_${uuidv4()}${fileExtension}`;
-      if (!fs.existsSync(UPLOAD_DIR)) {
-        fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-      }
       try {
-        fs.writeFileSync(path.resolve(UPLOAD_DIR, newFileName), buffer);
-        finalFileUrl = `/uploads/${newFileName}`;
+        finalFileUrl = await uploadToFileServer(buffer, fileName, (body.file as File).type || "image/png");
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Upload failed";
         return NextResponse.json({ success: false, error: message }, { status: 400 });

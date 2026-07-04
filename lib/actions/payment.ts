@@ -7,7 +7,7 @@ import Order from '../database/models/order.model'
 import Event from '../database/models/event.model'
 import User from '../database/models/user.model'
 import { sendRegistrationStatusEmail } from './order.actions'
-import { writeFile, mkdir } from 'fs/promises'
+import { uploadToFileServer } from '../upload-to-server'
 import path from 'path'
 
 interface BankTransferInput {
@@ -74,12 +74,9 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
         const base64Data = matches[2]
         const buffer = Buffer.from(base64Data, 'base64')
 
-        // Generate unique filename and save
+        // Generate unique filename and save to file server
         const filename = `bank-transfer-${Date.now()}-${uuidv4().slice(0, 8)}.${ext}`
-        const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-        await mkdir(uploadsDir, { recursive: true })
-        await writeFile(path.join(uploadsDir, filename), new Uint8Array(buffer))
-        screenshotUrl = `/uploads/${filename}`
+        screenshotUrl = await uploadToFileServer(buffer, filename, `image/${ext}`)
       } catch (fileError) {
         console.error('[Bank Transfer] Error saving screenshot:', fileError)
         return {

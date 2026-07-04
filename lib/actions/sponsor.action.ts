@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { connectToDatabase } from "../database";
+import { uploadToFileServer } from "../upload-to-server";
 import UserSponsor from "../database/models/userSponser.model";
 import { tr } from "date-fns/locale";
 
@@ -28,22 +29,17 @@ export async function createSponsor(formData: FormData) {
     // Save the file locally
     const fileExtension = path.extname(file.name);
     const fileName = `${uuidv4()}${fileExtension}`;
-    const uploadDir = path.join(process.cwd(), "public/uploads");
-
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const filePath = path.join(uploadDir, fileName);
-    fs.writeFileSync(filePath, buffer);
+
+    // Upload to file server
+    const logoUrl = await uploadToFileServer(buffer, fileName, file.type || "image/png");
 
     // Create the sponsor entry
     const sponsor = new UserSponsor({
       name,
       tier,
-      logo: `/uploads/${fileName}`, // Save relative path to DB
+      logo: logoUrl, // Save file server relative path to DB
       website,
       creator,
     });
@@ -130,18 +126,13 @@ export async function updateSponsor(sponsorId: string, formData: FormData) {
     if (file && file instanceof File && file.size > 0) {
       const fileExtension = path.extname(file.name);
       const fileName = `${uuidv4()}${fileExtension}`;
-      const uploadDir = path.join(process.cwd(), "public/uploads");
-
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      const filePath = path.join(uploadDir, fileName);
-      fs.writeFileSync(filePath, buffer);
 
-      updateData.logo = `/uploads/${fileName}`;
+      // Upload to file server
+      const logoUrl = await uploadToFileServer(buffer, fileName, file.type || "image/png");
+
+      updateData.logo = logoUrl;
     }
 
     const updatedSponsor = await UserSponsor.findByIdAndUpdate(

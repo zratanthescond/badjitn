@@ -9,6 +9,7 @@ const uploadVideo = async (file: File) => {
     {
       headers: {
         "Content-Type": "multipart/form-data",
+        "x-webhook-secret": process.env.NEXT_PUBLIC_WEBHOOK_SECRET || "",
       },
       responseType: "json",
     }

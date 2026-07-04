@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
-import { existsSync } from "fs";
+import { uploadToFileServer } from "@/lib/upload-to-server";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,29 +13,12 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create unique filename
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const extension = file.name.split(".").pop();
-    const filename = `${uniqueSuffix}.${extension}`;
+    // Upload the file to hls-server using our secure server-side helper
+    const fileUrl = await uploadToFileServer(buffer, file.name, file.type);
 
-    // Define public uploads directory
-    const uploadDir = join(process.cwd(), "public", "uploads");
-
-    // Ensure the directory exists
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
-
-    const filePath = join(uploadDir, filename);
-
-    // Write file to public/uploads directory
-    await writeFile(filePath, buffer);
-
-    // Return the URL
-    const fileUrl = `/uploads/${filename}`;
     return NextResponse.json({ success: true, url: fileUrl });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error uploading file:", error);
-    return NextResponse.json({ success: false, message: "Server Error" }, { status: 500 });
+    return NextResponse.json({ success: false, message: error.message || "Server Error" }, { status: 500 });
   }
 }
