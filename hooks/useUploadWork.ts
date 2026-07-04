@@ -35,7 +35,7 @@ const submitSummary = async (data: SubmitSummaryParams) => {
   formData.append("clientInfo", JSON.stringify(data.clientInfo));
   formData.append("note", typeof data.note === "string" ? data.note : "");
   const res = await axios.post(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploadwork`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploadwork/`,
     formData,
     { headers: { "Content-Type": "multipart/form-data" }, responseType: "json" }
   );
@@ -48,7 +48,7 @@ const uploadSubmissionImage = async (data: UploadImageParams) => {
   const uploadFormData = new FormData();
   uploadFormData.append("file", data.file);
   
-  const uploadRes = await axios.post("/api/upload", uploadFormData, {
+  const uploadRes = await axios.post("/api/upload/", uploadFormData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
@@ -66,7 +66,7 @@ const uploadSubmissionImage = async (data: UploadImageParams) => {
   workFormData.append("fileUrl", fileUrl); // Send URL instead of binary file
 
   const res = await axios.post(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploadwork`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploadwork/`,
     workFormData,
     { headers: { "Content-Type": "multipart/form-data" }, responseType: "json" }
   );

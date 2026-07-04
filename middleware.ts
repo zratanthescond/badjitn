@@ -67,7 +67,7 @@ export const config = {
   matcher: [
     "/((?!.*\\..*|_next|api/upload|api/uploadwork).*)",
     "/",
-    "/api/(?!upload|uploadwork)(.*)",
+    "/api/(?!upload(?:/|$)|uploadwork(?:/|$))(.*)",
     "/trpc(.*)"
   ],
 };

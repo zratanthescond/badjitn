@@ -49,8 +49,8 @@ export function ImageUploader({
                 const formData = new FormData();
                 formData.append("file", file);
 
-                console.log("[ImageUploader] Dispatched POST request to /api/upload...");
-                const response = await fetch("/api/upload", {
+                console.log("[ImageUploader] Dispatched POST request to /api/upload/...");
+                const response = await fetch("/api/upload/", {
                     method: "POST",
                     body: formData,
                 });

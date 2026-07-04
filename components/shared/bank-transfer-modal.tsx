@@ -177,7 +177,7 @@ export function BankTransferModal({
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
-      const uploadRes = await fetch("/api/upload", {
+      const uploadRes = await fetch("/api/upload/", {
         method: "POST",
         body: formData,
       });
