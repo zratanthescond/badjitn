@@ -3,7 +3,9 @@
 import { SearchParamProps } from "@/types";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Flag, Shapes, Users, Building2, Sparkles } from "lucide-react";
+import { Flag, Shapes, Users, Building2, Sparkles, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 import UsersAdministration from "@/components/admin/UsersAdministration";
 import ReportsAdminstration from "@/components/admin/ReportsAdminstration";
@@ -39,9 +41,17 @@ const Orders = (props: SearchParamProps) => {
 
   return (
     <div className="container mx-auto p-4 sm:p-6 max-w-7xl rounded-2xl min-h-screen">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-        {t("title")}
-      </h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-4 border-b border-border pb-4">
+        <h1 className="text-xl sm:text-2xl font-bold">
+          {t("title")}
+        </h1>
+        <Link href="/cockpit/mail-test">
+          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2 text-xs sm:text-sm font-semibold rounded-full px-4 py-2 shadow-sm transition-all duration-200">
+            <Mail className="h-4 w-4" />
+            SMTP Diagnostic Console
+          </Button>
+        </Link>
+      </div>
 
       <Tabs
         defaultValue="users"
