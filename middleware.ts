@@ -64,5 +64,10 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 });
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    "/((?!.*\\..*|_next|api/upload|api/uploadwork).*)",
+    "/",
+    "/api/(?!upload|uploadwork)(.*)",
+    "/trpc(.*)"
+  ],
 };
