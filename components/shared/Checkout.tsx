@@ -38,6 +38,7 @@ const Checkout = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const t = useTranslations("eventPrice");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -100,8 +101,8 @@ const Checkout = ({
 
     if (validateBeforeCheckout && !(await validateBeforeCheckout())) {
       toast({
-        title: "Erreur",
-        description: "Veuillez completer les informations d'inscription avant de continuer.",
+        title: tx("errorTitle", "Erreur"),
+        description: tx("completeInfoBeforeContinue", "Veuillez completer les informations d'inscription avant de continuer."),
         variant: "destructive",
       });
       return;
@@ -136,8 +137,8 @@ const Checkout = ({
 
         if (order) {
           toast({
-            title: "Inscription confirmee",
-            description: "Votre inscription gratuite a bien ete confirmee.",
+            title: tx("registrationConfirmedTitle", "Inscription confirmee"),
+            description: tx("freeRegistrationConfirmed", "Votre inscription gratuite a bien ete confirmee."),
           });
           router.push(`/events/${event._id}?registered=1`);
         }
@@ -157,10 +158,10 @@ const Checkout = ({
       });
     } catch (error) {
       toast({
-        title: "Erreur",
+        title: tx("errorTitle", "Erreur"),
         description: event.isFree
-          ? "Impossible de confirmer l'inscription gratuite pour le moment. Veuillez reessayer."
-          : "Impossible de finaliser l'inscription pour le moment. Veuillez reessayer.",
+          ? tx("freeRegistrationError", "Impossible de confirmer l'inscription gratuite pour le moment. Veuillez reessayer.")
+          : tx("registrationError", "Impossible de finaliser l'inscription pour le moment. Veuillez reessayer."),
         variant: "destructive",
       });
     } finally {
@@ -188,7 +189,7 @@ const Checkout = ({
             <span>
               {(event.isFree || price === -1)
                 ? isSubmitting
-                  ? "Confirmation de l'inscription..."
+                  ? tx("registrationInProgress", "Confirmation de l'inscription...")
                   : t("inscription")
                 : `${t("payNow")} ${formatPriceByCountry(price, event.country)}`}
             </span>

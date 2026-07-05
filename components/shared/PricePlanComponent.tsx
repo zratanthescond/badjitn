@@ -55,6 +55,7 @@ export default function PricePlanComponent({
   setGlobalNote,
 }: PricePlanComponentProps) {
   const t = useTranslations("pricePlan");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const priceLabel = t("form.labels.price").replace(/\s*\([^)]*\)\s*$/, "");
 
   // ── form state ──────────────────────────────────────────────────────────
@@ -219,11 +220,11 @@ export default function PricePlanComponent({
         <div className="space-y-2 p-4 rounded-2xl border border-dashed border-amber-400/40 bg-amber-50/30 dark:bg-amber-900/10">
           <Label className="text-sm font-medium flex items-center gap-2 text-amber-700 dark:text-amber-400">
             <StickyNote className="w-4 h-4" />
-            Note globale pour la section tarification
-            <span className="text-muted-foreground font-normal text-xs">(optionnel — visible par les participants)</span>
+            {tx("globalNote.label", "Note globale pour la section tarification")}
+            <span className="text-muted-foreground font-normal text-xs">{tx("globalNote.hint", "(optionnel — visible par les participants)")}</span>
           </Label>
           <Textarea
-            placeholder="Ex: Les prix indiqués incluent l'accès à toutes les sessions. Hébergement non inclus."
+            placeholder={tx("globalNote.placeholder", "Ex: Les prix indiqués incluent l'accès à toutes les sessions. Hébergement non inclus.")}
             value={globalNote}
             onChange={(e) => setGlobalNote(e.target.value)}
             className="resize-none rounded-2xl min-h-[72px] text-sm"
@@ -240,11 +241,11 @@ export default function PricePlanComponent({
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-primary flex items-center gap-2">
                 <Pencil className="w-4 h-4" />
-                Modifier le Plan n°{editingIndex + 1}
+                {tx("editingPlan", "Modifier le Plan n°")}{editingIndex + 1}
               </p>
               <Button type="button" size="sm" variant="ghost" onClick={resetForm} className="rounded-full h-8 px-3 text-muted-foreground">
                 <X className="w-3.5 h-3.5 mr-1" />
-                Annuler
+                {tx("buttons.cancel", "Annuler")}
               </Button>
             </div>
           )}
@@ -320,9 +321,9 @@ export default function PricePlanComponent({
                   className="mt-0.5"
                 />
                 <span className="text-sm">
-                  <span className="font-medium">Tarif tout inclus (package)</span>
+                  <span className="font-medium">{tx("packageToggle.title", "Tarif tout inclus (package)")}</span>
                   <span className="block text-xs text-muted-foreground mt-0.5">
-                    Quand ce plan est sélectionné, son prix remplace les frais d'inscription et tous les autres plans/ateliers (total fixe).
+                    {tx("packageToggle.description", "Quand ce plan est sélectionné, son prix remplace les frais d'inscription et tous les autres plans/ateliers (total fixe).")}
                   </span>
                 </span>
               </label>
@@ -332,15 +333,15 @@ export default function PricePlanComponent({
             <div className="md:col-span-2 space-y-3">
               <Label className="text-sm font-medium flex items-center gap-2">
                 <ListTodo className="w-4 h-4" />
-                Choix du plan
-                <span className="text-muted-foreground font-normal text-xs">(optionnel — sélection unique)</span>
+                {tx("options.sectionTitle", "Choix du plan")}
+                <span className="text-muted-foreground font-normal text-xs">{tx("options.sectionHint", "(optionnel — sélection unique)")}</span>
               </Label>
 
               <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto_auto] gap-2 items-end">
                 <div>
-                  <Label className="text-xs text-muted-foreground mb-1 block">Libellé du choix</Label>
+                  <Label className="text-xs text-muted-foreground mb-1 block">{tx("options.label", "Libellé du choix")}</Label>
                   <Input
-                    placeholder="Ex: Petit déjeuner, VIP, etc."
+                    placeholder={tx("options.labelPlaceholder", "Ex: Petit déjeuner, VIP, etc.")}
                     value={currentOption}
                     onChange={(e) => setCurrentOption(e.target.value)}
                     className="rounded-full"
@@ -348,7 +349,7 @@ export default function PricePlanComponent({
                   />
                 </div>
                 <div className="w-full sm:w-28">
-                  <Label className="text-xs text-muted-foreground mb-1 block">Supplément ({currencyCode})</Label>
+                  <Label className="text-xs text-muted-foreground mb-1 block">{tx("options.supplement", "Supplément")} ({currencyCode})</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -360,7 +361,7 @@ export default function PricePlanComponent({
                   />
                 </div>
                 <div className="w-full sm:w-24">
-                  <Label className="text-xs text-muted-foreground mb-1 block">Places</Label>
+                  <Label className="text-xs text-muted-foreground mb-1 block">{tx("options.places", "Places")}</Label>
                   <Input
                     type="number"
                     min="0"
@@ -372,11 +373,11 @@ export default function PricePlanComponent({
                 </div>
                 <div className="flex gap-2 self-end">
                   <Button type="button" variant="secondary" onClick={handleAddOption} className="rounded-full">
-                    {editingOptionIndex !== null ? "Mettre à jour" : "Ajouter"}
+                    {editingOptionIndex !== null ? tx("options.update", "Mettre à jour") : tx("options.add", "Ajouter")}
                   </Button>
                   {editingOptionIndex !== null && (
                     <Button type="button" variant="ghost" onClick={resetOptionForm} className="rounded-full">
-                      Annuler
+                      {tx("buttons.cancel", "Annuler")}
                     </Button>
                   )}
                 </div>
@@ -385,11 +386,11 @@ export default function PricePlanComponent({
               {/* Optional instructions/description for the choice (e.g. payment modality details) */}
               <div>
                 <Label className="text-xs text-muted-foreground mb-1 block">
-                  Instructions / description du choix
-                  <span className="ml-1 font-normal">(optionnel — ex: modalité de paiement, email de confirmation, date limite)</span>
+                  {tx("options.instructions", "Instructions / description du choix")}
+                  <span className="ml-1 font-normal">{tx("options.instructionsHint", "(optionnel — ex: modalité de paiement, email de confirmation, date limite)")}</span>
                 </Label>
                 <Textarea
-                  placeholder="Ex: Le laboratoire doit envoyer un mail de confirmation à contact@labo.tn et procéder au paiement par chèque avant le 15/09/2026."
+                  placeholder={tx("options.instructionsPlaceholder", "Ex: Le laboratoire doit envoyer un mail de confirmation à contact@labo.tn et procéder au paiement par chèque avant le 15/09/2026.")}
                   value={currentOptionDescription}
                   onChange={(e) => setCurrentOptionDescription(e.target.value)}
                   className="resize-none rounded-2xl min-h-[60px] text-sm"
@@ -401,7 +402,7 @@ export default function PricePlanComponent({
                     onCheckedChange={(v) => setCurrentOptionRequireEmail(v === true)}
                   />
                   <span className="text-xs text-muted-foreground">
-                    Demander une adresse email si ce choix est sélectionné
+                    {tx("options.requireEmail", "Demander une adresse email si ce choix est sélectionné")}
                   </span>
                 </label>
                 <label className="mt-1 flex items-center gap-2 cursor-pointer">
@@ -410,7 +411,7 @@ export default function PricePlanComponent({
                     onCheckedChange={(v) => setCurrentOptionRequestOnly(v === true)}
                   />
                   <span className="text-xs text-muted-foreground">
-                    Demande d'inscription uniquement (masque les boutons de paiement, un seul bouton « Envoyer la demande » — inscription en attente de validation)
+                    {tx("options.requestOnly", "Demande d'inscription uniquement (masque les boutons de paiement, un seul bouton « Envoyer la demande » — inscription en attente de validation)")}
                   </span>
                 </label>
               </div>
@@ -431,13 +432,13 @@ export default function PricePlanComponent({
                             <Badge variant="secondary" className="rounded-full text-xs">+{opt.price} {currencyCode}</Badge>
                           )}
                           {opt.places !== undefined && (
-                            <Badge variant="outline" className="rounded-full text-xs">{opt.places} places</Badge>
+                            <Badge variant="outline" className="rounded-full text-xs">{opt.places} {tx("options.placesBadge", "places")}</Badge>
                           )}
                           {opt.requireEmail && (
-                            <Badge variant="outline" className="rounded-full text-xs border-blue-400/50 text-blue-600">email requis</Badge>
+                            <Badge variant="outline" className="rounded-full text-xs border-blue-400/50 text-blue-600">{tx("options.emailRequiredBadge", "email requis")}</Badge>
                           )}
                           {opt.registrationRequestOnly && (
-                            <Badge variant="outline" className="rounded-full text-xs border-amber-400/50 text-amber-600">demande seule</Badge>
+                            <Badge variant="outline" className="rounded-full text-xs border-amber-400/50 text-amber-600">{tx("options.requestOnlyBadge", "demande seule")}</Badge>
                           )}
                           <Button
                             type="button"
@@ -445,7 +446,7 @@ export default function PricePlanComponent({
                             size="sm"
                             onClick={() => startEditOption(idx)}
                             className="h-6 w-6 p-0 rounded-full text-primary hover:bg-primary/10"
-                            title="Modifier le choix"
+                            title={tx("options.editChoice", "Modifier le choix")}
                           >
                             <Pencil className="h-3 w-3" />
                           </Button>
@@ -455,7 +456,7 @@ export default function PricePlanComponent({
                             size="sm"
                             onClick={() => removeOption(idx)}
                             className="h-6 w-6 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
-                            title="Supprimer le choix"
+                            title={tx("options.deleteChoice", "Supprimer le choix")}
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>
@@ -476,7 +477,7 @@ export default function PricePlanComponent({
               {editingIndex !== null ? (
                 <>
                   <Pencil className="w-4 h-4 mr-2" />
-                  Mettre à jour le Plan
+                  {tx("buttons.updatePlan", "Mettre à jour le Plan")}
                 </>
               ) : (
                 <>
@@ -488,7 +489,7 @@ export default function PricePlanComponent({
             {editingIndex !== null && (
               <Button type="button" variant="outline" onClick={resetForm} className="rounded-full">
                 <X className="w-4 h-4 mr-2" />
-                Annuler
+                {tx("buttons.cancel", "Annuler")}
               </Button>
             )}
           </div>
@@ -514,7 +515,7 @@ export default function PricePlanComponent({
                       <div className="flex items-center justify-between">
                         <Badge variant={editingIndex === index ? "default" : "secondary"} className="text-xs rounded-full">
                           {t("list.planNumber")}{index + 1}
-                          {editingIndex === index && " — en cours de modification"}
+                          {editingIndex === index && ` ${tx("list.editing", "— en cours de modification")}`}
                         </Badge>
                         <div className="flex items-center gap-1">
                           <Button
@@ -522,7 +523,7 @@ export default function PricePlanComponent({
                             variant="ghost"
                             onClick={() => startEdit(index)}
                             className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-full"
-                            title="Modifier"
+                            title={tx("actions.edit", "Modifier")}
                           >
                             <Pencil className="w-3.5 h-3.5" />
                           </Button>
@@ -558,7 +559,7 @@ export default function PricePlanComponent({
                                   </Badge>
                                 )}
                                 {opt.places !== undefined && (
-                                  <span className="text-[10px] text-muted-foreground">{opt.places} places</span>
+                                  <span className="text-[10px] text-muted-foreground">{opt.places} {tx("options.placesBadge", "places")}</span>
                                 )}
                               </div>
                               {opt.description && (
@@ -576,7 +577,7 @@ export default function PricePlanComponent({
                       </Badge>
                       {plan.isPackage && (
                         <Badge className="text-xs rounded-full bg-primary/15 text-primary border-primary/30">
-                          Tout inclus
+                          {tx("list.allInclusive", "Tout inclus")}
                         </Badge>
                       )}
                       {plan.places !== undefined && (

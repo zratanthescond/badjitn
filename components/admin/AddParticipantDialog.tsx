@@ -38,6 +38,7 @@ export default function AddParticipantDialog({
   isFreeEvent,
 }: AddParticipantDialogProps) {
   const t = useTranslations("orderAdministration");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const locale = useLocale();
   const isRTL = locale === "ar";
   const { toast } = useToast();
@@ -65,8 +66,8 @@ export default function AddParticipantDialog({
     e.preventDefault();
     if (!formData.firstName || !formData.lastName || !formData.email) {
       toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires.",
+        title: tx("errorTitle", "Erreur"),
+        description: tx("requiredFieldsError", "Veuillez remplir tous les champs obligatoires."),
         variant: "destructive",
       });
       return;
@@ -80,8 +81,8 @@ export default function AddParticipantDialog({
       });
 
       toast({
-        title: "Succès",
-        description: "Participant ajouté avec succès.",
+        title: tx("successTitle", "Succès"),
+        description: tx("participantAddedSuccess", "Participant ajouté avec succès."),
       });
       
       // Reset form
@@ -97,8 +98,8 @@ export default function AddParticipantDialog({
     } catch (error) {
       console.error(error);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'ajout du participant.",
+        title: tx("errorTitle", "Erreur"),
+        description: tx("addParticipantError", "Une erreur est survenue lors de l'ajout du participant."),
         variant: "destructive",
       });
     } finally {
@@ -112,21 +113,21 @@ export default function AddParticipantDialog({
         <DialogHeader>
           <DialogTitle className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
             <UserPlus className="h-5 w-5 text-blue-500" />
-            <span className={isRTL ? "font-arabic" : ""}>Ajouter un participant</span>
+            <span className={isRTL ? "font-arabic" : ""}>{tx("dialogTitle", "Ajouter un participant")}</span>
           </DialogTitle>
           <DialogDescription className={isRTL ? "font-arabic" : ""}>
-            Ajoutez manuellement un participant à cet événement.
+            {tx("dialogDescription", "Ajoutez manuellement un participant à cet événement.")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName" className={isRTL ? "font-arabic" : ""}>Prénom *</Label>
+              <Label htmlFor="firstName" className={isRTL ? "font-arabic" : ""}>{tx("firstNameLabel", "Prénom *")}</Label>
               <Input
                 id="firstName"
                 name="firstName"
-                placeholder="Ex: Jean"
+                placeholder={tx("firstNamePlaceholder", "Ex: Jean")}
                 value={formData.firstName}
                 onChange={handleChange}
                 required
@@ -134,11 +135,11 @@ export default function AddParticipantDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName" className={isRTL ? "font-arabic" : ""}>Nom *</Label>
+              <Label htmlFor="lastName" className={isRTL ? "font-arabic" : ""}>{tx("lastNameLabel", "Nom *")}</Label>
               <Input
                 id="lastName"
                 name="lastName"
-                placeholder="Ex: Dupont"
+                placeholder={tx("lastNamePlaceholder", "Ex: Dupont")}
                 value={formData.lastName}
                 onChange={handleChange}
                 required
@@ -148,12 +149,12 @@ export default function AddParticipantDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className={isRTL ? "font-arabic" : ""}>Email *</Label>
+            <Label htmlFor="email" className={isRTL ? "font-arabic" : ""}>{tx("emailLabel", "Email *")}</Label>
             <Input
               id="email"
               name="email"
               type="email"
-              placeholder="Ex: jean.dupont@example.com"
+              placeholder={tx("emailPlaceholder", "Ex: jean.dupont@example.com")}
               value={formData.email}
               onChange={handleChange}
               required
@@ -164,23 +165,23 @@ export default function AddParticipantDialog({
           {!isFreeEvent && (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="ticketType" className={isRTL ? "font-arabic" : ""}>Type de billet</Label>
+                <Label htmlFor="ticketType" className={isRTL ? "font-arabic" : ""}>{tx("ticketTypeLabel", "Type de billet")}</Label>
                 <Select
                   value={formData.ticketType}
                   onValueChange={(value) => handleSelectChange("ticketType", value)}
                 >
                   <SelectTrigger className={isRTL ? "flex-row-reverse font-arabic" : ""}>
-                    <SelectValue placeholder="Sélectionnez un type" />
+                    <SelectValue placeholder={tx("ticketTypePlaceholder", "Sélectionnez un type")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="paid" className={isRTL ? "font-arabic" : ""}>Payant</SelectItem>
-                    <SelectItem value="hosted" className={isRTL ? "font-arabic" : ""}>Gratuit / Invité (Hosted)</SelectItem>
-                    <SelectItem value="doorpay" className={isRTL ? "font-arabic" : ""}>Paiement sur place</SelectItem>
+                    <SelectItem value="paid" className={isRTL ? "font-arabic" : ""}>{tx("ticketTypePaid", "Payant")}</SelectItem>
+                    <SelectItem value="hosted" className={isRTL ? "font-arabic" : ""}>{tx("ticketTypeHosted", "Gratuit / Invité (Hosted)")}</SelectItem>
+                    <SelectItem value="doorpay" className={isRTL ? "font-arabic" : ""}>{tx("ticketTypeDoorpay", "Paiement sur place")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="planPrice" className={isRTL ? "font-arabic" : ""}>Montant</Label>
+                <Label htmlFor="planPrice" className={isRTL ? "font-arabic" : ""}>{tx("amountLabel", "Montant")}</Label>
                 <Input
                   id="planPrice"
                   name="planPrice"
@@ -198,11 +199,11 @@ export default function AddParticipantDialog({
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="planName" className={isRTL ? "font-arabic" : ""}>Nom du Plan/Option (Optionnel)</Label>
+            <Label htmlFor="planName" className={isRTL ? "font-arabic" : ""}>{tx("planNameLabel", "Nom du Plan/Option (Optionnel)")}</Label>
             <Input
               id="planName"
               name="planName"
-              placeholder="Ex: VIP, Standard..."
+              placeholder={tx("planNamePlaceholder", "Ex: VIP, Standard...")}
               value={formData.planName}
               onChange={handleChange}
               className={isRTL ? "font-arabic text-right" : ""}
@@ -217,7 +218,7 @@ export default function AddParticipantDialog({
               disabled={isLoading}
               className={isRTL ? "font-arabic" : ""}
             >
-              Annuler
+              {tx("cancelButton", "Annuler")}
             </Button>
             <Button
               type="submit"
@@ -227,10 +228,10 @@ export default function AddParticipantDialog({
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Ajout en cours...
+                  {tx("submittingButton", "Ajout en cours...")}
                 </>
               ) : (
-                "Ajouter"
+                tx("submitButton", "Ajouter")
               )}
             </Button>
           </div>

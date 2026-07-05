@@ -46,7 +46,9 @@
       "noFields": "aucun champ ajouté pour le moment",
       "selectOption": "Sélectionner une option",
       "subtitle": "Aperçu de l'Inscription des Participants",
-      "title": "Aperçu du Formulaire"
+      "title": "Aperçu du Formulaire",
+      "startAddingFields": "Commencez à ajouter des champs pour les voir apparaître ici",
+      "previewModeNote": "Mode aperçu • Fonctionnalité du formulaire simulée"
     },
     "title": "Constructeur de Formulaires Personnalisé",
     "validation": {
@@ -143,7 +145,13 @@
     "subtitle": "Scannage et contrôle d'accès en temps réel",
     "ticketType": "Modalite d'acces",
     "unknown": "Inconnu",
-    "verifying": "Verification de l'acces..."
+    "verifying": "Verification de l'acces...",
+    "success": "Succès",
+    "pointAdded": "Point de scannage ajouté avec succès.",
+    "error": "Erreur",
+    "pointAddFailed": "Impossible d'ajouter le point de scannage.",
+    "pointDeleteFailed": "Impossible de supprimer le point de scannage.",
+    "cameraStartFailed": "Impossible de démarrer la caméra."
   },
   "SponsorForm": {
     "actions": {
@@ -315,7 +323,19 @@
       "title": "Image « Soumission travail »",
       "unlockMessage": "Débloqué après approbation",
       "unlockHint": "Soumettez d'abord votre résumé ; une fois approuvé par l'organisateur, vous pourrez déposer une image ici."
-    }
+    },
+    "untitled": "Sans titre",
+    "summariesAvailable": "Résumés disponibles",
+    "summariesAvailableHint": "Vous pouvez ajouter plusieurs résumés et modifier chacun à tout moment.",
+    "newSummary": "Nouveau résumé",
+    "statusApproved": "Approuvé",
+    "statusPending": "En attente",
+    "statusDraft": "Brouillon",
+    "editSummary": "Modifier le résumé",
+    "approvedResubmitNote": "Ce résumé est approuvé. Si vous le modifiez, il repassera en attente d'approbation.",
+    "selectSummaryFirst": "Créez ou sélectionnez d'abord un résumé.",
+    "selectSummaryFirstHint": "L'image de soumission sera rattachée au résumé choisi.",
+    "preview": "Aperçu"
   },
   "about": {
     "cta": {
@@ -1452,7 +1472,10 @@
       "registration": "Inscription"
     },
     "title": "Détails de l'Événement",
-    "viewPricing": "Voir les Tarifs"
+    "viewPricing": "Voir les Tarifs",
+    "hostedBy": "Organisé par",
+    "organizer": "Organisateur",
+    "checkInBegins": "L'enregistrement commence"
   },
   "eventControls": {
     "delete": "Supprimer",
@@ -1504,12 +1527,17 @@
       "orderStats": "Statistiques des inscriptions",
       "scanPoints": "Détails des Points de Scannage",
       "executiveTrends": "Résumé exécutif et tendances",
-      "pricePlanPerformance": "Performance des plans tarifaires"
+      "pricePlanPerformance": "Performance des plans tarifaires",
+      "registrationTrend": "Évolution des inscriptions (3h)",
+      "planStats": "Statistiques des plans",
+      "participantsList": "Liste des Participants",
+      "participantsByPlan": "Participants par Plan"
     },
     "charts": {
       "ordersTrendTitle": "Evolution des inscriptions (jour par jour)",
       "ordersTrendEmpty": "Aucune évolution disponible.",
-      "scanHourlyTitle": "Activité des scans par heure"
+      "scanHourlyTitle": "Activité des scans par heure",
+      "registrationActivity": "Courbe d'activité (inscriptions)"
     },
     "fields": {
       "category": "Catégorie",
@@ -1537,8 +1565,20 @@
       "plan": "Plan",
       "sales": "Ventes",
       "revenue": "Revenu",
-      "weight": "Poids"
-    }
+      "weight": "Poids",
+      "participations": "Participations",
+      "fullName": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "planChoice": "Plan / Choix",
+      "amount": "Montant",
+      "registrationDate": "Date d'inscription"
+    },
+    "availableChoices": "Choix disponibles :",
+    "noChoice": "Sans choix",
+    "registered": "inscrits",
+    "organizationLogoAlt": "Logo de l'organisation"
   },
   "eventForm": {
     "Create": "Créer ",
@@ -1633,7 +1673,47 @@
     "selectPlans": "Choisissez vos plans",
     "secureCheckout": "Paiement sécurisé",
     "success": "Succès",
-    "validate": "valider"
+    "validate": "valider",
+    "benefitAllFree": "Inscription offerte.",
+    "benefitInscriptionFree": "Frais d'inscription offerts.",
+    "benefitPlansFree": "Vos plans/ateliers sélectionnés sont offerts.",
+    "confirmationEmail": "Adresse email de confirmation",
+    "invalidEmail": "Veuillez saisir une adresse email valide.",
+    "personalInformation": "Informations personnelles",
+    "personalInformationDescription": "Remplissez les informations du participant avant de confirmer l'inscription.",
+    "preferentialRateTitle": "Tarif préférentiel appliqué",
+    "proofRequiredTitle": "Justificatif requis",
+    "proofUploaded": "Justificatif téléchargé",
+    "registrationFee": "Frais d'inscription",
+    "removeProof": "Retirer",
+    "requiredField": "Ce champ est obligatoire.",
+    "selectOption": "Sélectionnez une option",
+    "sendRegistrationRequest": "Envoyer la demande d'inscription",
+    "signInRequired": "Cet événement exige un compte avant l'inscription.",
+    "uploadProof": "Télécharger le justificatif",
+    "uploading": "Téléchargement...",
+    "viewProof": "Aperçu",
+    "pendingValidationNote": "Votre inscription sera enregistrée puis validée après vérification de votre justificatif par l'organisateur. En cas de refus, le tarif plein s'appliquera.",
+    "discountEligibility": "Éligibilité à la remise",
+    "proofUploadFailed": "Échec du téléchargement du justificatif",
+    "workSubmissionTitle": "Soumission de travail",
+    "workSubmissionQuestion": "Indiquez si vous souhaitez soumettre un travail avec votre inscription.",
+    "workNo": "Non, sans soumission",
+    "workYes": "Oui, soumettre un travail",
+    "workSummaryHeading": "Resume de soumission",
+    "workSummaryHelp": "Renseignez ici le resume a associer a votre inscription.",
+    "workGuestNote": "Votre choix sera enregistre avec l'inscription. Connectez-vous ensuite a Badgi pour retrouver et completer votre soumission.",
+    "workTitleLabel": "Titre du resume",
+    "workTitlePlaceholder": "Titre de votre resume",
+    "workSummaryLabel": "Resume",
+    "workSummaryPlaceholder": "Ajoutez ici le resume de votre travail",
+    "errorTitle": "Erreur",
+    "completeInfoBeforeContinue": "Veuillez compléter les informations d'inscription avant de continuer.",
+    "registrationConfirmedTitle": "Inscription confirmée",
+    "freeRegistrationConfirmed": "Votre inscription gratuite a bien été confirmée.",
+    "freeRegistrationError": "Impossible de confirmer l'inscription gratuite pour le moment. Veuillez réessayer.",
+    "registrationError": "Impossible de finaliser l'inscription pour le moment. Veuillez réessayer.",
+    "registrationInProgress": "Confirmation de l'inscription..."
   },
   "eventPromotion": {
     "choosePlan": "Choisissez Votre Plan de Promotion",
@@ -2537,7 +2617,11 @@
       "export": "Exporter les Données",
       "filter": "Filtrer les inscriptions",
       "rapport": "Rapport",
-      "viewDetails": "Voir les Détails"
+      "viewDetails": "Voir les Détails",
+      "scanAccess": "Scanner un accès",
+      "add": "Ajouter",
+      "import": "Importer",
+      "manageBadges": "Gérer les badges"
     },
     "buyer": "Participant",
     "emptyState": {
@@ -2570,7 +2654,43 @@
       "paid": "Inscription payante",
       "bankTransfer": "Virement Bancaire"
     },
-    "title": "Gestion des inscriptions"
+    "title": "Gestion des inscriptions",
+    "guestRegistration": "Inscription invité",
+    "export": {
+      "toastTitle": "Export",
+      "noOrders": "Aucune inscription à exporter.",
+      "successCountLabel": "inscription(s)",
+      "successExportedIn": "exportée(s) en",
+      "failed": "Échec de l'export. Veuillez réessayer.",
+      "xlsx": "Export XLSX",
+      "word": "Export Word",
+      "pdf": "Export PDF",
+      "csv": "Export CSV"
+    },
+    "errorTitle": "Erreur",
+    "requiredFieldsError": "Veuillez remplir tous les champs obligatoires.",
+    "successTitle": "Succès",
+    "participantAddedSuccess": "Participant ajouté avec succès.",
+    "addParticipantError": "Une erreur est survenue lors de l'ajout du participant.",
+    "dialogTitle": "Ajouter un participant",
+    "dialogDescription": "Ajoutez manuellement un participant à cet événement.",
+    "firstNameLabel": "Prénom *",
+    "firstNamePlaceholder": "Ex: Jean",
+    "lastNameLabel": "Nom *",
+    "lastNamePlaceholder": "Ex: Dupont",
+    "emailLabel": "Email *",
+    "emailPlaceholder": "Ex: jean.dupont@example.com",
+    "ticketTypeLabel": "Type de billet",
+    "ticketTypePlaceholder": "Sélectionnez un type",
+    "ticketTypePaid": "Payant",
+    "ticketTypeHosted": "Gratuit / Invité (Hosted)",
+    "ticketTypeDoorpay": "Paiement sur place",
+    "amountLabel": "Montant",
+    "planNameLabel": "Nom du Plan/Option (Optionnel)",
+    "planNamePlaceholder": "Ex: VIP, Standard...",
+    "cancelButton": "Annuler",
+    "submittingButton": "Ajout en cours...",
+    "submitButton": "Ajouter"
   },
   "orderDetailsDialog": {
     "buyerInfo": {
@@ -2645,12 +2765,15 @@
   "pricePlan": {
     "actions": {
       "add": "Ajouter un nouveau plan",
-      "delete": "Supprimer le plan"
+      "delete": "Supprimer le plan",
+      "edit": "Modifier"
     },
     "buttons": {
       "addPlan": "Ajouter un Plan",
       "returnToSimplePrice": "Retour au Prix Simple",
-      "simplePrice": "Prix Simple"
+      "simplePrice": "Prix Simple",
+      "cancel": "Annuler",
+      "updatePlan": "Mettre à jour le Plan"
     },
     "emptyState": {
       "action": "Retour au Prix Simple",
@@ -2680,10 +2803,42 @@
       "currency": "TND",
       "places": "places",
       "planNumber": "Plan n°",
-      "title": "Plans Créés"
+      "title": "Plans Créés",
+      "editing": "— en cours de modification",
+      "allInclusive": "Tout inclus"
     },
     "subtitle": "Créez et gérez vos niveaux de tarification",
-    "title": "Plans Tarifaires"
+    "title": "Plans Tarifaires",
+    "globalNote": {
+      "label": "Note globale pour la section tarification",
+      "hint": "(optionnel — visible par les participants)",
+      "placeholder": "Ex: Les prix indiqués incluent l'accès à toutes les sessions. Hébergement non inclus."
+    },
+    "editingPlan": "Modifier le Plan n°",
+    "packageToggle": {
+      "title": "Tarif tout inclus (package)",
+      "description": "Quand ce plan est sélectionné, son prix remplace les frais d'inscription et tous les autres plans/ateliers (total fixe)."
+    },
+    "options": {
+      "sectionTitle": "Choix du plan",
+      "sectionHint": "(optionnel — sélection unique)",
+      "label": "Libellé du choix",
+      "labelPlaceholder": "Ex: Petit déjeuner, VIP, etc.",
+      "supplement": "Supplément",
+      "places": "Places",
+      "update": "Mettre à jour",
+      "add": "Ajouter",
+      "instructions": "Instructions / description du choix",
+      "instructionsHint": "(optionnel — ex: modalité de paiement, email de confirmation, date limite)",
+      "instructionsPlaceholder": "Ex: Le laboratoire doit envoyer un mail de confirmation à contact@labo.tn et procéder au paiement par chèque avant le 15/09/2026.",
+      "requireEmail": "Demander une adresse email si ce choix est sélectionné",
+      "requestOnly": "Demande d'inscription uniquement (masque les boutons de paiement, un seul bouton « Envoyer la demande » — inscription en attente de validation)",
+      "placesBadge": "places",
+      "emailRequiredBadge": "email requis",
+      "requestOnlyBadge": "demande seule",
+      "editChoice": "Modifier le choix",
+      "deleteChoice": "Supprimer le choix"
+    }
   },
   "pricing": {
     "billing": {
@@ -3383,7 +3538,13 @@
     "modifyVideo": "Modifier la vidéo",
     "searchMusic": "Rechercher de la musique",
     "upload": "Télécharger",
-    "use": "Utiliser"
+    "use": "Utiliser",
+    "selectMusic": "Choisir la musique",
+    "done": "Terminé",
+    "loadingTracks": "Chargement des pistes...",
+    "processing": "Traitement...",
+    "noMusicAttached": "Aucune musique n'est encore associée à la vidéo.",
+    "failedToCreateReel": "Échec de la création du reel"
   },
   "workAdministration": {
     "actions": {
@@ -4023,5 +4184,236 @@
       "website": "Site web",
       "noWebsite": "-"
     }
+  },
+  "importParticipants": {
+    "field": {
+      "skip": "⏭️ Ignorer",
+      "firstname": "Prénom",
+      "lastname": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "country": "Pays",
+      "company": "Société",
+      "organisation": "Organisation",
+      "plan": "Plan",
+      "price": "Prix",
+      "category": "Catégorie",
+      "custom": "Champ personnalisé"
+    },
+    "alert": {
+      "needHeaderAndData": "Le fichier doit contenir au moins un en-tête et une ligne de données.",
+      "parseError": "Erreur lors de la lecture du fichier. Vérifiez le format (xlsx/xls)."
+    },
+    "error": {
+      "unknown": "Erreur inconnue"
+    },
+    "title": "Importer des participants",
+    "description": "Importez une liste de participants depuis un fichier Excel (.xlsx / .xls)",
+    "step": {
+      "file": "Fichier",
+      "columns": "Colonnes",
+      "preview": "Aperçu",
+      "result": "Résultat"
+    },
+    "upload": {
+      "dropHere": "Glissez votre fichier Excel ici",
+      "browseHint": "ou cliquez pour parcourir • .xlsx, .xls"
+    },
+    "mapping": {
+      "rows": "ligne(s)",
+      "columns": "colonne(s)",
+      "changeFile": "Changer de fichier",
+      "instruction": "Associez chaque colonne du fichier à un champ participant :",
+      "columnLabel": "Colonne",
+      "example": "ex:"
+    },
+    "preview": {
+      "heading": "Aperçu de l'import",
+      "participants": "participants",
+      "and": "et",
+      "otherRows": "autres lignes"
+    },
+    "importing": {
+      "title": "Import en cours…",
+      "processing": "participants en cours de traitement"
+    },
+    "done": {
+      "title": "Import terminé",
+      "created": "Créés",
+      "duplicates": "Doublons",
+      "errors": "Erreurs",
+      "errorDetails": "Détails des erreurs :",
+      "otherErrors": "autres erreurs"
+    },
+    "button": {
+      "back": "Retour",
+      "preview": "Aperçu",
+      "import": "Importer",
+      "close": "Fermer"
+    }
+  },
+  "organisationForm": {
+    "toast": {
+      "createdTitle": "Organisation créée !",
+      "createdDescription": "Votre organisation a été créée avec succès.",
+      "updatedTitle": "Organisation mise à jour !",
+      "updatedDescription": "Vos modifications ont été enregistrées.",
+      "errorTitle": "Erreur",
+      "errorDescription": "Une erreur est survenue. Veuillez réessayer."
+    },
+    "header": {
+      "createTitle": "Créer une organisation",
+      "updateTitle": "Mettre à jour l'organisation",
+      "createDescription": "Configurez votre organisation pour commencer à publier des événements",
+      "updateDescription": "Mettez à jour les détails de votre organisation"
+    },
+    "coverImage": {
+      "label": "Image de couverture",
+      "placeholder": "Téléchargez une image de couverture pour votre organisation"
+    },
+    "logo": {
+      "label": "Logo",
+      "placeholder": "Télécharger le logo"
+    },
+    "name": {
+      "label": "Nom de l'organisation",
+      "placeholder": "Saisissez le nom de votre organisation"
+    },
+    "website": {
+      "label": "Site web"
+    },
+    "subdomain": {
+      "label": "Sous-domaine Badgi",
+      "availableHint": "Votre page sera accessible à"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Décrivez votre organisation, ce que vous faites et le type d'événements que vous organisez..."
+    },
+    "socialLinks": {
+      "heading": "Réseaux sociaux",
+      "facebook": "Facebook",
+      "twitter": "Twitter / X",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn"
+    },
+    "banner": {
+      "heading": "Bannière roulante",
+      "imageLabel": "Image de bannière",
+      "imagePlaceholder": "Téléchargez une image promotionnelle pour votre bannière",
+      "titleLabel": "Titre de la bannière",
+      "titlePlaceholder": "ex: ACTUALITÉS, INFO, ANNONCE…",
+      "contentLabel": "Texte défilant",
+      "contentPlaceholder": "Ce texte défilera en boucle sur votre page. Ex: Inscriptions ouvertes pour le congrès 2026 · Nouvelle date annoncée…"
+    },
+    "partners": {
+      "heading": "Sponsors & Partenaires",
+      "add": "Ajouter",
+      "empty": "Aucun partenaire · Cliquez sur \"Ajouter\" pour en ajouter un",
+      "logoLabel": "Logo",
+      "nameLabel": "Nom *",
+      "namePlaceholder": "Nom du partenaire",
+      "websiteLabel": "Site web"
+    },
+    "submit": {
+      "creating": "Création...",
+      "updating": "Mise à jour...",
+      "create": "Créer l'organisation",
+      "save": "Enregistrer les modifications"
+    },
+    "common": {
+      "optional": "(optionnel)",
+      "optionalEn": "(optionnel)"
+    }
+  },
+  "bankTransferModal": {
+    "cta": "Virement bancaire",
+    "enterTransferId": "Veuillez saisir un identifiant de virement",
+    "error": "Erreur",
+    "fileTooLarge": "Fichier trop volumineux",
+    "fileTooLargeDescription": "Veuillez téléverser un fichier inférieur à 5 Mo",
+    "invalidFileType": "Type de fichier invalide",
+    "invalidFileTypeDescription": "Veuillez téléverser une image (JPG, PNG, etc.)",
+    "previewLabel": "Aperçu :",
+    "removeImage": "Retirer l'image",
+    "screenshotTab": "Capture",
+    "submitScreenshot": "Envoyer la capture",
+    "submitScreenshotFailed": "Échec de l'envoi de la capture",
+    "submitTransferError": "Une erreur est survenue lors de l'envoi du virement",
+    "submitTransferFailed": "Échec de l'envoi du virement",
+    "submitTransferId": "Envoyer l'identifiant",
+    "submitting": "Envoi...",
+    "success": "Succès",
+    "title": "Paiement par virement bancaire",
+    "transferIdLabel": "Identifiant du virement",
+    "transferIdPlaceholder": "ex. TRF12345678910",
+    "transferIdTab": "Identifiant",
+    "uploadFormats": "PNG, JPG, GIF jusqu'à 5 Mo",
+    "uploadHint": "Cliquez pour téléverser ou glissez-déposez",
+    "uploadScreenshot": "Veuillez téléverser une capture d'écran",
+    "uploadScreenshotError": "Une erreur est survenue lors du téléversement de la capture",
+    "uploadScreenshotLabel": "Téléverser la capture",
+    "uploading": "Téléversement...",
+    "completeRegistrationFirst": "Veuillez d'abord compléter les informations d'inscription.",
+    "transferSubmitted": "Le virement bancaire a été envoyé avec succès. Vérification en attente.",
+    "screenshotSubmitted": "La capture du virement a été envoyée avec succès. Vérification en attente."
+  },
+  "collection": {
+    "filterAll": "Tous",
+    "filterBadgi": "Événements Badgi",
+    "filterExternal": "Autres Plateformes",
+    "allYears": "Toutes les années",
+    "noEventsInCategory": "Aucun événement dans cette catégorie"
+  },
+  "badgeDesigner": {
+    "toastUpdated": "Design mis à jour !",
+    "toastSaved": "Design enregistré !",
+    "toastSaveFailed": "Échec de l'enregistrement du design",
+    "orientation": "Orientation",
+    "portrait": "Portrait",
+    "landscape": "Paysage",
+    "badgeSide": "Côté du badge",
+    "front": "Recto",
+    "back": "Verso",
+    "backgroundImg": "Image de fond",
+    "uploadImage": "Téléverser une image",
+    "remove": "Retirer",
+    "addContent": "Ajouter du contenu",
+    "text": "Texte",
+    "uploadImg": "Téléverser img",
+    "shape": "Forme",
+    "qrCode": "QR Code",
+    "dynamicElements": "Éléments dynamiques",
+    "name": "Nom",
+    "photo": "Photo",
+    "eventTitle": "Titre de l'événement",
+    "eventDate": "Date de l'événement",
+    "saveDesign": "Enregistrer le design",
+    "properties": "Propriétés",
+    "content": "Contenu",
+    "font": "Police",
+    "size": "Taille",
+    "color": "Couleur",
+    "style": "Style",
+    "alignment": "Alignement",
+    "letterSpacing": "Espacement lettres (px)",
+    "qrContent": "Contenu du QR Code",
+    "insertTemplate": "— Insérer un modèle —",
+    "participantId": "ID participant",
+    "email": "Email",
+    "qrName": "Nom",
+    "nameEmail": "Nom + Email",
+    "idNameEmail": "ID + Nom + Email",
+    "variablesLabel": "Variables :",
+    "quietZone": "Marge blanche (quiet zone) :",
+    "quietZoneNone": "0 (aucune)",
+    "quietZoneLarge": "10 (large)",
+    "qrColor": "Couleur du QR",
+    "width": "Largeur",
+    "height": "Hauteur",
+    "bgColor": "Couleur fond",
+    "delete": "Supprimer",
+    "sampleText": "Exemple de texte"
   }
 }

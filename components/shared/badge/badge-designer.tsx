@@ -33,6 +33,7 @@ import {
 import { createBadgeDesign, updateBadgeDesign } from "@/lib/actions/badge.actions"
 import { toast } from "sonner"
 import QRCode from "react-qr-code"
+import { useTranslations } from "next-intl"
 
 interface BadgeElement {
     id: string
@@ -79,6 +80,8 @@ interface BadgeDesignerProps {
 }
 
 export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSaved }: BadgeDesignerProps) {
+    const t = useTranslations("badgeDesigner")
+    const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback)
     const [design, setDesign] = useState<BadgeDesignData>({
         front: initialDesign?.frontElements || [],
         back: initialDesign?.backElements || [],
@@ -121,16 +124,16 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
 
             if (designId) {
                 await updateBadgeDesign(designId, params)
-                toast.success("Design updated!")
+                toast.success(tx("toastUpdated", "Design updated!"))
             } else {
                 const newDesign = await createBadgeDesign(params)
                 setDesignId(newDesign?._id)
-                toast.success("Design saved!")
+                toast.success(tx("toastSaved", "Design saved!"))
             }
             onDesignSaved?.()
         } catch (error) {
             console.error("Error saving design:", error)
-            toast.error("Failed to save design")
+            toast.error(tx("toastSaveFailed", "Failed to save design"))
         } finally {
             setIsSaving(false)
         }
@@ -180,7 +183,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
         setDraggedElement(null)
     }, [])
 
-    const addTextElement = (content = "Sample Text", props: Partial<BadgeElement> = {}) => {
+    const addTextElement = (content = tx("sampleText", "Sample Text"), props: Partial<BadgeElement> = {}) => {
         const newElement: BadgeElement = {
             id: `text-${Date.now()}`,
             type: "text",
@@ -317,7 +320,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
             <div className="w-full lg:w-72 space-y-6">
                 <Card className="p-4 space-y-4">
                     <div className="space-y-2">
-                        <Label className="text-sm font-semibold">Orientation</Label>
+                        <Label className="text-sm font-semibold">{tx("orientation", "Orientation")}</Label>
                         <div className="grid grid-cols-2 gap-2">
                             <Button
                                 variant={design.orientation === "portrait" ? "default" : "outline"}
@@ -326,7 +329,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                 className="gap-2"
                             >
                                 <Smartphone className="w-4 h-4" />
-                                Portrait
+                                {tx("portrait", "Portrait")}
                             </Button>
                             <Button
                                 variant={design.orientation === "landscape" ? "default" : "outline"}
@@ -335,33 +338,33 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                 className="gap-2"
                             >
                                 <Monitor className="w-4 h-4 rotate-90" />
-                                Landscape
+                                {tx("landscape", "Landscape")}
                             </Button>
                         </div>
                     </div>
 
                     <Separator />
 
-                    <Label className="text-sm font-semibold">Badge Side</Label>
+                    <Label className="text-sm font-semibold">{tx("badgeSide", "Badge Side")}</Label>
                     <Tabs value={currentSide} onValueChange={(v) => setCurrentSide(v as any)}>
                         <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="front">Front</TabsTrigger>
-                            <TabsTrigger value="back">Back</TabsTrigger>
+                            <TabsTrigger value="front">{tx("front", "Front")}</TabsTrigger>
+                            <TabsTrigger value="back">{tx("back", "Back")}</TabsTrigger>
                         </TabsList>
                     </Tabs>
 
                     <Separator />
 
                     <div className="space-y-2">
-                        <Label className="text-sm font-semibold">Background Img</Label>
+                        <Label className="text-sm font-semibold">{tx("backgroundImg", "Background Img")}</Label>
                         <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => backgroundInputRef.current?.click()}>
                             <Upload className="w-4 h-4 mr-2" />
-                            Upload Image
+                            {tx("uploadImage", "Upload Image")}
                         </Button>
                         {(currentSide === "front" ? design.backgroundImage : design.backBackgroundImage) && (
                             <Button variant="ghost" size="sm" className="w-full justify-start text-red-500 hover:text-red-600" onClick={() => setDesign(prev => ({ ...prev, [currentSide === "front" ? "backgroundImage" : "backBackgroundImage"]: "" }))}>
                                 <RotateCcw className="w-4 h-4 mr-2" />
-                                Remove
+                                {tx("remove", "Remove")}
                             </Button>
                         )}
                     </div>
@@ -369,45 +372,45 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                     <Separator />
 
                     <div className="space-y-2">
-                        <Label className="text-sm font-semibold">Add Content</Label>
+                        <Label className="text-sm font-semibold">{tx("addContent", "Add Content")}</Label>
                         <div className="grid grid-cols-2 gap-2">
                             <Button variant="outline" size="sm" onClick={() => addTextElement()} className="flex flex-col gap-1 h-auto py-2">
                                 <Type className="w-4 h-4" />
-                                <span className="text-[10px]">Text</span>
+                                <span className="text-[10px]">{tx("text", "Text")}</span>
                             </Button>
                             <Button variant="outline" size="sm" onClick={addImageElement} className="flex flex-col gap-1 h-auto py-2">
                                 <ImageIcon className="w-4 h-4" />
-                                <span className="text-[10px]">Upload Img</span>
+                                <span className="text-[10px]">{tx("uploadImg", "Upload Img")}</span>
                             </Button>
                             <Button variant="outline" size="sm" onClick={() => addShapeElement("rectangle")} className="flex flex-col gap-1 h-auto py-2">
                                 <Square className="w-4 h-4" />
-                                <span className="text-[10px]">Shape</span>
+                                <span className="text-[10px]">{tx("shape", "Shape")}</span>
                             </Button>
                             <Button variant="outline" size="sm" onClick={addQRElement} className="flex flex-col gap-1 h-auto py-2">
                                 <QrCode className="w-4 h-4" />
-                                <span className="text-[10px]">QR Code</span>
+                                <span className="text-[10px]">{tx("qrCode", "QR Code")}</span>
                             </Button>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="text-sm font-semibold text-primary">Dynamic Elements</Label>
+                        <Label className="text-sm font-semibold text-primary">{tx("dynamicElements", "Dynamic Elements")}</Label>
                         <div className="grid grid-cols-2 gap-2">
                             <Button variant="secondary" size="sm" onClick={() => addTextElement("{name}", { fontWeight: "bold", fontSize: 20 })} className="flex flex-col gap-1 h-auto py-2">
                                 <UserCircle className="w-4 h-4" />
-                                <span className="text-[10px]">Name</span>
+                                <span className="text-[10px]">{tx("name", "Name")}</span>
                             </Button>
                             <Button variant="secondary" size="sm" onClick={addDynamicPhoto} className="flex flex-col gap-1 h-auto py-2">
                                 <ImageIcon className="w-4 h-4" />
-                                <span className="text-[10px]">Photo</span>
+                                <span className="text-[10px]">{tx("photo", "Photo")}</span>
                             </Button>
                             <Button variant="secondary" size="sm" onClick={() => addTextElement("{event_title}", { fontSize: 14, textAlign: "center" })} className="flex flex-col gap-1 h-auto py-2">
                                 <Home className="w-4 h-4" />
-                                <span className="text-[10px]">Event Title</span>
+                                <span className="text-[10px]">{tx("eventTitle", "Event Title")}</span>
                             </Button>
                             <Button variant="secondary" size="sm" onClick={() => addTextElement("{event_date}", { fontSize: 12 })} className="flex flex-col gap-1 h-auto py-2">
                                 <Calendar className="w-4 h-4" />
-                                <span className="text-[10px]">Event Date</span>
+                                <span className="text-[10px]">{tx("eventDate", "Event Date")}</span>
                             </Button>
                         </div>
                     </div>
@@ -416,21 +419,21 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
 
                     <Button className="w-full" disabled={isSaving} onClick={handleSaveDesign}>
                         {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                        Save Design
+                        {tx("saveDesign", "Save Design")}
                     </Button>
                 </Card>
 
                 {selectedEl && (
                     <Card className="p-4 space-y-4">
-                        <h3 className="font-semibold text-sm">Properties</h3>
+                        <h3 className="font-semibold text-sm">{tx("properties", "Properties")}</h3>
                         {selectedEl.type === "text" && (
                             <>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Contenu</Label>
+                                    <Label className="text-xs">{tx("content", "Contenu")}</Label>
                                     <Input value={selectedEl.content} onChange={(e) => updateElement(selectedEl.id, { content: e.target.value })} />
                                 </div>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Police</Label>
+                                    <Label className="text-xs">{tx("font", "Police")}</Label>
                                     <select
                                         className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
                                         value={selectedEl.fontFamily || "Arial"}
@@ -450,16 +453,16 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="space-y-1">
-                                        <Label className="text-xs">Taille</Label>
+                                        <Label className="text-xs">{tx("size", "Taille")}</Label>
                                         <Input type="number" min={6} max={120} value={selectedEl.fontSize} onChange={(e) => updateElement(selectedEl.id, { fontSize: Number(e.target.value) })} />
                                     </div>
                                     <div className="space-y-1">
-                                        <Label className="text-xs">Couleur</Label>
+                                        <Label className="text-xs">{tx("color", "Couleur")}</Label>
                                         <Input type="color" className="h-10 p-1" value={selectedEl.color} onChange={(e) => updateElement(selectedEl.id, { color: e.target.value })} />
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Style</Label>
+                                    <Label className="text-xs">{tx("style", "Style")}</Label>
                                     <div className="flex gap-1">
                                         <Button
                                             type="button" variant={selectedEl.fontWeight === "bold" ? "default" : "outline"} size="sm"
@@ -479,7 +482,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Alignement</Label>
+                                    <Label className="text-xs">{tx("alignment", "Alignement")}</Label>
                                     <div className="flex gap-1">
                                         <Button
                                             type="button" variant={selectedEl.textAlign === "left" ? "default" : "outline"} size="sm"
@@ -499,7 +502,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Espacement lettres (px)</Label>
+                                    <Label className="text-xs">{tx("letterSpacing", "Espacement lettres (px)")}</Label>
                                     <Input type="number" min={-2} max={20} value={selectedEl.letterSpacing ?? 0} onChange={(e) => updateElement(selectedEl.id, { letterSpacing: Number(e.target.value) })} />
                                 </div>
                             </>
@@ -507,7 +510,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                         {selectedEl.type === "qr" && (
                             <>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Contenu du QR Code</Label>
+                                    <Label className="text-xs">{tx("qrContent", "Contenu du QR Code")}</Label>
                                     <select
                                         className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm mb-2"
                                         value=""
@@ -515,18 +518,18 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                             if (e.target.value) updateElement(selectedEl.id, { qrData: e.target.value })
                                         }}
                                     >
-                                        <option value="">— Insérer un modèle —</option>
-                                        <option value="{qr_code}">ID participant</option>
-                                        <option value="{email}">Email</option>
-                                        <option value="{name}">Nom</option>
-                                        <option value="{name} - {email}">Nom + Email</option>
-                                        <option value="{qr_code}|{name}|{email}">ID + Nom + Email</option>
+                                        <option value="">{tx("insertTemplate", "— Insérer un modèle —")}</option>
+                                        <option value="{qr_code}">{tx("participantId", "ID participant")}</option>
+                                        <option value="{email}">{tx("email", "Email")}</option>
+                                        <option value="{name}">{tx("qrName", "Nom")}</option>
+                                        <option value="{name} - {email}">{tx("nameEmail", "Nom + Email")}</option>
+                                        <option value="{qr_code}|{name}|{email}">{tx("idNameEmail", "ID + Nom + Email")}</option>
                                     </select>
-                                    <Input value={selectedEl.qrData || "{qr_code}"} onChange={(e) => updateElement(selectedEl.id, { qrData: e.target.value })} placeholder="ex: {qr_code}" />
-                                    <p className="text-[10px] text-muted-foreground mt-1">Variables : {"{qr_code}"}, {"{name}"}, {"{email}"}, {"{company}"}, {"{event_title}"}</p>
+                                    <Input value={selectedEl.qrData || "{qr_code}"} onChange={(e) => updateElement(selectedEl.id, { qrData: e.target.value })} placeholder={tx("qrPlaceholder", "ex: {qr_code}")} />
+                                    <p className="text-[10px] text-muted-foreground mt-1">{tx("variablesLabel", "Variables :")} {"{qr_code}"}, {"{name}"}, {"{email}"}, {"{company}"}, {"{event_title}"}</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Marge blanche (quiet zone) : {selectedEl.qrMargin ?? 1}</Label>
+                                    <Label className="text-xs">{tx("quietZone", "Marge blanche (quiet zone) :")} {selectedEl.qrMargin ?? 1}</Label>
                                     <input
                                         type="range"
                                         min={0} max={10} step={1}
@@ -535,33 +538,33 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                         className="w-full accent-primary h-2"
                                     />
                                     <div className="flex justify-between text-[10px] text-muted-foreground">
-                                        <span>0 (aucune)</span>
-                                        <span>10 (large)</span>
+                                        <span>{tx("quietZoneNone", "0 (aucune)")}</span>
+                                        <span>{tx("quietZoneLarge", "10 (large)")}</span>
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label className="text-xs">Couleur du QR</Label>
+                                    <Label className="text-xs">{tx("qrColor", "Couleur du QR")}</Label>
                                     <Input type="color" className="h-10 p-1" value={selectedEl.qrFgColor || "#000000"} onChange={(e) => updateElement(selectedEl.id, { qrFgColor: e.target.value })} />
                                 </div>
                             </>
                         )}
                         <div className="grid grid-cols-2 gap-2">
                             <div className="space-y-1">
-                                <Label className="text-xs">Largeur</Label>
+                                <Label className="text-xs">{tx("width", "Largeur")}</Label>
                                 <Input type="number" value={selectedEl.width} onChange={(e) => updateElement(selectedEl.id, { width: Number(e.target.value) })} />
                             </div>
                             <div className="space-y-1">
-                                <Label className="text-xs">Hauteur</Label>
+                                <Label className="text-xs">{tx("height", "Hauteur")}</Label>
                                 <Input type="number" value={selectedEl.height} onChange={(e) => updateElement(selectedEl.id, { height: Number(e.target.value) })} />
                             </div>
                         </div>
                         {selectedEl.type === "shape" && (
                             <div className="space-y-1">
-                                <Label className="text-xs">Couleur fond</Label>
+                                <Label className="text-xs">{tx("bgColor", "Couleur fond")}</Label>
                                 <Input type="color" className="h-10 p-1" value={selectedEl.backgroundColor} onChange={(e) => updateElement(selectedEl.id, { backgroundColor: e.target.value })} />
                             </div>
                         )}
-                        <Button variant="destructive" size="sm" className="w-full" onClick={() => deleteElement(selectedEl.id)}>Supprimer</Button>
+                        <Button variant="destructive" size="sm" className="w-full" onClick={() => deleteElement(selectedEl.id)}>{tx("delete", "Supprimer")}</Button>
                     </Card>
                 )}
             </div>
@@ -614,7 +617,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                         }}
                                     >
                                         {el.content === "{event_title}" ? eventDetails.title :
-                                            el.content === "{event_date}" ? (eventDetails.start ? new Date(eventDetails.start).toLocaleDateString() : "Event Date") :
+                                            el.content === "{event_date}" ? (eventDetails.start ? new Date(eventDetails.start).toLocaleDateString() : tx("eventDate", "Event Date")) :
                                                 el.content}
                                     </div>
                                 )}

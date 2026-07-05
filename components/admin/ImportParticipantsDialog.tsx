@@ -37,6 +37,7 @@ import {
   type ImportedParticipantRow,
 } from "@/lib/actions/order.actions";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
 // Well-known field keys for auto-mapping
 const KNOWN_FIELDS: Record<string, { field: string; label: string }> = {
@@ -83,22 +84,6 @@ const KNOWN_FIELDS: Record<string, { field: string; label: string }> = {
   category: { field: "__category__", label: "Category" },
 };
 
-const ASSIGNABLE_FIELDS = [
-  { value: "skip", label: "⏭️ Ignorer" },
-  { value: "firstname", label: "Prénom" },
-  { value: "lastname", label: "Nom" },
-  { value: "email", label: "Email" },
-  { value: "phone", label: "Téléphone" },
-  { value: "city", label: "Ville" },
-  { value: "country", label: "Pays" },
-  { value: "company", label: "Société" },
-  { value: "organisation", label: "Organisation" },
-  { value: "__plan__", label: "Plan" },
-  { value: "__price__", label: "Prix" },
-  { value: "__category__", label: "Catégorie" },
-  { value: "custom", label: "Champ personnalisé" },
-];
-
 type Step = "upload" | "mapping" | "preview" | "importing" | "done";
 
 type ColumnMapping = {
@@ -118,6 +103,26 @@ export default function ImportParticipantsDialog({
   isOpen,
   onClose,
 }: ImportParticipantsDialogProps) {
+  const t = useTranslations("importParticipants");
+  const tx = (key: string, fallback: string) =>
+    t.has(key as any) ? t(key as any) : fallback;
+
+  const ASSIGNABLE_FIELDS = [
+    { value: "skip", label: tx("field.skip", "⏭️ Ignorer") },
+    { value: "firstname", label: tx("field.firstname", "Prénom") },
+    { value: "lastname", label: tx("field.lastname", "Nom") },
+    { value: "email", label: tx("field.email", "Email") },
+    { value: "phone", label: tx("field.phone", "Téléphone") },
+    { value: "city", label: tx("field.city", "Ville") },
+    { value: "country", label: tx("field.country", "Pays") },
+    { value: "company", label: tx("field.company", "Société") },
+    { value: "organisation", label: tx("field.organisation", "Organisation") },
+    { value: "__plan__", label: tx("field.plan", "Plan") },
+    { value: "__price__", label: tx("field.price", "Prix") },
+    { value: "__category__", label: tx("field.category", "Catégorie") },
+    { value: "custom", label: tx("field.custom", "Champ personnalisé") },
+  ];
+
   const [step, setStep] = useState<Step>("upload");
   const [fileName, setFileName] = useState("");
   const [rawHeaders, setRawHeaders] = useState<string[]>([]);
@@ -183,7 +188,12 @@ export default function ImportParticipantsDialog({
       });
 
       if (jsonData.length < 2) {
-        alert("Le fichier doit contenir au moins un en-tête et une ligne de données.");
+        alert(
+          tx(
+            "alert.needHeaderAndData",
+            "Le fichier doit contenir au moins un en-tête et une ligne de données."
+          )
+        );
         return;
       }
 
@@ -205,7 +215,12 @@ export default function ImportParticipantsDialog({
       setStep("mapping");
     } catch (err) {
       console.error("File parsing error:", err);
-      alert("Erreur lors de la lecture du fichier. Vérifiez le format (xlsx/xls).");
+      alert(
+        tx(
+          "alert.parseError",
+          "Erreur lors de la lecture du fichier. Vérifiez le format (xlsx/xls)."
+        )
+      );
     }
   };
 
@@ -284,7 +299,7 @@ export default function ImportParticipantsDialog({
       setImportResult({
         created: 0,
         skipped: 0,
-        errors: [err.message || "Erreur inconnue"],
+        errors: [err.message || tx("error.unknown", "Erreur inconnue")],
       });
       setStep("done");
     }
@@ -300,20 +315,23 @@ export default function ImportParticipantsDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
-            Importer des participants
+            {tx("title", "Importer des participants")}
           </DialogTitle>
           <DialogDescription>
-            Importez une liste de participants depuis un fichier Excel (.xlsx / .xls)
+            {tx(
+              "description",
+              "Importez une liste de participants depuis un fichier Excel (.xlsx / .xls)"
+            )}
           </DialogDescription>
         </DialogHeader>
 
         {/* Step indicator */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
           {[
-            { key: "upload", label: "Fichier" },
-            { key: "mapping", label: "Colonnes" },
-            { key: "preview", label: "Aperçu" },
-            { key: "done", label: "Résultat" },
+            { key: "upload", label: tx("step.file", "Fichier") },
+            { key: "mapping", label: tx("step.columns", "Colonnes") },
+            { key: "preview", label: tx("step.preview", "Aperçu") },
+            { key: "done", label: tx("step.result", "Résultat") },
           ].map((s, i, arr) => (
             <div key={s.key} className="flex items-center gap-1">
               <span
@@ -368,10 +386,10 @@ export default function ImportParticipantsDialog({
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-foreground">
-                    Glissez votre fichier Excel ici
+                    {tx("upload.dropHere", "Glissez votre fichier Excel ici")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    ou cliquez pour parcourir • .xlsx, .xls
+                    {tx("upload.browseHint", "ou cliquez pour parcourir • .xlsx, .xls")}
                   </p>
                 </div>
               </div>
@@ -388,7 +406,8 @@ export default function ImportParticipantsDialog({
                     {fileName}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {rawRows.length} ligne(s) • {rawHeaders.length} colonne(s)
+                    {rawRows.length} {tx("mapping.rows", "ligne(s)")} •{" "}
+                    {rawHeaders.length} {tx("mapping.columns", "colonne(s)")}
                   </p>
                 </div>
                 <Button
@@ -398,12 +417,15 @@ export default function ImportParticipantsDialog({
                   className="text-muted-foreground hover:text-destructive"
                 >
                   <Trash2 className="w-4 h-4 mr-1" />
-                  Changer de fichier
+                  {tx("mapping.changeFile", "Changer de fichier")}
                 </Button>
               </div>
 
               <p className="text-sm text-muted-foreground">
-                Associez chaque colonne du fichier à un champ participant :
+                {tx(
+                  "mapping.instruction",
+                  "Associez chaque colonne du fichier à un champ participant :"
+                )}
               </p>
 
               <div className="space-y-2">
@@ -414,10 +436,11 @@ export default function ImportParticipantsDialog({
                   >
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">
-                        {mapping.excelHeader || `Colonne ${idx + 1}`}
+                        {mapping.excelHeader ||
+                          `${tx("mapping.columnLabel", "Colonne")} ${idx + 1}`}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
-                        ex: {rawRows[0]?.[idx] || "—"}
+                        {tx("mapping.example", "ex:")} {rawRows[0]?.[idx] || "—"}
                       </p>
                     </div>
                     <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
@@ -450,7 +473,8 @@ export default function ImportParticipantsDialog({
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-emerald-600" />
                 <h3 className="font-semibold">
-                  Aperçu de l&apos;import ({rawRows.length} participants)
+                  {tx("preview.heading", "Aperçu de l'import")} ({rawRows.length}{" "}
+                  {tx("preview.participants", "participants")})
                 </h3>
               </div>
 
@@ -505,7 +529,8 @@ export default function ImportParticipantsDialog({
                 </div>
                 {rawRows.length > 10 && (
                   <div className="px-3 py-2 text-xs text-muted-foreground text-center bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-700/50">
-                    … et {rawRows.length - 10} autres lignes
+                    … {tx("preview.and", "et")} {rawRows.length - 10}{" "}
+                    {tx("preview.otherRows", "autres lignes")}
                   </div>
                 )}
               </div>
@@ -519,9 +544,15 @@ export default function ImportParticipantsDialog({
                 <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
               </div>
               <div className="text-center space-y-2">
-                <p className="text-lg font-semibold">Import en cours…</p>
+                <p className="text-lg font-semibold">
+                  {tx("importing.title", "Import en cours…")}
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  {rawRows.length} participants en cours de traitement
+                  {rawRows.length}{" "}
+                  {tx(
+                    "importing.processing",
+                    "participants en cours de traitement"
+                  )}
                 </p>
               </div>
               <div className="w-full max-w-xs">
@@ -543,7 +574,9 @@ export default function ImportParticipantsDialog({
                     <AlertTriangle className="w-8 h-8 text-amber-600" />
                   </div>
                 )}
-                <h3 className="text-lg font-semibold">Import terminé</h3>
+                <h3 className="text-lg font-semibold">
+                  {tx("done.title", "Import terminé")}
+                </h3>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
@@ -551,7 +584,9 @@ export default function ImportParticipantsDialog({
                   <p className="text-2xl font-bold text-emerald-600">
                     {importResult.created}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">Créés</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {tx("done.created", "Créés")}
+                  </p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
                   <p className="text-2xl font-bold text-amber-600">
@@ -559,7 +594,7 @@ export default function ImportParticipantsDialog({
                   </p>
                   <p className="text-xs text-muted-foreground mt-1 flex items-center justify-center gap-1">
                     <SkipForward className="w-3 h-3" />
-                    Doublons
+                    {tx("done.duplicates", "Doublons")}
                   </p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50">
@@ -568,7 +603,7 @@ export default function ImportParticipantsDialog({
                   </p>
                   <p className="text-xs text-muted-foreground mt-1 flex items-center justify-center gap-1">
                     <XCircle className="w-3 h-3" />
-                    Erreurs
+                    {tx("done.errors", "Erreurs")}
                   </p>
                 </div>
               </div>
@@ -576,7 +611,7 @@ export default function ImportParticipantsDialog({
               {importResult.errors.length > 0 && (
                 <div className="rounded-lg border border-red-200 dark:border-red-800/50 p-3 max-h-32 overflow-auto">
                   <p className="text-xs font-medium text-red-700 dark:text-red-400 mb-1">
-                    Détails des erreurs :
+                    {tx("done.errorDetails", "Détails des erreurs :")}
                   </p>
                   {importResult.errors.slice(0, 10).map((err, i) => (
                     <p key={i} className="text-xs text-red-600 dark:text-red-400">
@@ -585,7 +620,9 @@ export default function ImportParticipantsDialog({
                   ))}
                   {importResult.errors.length > 10 && (
                     <p className="text-xs text-muted-foreground">
-                      … et {importResult.errors.length - 10} autres erreurs
+                      … {tx("preview.and", "et")}{" "}
+                      {importResult.errors.length - 10}{" "}
+                      {tx("done.otherErrors", "autres erreurs")}
                     </p>
                   )}
                 </div>
@@ -598,14 +635,14 @@ export default function ImportParticipantsDialog({
           {step === "mapping" && (
             <>
               <Button variant="outline" onClick={resetState}>
-                Retour
+                {tx("button.back", "Retour")}
               </Button>
               <Button
                 onClick={() => setStep("preview")}
                 disabled={activeFieldCount === 0}
                 className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white"
               >
-                Aperçu
+                {tx("button.preview", "Aperçu")}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </>
@@ -614,20 +651,21 @@ export default function ImportParticipantsDialog({
           {step === "preview" && (
             <>
               <Button variant="outline" onClick={() => setStep("mapping")}>
-                Retour
+                {tx("button.back", "Retour")}
               </Button>
               <Button
                 onClick={handleImport}
                 className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white"
               >
                 <Upload className="w-4 h-4 mr-2" />
-                Importer {rawRows.length} participants
+                {tx("button.import", "Importer")} {rawRows.length}{" "}
+                {tx("preview.participants", "participants")}
               </Button>
             </>
           )}
 
           {step === "done" && (
-            <Button onClick={handleClose}>Fermer</Button>
+            <Button onClick={handleClose}>{tx("button.close", "Fermer")}</Button>
           )}
         </DialogFooter>
       </DialogContent>

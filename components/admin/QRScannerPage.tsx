@@ -71,6 +71,7 @@ export default function QRScannerPage({
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const t = useTranslations("QRScanner");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const locale = useLocale();
   const isRTL = locale === "ar";
   const { toast } = useToast();
@@ -94,16 +95,16 @@ export default function QRScannerPage({
         setNewPoint("");
         setIsAddingPoint(false);
         toast({
-          title: "Succès",
-          description: "Point de scannage ajouté avec succès.",
+          title: tx("success", "Succès"),
+          description: tx("pointAdded", "Point de scannage ajouté avec succès."),
           variant: "default",
         });
       }
     } catch (err) {
       console.error("Failed to add scan point", err);
       toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter le point de scannage.",
+        title: tx("error", "Erreur"),
+        description: tx("pointAddFailed", "Impossible d'ajouter le point de scannage."),
         variant: "destructive",
       });
     } finally {
@@ -123,7 +124,7 @@ export default function QRScannerPage({
         setAvailableScanPoints(updatedEvent.scanPoints);
         setSelectedPoint(updatedEvent.scanPoints.length > 0 ? updatedEvent.scanPoints[0] : "Entrée");
         toast({
-          title: "Succès",
+          title: tx("success", "Succès"),
           description: t('pointDeleted'),
           variant: "default",
         });
@@ -131,8 +132,8 @@ export default function QRScannerPage({
     } catch (err) {
       console.error("Failed to remove scan point", err);
       toast({
-        title: "Erreur",
-        description: "Impossible de supprimer le point de scannage.",
+        title: tx("error", "Erreur"),
+        description: tx("pointDeleteFailed", "Impossible de supprimer le point de scannage."),
         variant: "destructive",
       });
     } finally {
@@ -197,8 +198,8 @@ export default function QRScannerPage({
     } catch (err) {
       console.error("Failed to start scanner", err);
       toast({
-        title: "Erreur",
-        description: "Impossible de démarrer la caméra.",
+        title: tx("error", "Erreur"),
+        description: tx("cameraStartFailed", "Impossible de démarrer la caméra."),
         variant: "destructive",
       });
     } finally {

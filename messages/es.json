@@ -44,7 +44,11 @@
     "preview": {
       "noFields": "aún no se han añadido campos",
       "selectOption": "Selecciona una opción",
-      "title": "Vista previa del formulario"
+      "title": "Vista previa del formulario",
+      "disclaimer": "Esta es una vista previa de cómo aparecerán los campos a los participantes.",
+      "subtitle": "Vista previa de la inscripción de participantes",
+      "startAddingFields": "Comience a agregar campos para verlos aparecer aquí",
+      "previewModeNote": "Modo de vista previa • Funcionalidad del formulario simulada"
     },
     "title": "Constructor de formularios personalizados",
     "validation": {
@@ -141,7 +145,13 @@
     "subtitle": "Escaneo en tiempo real y control de acceso",
     "ticketType": "Tipo de entrada",
     "unknown": "Desconocido",
-    "verifying": "Verificando entrada..."
+    "verifying": "Verificando entrada...",
+    "success": "Éxito",
+    "pointAdded": "Punto de escaneo agregado con éxito.",
+    "error": "Error",
+    "pointAddFailed": "No se pudo agregar el punto de escaneo.",
+    "pointDeleteFailed": "No se pudo eliminar el punto de escaneo.",
+    "cameraStartFailed": "No se pudo iniciar la cámara."
   },
   "SponsorForm": {
     "actions": {
@@ -149,7 +159,8 @@
       "cancel": "Cancelar",
       "reset": "Restablecer formulario",
       "submitting": "Añadiendo patrocinador...",
-      "updateSponsor": "Actualizar Patrocinador"
+      "updateSponsor": "Actualizar Patrocinador",
+      "editSponsor": "Editar patrocinador"
     },
     "description": "Introduce los detalles del patrocinador para continuar.",
     "title": "Añadir nuevo patrocinador",
@@ -312,7 +323,19 @@
       "title": "Imagen de la entrega",
       "unlockMessage": "Desbloqueado tras la aprobación",
       "unlockHint": "Primero envía tu resumen; una vez que el organizador lo apruebe, podrás subir una imagen aquí."
-    }
+    },
+    "untitled": "Sin título",
+    "summariesAvailable": "Resúmenes disponibles",
+    "summariesAvailableHint": "Puede agregar varios resúmenes y editar cada uno en cualquier momento.",
+    "newSummary": "Nuevo resumen",
+    "statusApproved": "Aprobado",
+    "statusPending": "Pendiente",
+    "statusDraft": "Borrador",
+    "editSummary": "Editar resumen",
+    "approvedResubmitNote": "Este resumen está aprobado. Si lo edita, volverá a estar pendiente de aprobación.",
+    "selectSummaryFirst": "Cree o seleccione primero un resumen.",
+    "selectSummaryFirstHint": "La imagen de envío se adjuntará al resumen elegido.",
+    "preview": "Vista previa"
   },
   "about": {
     "cta": {
@@ -1290,7 +1313,14 @@
     "targetAll": "Precio Total",
     "targetInscription": "Cuota de Inscripción",
     "targetPlan": "Plan Específico",
-    "title": "Aplicar Descuento por Perfil"
+    "title": "Aplicar Descuento por Perfil",
+    "requireProof": "Solicitar un justificante",
+    "proofDescription": "Descripción del documento requerido",
+    "proofDescriptionPlaceholder": "Ej.: Tarjeta profesional, certificado...",
+    "uploadProof": "Subir justificante",
+    "proofUploaded": "Justificante subido",
+    "proofRequired": "Se requiere un justificante para beneficiarse del descuento",
+    "discountEligibility": "Elegibilidad del descuento"
   },
   "documentation": {
     "cta": {
@@ -1442,7 +1472,10 @@
       "registration": "Inscripción"
     },
     "title": "Detalles del Evento",
-    "viewPricing": "Ver Precios"
+    "viewPricing": "Ver Precios",
+    "hostedBy": "Organizado por",
+    "organizer": "Organizador",
+    "checkInBegins": "El registro comienza"
   },
   "eventControls": {
     "delete": "Eliminar",
@@ -1494,12 +1527,17 @@
       "orderStats": "Estadisticas de inscripciones",
       "scanPoints": "Detalles de Puntos de Escaneo",
       "executiveTrends": "Resumen Ejecutivo y Tendencias",
-      "pricePlanPerformance": "Rendimiento del Plan de Precios"
+      "pricePlanPerformance": "Rendimiento del Plan de Precios",
+      "registrationTrend": "Evolución de las inscripciones (3 h)",
+      "planStats": "Estadísticas de los planes",
+      "participantsList": "Lista de participantes",
+      "participantsByPlan": "Participantes por plan"
     },
     "charts": {
       "ordersTrendTitle": "Tendencia de inscripciones (dia a dia)",
       "ordersTrendEmpty": "No hay datos de tendencia disponibles.",
-      "scanHourlyTitle": "Actividad de escaneo por hora"
+      "scanHourlyTitle": "Actividad de escaneo por hora",
+      "registrationActivity": "Gráfico de actividad (inscripciones)"
     },
     "fields": {
       "category": "Categoría",
@@ -1527,8 +1565,20 @@
       "plan": "Plan",
       "sales": "Ventas",
       "revenue": "Ingresos",
-      "weight": "Peso"
-    }
+      "weight": "Peso",
+      "participations": "Participaciones",
+      "fullName": "Nombre completo",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "city": "Ciudad",
+      "planChoice": "Plan / Opción",
+      "amount": "Importe",
+      "registrationDate": "Fecha de inscripción"
+    },
+    "availableChoices": "Opciones disponibles:",
+    "noChoice": "Sin opción",
+    "registered": "inscritos",
+    "organizationLogoAlt": "Logo de la organización"
   },
   "eventForm": {
     "Create": "Crear",
@@ -1573,6 +1623,35 @@
     "workSubmission": {
       "title": "Mostrar el mensaje emergente de envío de trabajo tras la compra",
       "description": "Si está habilitado, los clientes verán una confirmación tras su participación para elegir entre enviar el trabajo o volver al inicio."
+    },
+    "city": "Ciudad",
+    "village": "Pueblo",
+    "showProfileButton": {
+      "title": "Mostrar el botón 'Ver mi perfil'",
+      "description": "Permite al participante ir a su perfil después de la inscripción."
+    },
+    "showReturnButton": {
+      "title": "Mostrar el botón 'Volver al evento'",
+      "description": "Permite al participante permanecer en la página del evento después de la inscripción."
+    },
+    "registrationConfig": {
+      "title": "Configuración de la inscripción",
+      "description": "Elija la información que se solicitará a los participantes.",
+      "fields": {
+        "jobTitle": "Función / Especialidad",
+        "republic": "República (Gobernación)",
+        "village": "Pueblo",
+        "maskRepublicLabel": "Ocultar etiqueta de República",
+        "jobTitleLabelPlaceholder": "Título personalizado para Función",
+        "selectedRepublic": "República preseleccionada",
+        "none": "Ninguna",
+        "customFields": {
+          "title": "Campos personalizados",
+          "addField": "Agregar un campo",
+          "labelPlaceholder": "Nombre del campo",
+          "isRequired": "Obligatorio"
+        }
+      }
     }
   },
   "eventPrice": {
@@ -1593,7 +1672,48 @@
     "selectPlans": "Selecciona tus planes",
     "secureCheckout": "Pago seguro",
     "success": "Éxito",
-    "validate": "validar"
+    "validate": "validar",
+    "backToEvent": "Volver al evento",
+    "benefitAllFree": "Inscripción incluida.",
+    "benefitInscriptionFree": "Cuota de inscripción exenta.",
+    "benefitPlansFree": "Sus planes/talleres seleccionados están incluidos.",
+    "confirmationEmail": "Correo electrónico de confirmación",
+    "invalidEmail": "Introduzca una dirección de correo electrónico válida.",
+    "personalInformation": "Información personal",
+    "personalInformationDescription": "Complete la información del participante antes de confirmar la inscripción.",
+    "preferentialRateTitle": "Tarifa preferencial aplicada",
+    "proofRequiredTitle": "Justificante requerido",
+    "proofUploaded": "Justificante subido",
+    "registrationFee": "Cuota de inscripción",
+    "removeProof": "Quitar",
+    "requiredField": "Este campo es obligatorio.",
+    "selectOption": "Seleccione una opción",
+    "sendRegistrationRequest": "Enviar solicitud de inscripción",
+    "signInRequired": "Este evento requiere una cuenta antes de la inscripción.",
+    "uploadProof": "Subir justificante",
+    "uploading": "Subiendo...",
+    "viewProof": "Vista previa",
+    "pendingValidationNote": "Su inscripción se registrará y luego se validará tras la verificación del justificante por parte del organizador. En caso de rechazo, se aplicará la tarifa completa.",
+    "discountEligibility": "Elegibilidad del descuento",
+    "proofUploadFailed": "Error al subir el justificante",
+    "workSubmissionTitle": "Envío de trabajo",
+    "workSubmissionQuestion": "Indique si desea enviar un trabajo con su inscripción.",
+    "workNo": "No, sin envío",
+    "workYes": "Sí, enviar un trabajo",
+    "workSummaryHeading": "Resumen del envío",
+    "workSummaryHelp": "Introduzca aquí el resumen a asociar con su inscripción.",
+    "workGuestNote": "Su elección se guardará con la inscripción. Inicie sesión en Badgi después para encontrar y completar su envío.",
+    "workTitleLabel": "Título del resumen",
+    "workTitlePlaceholder": "El título de su resumen",
+    "workSummaryLabel": "Resumen",
+    "workSummaryPlaceholder": "Añada aquí el resumen de su trabajo",
+    "errorTitle": "Error",
+    "completeInfoBeforeContinue": "Complete la información de inscripción antes de continuar.",
+    "registrationConfirmedTitle": "Inscripción confirmada",
+    "freeRegistrationConfirmed": "Su inscripción gratuita ha sido confirmada.",
+    "freeRegistrationError": "No se pudo confirmar la inscripción gratuita en este momento. Inténtelo de nuevo.",
+    "registrationError": "No se pudo finalizar la inscripción en este momento. Inténtelo de nuevo.",
+    "registrationInProgress": "Confirmando la inscripción..."
   },
   "eventPromotion": {
     "choosePlan": "Elige tu Plan de Promoción",
@@ -2497,7 +2617,11 @@
       "export": "Exportar datos",
       "filter": "Filtrar inscripciones",
       "rapport": "Informe",
-      "viewDetails": "Ver detalles"
+      "viewDetails": "Ver detalles",
+      "scanAccess": "Escanear acceso",
+      "add": "Agregar",
+      "import": "Importar",
+      "manageBadges": "Gestionar credenciales"
     },
     "buyer": "Comprador",
     "emptyState": {
@@ -2530,7 +2654,43 @@
       "paid": "Inscripcion pagada",
       "bankTransfer": "Transferencia Bancaria"
     },
-    "title": "Gestion de inscripciones"
+    "title": "Gestion de inscripciones",
+    "guestRegistration": "Registro de invitado",
+    "export": {
+      "toastTitle": "Exportación",
+      "noOrders": "No hay inscripciones para exportar.",
+      "successCountLabel": "inscripción(es)",
+      "successExportedIn": "exportada(s) en",
+      "failed": "Error en la exportación. Inténtelo de nuevo.",
+      "xlsx": "Exportar XLSX",
+      "word": "Exportar Word",
+      "pdf": "Exportar PDF",
+      "csv": "Exportar CSV"
+    },
+    "errorTitle": "Error",
+    "requiredFieldsError": "Complete todos los campos obligatorios.",
+    "successTitle": "Éxito",
+    "participantAddedSuccess": "Participante agregado con éxito.",
+    "addParticipantError": "Ocurrió un error al agregar el participante.",
+    "dialogTitle": "Agregar un participante",
+    "dialogDescription": "Agregue manualmente un participante a este evento.",
+    "firstNameLabel": "Nombre *",
+    "firstNamePlaceholder": "Ej.: Juan",
+    "lastNameLabel": "Apellido *",
+    "lastNamePlaceholder": "Ej.: Pérez",
+    "emailLabel": "Correo electrónico *",
+    "emailPlaceholder": "Ej.: juan.perez@example.com",
+    "ticketTypeLabel": "Tipo de entrada",
+    "ticketTypePlaceholder": "Seleccione un tipo",
+    "ticketTypePaid": "De pago",
+    "ticketTypeHosted": "Gratis / Invitado (Hosted)",
+    "ticketTypeDoorpay": "Pago en el lugar",
+    "amountLabel": "Importe",
+    "planNameLabel": "Nombre del plan/opción (opcional)",
+    "planNamePlaceholder": "Ej.: VIP, Estándar...",
+    "cancelButton": "Cancelar",
+    "submittingButton": "Agregando...",
+    "submitButton": "Agregar"
   },
   "orderDetailsDialog": {
     "buyerInfo": {
@@ -2605,12 +2765,15 @@
   "pricePlan": {
     "actions": {
       "add": "Añadir nuevo plan",
-      "delete": "Eliminar plan"
+      "delete": "Eliminar plan",
+      "edit": "Editar"
     },
     "buttons": {
       "addPlan": "Añadir Plan",
       "returnToSimplePrice": "Volver a Precio Simple",
-      "simplePrice": "Precio Simple"
+      "simplePrice": "Precio Simple",
+      "cancel": "Cancelar",
+      "updatePlan": "Actualizar plan"
     },
     "emptyState": {
       "action": "Volver a Precio Simple",
@@ -2640,10 +2803,42 @@
       "currency": "TND",
       "places": "plazas",
       "planNumber": "Plan #",
-      "title": "Planes creados"
+      "title": "Planes creados",
+      "editing": "— editando",
+      "allInclusive": "Todo incluido"
     },
     "subtitle": "Cree y gestione sus niveles de precios",
-    "title": "Planes de precios"
+    "title": "Planes de precios",
+    "globalNote": {
+      "label": "Nota global para la sección de precios",
+      "hint": "(opcional — visible para los participantes)",
+      "placeholder": "Ej.: Los precios indicados incluyen acceso a todas las sesiones. Alojamiento no incluido."
+    },
+    "editingPlan": "Editar plan n.º ",
+    "packageToggle": {
+      "title": "Tarifa todo incluido (paquete)",
+      "description": "Cuando se selecciona este plan, su precio reemplaza la cuota de inscripción y todos los demás planes/talleres (total fijo)."
+    },
+    "options": {
+      "sectionTitle": "Opciones del plan",
+      "sectionHint": "(opcional — selección única)",
+      "label": "Etiqueta de la opción",
+      "labelPlaceholder": "Ej.: Desayuno, VIP, etc.",
+      "supplement": "Suplemento",
+      "places": "Plazas",
+      "update": "Actualizar",
+      "add": "Agregar",
+      "instructions": "Instrucciones / descripción de la opción",
+      "instructionsHint": "(opcional — ej.: método de pago, correo de confirmación, fecha límite)",
+      "instructionsPlaceholder": "Ej.: El laboratorio debe enviar un correo de confirmación a contact@labo.tn y pagar con cheque antes del 15/09/2026.",
+      "requireEmail": "Solicitar una dirección de correo si se selecciona esta opción",
+      "requestOnly": "Solo solicitud de inscripción (oculta los botones de pago, un único botón «Enviar solicitud» — inscripción pendiente de validación)",
+      "placesBadge": "plazas",
+      "emailRequiredBadge": "correo requerido",
+      "requestOnlyBadge": "solo solicitud",
+      "editChoice": "Editar opción",
+      "deleteChoice": "Eliminar opción"
+    }
   },
   "pricing": {
     "billing": {
@@ -2912,7 +3107,8 @@
       "customForms": "Formularios personalizados",
       "sponsors": "Sponsors",
       "customFields": "Campos personalizados"
-    }
+    },
+    "allTickets": "Todas las inscripciones"
   },
   "organisationCard": {
     "noDescription": "Sin descripción aún",
@@ -3342,7 +3538,13 @@
     "modifyVideo": "Modificar video",
     "searchMusic": "Buscar música",
     "upload": "Subir",
-    "use": "Usar"
+    "use": "Usar",
+    "selectMusic": "Seleccionar música",
+    "done": "Hecho",
+    "loadingTracks": "Cargando pistas...",
+    "processing": "Procesando...",
+    "noMusicAttached": "Aún no hay música adjunta al video.",
+    "failedToCreateReel": "Error al crear el reel"
   },
   "workAdministration": {
     "actions": {
@@ -3982,5 +4184,236 @@
       "website": "Sitio web",
       "noWebsite": "-"
     }
+  },
+  "importParticipants": {
+    "field": {
+      "skip": "⏭️ Omitir",
+      "firstname": "Nombre",
+      "lastname": "Apellido",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "city": "Ciudad",
+      "country": "País",
+      "company": "Empresa",
+      "organisation": "Organización",
+      "plan": "Plan",
+      "price": "Precio",
+      "category": "Categoría",
+      "custom": "Campo personalizado"
+    },
+    "alert": {
+      "needHeaderAndData": "El archivo debe contener al menos un encabezado y una fila de datos.",
+      "parseError": "Error al leer el archivo. Verifique el formato (xlsx/xls)."
+    },
+    "error": {
+      "unknown": "Error desconocido"
+    },
+    "title": "Importar participantes",
+    "description": "Importe una lista de participantes desde un archivo Excel (.xlsx / .xls)",
+    "step": {
+      "file": "Archivo",
+      "columns": "Columnas",
+      "preview": "Vista previa",
+      "result": "Resultado"
+    },
+    "upload": {
+      "dropHere": "Arrastre su archivo Excel aquí",
+      "browseHint": "o haga clic para explorar • .xlsx, .xls"
+    },
+    "mapping": {
+      "rows": "fila(s)",
+      "columns": "columna(s)",
+      "changeFile": "Cambiar archivo",
+      "instruction": "Asocie cada columna del archivo a un campo de participante:",
+      "columnLabel": "Columna",
+      "example": "ej.:"
+    },
+    "preview": {
+      "heading": "Vista previa de la importación",
+      "participants": "participantes",
+      "and": "y",
+      "otherRows": "otras filas"
+    },
+    "importing": {
+      "title": "Importando…",
+      "processing": "participantes en proceso"
+    },
+    "done": {
+      "title": "Importación completada",
+      "created": "Creados",
+      "duplicates": "Duplicados",
+      "errors": "Errores",
+      "errorDetails": "Detalles de los errores:",
+      "otherErrors": "otros errores"
+    },
+    "button": {
+      "back": "Atrás",
+      "preview": "Vista previa",
+      "import": "Importar",
+      "close": "Cerrar"
+    }
+  },
+  "organisationForm": {
+    "toast": {
+      "createdTitle": "¡Organización creada!",
+      "createdDescription": "Su organización se ha creado con éxito.",
+      "updatedTitle": "¡Organización actualizada!",
+      "updatedDescription": "Sus cambios se han guardado.",
+      "errorTitle": "Error",
+      "errorDescription": "Algo salió mal. Inténtelo de nuevo."
+    },
+    "header": {
+      "createTitle": "Crear organización",
+      "updateTitle": "Actualizar organización",
+      "createDescription": "Configure su organización para empezar a publicar eventos",
+      "updateDescription": "Actualice los datos de su organización"
+    },
+    "coverImage": {
+      "label": "Imagen de portada",
+      "placeholder": "Suba una imagen de portada para su organización"
+    },
+    "logo": {
+      "label": "Logo",
+      "placeholder": "Subir logo"
+    },
+    "name": {
+      "label": "Nombre de la organización",
+      "placeholder": "Introduzca el nombre de su organización"
+    },
+    "website": {
+      "label": "Sitio web"
+    },
+    "subdomain": {
+      "label": "Subdominio Badgi",
+      "availableHint": "Su página estará disponible en"
+    },
+    "description": {
+      "label": "Descripción",
+      "placeholder": "Describa su organización, lo que hace y qué tipo de eventos organiza..."
+    },
+    "socialLinks": {
+      "heading": "Redes sociales",
+      "facebook": "Facebook",
+      "twitter": "Twitter / X",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn"
+    },
+    "banner": {
+      "heading": "Banner deslizante",
+      "imageLabel": "Imagen del banner",
+      "imagePlaceholder": "Suba una imagen promocional para su banner",
+      "titleLabel": "Título del banner",
+      "titlePlaceholder": "ej.: NOTICIAS, INFO, ANUNCIO…",
+      "contentLabel": "Texto desplazante",
+      "contentPlaceholder": "Este texto se desplazará en bucle en su página. Ej.: Inscripciones abiertas para el congreso 2026 · Nueva fecha anunciada…"
+    },
+    "partners": {
+      "heading": "Patrocinadores y socios",
+      "add": "Agregar",
+      "empty": "Sin socios · Haga clic en \"Agregar\" para añadir uno",
+      "logoLabel": "Logo",
+      "nameLabel": "Nombre *",
+      "namePlaceholder": "Nombre del socio",
+      "websiteLabel": "Sitio web"
+    },
+    "submit": {
+      "creating": "Creando...",
+      "updating": "Actualizando...",
+      "create": "Crear organización",
+      "save": "Guardar cambios"
+    },
+    "common": {
+      "optional": "(opcional)",
+      "optionalEn": "(opcional)"
+    }
+  },
+  "bankTransferModal": {
+    "cta": "Transferencia bancaria",
+    "enterTransferId": "Introduzca un identificador de transferencia",
+    "error": "Error",
+    "fileTooLarge": "Archivo demasiado grande",
+    "fileTooLargeDescription": "Suba un archivo de menos de 5 MB",
+    "invalidFileType": "Tipo de archivo no válido",
+    "invalidFileTypeDescription": "Suba una imagen (JPG, PNG, etc.)",
+    "previewLabel": "Vista previa:",
+    "removeImage": "Quitar imagen",
+    "screenshotTab": "Captura",
+    "submitScreenshot": "Enviar captura",
+    "submitScreenshotFailed": "Error al enviar la captura",
+    "submitTransferError": "Ocurrió un error al enviar la transferencia",
+    "submitTransferFailed": "Error al enviar la transferencia",
+    "submitTransferId": "Enviar identificador",
+    "submitting": "Enviando...",
+    "success": "Éxito",
+    "title": "Pago por transferencia bancaria",
+    "transferIdLabel": "Identificador de la transferencia",
+    "transferIdPlaceholder": "ej. TRF12345678910",
+    "transferIdTab": "Identificador",
+    "uploadFormats": "PNG, JPG, GIF hasta 5 MB",
+    "uploadHint": "Haga clic para subir o arrastre y suelte",
+    "uploadScreenshot": "Suba una captura de pantalla",
+    "uploadScreenshotError": "Ocurrió un error al subir la captura",
+    "uploadScreenshotLabel": "Subir captura",
+    "uploading": "Subiendo...",
+    "completeRegistrationFirst": "Primero complete la información de inscripción.",
+    "transferSubmitted": "La transferencia bancaria se envió con éxito. Verificación pendiente.",
+    "screenshotSubmitted": "La captura de la transferencia se envió con éxito. Verificación pendiente."
+  },
+  "collection": {
+    "filterAll": "Todos",
+    "filterBadgi": "Eventos Badgi",
+    "filterExternal": "Otras plataformas",
+    "allYears": "Todos los años",
+    "noEventsInCategory": "No hay eventos en esta categoría"
+  },
+  "badgeDesigner": {
+    "toastUpdated": "¡Diseño actualizado!",
+    "toastSaved": "¡Diseño guardado!",
+    "toastSaveFailed": "Error al guardar el diseño",
+    "orientation": "Orientación",
+    "portrait": "Vertical",
+    "landscape": "Horizontal",
+    "badgeSide": "Cara de la credencial",
+    "front": "Anverso",
+    "back": "Reverso",
+    "backgroundImg": "Imagen de fondo",
+    "uploadImage": "Subir imagen",
+    "remove": "Quitar",
+    "addContent": "Agregar contenido",
+    "text": "Texto",
+    "uploadImg": "Subir img",
+    "shape": "Forma",
+    "qrCode": "Código QR",
+    "dynamicElements": "Elementos dinámicos",
+    "name": "Nombre",
+    "photo": "Foto",
+    "eventTitle": "Título del evento",
+    "eventDate": "Fecha del evento",
+    "saveDesign": "Guardar diseño",
+    "properties": "Propiedades",
+    "content": "Contenido",
+    "font": "Fuente",
+    "size": "Tamaño",
+    "color": "Color",
+    "style": "Estilo",
+    "alignment": "Alineación",
+    "letterSpacing": "Espaciado de letras (px)",
+    "qrContent": "Contenido del código QR",
+    "insertTemplate": "— Insertar una plantilla —",
+    "participantId": "ID del participante",
+    "email": "Correo electrónico",
+    "qrName": "Nombre",
+    "nameEmail": "Nombre + Correo",
+    "idNameEmail": "ID + Nombre + Correo",
+    "variablesLabel": "Variables:",
+    "quietZone": "Zona de silencio (margen blanco):",
+    "quietZoneNone": "0 (ninguna)",
+    "quietZoneLarge": "10 (grande)",
+    "qrColor": "Color del QR",
+    "width": "Ancho",
+    "height": "Alto",
+    "bgColor": "Color de fondo",
+    "delete": "Eliminar",
+    "sampleText": "Texto de ejemplo"
   }
 }

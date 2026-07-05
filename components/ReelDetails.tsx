@@ -63,6 +63,7 @@ const languages = [
 
 export default function ReelDetails({ event }: ReelDetailsProps) {
   const t = useTranslations("event");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const registrationTabLabel = t.has("tabs.registration")
     ? t("tabs.registration")
     : "Registration";
@@ -109,7 +110,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
               {event.title}
             </h1>
             <p className="text-xs md:text-sm font-outfit font-bold uppercase tracking-widest text-primary/80">
-              {event.organisation?.name ? `Hosted by ${event.organisation.name}` : `Organizer: @${event.organizer.username}`}
+              {event.organisation?.name ? `${tx("hostedBy", "Hosted by")} ${event.organisation.name}` : `${tx("organizer", "Organizer")}: @${event.organizer.username}`}
             </p>
           </div>
 
@@ -221,7 +222,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-widest text-slate-500 font-bold mb-0.5">{t("doorsOpen")}</p>
-                  <p className="font-outfit font-bold text-slate-900 dark:text-white">Check-in begins</p>
+                  <p className="font-outfit font-bold text-slate-900 dark:text-white">{tx("checkInBegins", "Check-in begins")}</p>
                 </div>
               </div>
               <Badge variant="outline" className="h-10 px-4 font-mono text-base border-primary/20 bg-primary/5 text-primary">

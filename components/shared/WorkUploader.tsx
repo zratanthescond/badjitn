@@ -72,6 +72,7 @@ export default function WorkUploader({
   userId: string;
 }) {
   const t = useTranslations("WorkUploader");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const locale = useLocale();
   const isRTL = locale === "ar";
 
@@ -200,7 +201,7 @@ export default function WorkUploader({
         workId: selectedWork?._id,
         eventId,
         userId,
-        title: title.trim() || "Sans titre",
+        title: title.trim() || tx("untitled", "Sans titre"),
         clientInfo,
         note: noteStr,
       },
@@ -335,10 +336,10 @@ export default function WorkUploader({
                   <div className="flex items-center justify-between gap-3 flex-wrap">
                     <div>
                       <p className="text-sm font-medium text-foreground">
-                        Resumes disponibles
+                        {tx("summariesAvailable", "Resumes disponibles")}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Vous pouvez ajouter plusieurs resumes et modifier chacun a tout moment.
+                        {tx("summariesAvailableHint", "Vous pouvez ajouter plusieurs resumes et modifier chacun a tout moment.")}
                       </p>
                     </div>
                     <Button
@@ -348,7 +349,7 @@ export default function WorkUploader({
                       onClick={createNewSummary}
                     >
                       <PlusCircle className="h-4 w-4 mr-2" />
-                      Nouveau resume
+                      {tx("newSummary", "Nouveau resume")}
                     </Button>
                   </div>
 
@@ -360,10 +361,10 @@ export default function WorkUploader({
                           const isSelected = item._id === selectedWorkId;
                           const statusLabel =
                             status === "approved"
-                              ? "Approuve"
+                              ? tx("statusApproved", "Approuve")
                               : status === "submitted"
-                              ? "En attente"
-                              : "Brouillon";
+                              ? tx("statusPending", "En attente")
+                              : tx("statusDraft", "Brouillon");
 
                           return (
                             <button
@@ -381,7 +382,7 @@ export default function WorkUploader({
                             >
                               <div className="flex items-center justify-between gap-2">
                                 <p className="truncate font-medium text-sm">
-                                  {item.title?.trim() || "Sans titre"}
+                                  {item.title?.trim() || tx("untitled", "Sans titre")}
                                 </p>
                                 <Badge
                                   variant="secondary"
@@ -543,7 +544,7 @@ export default function WorkUploader({
                   ) : (
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-5 w-5" />
-                      {selectedWork ? "Modifier le resume" : t("actions.saveNotes")}
+                      {selectedWork ? tx("editSummary", "Modifier le resume") : t("actions.saveNotes")}
                     </div>
                   )}
                 </Button>
@@ -558,7 +559,7 @@ export default function WorkUploader({
                 {summaryStatus === "approved" && selectedWork && (
                   <div className="flex items-center gap-2 p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-300 text-sm">
                     <CheckCircle className="h-5 w-5 shrink-0" />
-                    Ce resume est approuve. Si vous le modifiez, il repassera en attente d'approbation.
+                    {tx("approvedResubmitNote", "Ce resume est approuve. Si vous le modifiez, il repassera en attente d'approbation.")}
                   </div>
                 )}
               </CardContent>
@@ -587,10 +588,10 @@ export default function WorkUploader({
                   <div className="flex flex-col items-center justify-center py-12 text-center rounded-xl bg-muted/30 border border-dashed">
                     <FileText className="h-12 w-12 text-muted-foreground mb-3" />
                     <p className="text-muted-foreground font-medium">
-                      Creez ou selectionnez d'abord un resume.
+                      {tx("selectSummaryFirst", "Creez ou selectionnez d'abord un resume.")}
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
-                      L'image de soumission sera rattachee au resume choisi.
+                      {tx("selectSummaryFirstHint", "L'image de soumission sera rattachee au resume choisi.")}
                     </p>
                   </div>
                 ) : !isApproved ? (
@@ -705,7 +706,7 @@ export default function WorkUploader({
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={previewUrl}
-                            alt="Preview"
+                            alt={tx("preview", "Preview")}
                             className="max-h-[300px] w-full object-contain"
                           />
                         </div>

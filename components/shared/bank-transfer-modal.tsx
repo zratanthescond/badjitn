@@ -381,7 +381,7 @@ export function BankTransferModal({
                         <ScrollArea className="h-36 w-full rounded-lg border">
                           <div className="space-y-2">
                             <p className="text-xs font-medium text-foreground">
-                              Preview:
+                              {text("previewLabel", "Preview:")}
                             </p>
 
                             <img
@@ -399,7 +399,7 @@ export function BankTransferModal({
                               disabled={isLoading}
                               className="text-xs text-blue-600 hover:text-blue-700"
                             >
-                              Remove image
+                              {text("removeImage", "Remove image")}
                             </button>
                           </div>
                         </ScrollArea>

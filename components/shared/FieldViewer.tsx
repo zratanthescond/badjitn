@@ -33,6 +33,7 @@ const FieldViewer = ({ userId }: { userId: string }) => {
   const [isLoading, setIsLoading] = useState(true);
   const t = useTranslations("profile");
   const tBuilder = useTranslations("FormBuilder");
+  const tx = (key: string, fallback: string) => (tBuilder.has(key as any) ? tBuilder(key as any) : fallback);
 
   useEffect(() => {
     const loadFields = async () => {
@@ -156,7 +157,7 @@ const FieldViewer = ({ userId }: { userId: string }) => {
                   {tBuilder("preview.noFields")}
                 </p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground max-w-[200px] uppercase tracking-wider font-semibold opacity-60">
-                  Start adding fields to see them appearing here
+                  {tx("preview.startAddingFields", "Start adding fields to see them appearing here")}
                 </p>
               </div>
             </div>
@@ -166,7 +167,7 @@ const FieldViewer = ({ userId }: { userId: string }) => {
         <div className="p-3 sm:p-4 bg-slate-50/50 dark:bg-slate-900/50 border-t border-white/10 dark:border-slate-700/30 flex items-center justify-center gap-2">
           <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-500" />
           <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest leading-none">
-            Preview Mode • Form functionality simulated
+            {tx("preview.previewModeNote", "Preview Mode • Form functionality simulated")}
           </span>
         </div>
       </Card>

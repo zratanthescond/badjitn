@@ -3,6 +3,7 @@ import { IEvent } from "@/lib/database/models/event.model";
 import React, { useMemo, useState } from "react";
 import Card from "./Card";
 import Pagination from "./Pagination";
+import { useTranslations } from "next-intl";
 
 type CollectionProps = {
   data: IEvent[];
@@ -30,6 +31,9 @@ const Collection = ({
   userPhoto,
   currentUserId,
 }: CollectionProps) => {
+  const t = useTranslations("collection");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
+
   const hasOrderLink = collectionType === "Events_Organized";
   const hidePrice    = collectionType === "My_Tickets";
   const isHomepage   = collectionType === "All_Events";
@@ -95,9 +99,9 @@ const Collection = ({
   }, [filtered, currentYear]);
 
   const SOURCE_FILTERS: { key: SourceFilter; label: string }[] = [
-    { key: "all",      label: "Tous" },
-    { key: "badgi",    label: "Badgi Events" },
-    { key: "external", label: "Autres Plateformes" },
+    { key: "all",      label: tx("filterAll", "Tous") },
+    { key: "badgi",    label: tx("filterBadgi", "Badgi Events") },
+    { key: "external", label: tx("filterExternal", "Autres Plateformes") },
   ];
 
   let globalIndex = 0;
@@ -136,7 +140,7 @@ const Collection = ({
                       : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-primary/40 hover:text-primary"
                   }`}
                 >
-                  Toutes les années
+                  {tx("allYears", "Toutes les années")}
                 </button>
                 {availableYears.map((year) => (
                   <button
@@ -162,7 +166,7 @@ const Collection = ({
           {groupedByYear.length === 0 && (
             <div className="flex-center min-h-[200px] w-full flex-col gap-3 rounded-3xl bg-slate-50/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 py-16 text-center">
               <p className="text-slate-500 dark:text-slate-400 font-medium">
-                Aucun événement dans cette catégorie
+                {tx("noEventsInCategory", "Aucun événement dans cette catégorie")}
               </p>
             </div>
           )}

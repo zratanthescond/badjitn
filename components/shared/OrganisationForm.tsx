@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
@@ -97,6 +98,8 @@ export default function OrganisationForm({
     organisation,
 }: OrganisationFormProps) {
     const router = useRouter();
+    const t = useTranslations("organisationForm");
+    const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<OrganisationFormValues>({
@@ -151,8 +154,8 @@ export default function OrganisationForm({
 
                 if (newOrg) {
                     toast({
-                        title: "Organisation Created!",
-                        description: "Your organisation has been created successfully.",
+                        title: tx("toast.createdTitle", "Organisation Created!"),
+                        description: tx("toast.createdDescription", "Your organisation has been created successfully."),
                     });
                     router.push(`/organisations/${newOrg.slug}`);
                 }
@@ -182,16 +185,16 @@ export default function OrganisationForm({
 
                 if (updatedOrg) {
                     toast({
-                        title: "Organisation Updated!",
-                        description: "Your changes have been saved.",
+                        title: tx("toast.updatedTitle", "Organisation Updated!"),
+                        description: tx("toast.updatedDescription", "Your changes have been saved."),
                     });
                     router.push(`/organisations/${updatedOrg.slug}`);
                 }
             }
         } catch (error) {
             toast({
-                title: "Error",
-                description: "Something went wrong. Please try again.",
+                title: tx("toast.errorTitle", "Error"),
+                description: tx("toast.errorDescription", "Something went wrong. Please try again."),
                 variant: "destructive",
             });
         } finally {
@@ -209,13 +212,13 @@ export default function OrganisationForm({
                     <div>
                         <CardTitle className="text-2xl text-indigo-800 dark:text-indigo-200">
                             {type === "Create"
-                                ? "Create Organisation"
-                                : "Update Organisation"}
+                                ? tx("header.createTitle", "Create Organisation")
+                                : tx("header.updateTitle", "Update Organisation")}
                         </CardTitle>
                         <CardDescription className="text-indigo-600 dark:text-indigo-300 text-lg">
                             {type === "Create"
-                                ? "Set up your organisation to start publishing events"
-                                : "Update your organisation details"}
+                                ? tx("header.createDescription", "Set up your organisation to start publishing events")
+                                : tx("header.updateDescription", "Update your organisation details")}
                         </CardDescription>
                     </div>
                 </div>
@@ -235,8 +238,8 @@ export default function OrganisationForm({
                                             value={field.value || ""}
                                             onChange={field.onChange}
                                             aspectRatio="wide"
-                                            label="Cover Image"
-                                            placeholder="Upload a cover image for your organisation"
+                                            label={tx("coverImage.label", "Cover Image")}
+                                            placeholder={tx("coverImage.placeholder", "Upload a cover image for your organisation")}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -256,8 +259,8 @@ export default function OrganisationForm({
                                                 value={field.value || ""}
                                                 onChange={field.onChange}
                                                 aspectRatio="square"
-                                                label="Logo"
-                                                placeholder="Upload logo"
+                                                label={tx("logo.label", "Logo")}
+                                                placeholder={tx("logo.placeholder", "Upload logo")}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -274,12 +277,12 @@ export default function OrganisationForm({
                                         <FormItem>
                                             <FormLabel className="text-sm font-semibold flex items-center gap-2">
                                                 <Building2 className="h-4 w-4 text-indigo-500" />
-                                                Organisation Name
+                                                {tx("name.label", "Organisation Name")}
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
                                                     className="input-field glass rounded-xl"
-                                                    placeholder="Enter your organisation name"
+                                                    placeholder={tx("name.placeholder", "Enter your organisation name")}
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -296,7 +299,7 @@ export default function OrganisationForm({
                                         <FormItem>
                                             <FormLabel className="text-sm font-semibold flex items-center gap-2">
                                                 <Globe className="h-4 w-4 text-indigo-500" />
-                                                Website
+                                                {tx("website.label", "Website")}
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
@@ -318,8 +321,8 @@ export default function OrganisationForm({
                                         <FormItem>
                                             <FormLabel className="text-sm font-semibold flex items-center gap-2">
                                                 <Globe2 className="h-4 w-4 text-indigo-500" />
-                                                Sous-domaine Badgi
-                                                <span className="text-muted-foreground font-normal">(optionnel)</span>
+                                                {tx("subdomain.label", "Sous-domaine Badgi")}
+                                                <span className="text-muted-foreground font-normal">{tx("common.optional", "(optionnel)")}</span>
                                             </FormLabel>
                                             <FormControl>
                                                 <div className="flex items-center rounded-xl overflow-hidden border border-input bg-white/60 dark:bg-slate-800/60 focus-within:ring-2 focus-within:ring-indigo-400">
@@ -343,7 +346,7 @@ export default function OrganisationForm({
                                             {field.value && subdomainRegex.test(field.value) && (
                                                 <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-                                                    Votre page sera accessible à{" "}
+                                                    {tx("subdomain.availableHint", "Votre page sera accessible à")}{" "}
                                                     <strong>{field.value}.badgi.net</strong>
                                                 </p>
                                             )}
@@ -361,11 +364,11 @@ export default function OrganisationForm({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-sm font-semibold">
-                                        Description
+                                        {tx("description.label", "Description")}
                                     </FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder="Describe your organisation, what you do, and what kind of events you organise..."
+                                            placeholder={tx("description.placeholder", "Describe your organisation, what you do, and what kind of events you organise...")}
                                             className="min-h-[120px] glass rounded-xl resize-none"
                                             {...field}
                                         />
@@ -379,8 +382,8 @@ export default function OrganisationForm({
                         <div className="space-y-4">
                             <h3 className="text-sm font-semibold flex items-center gap-2">
                                 <LinkIcon className="h-4 w-4 text-indigo-500" />
-                                Social Links
-                                <span className="text-muted-foreground font-normal">(optional)</span>
+                                {tx("socialLinks.heading", "Social Links")}
+                                <span className="text-muted-foreground font-normal">{tx("common.optionalEn", "(optional)")}</span>
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -390,7 +393,7 @@ export default function OrganisationForm({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="text-xs text-muted-foreground">
-                                                Facebook
+                                                {tx("socialLinks.facebook", "Facebook")}
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
@@ -409,7 +412,7 @@ export default function OrganisationForm({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="text-xs text-muted-foreground">
-                                                Twitter / X
+                                                {tx("socialLinks.twitter", "Twitter / X")}
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
@@ -428,7 +431,7 @@ export default function OrganisationForm({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="text-xs text-muted-foreground">
-                                                Instagram
+                                                {tx("socialLinks.instagram", "Instagram")}
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
@@ -447,7 +450,7 @@ export default function OrganisationForm({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="text-xs text-muted-foreground">
-                                                LinkedIn
+                                                {tx("socialLinks.linkedin", "LinkedIn")}
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
@@ -466,8 +469,8 @@ export default function OrganisationForm({
                         <div className="space-y-4 border border-indigo-100 dark:border-indigo-900/40 rounded-2xl p-5 bg-indigo-50/30 dark:bg-indigo-950/20">
                             <h3 className="text-sm font-semibold flex items-center gap-2">
                                 <Megaphone className="h-4 w-4 text-indigo-500" />
-                                Bannière roulante
-                                <span className="text-muted-foreground font-normal">(optionnel)</span>
+                                {tx("banner.heading", "Bannière roulante")}
+                                <span className="text-muted-foreground font-normal">{tx("common.optional", "(optionnel)")}</span>
                             </h3>
                             <FormField
                                 control={form.control}
@@ -479,8 +482,8 @@ export default function OrganisationForm({
                                                 value={field.value || ""}
                                                 onChange={field.onChange}
                                                 aspectRatio="wide"
-                                                label="Image de bannière"
-                                                placeholder="Téléchargez une image promotionnelle pour votre bannière"
+                                                label={tx("banner.imageLabel", "Image de bannière")}
+                                                placeholder={tx("banner.imagePlaceholder", "Téléchargez une image promotionnelle pour votre bannière")}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -490,9 +493,9 @@ export default function OrganisationForm({
                             <FormField control={form.control} name="bannerTitle"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-xs text-muted-foreground">Titre de la bannière</FormLabel>
+                                        <FormLabel className="text-xs text-muted-foreground">{tx("banner.titleLabel", "Titre de la bannière")}</FormLabel>
                                         <FormControl>
-                                            <Input className="input-field glass rounded-xl" placeholder="ex: ACTUALITÉS, INFO, ANNONCE…" {...field} />
+                                            <Input className="input-field glass rounded-xl" placeholder={tx("banner.titlePlaceholder", "ex: ACTUALITÉS, INFO, ANNONCE…")} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -501,10 +504,10 @@ export default function OrganisationForm({
                             <FormField control={form.control} name="bannerContent"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-xs text-muted-foreground">Texte défilant</FormLabel>
+                                        <FormLabel className="text-xs text-muted-foreground">{tx("banner.contentLabel", "Texte défilant")}</FormLabel>
                                         <FormControl>
                                             <Textarea
-                                                placeholder="Ce texte défilera en boucle sur votre page. Ex: Inscriptions ouvertes pour le congrès 2026 · Nouvelle date annoncée…"
+                                                placeholder={tx("banner.contentPlaceholder", "Ce texte défilera en boucle sur votre page. Ex: Inscriptions ouvertes pour le congrès 2026 · Nouvelle date annoncée…")}
                                                 className="min-h-[80px] glass rounded-xl resize-none"
                                                 {...field}
                                             />
@@ -520,8 +523,8 @@ export default function OrganisationForm({
                             <div className="flex items-center justify-between">
                                 <h3 className="text-sm font-semibold flex items-center gap-2">
                                     <HandshakeIcon className="h-4 w-4 text-indigo-500" />
-                                    Sponsors &amp; Partenaires
-                                    <span className="text-muted-foreground font-normal">(optionnel)</span>
+                                    {tx("partners.heading", "Sponsors & Partenaires")}
+                                    <span className="text-muted-foreground font-normal">{tx("common.optional", "(optionnel)")}</span>
                                 </h3>
                                 <button
                                     type="button"
@@ -529,13 +532,13 @@ export default function OrganisationForm({
                                     className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-700 rounded-full px-3 py-1 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
                                 >
                                     <Plus className="h-3 w-3" />
-                                    Ajouter
+                                    {tx("partners.add", "Ajouter")}
                                 </button>
                             </div>
 
                             {partnerFields.length === 0 && (
                                 <p className="text-xs text-muted-foreground text-center py-4 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl">
-                                    Aucun partenaire · Cliquez sur &quot;Ajouter&quot; pour en ajouter un
+                                    {tx("partners.empty", "Aucun partenaire · Cliquez sur \"Ajouter\" pour en ajouter un")}
                                 </p>
                             )}
 
@@ -547,7 +550,7 @@ export default function OrganisationForm({
                                             <FormField control={form.control} name={`partners.${index}.logo`}
                                                 render={({ field }) => (
                                                     <FormItem className="shrink-0">
-                                                        <FormLabel className="text-xs text-muted-foreground">Logo</FormLabel>
+                                                        <FormLabel className="text-xs text-muted-foreground">{tx("partners.logoLabel", "Logo")}</FormLabel>
                                                         <FormControl>
                                                             <ImageUploader
                                                                 value={field.value || ""}
@@ -564,9 +567,9 @@ export default function OrganisationForm({
                                                 <FormField control={form.control} name={`partners.${index}.name`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel className="text-xs text-muted-foreground">Nom *</FormLabel>
+                                                            <FormLabel className="text-xs text-muted-foreground">{tx("partners.nameLabel", "Nom *")}</FormLabel>
                                                             <FormControl>
-                                                                <Input className="h-8 text-sm rounded-lg" placeholder="Nom du partenaire" {...field} />
+                                                                <Input className="h-8 text-sm rounded-lg" placeholder={tx("partners.namePlaceholder", "Nom du partenaire")} {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -576,7 +579,7 @@ export default function OrganisationForm({
                                                     <FormField control={form.control} name={`partners.${index}.website`}
                                                         render={({ field }) => (
                                                             <FormItem className="flex-1">
-                                                                <FormLabel className="text-xs text-muted-foreground">Site web</FormLabel>
+                                                                <FormLabel className="text-xs text-muted-foreground">{tx("partners.websiteLabel", "Site web")}</FormLabel>
                                                                 <FormControl>
                                                                     <Input className="h-8 text-sm rounded-lg" placeholder="https://…" {...field} />
                                                                 </FormControl>
@@ -607,14 +610,14 @@ export default function OrganisationForm({
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                    {type === "Create" ? "Creating..." : "Updating..."}
+                                    {type === "Create" ? tx("submit.creating", "Creating...") : tx("submit.updating", "Updating...")}
                                 </>
                             ) : (
                                 <>
                                     <Building2 className="mr-2 h-5 w-5" />
                                     {type === "Create"
-                                        ? "Create Organisation"
-                                        : "Save Changes"}
+                                        ? tx("submit.create", "Create Organisation")
+                                        : tx("submit.save", "Save Changes")}
                                 </>
                             )}
                         </Button>

@@ -44,7 +44,11 @@
     "preview": {
       "noFields": "لم يتم إضافة حقول بعد",
       "selectOption": "اختر خياراً",
-      "title": "معاينة النموذج"
+      "title": "معاينة النموذج",
+      "disclaimer": "هذه معاينة لكيفية ظهور الحقول للمشاركين.",
+      "subtitle": "معاينة تسجيل المشاركين",
+      "startAddingFields": "ابدأ بإضافة الحقول لرؤيتها هنا",
+      "previewModeNote": "وضع المعاينة • محاكاة وظائف النموذج"
     },
     "title": "منشئ النماذج المخصص",
     "validation": {
@@ -141,7 +145,13 @@
     "subtitle": "مسح ومراقبة الدخول في الوقت الحقيقي",
     "ticketType": "نوع التذكرة",
     "unknown": "غير معروف",
-    "verifying": "جاري التحقق من التذكرة..."
+    "verifying": "جاري التحقق من التذكرة...",
+    "success": "نجاح",
+    "pointAdded": "تمت إضافة نقطة المسح بنجاح.",
+    "error": "خطأ",
+    "pointAddFailed": "تعذّر إضافة نقطة المسح.",
+    "pointDeleteFailed": "تعذّر حذف نقطة المسح.",
+    "cameraStartFailed": "تعذّر تشغيل الكاميرا."
   },
   "SponsorForm": {
     "actions": {
@@ -149,7 +159,8 @@
       "cancel": "إلغاء",
       "reset": "إعادة تعيين النموذج",
       "submitting": "جاري إضافة الراعي...",
-      "updateSponsor": "تعديل الراعي"
+      "updateSponsor": "تعديل الراعي",
+      "editSponsor": "تعديل الراعي"
     },
     "description": "أدخل تفاصيل الراعي للمتابعة.",
     "title": "إضافة راعي جديد",
@@ -312,7 +323,19 @@
       "title": "صورة التقديم",
       "unlockMessage": "تُفتح بعد الموافقة",
       "unlockHint": "قدّم ملخصك أولاً؛ بعد موافقة المنظم يمكنك رفع صورة هنا."
-    }
+    },
+    "untitled": "بدون عنوان",
+    "summariesAvailable": "الملخصات المتاحة",
+    "summariesAvailableHint": "يمكنك إضافة عدة ملخصات وتعديل كل منها في أي وقت.",
+    "newSummary": "ملخص جديد",
+    "statusApproved": "مقبول",
+    "statusPending": "قيد الانتظار",
+    "statusDraft": "مسودة",
+    "editSummary": "تعديل الملخص",
+    "approvedResubmitNote": "هذا الملخص مقبول. إذا قمت بتعديله، فسيعود إلى انتظار الموافقة.",
+    "selectSummaryFirst": "أنشئ أو اختر ملخصًا أولاً.",
+    "selectSummaryFirstHint": "سيتم إرفاق صورة التقديم بالملخص المختار.",
+    "preview": "معاينة"
   },
   "about": {
     "cta": {
@@ -1290,7 +1313,14 @@
     "targetAll": "السعر الإجمالي",
     "targetInscription": "رسوم التسجيل",
     "targetPlan": "خطة محددة",
-    "title": "تطبيق الخصم حسب الملف الشخصي"
+    "title": "تطبيق الخصم حسب الملف الشخصي",
+    "requireProof": "طلب وثيقة مبررة",
+    "proofDescription": "وصف الوثيقة المطلوبة",
+    "proofDescriptionPlaceholder": "مثال: بطاقة مهنية، شهادة...",
+    "uploadProof": "تحميل الوثيقة المبررة",
+    "proofUploaded": "تم تحميل الوثيقة",
+    "proofRequired": "الوثيقة المبررة مطلوبة للاستفادة من الخصم",
+    "discountEligibility": "أهلية الخصم"
   },
   "documentation": {
     "cta": {
@@ -1438,10 +1468,14 @@
       "details": "التفاصيل",
       "feedback": "التعليقات",
       "location": "الموقع",
-      "price": "السعر"
+      "price": "السعر",
+      "registration": "التسجيل"
     },
     "title": "تفاصيل الحدث",
-    "viewPricing": "عرض الأسعار"
+    "viewPricing": "عرض الأسعار",
+    "hostedBy": "بتنظيم",
+    "organizer": "المنظم",
+    "checkInBegins": "يبدأ تسجيل الدخول"
   },
   "eventControls": {
     "delete": "حذف",
@@ -1493,12 +1527,17 @@
       "orderStats": "إحصائيات الطلبات",
       "scanPoints": "تفاصيل نقاط المسح",
       "executiveTrends": "الملخص التنفيذي والاتجاهات",
-      "pricePlanPerformance": "أداء خطط الأسعار"
+      "pricePlanPerformance": "أداء خطط الأسعار",
+      "registrationTrend": "تطور التسجيلات (3 ساعات)",
+      "planStats": "إحصائيات الخطط",
+      "participantsList": "قائمة المشاركين",
+      "participantsByPlan": "المشاركون حسب الخطة"
     },
     "charts": {
       "ordersTrendTitle": "اتجاه الطلبات (يومًا بيوم)",
       "ordersTrendEmpty": "لا توجد بيانات اتجاه متاحة.",
-      "scanHourlyTitle": "نشاط المسح حسب الساعة"
+      "scanHourlyTitle": "نشاط المسح حسب الساعة",
+      "registrationActivity": "منحنى النشاط (التسجيلات)"
     },
     "fields": {
       "category": "الفئة",
@@ -1526,8 +1565,20 @@
       "plan": "الخطة",
       "sales": "المبيعات",
       "revenue": "الإيراد",
-      "weight": "الوزن"
-    }
+      "weight": "الوزن",
+      "participations": "المشاركات",
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "city": "المدينة",
+      "planChoice": "الخطة / الخيار",
+      "amount": "المبلغ",
+      "registrationDate": "تاريخ التسجيل"
+    },
+    "availableChoices": "الخيارات المتاحة:",
+    "noChoice": "بدون خيار",
+    "registered": "مسجلون",
+    "organizationLogoAlt": "شعار المنظمة"
   },
   "eventForm": {
     "Create": "إنشاء",
@@ -1572,6 +1623,35 @@
     "workSubmission": {
       "title": "إظهار نافذة منبثقة لتقديم العمل بعد الشراء",
       "description": "إذا تم التفعيل، سيرى العملاء تأكيدًا بعد المشاركة لاختيار تقديم العمل أو العودة للرئيسية."
+    },
+    "city": "المدينة",
+    "village": "القرية",
+    "showProfileButton": {
+      "title": "إظهار زر 'عرض ملفي الشخصي'",
+      "description": "يتيح للمشارك الانتقال إلى ملفه الشخصي بعد التسجيل."
+    },
+    "showReturnButton": {
+      "title": "إظهار زر 'العودة إلى الفعالية'",
+      "description": "يتيح للمشارك البقاء في صفحة الفعالية بعد التسجيل."
+    },
+    "registrationConfig": {
+      "title": "إعدادات التسجيل",
+      "description": "اختر المعلومات المطلوبة من المشاركين.",
+      "fields": {
+        "jobTitle": "الوظيفة / التخصص",
+        "republic": "الجمهورية (الولاية)",
+        "village": "القرية",
+        "maskRepublicLabel": "إخفاء تسمية الجمهورية",
+        "jobTitleLabelPlaceholder": "عنوان مخصص للوظيفة",
+        "selectedRepublic": "الجمهورية المحددة مسبقًا",
+        "none": "لا شيء",
+        "customFields": {
+          "title": "حقول مخصصة",
+          "addField": "إضافة حقل",
+          "labelPlaceholder": "اسم الحقل",
+          "isRequired": "مطلوب"
+        }
+      }
     }
   },
   "eventPrice": {
@@ -1592,7 +1672,48 @@
     "selectPlans": "اختر خططك",
     "secureCheckout": "دفع آمن",
     "success": "نجح",
-    "validate": "التحقق"
+    "validate": "التحقق",
+    "backToEvent": "العودة إلى الفعالية",
+    "benefitAllFree": "التسجيل مجاني.",
+    "benefitInscriptionFree": "رسوم التسجيل مجانية.",
+    "benefitPlansFree": "الخطط/الورشات المختارة مجانية.",
+    "confirmationEmail": "عنوان البريد الإلكتروني للتأكيد",
+    "invalidEmail": "يرجى إدخال عنوان بريد إلكتروني صالح.",
+    "personalInformation": "المعلومات الشخصية",
+    "personalInformationDescription": "املأ معلومات المشارك قبل تأكيد التسجيل.",
+    "preferentialRateTitle": "تم تطبيق التعرفة التفضيلية",
+    "proofRequiredTitle": "الوثيقة المبررة مطلوبة",
+    "proofUploaded": "تم تحميل الوثيقة",
+    "registrationFee": "رسوم التسجيل",
+    "removeProof": "إزالة",
+    "requiredField": "هذا الحقل مطلوب.",
+    "selectOption": "اختر خيارًا",
+    "sendRegistrationRequest": "إرسال طلب التسجيل",
+    "signInRequired": "تتطلب هذه الفعالية حسابًا قبل التسجيل.",
+    "uploadProof": "تحميل الوثيقة المبررة",
+    "uploading": "جارٍ التحميل...",
+    "viewProof": "معاينة",
+    "pendingValidationNote": "سيتم تسجيل اشتراكك ثم التحقق منه بعد مراجعة المنظم لوثيقتك المبررة. في حال الرفض، سيُطبَّق السعر الكامل.",
+    "discountEligibility": "أهلية الخصم",
+    "proofUploadFailed": "فشل تحميل الوثيقة المبررة",
+    "workSubmissionTitle": "تقديم عمل",
+    "workSubmissionQuestion": "حدد ما إذا كنت ترغب في تقديم عمل مع تسجيلك.",
+    "workNo": "لا، بدون تقديم",
+    "workYes": "نعم، تقديم عمل",
+    "workSummaryHeading": "ملخص التقديم",
+    "workSummaryHelp": "أدخل هنا الملخص المرتبط بتسجيلك.",
+    "workGuestNote": "سيتم حفظ اختيارك مع التسجيل. سجّل الدخول إلى Badgi لاحقًا للعثور على تقديمك وإكماله.",
+    "workTitleLabel": "عنوان الملخص",
+    "workTitlePlaceholder": "عنوان ملخصك",
+    "workSummaryLabel": "الملخص",
+    "workSummaryPlaceholder": "أضف ملخص عملك هنا",
+    "errorTitle": "خطأ",
+    "completeInfoBeforeContinue": "يرجى إكمال معلومات التسجيل قبل المتابعة.",
+    "registrationConfirmedTitle": "تم تأكيد التسجيل",
+    "freeRegistrationConfirmed": "تم تأكيد تسجيلك المجاني.",
+    "freeRegistrationError": "تعذّر تأكيد التسجيل المجاني حاليًا. يرجى المحاولة مرة أخرى.",
+    "registrationError": "تعذّر إتمام التسجيل حاليًا. يرجى المحاولة مرة أخرى.",
+    "registrationInProgress": "جارٍ تأكيد التسجيل..."
   },
   "eventPromotion": {
     "choosePlan": "اختر خطة الترويج",
@@ -2496,7 +2617,11 @@
       "export": "تصدير البيانات",
       "filter": "تصفية الطلبات",
       "rapport": "تقرير",
-      "viewDetails": "عرض التفاصيل"
+      "viewDetails": "عرض التفاصيل",
+      "scanAccess": "مسح الدخول",
+      "add": "إضافة",
+      "import": "استيراد",
+      "manageBadges": "إدارة الشارات"
     },
     "buyer": "المشتري",
     "emptyState": {
@@ -2529,7 +2654,43 @@
       "paid": "تذكرة مدفوعة",
       "bankTransfer": "????? ????"
     },
-    "title": "إدارة الطلبات"
+    "title": "إدارة الطلبات",
+    "guestRegistration": "تسجيل ضيف",
+    "export": {
+      "toastTitle": "تصدير",
+      "noOrders": "لا توجد تسجيلات للتصدير.",
+      "successCountLabel": "تسجيل(ات)",
+      "successExportedIn": "تم تصديرها بصيغة",
+      "failed": "فشل التصدير. يرجى المحاولة مرة أخرى.",
+      "xlsx": "تصدير XLSX",
+      "word": "تصدير Word",
+      "pdf": "تصدير PDF",
+      "csv": "تصدير CSV"
+    },
+    "errorTitle": "خطأ",
+    "requiredFieldsError": "يرجى ملء جميع الحقول المطلوبة.",
+    "successTitle": "نجاح",
+    "participantAddedSuccess": "تمت إضافة المشارك بنجاح.",
+    "addParticipantError": "حدث خطأ أثناء إضافة المشارك.",
+    "dialogTitle": "إضافة مشارك",
+    "dialogDescription": "أضف مشاركًا يدويًا إلى هذه الفعالية.",
+    "firstNameLabel": "الاسم *",
+    "firstNamePlaceholder": "مثال: أحمد",
+    "lastNameLabel": "اللقب *",
+    "lastNamePlaceholder": "مثال: محمد",
+    "emailLabel": "البريد الإلكتروني *",
+    "emailPlaceholder": "مثال: ahmed@example.com",
+    "ticketTypeLabel": "نوع التذكرة",
+    "ticketTypePlaceholder": "اختر نوعًا",
+    "ticketTypePaid": "مدفوع",
+    "ticketTypeHosted": "مجاني / ضيف (مستضاف)",
+    "ticketTypeDoorpay": "الدفع في المكان",
+    "amountLabel": "المبلغ",
+    "planNameLabel": "اسم الخطة/الخيار (اختياري)",
+    "planNamePlaceholder": "مثال: VIP، عادي...",
+    "cancelButton": "إلغاء",
+    "submittingButton": "جارٍ الإضافة...",
+    "submitButton": "إضافة"
   },
   "orderDetailsDialog": {
     "buyerInfo": {
@@ -2604,12 +2765,15 @@
   "pricePlan": {
     "actions": {
       "add": "إضافة خطة جديدة",
-      "delete": "حذف الخطة"
+      "delete": "حذف الخطة",
+      "edit": "تعديل"
     },
     "buttons": {
       "addPlan": "إضافة خطة",
       "returnToSimplePrice": "العودة إلى السعر البسيط",
-      "simplePrice": "سعر بسيط"
+      "simplePrice": "سعر بسيط",
+      "cancel": "إلغاء",
+      "updatePlan": "تحديث الخطة"
     },
     "emptyState": {
       "action": "العودة إلى السعر البسيط",
@@ -2639,10 +2803,42 @@
       "currency": "د.ت",
       "places": "أماكن",
       "planNumber": "خطة رقم",
-      "title": "الخطط المُنشأة"
+      "title": "الخطط المُنشأة",
+      "editing": "— قيد التعديل",
+      "allInclusive": "شامل"
     },
     "subtitle": "إنشاء وإدارة مستويات التسعير الخاصة بك",
-    "title": "خطط الأسعار"
+    "title": "خطط الأسعار",
+    "globalNote": {
+      "label": "ملاحظة عامة لقسم التسعير",
+      "hint": "(اختياري — مرئي للمشاركين)",
+      "placeholder": "مثال: تشمل الأسعار المعروضة الدخول إلى جميع الجلسات. الإقامة غير مشمولة."
+    },
+    "editingPlan": "تعديل الخطة رقم ",
+    "packageToggle": {
+      "title": "تعرفة شاملة (باقة)",
+      "description": "عند اختيار هذه الخطة، يحل سعرها محل رسوم التسجيل وجميع الخطط/الورشات الأخرى (إجمالي ثابت)."
+    },
+    "options": {
+      "sectionTitle": "خيارات الخطة",
+      "sectionHint": "(اختياري — اختيار واحد)",
+      "label": "عنوان الخيار",
+      "labelPlaceholder": "مثال: فطور، VIP، إلخ.",
+      "supplement": "رسوم إضافية",
+      "places": "الأماكن",
+      "update": "تحديث",
+      "add": "إضافة",
+      "instructions": "تعليمات / وصف الخيار",
+      "instructionsHint": "(اختياري — مثال: طريقة الدفع، بريد التأكيد، الموعد النهائي)",
+      "instructionsPlaceholder": "مثال: يجب على المختبر إرسال بريد تأكيد إلى contact@labo.tn والدفع بشيك قبل 15/09/2026.",
+      "requireEmail": "طلب عنوان بريد إلكتروني إذا تم اختيار هذا الخيار",
+      "requestOnly": "طلب تسجيل فقط (يُخفي أزرار الدفع، زر واحد «إرسال الطلب» — تسجيل بانتظار التحقق)",
+      "placesBadge": "أماكن",
+      "emailRequiredBadge": "بريد إلكتروني مطلوب",
+      "requestOnlyBadge": "طلب فقط",
+      "editChoice": "تعديل الخيار",
+      "deleteChoice": "حذف الخيار"
+    }
   },
   "pricing": {
     "billing": {
@@ -3342,7 +3538,13 @@
     "modifyVideo": "تعديل الفيديو",
     "searchMusic": "ابحث عن موسيقى",
     "upload": "تحميل",
-    "use": "استخدام"
+    "use": "استخدام",
+    "selectMusic": "اختر الموسيقى",
+    "done": "تم",
+    "loadingTracks": "جارٍ تحميل المقاطع...",
+    "processing": "جارٍ المعالجة...",
+    "noMusicAttached": "لا توجد موسيقى مرفقة بالفيديو بعد.",
+    "failedToCreateReel": "فشل إنشاء الريل"
   },
   "workAdministration": {
     "actions": {
@@ -3982,5 +4184,236 @@
       "website": "??????",
       "noWebsite": "-"
     }
+  },
+  "importParticipants": {
+    "field": {
+      "skip": "⏭️ تجاهل",
+      "firstname": "الاسم",
+      "lastname": "اللقب",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "city": "المدينة",
+      "country": "البلد",
+      "company": "الشركة",
+      "organisation": "المنظمة",
+      "plan": "الخطة",
+      "price": "السعر",
+      "category": "الفئة",
+      "custom": "حقل مخصص"
+    },
+    "alert": {
+      "needHeaderAndData": "يجب أن يحتوي الملف على رأس وصف بيانات واحد على الأقل.",
+      "parseError": "خطأ في قراءة الملف. تحقق من الصيغة (xlsx/xls)."
+    },
+    "error": {
+      "unknown": "خطأ غير معروف"
+    },
+    "title": "استيراد المشاركين",
+    "description": "استورد قائمة المشاركين من ملف Excel (.xlsx / .xls)",
+    "step": {
+      "file": "الملف",
+      "columns": "الأعمدة",
+      "preview": "معاينة",
+      "result": "النتيجة"
+    },
+    "upload": {
+      "dropHere": "أفلت ملف Excel هنا",
+      "browseHint": "أو انقر للتصفح • .xlsx، .xls"
+    },
+    "mapping": {
+      "rows": "صف(وف)",
+      "columns": "عمود(أعمدة)",
+      "changeFile": "تغيير الملف",
+      "instruction": "اربط كل عمود في الملف بحقل مشارك:",
+      "columnLabel": "العمود",
+      "example": "مثال:"
+    },
+    "preview": {
+      "heading": "معاينة الاستيراد",
+      "participants": "مشاركون",
+      "and": "و",
+      "otherRows": "صفوف أخرى"
+    },
+    "importing": {
+      "title": "جارٍ الاستيراد…",
+      "processing": "مشاركون قيد المعالجة"
+    },
+    "done": {
+      "title": "اكتمل الاستيراد",
+      "created": "تم إنشاؤها",
+      "duplicates": "مكرر",
+      "errors": "أخطاء",
+      "errorDetails": "تفاصيل الأخطاء:",
+      "otherErrors": "أخطاء أخرى"
+    },
+    "button": {
+      "back": "رجوع",
+      "preview": "معاينة",
+      "import": "استيراد",
+      "close": "إغلاق"
+    }
+  },
+  "organisationForm": {
+    "toast": {
+      "createdTitle": "تم إنشاء المنظمة!",
+      "createdDescription": "تم إنشاء منظمتك بنجاح.",
+      "updatedTitle": "تم تحديث المنظمة!",
+      "updatedDescription": "تم حفظ تغييراتك.",
+      "errorTitle": "خطأ",
+      "errorDescription": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "header": {
+      "createTitle": "إنشاء منظمة",
+      "updateTitle": "تحديث المنظمة",
+      "createDescription": "قم بإعداد منظمتك لبدء نشر الفعاليات",
+      "updateDescription": "حدّث تفاصيل منظمتك"
+    },
+    "coverImage": {
+      "label": "صورة الغلاف",
+      "placeholder": "حمّل صورة غلاف لمنظمتك"
+    },
+    "logo": {
+      "label": "الشعار",
+      "placeholder": "تحميل الشعار"
+    },
+    "name": {
+      "label": "اسم المنظمة",
+      "placeholder": "أدخل اسم منظمتك"
+    },
+    "website": {
+      "label": "الموقع الإلكتروني"
+    },
+    "subdomain": {
+      "label": "النطاق الفرعي Badgi",
+      "availableHint": "ستكون صفحتك متاحة على"
+    },
+    "description": {
+      "label": "الوصف",
+      "placeholder": "صف منظمتك وما تقوم به ونوع الفعاليات التي تنظمها..."
+    },
+    "socialLinks": {
+      "heading": "روابط التواصل الاجتماعي",
+      "facebook": "فيسبوك",
+      "twitter": "Twitter / X",
+      "instagram": "إنستغرام",
+      "linkedin": "لينكد إن"
+    },
+    "banner": {
+      "heading": "شريط متحرك",
+      "imageLabel": "صورة الشريط",
+      "imagePlaceholder": "حمّل صورة ترويجية لشريطك",
+      "titleLabel": "عنوان الشريط",
+      "titlePlaceholder": "مثال: أخبار، معلومة، إعلان…",
+      "contentLabel": "نص متحرك",
+      "contentPlaceholder": "سيتحرك هذا النص بشكل متكرر على صفحتك. مثال: التسجيل مفتوح لمؤتمر 2026 · تم الإعلان عن تاريخ جديد…"
+    },
+    "partners": {
+      "heading": "الرعاة والشركاء",
+      "add": "إضافة",
+      "empty": "لا يوجد شركاء · انقر على \"إضافة\" لإضافة واحد",
+      "logoLabel": "الشعار",
+      "nameLabel": "الاسم *",
+      "namePlaceholder": "اسم الشريك",
+      "websiteLabel": "الموقع الإلكتروني"
+    },
+    "submit": {
+      "creating": "جارٍ الإنشاء...",
+      "updating": "جارٍ التحديث...",
+      "create": "إنشاء المنظمة",
+      "save": "حفظ التغييرات"
+    },
+    "common": {
+      "optional": "(اختياري)",
+      "optionalEn": "(اختياري)"
+    }
+  },
+  "bankTransferModal": {
+    "cta": "تحويل بنكي",
+    "enterTransferId": "يرجى إدخال معرّف التحويل",
+    "error": "خطأ",
+    "fileTooLarge": "الملف كبير جدًا",
+    "fileTooLargeDescription": "يرجى تحميل ملف أصغر من 5 ميغابايت",
+    "invalidFileType": "نوع ملف غير صالح",
+    "invalidFileTypeDescription": "يرجى تحميل صورة (JPG، PNG، إلخ.)",
+    "previewLabel": "معاينة:",
+    "removeImage": "إزالة الصورة",
+    "screenshotTab": "لقطة شاشة",
+    "submitScreenshot": "إرسال اللقطة",
+    "submitScreenshotFailed": "فشل إرسال اللقطة",
+    "submitTransferError": "حدث خطأ أثناء إرسال التحويل",
+    "submitTransferFailed": "فشل إرسال التحويل",
+    "submitTransferId": "إرسال المعرّف",
+    "submitting": "جارٍ الإرسال...",
+    "success": "نجاح",
+    "title": "الدفع عبر التحويل البنكي",
+    "transferIdLabel": "معرّف التحويل",
+    "transferIdPlaceholder": "مثال: TRF12345678910",
+    "transferIdTab": "المعرّف",
+    "uploadFormats": "PNG، JPG، GIF حتى 5 ميغابايت",
+    "uploadHint": "انقر للتحميل أو اسحب وأفلت",
+    "uploadScreenshot": "يرجى تحميل لقطة شاشة",
+    "uploadScreenshotError": "حدث خطأ أثناء تحميل اللقطة",
+    "uploadScreenshotLabel": "تحميل اللقطة",
+    "uploading": "جارٍ التحميل...",
+    "completeRegistrationFirst": "يرجى أولاً إكمال معلومات التسجيل.",
+    "transferSubmitted": "تم إرسال التحويل البنكي بنجاح. التحقق قيد الانتظار.",
+    "screenshotSubmitted": "تم إرسال لقطة التحويل بنجاح. التحقق قيد الانتظار."
+  },
+  "collection": {
+    "filterAll": "الكل",
+    "filterBadgi": "فعاليات Badgi",
+    "filterExternal": "منصات أخرى",
+    "allYears": "كل السنوات",
+    "noEventsInCategory": "لا توجد فعاليات في هذه الفئة"
+  },
+  "badgeDesigner": {
+    "toastUpdated": "تم تحديث التصميم!",
+    "toastSaved": "تم حفظ التصميم!",
+    "toastSaveFailed": "فشل حفظ التصميم",
+    "orientation": "الاتجاه",
+    "portrait": "عمودي",
+    "landscape": "أفقي",
+    "badgeSide": "جهة الشارة",
+    "front": "الأمام",
+    "back": "الخلف",
+    "backgroundImg": "صورة الخلفية",
+    "uploadImage": "تحميل صورة",
+    "remove": "إزالة",
+    "addContent": "إضافة محتوى",
+    "text": "نص",
+    "uploadImg": "تحميل صورة",
+    "shape": "شكل",
+    "qrCode": "رمز QR",
+    "dynamicElements": "عناصر ديناميكية",
+    "name": "الاسم",
+    "photo": "صورة",
+    "eventTitle": "عنوان الفعالية",
+    "eventDate": "تاريخ الفعالية",
+    "saveDesign": "حفظ التصميم",
+    "properties": "الخصائص",
+    "content": "المحتوى",
+    "font": "الخط",
+    "size": "الحجم",
+    "color": "اللون",
+    "style": "النمط",
+    "alignment": "المحاذاة",
+    "letterSpacing": "تباعد الأحرف (بكسل)",
+    "qrContent": "محتوى رمز QR",
+    "insertTemplate": "— إدراج نموذج —",
+    "participantId": "معرّف المشارك",
+    "email": "البريد الإلكتروني",
+    "qrName": "الاسم",
+    "nameEmail": "الاسم + البريد الإلكتروني",
+    "idNameEmail": "المعرّف + الاسم + البريد",
+    "variablesLabel": "المتغيرات:",
+    "quietZone": "المنطقة الهادئة (الهامش الأبيض):",
+    "quietZoneNone": "0 (بدون)",
+    "quietZoneLarge": "10 (كبيرة)",
+    "qrColor": "لون رمز QR",
+    "width": "العرض",
+    "height": "الارتفاع",
+    "bgColor": "لون الخلفية",
+    "delete": "حذف",
+    "sampleText": "نص تجريبي"
   }
 }

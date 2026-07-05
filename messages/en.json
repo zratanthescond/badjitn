@@ -46,7 +46,9 @@
       "noFields": "no fields added yet",
       "selectOption": "Select an option",
       "subtitle": "Attendee Registration Preview",
-      "title": "Form Preview"
+      "title": "Form Preview",
+      "startAddingFields": "Start adding fields to see them appearing here",
+      "previewModeNote": "Preview Mode • Form functionality simulated"
     },
     "title": "Custom Form Builder",
     "validation": {
@@ -143,7 +145,13 @@
     "subtitle": "Real-time scanning and access control",
     "ticketType": "Access Type",
     "unknown": "Unknown",
-    "verifying": "Verifying access..."
+    "verifying": "Verifying access...",
+    "success": "Success",
+    "pointAdded": "Scan point added successfully.",
+    "error": "Error",
+    "pointAddFailed": "Unable to add the scan point.",
+    "pointDeleteFailed": "Unable to delete the scan point.",
+    "cameraStartFailed": "Unable to start the camera."
   },
   "SponsorForm": {
     "actions": {
@@ -151,7 +159,8 @@
       "updateSponsor": "Update Sponsor",
       "cancel": "Cancel",
       "reset": "Reset Form",
-      "submitting": "Processing..."
+      "submitting": "Processing...",
+      "editSponsor": "Edit Sponsor"
     },
     "description": "Enter the details of the new sponsor to add them to your platform.",
     "fields": {
@@ -193,7 +202,10 @@
       "success": "Success",
       "successDescription": "Sponsor added successfully! They will appear in your sponsor list.",
       "updateSuccess": "Sponsor updated successfully!",
-      "uploading": "Uploading files..."
+      "uploading": "Uploading files...",
+      "updateSuccessDescription": "Sponsor updated successfully!",
+      "updateError": "Error",
+      "updateErrorDescription": "Failed to update sponsor. Please try again."
     },
     "title": "Add New Sponsor",
     "validation": {
@@ -206,7 +218,8 @@
       "tierRequired": "Please select a sponsorship tier",
       "urlInvalid": "Please enter a valid URL (e.g., https://example.com)",
       "urlRequired": "Website URL is required"
-    }
+    },
+    "titleEdit": "Edit Sponsor Details"
   },
   "TicketControle": {
     "accessibility": {
@@ -310,7 +323,19 @@
       "title": "Submission image",
       "unlockMessage": "Unlocked after approval",
       "unlockHint": "Submit your summary first; once the organizer approves it, you can upload an image here."
-    }
+    },
+    "untitled": "Untitled",
+    "summariesAvailable": "Available summaries",
+    "summariesAvailableHint": "You can add several summaries and edit each one at any time.",
+    "newSummary": "New summary",
+    "statusApproved": "Approved",
+    "statusPending": "Pending",
+    "statusDraft": "Draft",
+    "editSummary": "Edit summary",
+    "approvedResubmitNote": "This summary is approved. If you edit it, it will return to pending approval.",
+    "selectSummaryFirst": "Create or select a summary first.",
+    "selectSummaryFirstHint": "The submission image will be attached to the chosen summary.",
+    "preview": "Preview"
   },
   "about": {
     "cta": {
@@ -1447,7 +1472,10 @@
       "registration": "Registration"
     },
     "title": "Event Details",
-    "viewPricing": "View Pricing"
+    "viewPricing": "View Pricing",
+    "hostedBy": "Hosted by",
+    "organizer": "Organizer",
+    "checkInBegins": "Check-in begins"
   },
   "eventControls": {
     "delete": "Delete",
@@ -1499,12 +1527,17 @@
       "orderStats": "Registration Statistics",
       "scanPoints": "Scan Point Details",
       "executiveTrends": "Executive Summary and Trends",
-      "pricePlanPerformance": "Price Plan Performance"
+      "pricePlanPerformance": "Price Plan Performance",
+      "registrationTrend": "Registration trend (3h)",
+      "planStats": "Plan statistics",
+      "participantsList": "Participants list",
+      "participantsByPlan": "Participants by plan"
     },
     "charts": {
       "ordersTrendTitle": "Registrations trend (day by day)",
       "ordersTrendEmpty": "No trend data available.",
-      "scanHourlyTitle": "Scan activity by hour"
+      "scanHourlyTitle": "Scan activity by hour",
+      "registrationActivity": "Activity chart (registrations)"
     },
     "fields": {
       "category": "Category",
@@ -1532,8 +1565,20 @@
       "plan": "Plan",
       "sales": "Sales",
       "revenue": "Revenue",
-      "weight": "Weight"
-    }
+      "weight": "Weight",
+      "participations": "Participations",
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "city": "City",
+      "planChoice": "Plan / Choice",
+      "amount": "Amount",
+      "registrationDate": "Registration date"
+    },
+    "availableChoices": "Available choices:",
+    "noChoice": "No choice",
+    "registered": "registered",
+    "organizationLogoAlt": "Organization logo"
   },
   "eventForm": {
     "Create": "Create",
@@ -1578,6 +1623,35 @@
     "workSubmission": {
       "title": "Show work submission popup after purchase",
       "description": "If enabled, customers will see a confirmation after participating to choose between submitting work or returning home."
+    },
+    "city": "City",
+    "village": "Village",
+    "showProfileButton": {
+      "title": "Show 'View my profile' button",
+      "description": "Lets the participant go to their profile after registration."
+    },
+    "showReturnButton": {
+      "title": "Show 'Return to event' button",
+      "description": "Lets the participant stay on the event page after registration."
+    },
+    "registrationConfig": {
+      "title": "Registration configuration",
+      "description": "Choose the information to request from participants.",
+      "fields": {
+        "jobTitle": "Role / Specialty",
+        "republic": "Republic (Governorate)",
+        "village": "Village",
+        "maskRepublicLabel": "Hide Republic label",
+        "jobTitleLabelPlaceholder": "Custom label for Role",
+        "selectedRepublic": "Pre-selected Republic",
+        "none": "None",
+        "customFields": {
+          "title": "Custom fields",
+          "addField": "Add a field",
+          "labelPlaceholder": "Field name",
+          "isRequired": "Required"
+        }
+      }
     }
   },
   "eventPrice": {
@@ -1598,7 +1672,48 @@
     "selectPlans": "Select your plans",
     "secureCheckout": "Secure checkout",
     "success": "Success",
-    "validate": "validate"
+    "validate": "validate",
+    "backToEvent": "Back to event",
+    "benefitAllFree": "Registration included.",
+    "benefitInscriptionFree": "Registration fee waived.",
+    "benefitPlansFree": "Your selected plans/workshops are included.",
+    "confirmationEmail": "Confirmation email address",
+    "invalidEmail": "Please enter a valid email address.",
+    "personalInformation": "Personal information",
+    "personalInformationDescription": "Fill in the participant's information before confirming the registration.",
+    "preferentialRateTitle": "Preferential rate applied",
+    "proofRequiredTitle": "Proof required",
+    "proofUploaded": "Proof uploaded",
+    "registrationFee": "Registration fee",
+    "removeProof": "Remove",
+    "requiredField": "This field is required.",
+    "selectOption": "Select an option",
+    "sendRegistrationRequest": "Send registration request",
+    "signInRequired": "This event requires an account before registration.",
+    "uploadProof": "Upload proof",
+    "uploading": "Uploading...",
+    "viewProof": "Preview",
+    "pendingValidationNote": "Your registration will be recorded then validated after the organizer reviews your proof document. If rejected, the full price will apply.",
+    "discountEligibility": "Discount eligibility",
+    "proofUploadFailed": "Failed to upload proof document",
+    "workSubmissionTitle": "Work submission",
+    "workSubmissionQuestion": "Indicate whether you wish to submit a work with your registration.",
+    "workNo": "No, without submission",
+    "workYes": "Yes, submit a work",
+    "workSummaryHeading": "Submission summary",
+    "workSummaryHelp": "Enter here the summary to associate with your registration.",
+    "workGuestNote": "Your choice will be saved with the registration. Sign in to Badgi afterwards to find and complete your submission.",
+    "workTitleLabel": "Summary title",
+    "workTitlePlaceholder": "Your summary title",
+    "workSummaryLabel": "Summary",
+    "workSummaryPlaceholder": "Add your work summary here",
+    "errorTitle": "Error",
+    "completeInfoBeforeContinue": "Please complete the registration information before continuing.",
+    "registrationConfirmedTitle": "Registration confirmed",
+    "freeRegistrationConfirmed": "Your free registration has been confirmed.",
+    "freeRegistrationError": "Unable to confirm the free registration right now. Please try again.",
+    "registrationError": "Unable to finalize the registration right now. Please try again.",
+    "registrationInProgress": "Confirming registration..."
   },
   "eventPromotion": {
     "choosePlan": "Choose Your Promotion Plan",
@@ -2502,7 +2617,11 @@
       "export": "Export Data",
       "filter": "Filter Registrations",
       "rapport": "Report",
-      "viewDetails": "View Details"
+      "viewDetails": "View Details",
+      "scanAccess": "Scan access",
+      "add": "Add",
+      "import": "Import",
+      "manageBadges": "Manage badges"
     },
     "buyer": "Buyer",
     "emptyState": {
@@ -2535,7 +2654,43 @@
       "paid": "Paid Registration",
       "bankTransfer": "Bank Transfer"
     },
-    "title": "Registration Management"
+    "title": "Registration Management",
+    "guestRegistration": "Guest registration",
+    "export": {
+      "toastTitle": "Export",
+      "noOrders": "No registrations to export.",
+      "successCountLabel": "registration(s)",
+      "successExportedIn": "exported in",
+      "failed": "Export failed. Please try again.",
+      "xlsx": "Export XLSX",
+      "word": "Export Word",
+      "pdf": "Export PDF",
+      "csv": "Export CSV"
+    },
+    "errorTitle": "Error",
+    "requiredFieldsError": "Please fill in all required fields.",
+    "successTitle": "Success",
+    "participantAddedSuccess": "Participant added successfully.",
+    "addParticipantError": "An error occurred while adding the participant.",
+    "dialogTitle": "Add a participant",
+    "dialogDescription": "Manually add a participant to this event.",
+    "firstNameLabel": "First name *",
+    "firstNamePlaceholder": "E.g.: John",
+    "lastNameLabel": "Last name *",
+    "lastNamePlaceholder": "E.g.: Doe",
+    "emailLabel": "Email *",
+    "emailPlaceholder": "E.g.: john.doe@example.com",
+    "ticketTypeLabel": "Ticket type",
+    "ticketTypePlaceholder": "Select a type",
+    "ticketTypePaid": "Paid",
+    "ticketTypeHosted": "Free / Guest (Hosted)",
+    "ticketTypeDoorpay": "Pay on site",
+    "amountLabel": "Amount",
+    "planNameLabel": "Plan/Option name (Optional)",
+    "planNamePlaceholder": "E.g.: VIP, Standard...",
+    "cancelButton": "Cancel",
+    "submittingButton": "Adding...",
+    "submitButton": "Add"
   },
   "orderDetailsDialog": {
     "buyerInfo": {
@@ -2610,12 +2765,15 @@
   "pricePlan": {
     "actions": {
       "add": "Add new plan",
-      "delete": "Delete plan"
+      "delete": "Delete plan",
+      "edit": "Edit"
     },
     "buttons": {
       "addPlan": "Add Plan",
       "returnToSimplePrice": "Return to Simple Price",
-      "simplePrice": "Simple Price"
+      "simplePrice": "Simple Price",
+      "cancel": "Cancel",
+      "updatePlan": "Update plan"
     },
     "emptyState": {
       "action": "Return to Simple Price",
@@ -2645,10 +2803,42 @@
       "currency": "TND",
       "places": "places",
       "planNumber": "Plan #",
-      "title": "Created Plans"
+      "title": "Created Plans",
+      "editing": "— editing",
+      "allInclusive": "All-inclusive"
     },
     "subtitle": "Create and manage your pricing tiers",
-    "title": "Price Plans"
+    "title": "Price Plans",
+    "globalNote": {
+      "label": "Global note for the pricing section",
+      "hint": "(optional — visible to participants)",
+      "placeholder": "E.g.: Prices shown include access to all sessions. Accommodation not included."
+    },
+    "editingPlan": "Edit plan #",
+    "packageToggle": {
+      "title": "All-inclusive rate (package)",
+      "description": "When this plan is selected, its price replaces the registration fee and all other plans/workshops (fixed total)."
+    },
+    "options": {
+      "sectionTitle": "Plan choices",
+      "sectionHint": "(optional — single selection)",
+      "label": "Choice label",
+      "labelPlaceholder": "E.g.: Breakfast, VIP, etc.",
+      "supplement": "Supplement",
+      "places": "Spots",
+      "update": "Update",
+      "add": "Add",
+      "instructions": "Choice instructions / description",
+      "instructionsHint": "(optional — e.g.: payment method, confirmation email, deadline)",
+      "instructionsPlaceholder": "E.g.: The lab must send a confirmation email to contact@labo.tn and pay by cheque before 15/09/2026.",
+      "requireEmail": "Request an email address if this choice is selected",
+      "requestOnly": "Registration request only (hides payment buttons, a single \"Send request\" button — registration pending validation)",
+      "placesBadge": "spots",
+      "emailRequiredBadge": "email required",
+      "requestOnlyBadge": "request only",
+      "editChoice": "Edit choice",
+      "deleteChoice": "Delete choice"
+    }
   },
   "pricing": {
     "billing": {
@@ -2917,7 +3107,8 @@
       "customForms": "Custom Forms",
       "sponsors": "Sponsors",
       "customFields": "Custom Fields"
-    }
+    },
+    "allTickets": "All registrations"
   },
   "organisationCard": {
     "noDescription": "No description yet",
@@ -3993,5 +4184,236 @@
       "website": "Website",
       "noWebsite": "-"
     }
+  },
+  "importParticipants": {
+    "field": {
+      "skip": "⏭️ Skip",
+      "firstname": "First name",
+      "lastname": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "city": "City",
+      "country": "Country",
+      "company": "Company",
+      "organisation": "Organisation",
+      "plan": "Plan",
+      "price": "Price",
+      "category": "Category",
+      "custom": "Custom field"
+    },
+    "alert": {
+      "needHeaderAndData": "The file must contain at least a header and one data row.",
+      "parseError": "Error reading the file. Check the format (xlsx/xls)."
+    },
+    "error": {
+      "unknown": "Unknown error"
+    },
+    "title": "Import participants",
+    "description": "Import a list of participants from an Excel file (.xlsx / .xls)",
+    "step": {
+      "file": "File",
+      "columns": "Columns",
+      "preview": "Preview",
+      "result": "Result"
+    },
+    "upload": {
+      "dropHere": "Drop your Excel file here",
+      "browseHint": "or click to browse • .xlsx, .xls"
+    },
+    "mapping": {
+      "rows": "row(s)",
+      "columns": "column(s)",
+      "changeFile": "Change file",
+      "instruction": "Map each file column to a participant field:",
+      "columnLabel": "Column",
+      "example": "e.g.:"
+    },
+    "preview": {
+      "heading": "Import preview",
+      "participants": "participants",
+      "and": "and",
+      "otherRows": "other rows"
+    },
+    "importing": {
+      "title": "Importing…",
+      "processing": "participants being processed"
+    },
+    "done": {
+      "title": "Import complete",
+      "created": "Created",
+      "duplicates": "Duplicates",
+      "errors": "Errors",
+      "errorDetails": "Error details:",
+      "otherErrors": "other errors"
+    },
+    "button": {
+      "back": "Back",
+      "preview": "Preview",
+      "import": "Import",
+      "close": "Close"
+    }
+  },
+  "organisationForm": {
+    "toast": {
+      "createdTitle": "Organisation Created!",
+      "createdDescription": "Your organisation has been created successfully.",
+      "updatedTitle": "Organisation Updated!",
+      "updatedDescription": "Your changes have been saved.",
+      "errorTitle": "Error",
+      "errorDescription": "Something went wrong. Please try again."
+    },
+    "header": {
+      "createTitle": "Create Organisation",
+      "updateTitle": "Update Organisation",
+      "createDescription": "Set up your organisation to start publishing events",
+      "updateDescription": "Update your organisation details"
+    },
+    "coverImage": {
+      "label": "Cover Image",
+      "placeholder": "Upload a cover image for your organisation"
+    },
+    "logo": {
+      "label": "Logo",
+      "placeholder": "Upload logo"
+    },
+    "name": {
+      "label": "Organisation Name",
+      "placeholder": "Enter your organisation name"
+    },
+    "website": {
+      "label": "Website"
+    },
+    "subdomain": {
+      "label": "Badgi subdomain",
+      "availableHint": "Your page will be available at"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Describe your organisation, what you do, and what kind of events you organise..."
+    },
+    "socialLinks": {
+      "heading": "Social Links",
+      "facebook": "Facebook",
+      "twitter": "Twitter / X",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn"
+    },
+    "banner": {
+      "heading": "Rolling banner",
+      "imageLabel": "Banner image",
+      "imagePlaceholder": "Upload a promotional image for your banner",
+      "titleLabel": "Banner title",
+      "titlePlaceholder": "e.g.: NEWS, INFO, ANNOUNCEMENT…",
+      "contentLabel": "Scrolling text",
+      "contentPlaceholder": "This text will scroll in a loop on your page. E.g.: Registration open for the 2026 congress · New date announced…"
+    },
+    "partners": {
+      "heading": "Sponsors & Partners",
+      "add": "Add",
+      "empty": "No partners · Click \"Add\" to add one",
+      "logoLabel": "Logo",
+      "nameLabel": "Name *",
+      "namePlaceholder": "Partner name",
+      "websiteLabel": "Website"
+    },
+    "submit": {
+      "creating": "Creating...",
+      "updating": "Updating...",
+      "create": "Create Organisation",
+      "save": "Save Changes"
+    },
+    "common": {
+      "optional": "(optional)",
+      "optionalEn": "(optional)"
+    }
+  },
+  "bankTransferModal": {
+    "cta": "Bank transfer",
+    "enterTransferId": "Please enter a transfer ID",
+    "error": "Error",
+    "fileTooLarge": "File too large",
+    "fileTooLargeDescription": "Please upload a file smaller than 5 MB",
+    "invalidFileType": "Invalid file type",
+    "invalidFileTypeDescription": "Please upload an image (JPG, PNG, etc.)",
+    "previewLabel": "Preview:",
+    "removeImage": "Remove image",
+    "screenshotTab": "Screenshot",
+    "submitScreenshot": "Submit screenshot",
+    "submitScreenshotFailed": "Failed to submit the screenshot",
+    "submitTransferError": "An error occurred while submitting the transfer",
+    "submitTransferFailed": "Failed to submit the transfer",
+    "submitTransferId": "Submit ID",
+    "submitting": "Submitting...",
+    "success": "Success",
+    "title": "Bank transfer payment",
+    "transferIdLabel": "Transfer ID",
+    "transferIdPlaceholder": "e.g. TRF12345678910",
+    "transferIdTab": "ID",
+    "uploadFormats": "PNG, JPG, GIF up to 5 MB",
+    "uploadHint": "Click to upload or drag and drop",
+    "uploadScreenshot": "Please upload a screenshot",
+    "uploadScreenshotError": "An error occurred while uploading the screenshot",
+    "uploadScreenshotLabel": "Upload screenshot",
+    "uploading": "Uploading...",
+    "completeRegistrationFirst": "Please complete the registration information first.",
+    "transferSubmitted": "The bank transfer was submitted successfully. Verification pending.",
+    "screenshotSubmitted": "The transfer screenshot was submitted successfully. Verification pending."
+  },
+  "collection": {
+    "filterAll": "All",
+    "filterBadgi": "Badgi Events",
+    "filterExternal": "Other Platforms",
+    "allYears": "All years",
+    "noEventsInCategory": "No events in this category"
+  },
+  "badgeDesigner": {
+    "toastUpdated": "Design updated!",
+    "toastSaved": "Design saved!",
+    "toastSaveFailed": "Failed to save design",
+    "orientation": "Orientation",
+    "portrait": "Portrait",
+    "landscape": "Landscape",
+    "badgeSide": "Badge Side",
+    "front": "Front",
+    "back": "Back",
+    "backgroundImg": "Background Img",
+    "uploadImage": "Upload Image",
+    "remove": "Remove",
+    "addContent": "Add Content",
+    "text": "Text",
+    "uploadImg": "Upload Img",
+    "shape": "Shape",
+    "qrCode": "QR Code",
+    "dynamicElements": "Dynamic Elements",
+    "name": "Name",
+    "photo": "Photo",
+    "eventTitle": "Event Title",
+    "eventDate": "Event Date",
+    "saveDesign": "Save Design",
+    "properties": "Properties",
+    "content": "Content",
+    "font": "Font",
+    "size": "Size",
+    "color": "Color",
+    "style": "Style",
+    "alignment": "Alignment",
+    "letterSpacing": "Letter spacing (px)",
+    "qrContent": "QR Code content",
+    "insertTemplate": "— Insert a template —",
+    "participantId": "Participant ID",
+    "email": "Email",
+    "qrName": "Name",
+    "nameEmail": "Name + Email",
+    "idNameEmail": "ID + Name + Email",
+    "variablesLabel": "Variables:",
+    "quietZone": "Quiet zone (white margin):",
+    "quietZoneNone": "0 (none)",
+    "quietZoneLarge": "10 (large)",
+    "qrColor": "QR color",
+    "width": "Width",
+    "height": "Height",
+    "bgColor": "Background color",
+    "delete": "Delete",
+    "sampleText": "Sample Text"
   }
 }

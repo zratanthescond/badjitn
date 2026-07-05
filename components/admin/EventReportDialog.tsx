@@ -42,6 +42,7 @@ const getTrendPolyline = (values: number[], width = 320, height = 100) => {
 
 export default function EventReportDialog({ eventId, isOpen, onClose }: EventReportDialogProps) {
   const t = useTranslations("eventReport");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const locale = useLocale();
   const isRTL = locale === "ar";
   const reportRef = useRef<HTMLDivElement>(null);
@@ -230,7 +231,7 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                     <div className="text-[11px] uppercase text-slate-500 mb-1">{t("fields.description")}</div>
                     {event.organisation?.logo && (
                       <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-2 mb-2">
-                        <img src={event.organisation.logo} alt="Organization logo" className="h-9 w-9 rounded-full object-cover border border-slate-200" />
+                        <img src={event.organisation.logo} alt={tx("organizationLogoAlt", "Organization logo")} className="h-9 w-9 rounded-full object-cover border border-slate-200" />
                         <div>
                           <div className="text-xs text-slate-500">{t("organizedByLabel") || "Organisateur"}</div>
                           <div className="text-sm font-semibold text-slate-800">{event.organisation.name}</div>
@@ -244,7 +245,7 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
 
               {event.pricePlan?.length > 0 && (
                 <div className="mb-6 report-section">
-                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Plans de l'événement</h3>
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{tx("sections.pricePlans", "Plans de l'événement")}</h3>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 no-split">
                     {event.pricePlan.map((plan: any, i: number) => (
                       <div key={i} className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 flex flex-col h-full">
@@ -255,7 +256,7 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                         
                         {plan.options && plan.options.length > 0 && (
                           <div className="mt-2 pt-2 border-t border-amber-200/50">
-                            <div className="text-[9px] uppercase font-bold text-amber-800/70 mb-1">Choix disponibles :</div>
+                            <div className="text-[9px] uppercase font-bold text-amber-800/70 mb-1">{tx("availableChoices", "Choix disponibles :")}</div>
                             <div className="flex flex-wrap gap-1">
                               {plan.options.map((opt: string, optIdx: number) => (
                                 <span key={optIdx} className="text-[9px] bg-white/70 border border-amber-200 text-amber-800 px-1.5 py-0.5 rounded leading-tight">
@@ -283,11 +284,11 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
               </div>
 
               <div className="mb-6 report-section">
-                <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Évolution des inscriptions (3h)</h3>
+                <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{tx("sections.registrationTrend", "Évolution des inscriptions (3h)")}</h3>
                 
                 <div className={`grid ${totalScanEntries > 0 ? "lg:grid-cols-2" : "grid-cols-1"} gap-3 no-split`}>
                   <div className="rounded-xl border border-slate-200 bg-white p-3 no-split">
-                    <div className="text-sm font-semibold text-slate-700 mb-2">Courbe d'activité (inscriptions)</div>
+                    <div className="text-sm font-semibold text-slate-700 mb-2">{tx("charts.registrationActivity", "Courbe d'activité (inscriptions)")}</div>
                     {orderTrendValues.length > 0 ? (
                       <div>
                         <svg viewBox="0 0 320 100" className="w-full h-28">
@@ -335,15 +336,15 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
 
               {stats?.topPricePlans?.length > 0 && (
                 <div className="mb-6 report-section">
-                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Statistiques des plans</h3>
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{tx("sections.planStats", "Statistiques des plans")}</h3>
                   <div className="overflow-x-auto rounded-xl border border-slate-200 no-split">
                     <table className="w-full border-collapse text-xs report-table">
                       <thead>
                         <tr>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Plan</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Participations</th>
-                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-right font-semibold text-slate-700 border-b border-slate-200">Revenu</th>}
-                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200 w-24">Poids %</th>}
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.plan", "Plan")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.participations", "Participations")}</th>
+                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-right font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.revenue", "Revenu")}</th>}
+                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200 w-24">{tx("tableHeaders.weight", "Poids %")}</th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -383,18 +384,18 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
 
               {stats?.participantsList && stats.participantsList.length > 0 && (
                 <div className="mb-6 report-section">
-                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Liste des Participants</h3>
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{tx("sections.participantsList", "Liste des Participants")}</h3>
                   <div className="overflow-x-auto rounded-xl border border-slate-200 no-split">
                     <table className="w-full border-collapse text-xs report-table">
                       <thead>
                         <tr>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Nom complet</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Email</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Téléphone</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Ville</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Plan / Choix</th>
-                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-right font-semibold text-slate-700 border-b border-slate-200">Montant</th>}
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Date d'inscription</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.fullName", "Nom complet")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.email", "Email")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.phone", "Téléphone")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.city", "Ville")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.planChoice", "Plan / Choix")}</th>
+                          {!isFreeEvent && <th className="bg-slate-100 px-2.5 py-2 text-right font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.amount", "Montant")}</th>}
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.registrationDate", "Date d'inscription")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -426,10 +427,10 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
 
               {stats?.participantsByPlan && Object.keys(stats.participantsByPlan).length > 0 && (
                 <div className="mb-6 report-section">
-                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Participants par Plan</h3>
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{tx("sections.participantsByPlan", "Participants par Plan")}</h3>
                   {Object.entries(stats.participantsByPlan).map(([planName, participants]: [string, any], idx: number) => {
                     const groupedByChoice = participants.reduce((acc: any, p: any) => {
-                      const choice = p.choice || "Sans choix";
+                      const choice = p.choice || tx("noChoice", "Sans choix");
                       if (!acc[choice]) acc[choice] = [];
                       acc[choice].push(p);
                       return acc;
@@ -438,7 +439,7 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                     return (
                       <div key={`plan-${idx}`} className="mb-8 no-split">
                         <h4 className="text-sm font-bold text-slate-900 bg-slate-100 px-3 py-2 rounded-t-lg border-x border-t border-slate-200">
-                          {planName} <span className="text-blue-600 ml-1">({participants.length} inscrits)</span>
+                          {planName} <span className="text-blue-600 ml-1">({participants.length} {tx("registered", "inscrits")})</span>
                         </h4>
                         
                         {Object.entries(groupedByChoice).map(([choice, pList]: [string, any], cIdx: number) => (
@@ -451,11 +452,11 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                               <table className="w-full border-collapse text-[10px] report-table">
                                 <thead>
                                   <tr className="bg-white">
-                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[25%]">Nom complet</th>
-                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[25%]">Email</th>
-                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[20%]">Téléphone</th>
-                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[15%]">Ville</th>
-                                    {!isFreeEvent && <th className="px-2.5 py-1.5 text-right font-semibold text-slate-500 border-b border-slate-100 w-[15%]">Montant</th>}
+                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[25%]">{tx("tableHeaders.fullName", "Nom complet")}</th>
+                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[25%]">{tx("tableHeaders.email", "Email")}</th>
+                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[20%]">{tx("tableHeaders.phone", "Téléphone")}</th>
+                                    <th className="px-2.5 py-1.5 text-left font-semibold text-slate-500 border-b border-slate-100 w-[15%]">{tx("tableHeaders.city", "Ville")}</th>
+                                    {!isFreeEvent && <th className="px-2.5 py-1.5 text-right font-semibold text-slate-500 border-b border-slate-100 w-[15%]">{tx("tableHeaders.amount", "Montant")}</th>}
                                   </tr>
                                 </thead>
                                 <tbody>

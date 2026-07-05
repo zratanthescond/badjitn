@@ -70,6 +70,8 @@ export default function OrderAdministration({
   eventPlace?: string;
 }) {
   const t = useTranslations("orderAdministration");
+  const tx = (key: string, fallback: string) =>
+    t.has(key as any) ? t(key as any) : fallback;
   const locale = useLocale();
   const isRTL = locale === "ar";
   const [isReportOpen, setIsReportOpen] = useState(false);
@@ -164,7 +166,9 @@ export default function OrderAdministration({
     const fallbackCombined = `${fallbackValues[0] || ""} ${fallbackValues[1] || ""}`.trim();
     if (fallbackCombined) return formatName(fallbackCombined);
 
-    return buyerText ? formatName(buyerText) : "Guest registration";
+    return buyerText
+      ? formatName(buyerText)
+      : tx("guestRegistration", "Guest registration");
   };
 
   const columns = [
@@ -564,8 +568,8 @@ export default function OrderAdministration({
   const handleExportOrders = async (format: ExportFormat) => {
     if (!data || data.length === 0) {
       toast({
-        title: "Export",
-        description: "Aucune inscription à exporter.",
+        title: tx("export.toastTitle", "Export"),
+        description: tx("export.noOrders", "Aucune inscription à exporter."),
         variant: "destructive",
       });
       return;
@@ -1163,14 +1167,20 @@ export default function OrderAdministration({
       }
 
       toast({
-        title: "Export",
-        description: `${data.length} inscription(s) exportée(s) en ${format.toUpperCase()}.`,
+        title: tx("export.toastTitle", "Export"),
+        description: `${data.length} ${tx(
+          "export.successCountLabel",
+          "inscription(s)"
+        )} ${tx("export.successExportedIn", "exportée(s) en")} ${format.toUpperCase()}.`,
       });
     } catch (exportError) {
       console.error("Export failed", exportError);
       toast({
-        title: "Export",
-        description: "Échec de l'export. Veuillez réessayer.",
+        title: tx("export.toastTitle", "Export"),
+        description: tx(
+          "export.failed",
+          "Échec de l'export. Veuillez réessayer."
+        ),
         variant: "destructive",
       });
     } finally {
@@ -1239,16 +1249,16 @@ export default function OrderAdministration({
               </DropdownMenuTrigger>
               <DropdownMenuContent align={isRTL ? "start" : "end"}>
                 <DropdownMenuItem onClick={() => handleExportOrders("xlsx")}>
-                  Export XLSX
+                  {tx("export.xlsx", "Export XLSX")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExportOrders("word")}>
-                  Export Word
+                  {tx("export.word", "Export Word")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExportOrders("pdf")}>
-                  Export PDF
+                  {tx("export.pdf", "Export PDF")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExportOrders("csv")}>
-                  Export CSV
+                  {tx("export.csv", "Export CSV")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -1259,7 +1269,7 @@ export default function OrderAdministration({
             >
               <Link href={`/events/${eventId}/scan`}>
                 <QrCode className="h-4 w-4" />
-                <span>Scanner un accès</span>
+                <span>{tx("actions.scanAccess", "Scanner un accès")}</span>
               </Link>
             </Button>
             {eventId && (
@@ -1270,7 +1280,7 @@ export default function OrderAdministration({
                   className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-blue-500/10 to-indigo-500/10 backdrop-blur-sm border-blue-300/50 dark:border-blue-700/50 hover:from-blue-500/20 hover:to-indigo-500/20 text-blue-700 dark:text-blue-400"
                 >
                   <UserPlus className="h-4 w-4" />
-                  <span>Ajouter</span>
+                  <span>{tx("actions.add", "Ajouter")}</span>
                 </Button>
                 <Button
                   variant="outline"
@@ -1278,7 +1288,7 @@ export default function OrderAdministration({
                   className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-emerald-500/10 to-teal-500/10 backdrop-blur-sm border-emerald-300/50 dark:border-emerald-700/50 hover:from-emerald-500/20 hover:to-teal-500/20 text-emerald-700 dark:text-emerald-400"
                 >
                   <Upload className="h-4 w-4" />
-                  <span>Importer</span>
+                  <span>{tx("actions.import", "Importer")}</span>
                 </Button>
                 <Button
                   variant="outline"
@@ -1295,7 +1305,7 @@ export default function OrderAdministration({
                 >
                   <Link href={`/events/${eventId}/badge`}>
                     <Printer className="w-4 h-4 mr-2" />
-                    Gérer les badges
+                    {tx("actions.manageBadges", "Gérer les badges")}
                   </Link>
                 </Button>
               </>

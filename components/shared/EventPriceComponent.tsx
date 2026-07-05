@@ -1041,17 +1041,17 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 <div className="space-y-4 rounded-3xl border border-border/60 bg-card/30 p-5">
                   <div className="space-y-1">
                     <h4 className="text-base font-semibold text-foreground">
-                      Soumission de travail
+                      {text("workSubmissionTitle", "Soumission de travail")}
                     </h4>
                     <p className="text-sm text-muted-foreground">
-                      Indiquez si vous souhaitez soumettre un travail avec votre inscription.
+                      {text("workSubmissionQuestion", "Indiquez si vous souhaitez soumettre un travail avec votre inscription.")}
                     </p>
                   </div>
 
                   <div className="grid gap-2 md:grid-cols-2">
                     {[
-                      { value: "no", label: "Non, sans soumission" },
-                      { value: "yes", label: "Oui, soumettre un travail" },
+                      { value: "no", label: text("workNo", "Non, sans soumission") },
+                      { value: "yes", label: text("workYes", "Oui, soumettre un travail") },
                     ].map((option) => {
                       const isSelected = workChoice === option.value;
                       return (
@@ -1081,23 +1081,22 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           <FileText className="h-5 w-5 text-primary" />
                         </div>
                         <div className="space-y-1">
-                          <h5 className="font-semibold text-foreground">Resume de soumission</h5>
+                          <h5 className="font-semibold text-foreground">{text("workSummaryHeading", "Resume de soumission")}</h5>
                           <p className="text-sm text-muted-foreground">
-                            Renseignez ici le resume a associer a votre inscription.
+                            {text("workSummaryHelp", "Renseignez ici le resume a associer a votre inscription.")}
                           </p>
                         </div>
                       </div>
 
                       {!userId && (
                         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
-                          Votre choix sera enregistre avec l'inscription. Connectez-vous ensuite a
-                          Badgi pour retrouver et completer votre soumission.
+                          {text("workGuestNote", "Votre choix sera enregistre avec l'inscription. Connectez-vous ensuite a Badgi pour retrouver et completer votre soumission.")}
                         </div>
                       )}
 
                       <div className="space-y-2">
                         <Label className="text-sm font-medium text-foreground">
-                          Titre du resume
+                          {text("workTitleLabel", "Titre du resume")}
                         </Label>
                         <Input
                           value={workSummaryTitle}
@@ -1105,20 +1104,20 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             setWorkSummaryTitle(e.target.value);
                             setWorkSummaryError("");
                           }}
-                          placeholder="Titre de votre resume"
+                          placeholder={text("workTitlePlaceholder", "Titre de votre resume")}
                           className="rounded-2xl"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-sm font-medium text-foreground">Resume</Label>
+                        <Label className="text-sm font-medium text-foreground">{text("workSummaryLabel", "Resume")}</Label>
                         <Textarea
                           value={workSummaryNote}
                           onChange={(e) => {
                             setWorkSummaryNote(e.target.value);
                             setWorkSummaryError("");
                           }}
-                          placeholder="Ajoutez ici le resume de votre travail"
+                          placeholder={text("workSummaryPlaceholder", "Ajoutez ici le resume de votre travail")}
                           className="min-h-[180px] rounded-2xl"
                         />
                       </div>
