@@ -28,6 +28,7 @@ const ALL_TOOLS = [
   { id: "googleIA", name: "Google IA Pro" },
   { id: "perplexity", name: "Perplexity" },
   { id: "chatgpt", name: "ChatGPT Pro" },
+  { id: "claude", name: "Claude (Anthropic)" },
   { id: "xmind", name: "Xmind" },
   { id: "capcut", name: "CapCut" },
   { id: "deepl", name: "DeepL" },
