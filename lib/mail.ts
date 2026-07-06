@@ -148,6 +148,85 @@ export async function sendEligibilityRejectedEmail({
   });
 }
 
+export async function sendBankTransferApprovedEmail({
+  to,
+  buyerName,
+  eventTitle,
+  amount,
+}: {
+  to: string;
+  buyerName: string;
+  eventTitle: string;
+  amount: string;
+}) {
+  await transporter.sendMail({
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: `Virement confirmé — ${eventTitle}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <div style="background:#059669;border-radius:12px 12px 0 0;padding:24px;text-align:center;">
+          <h1 style="margin:0;color:#ffffff;font-size:22px;">Virement bancaire confirmé ✅</h1>
+        </div>
+        <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;padding:24px;background:#ffffff;">
+          <p style="margin:0 0 16px;">Bonjour <strong>${buyerName}</strong>,</p>
+          <p style="margin:0 0 16px;">Nous avons bien reçu et validé votre virement bancaire. Votre inscription est maintenant confirmée.</p>
+          <div style="border:1px solid #d1fae5;border-radius:10px;padding:16px;background:#f0fdf4;margin:0 0 16px;">
+            <p style="margin:0 0 8px;"><strong>Événement :</strong> ${eventTitle}</p>
+            <p style="margin:0 0 8px;"><strong>Montant réglé :</strong> ${amount}</p>
+            <p style="margin:0;"><strong>Statut :</strong> <span style="color:#059669;font-weight:600;">Approuvé</span></p>
+          </div>
+          <p style="margin:0 0 16px;color:#374151;">Votre place est réservée. Vous pouvez consulter votre ticket depuis votre espace Badgi.net.</p>
+          <p style="margin:0;color:#6b7280;font-size:13px;">Merci de votre confiance et à bientôt lors de l'événement !</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
+export async function sendBankTransferRejectedEmail({
+  to,
+  buyerName,
+  eventTitle,
+  amount,
+  rejectionReason,
+}: {
+  to: string;
+  buyerName: string;
+  eventTitle: string;
+  amount: string;
+  rejectionReason?: string;
+}) {
+  const reasonBlock = rejectionReason
+    ? `<p style="margin:8px 0 0;"><strong>Motif :</strong> ${rejectionReason}</p>`
+    : "";
+
+  await transporter.sendMail({
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: `Virement non validé — ${eventTitle}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <div style="background:#dc2626;border-radius:12px 12px 0 0;padding:24px;text-align:center;">
+          <h1 style="margin:0;color:#ffffff;font-size:22px;">Virement bancaire non validé ❌</h1>
+        </div>
+        <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;padding:24px;background:#ffffff;">
+          <p style="margin:0 0 16px;">Bonjour <strong>${buyerName}</strong>,</p>
+          <p style="margin:0 0 16px;">Après vérification, nous n'avons pas pu valider votre virement bancaire pour l'événement suivant :</p>
+          <div style="border:1px solid #fecaca;border-radius:10px;padding:16px;background:#fef2f2;margin:0 0 16px;">
+            <p style="margin:0 0 8px;"><strong>Événement :</strong> ${eventTitle}</p>
+            <p style="margin:0 0 8px;"><strong>Montant :</strong> ${amount}</p>
+            <p style="margin:0;"><strong>Statut :</strong> <span style="color:#dc2626;font-weight:600;">Refusé</span></p>
+            ${reasonBlock}
+          </div>
+          <p style="margin:0 0 16px;color:#374151;">Si vous pensez qu'il s'agit d'une erreur ou souhaitez soumettre un nouveau virement, veuillez contacter notre équipe ou vous connecter à votre espace Badgi.net.</p>
+          <p style="margin:0;color:#6b7280;font-size:13px;">Nous nous excusons pour la gêne occasionnée.</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
 export async function sendWorkStatusEmail({
   to,
   subject,

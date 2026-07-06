@@ -2,9 +2,15 @@
 
 import { connectToDatabase } from "../database";
 import BankTransfer from "../database/models/banktransfer.model";
+import Order from "../database/models/order.model";
+import User from "../database/models/user.model";
 import { handleError } from "../utils";
 import { revalidatePath } from "next/cache";
 import { verifyAdmin, verifyOrganizerOrAdmin } from "./auth.actions";
+import {
+    sendBankTransferApprovedEmail,
+    sendBankTransferRejectedEmail,
+} from "../mail";
 
 export interface GetBankTransfersParams {
     eventId?: string;
@@ -160,6 +166,41 @@ export async function verifyBankTransfer({
         }
 
         await transfer.save();
+
+        // Send email notification to buyer
+        try {
+            const order = await Order.findById(transfer.orderId)
+                .populate({ path: "buyer", model: User, select: "email firstName lastName" });
+
+            const buyer = order?.buyer as { email?: string; firstName?: string; lastName?: string } | null;
+            const buyerEmail = buyer?.email;
+
+            if (buyerEmail) {
+                const amountFormatted = `${transfer.amount.toLocaleString("fr-TN")} TND`;
+                const buyerName = buyer?.firstName
+                    ? `${buyer.firstName} ${buyer.lastName ?? ""}`.trim()
+                    : transfer.buyerName;
+
+                if (action === "approve") {
+                    await sendBankTransferApprovedEmail({
+                        to: buyerEmail,
+                        buyerName,
+                        eventTitle: transfer.eventTitle,
+                        amount: amountFormatted,
+                    });
+                } else {
+                    await sendBankTransferRejectedEmail({
+                        to: buyerEmail,
+                        buyerName,
+                        eventTitle: transfer.eventTitle,
+                        amount: amountFormatted,
+                        rejectionReason: transfer.rejectionReason ?? undefined,
+                    });
+                }
+            }
+        } catch {
+            // Email failure must not block the approval/rejection response
+        }
 
         // Revalidate the orders page to reflect changes
         revalidatePath("/orders");
