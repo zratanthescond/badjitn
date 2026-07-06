@@ -57,6 +57,12 @@ const aiTools = [
     url: "https://chat.openai.com/",
   },
   {
+    id: "claude",
+    domain: "claude.ai",
+    color: "from-orange-400 to-amber-500",
+    url: "https://claude.ai/",
+  },
+  {
     id: "xmind",
     domain: "xmind.net",
     color: "from-orange-500 to-red-500",

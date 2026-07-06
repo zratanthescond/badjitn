@@ -396,6 +396,8 @@
     "capcut": "CapCut",
     "chatgpt": "ChatGPT Pro",
     "chatgptDesc": "Leading conversational AI for text, code, and analysis.",
+    "claude": "Claude (Anthropic)",
+    "claudeDesc": "Anthropic's conversational AI assistant, powerful for analysis, writing, and coding.",
     "googleIADesc": "Google's smart assistant for search and creation.",
     "perplexityDesc": "AI search engine providing answers with verified sources.",
     "xmindDesc": "Brainstorming tool to organize your ideas.",
