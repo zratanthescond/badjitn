@@ -4,9 +4,68 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 export default function Page() {
   const t = useTranslations("authPages.signUp");
+
+  /* ── Intercept Clerk's username input: spaces → underscores ── */
+  useEffect(() => {
+    const patched = new WeakSet<HTMLInputElement>();
+
+    const nativeSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value"
+    )?.set;
+
+    const setNativeValue = (input: HTMLInputElement, value: string) => {
+      nativeSetter?.call(input, value);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+
+    const patchInput = (input: HTMLInputElement) => {
+      if (patched.has(input)) return;
+      patched.add(input);
+
+      // Space key → underscore
+      input.addEventListener("keydown", (e) => {
+        if (e.key !== " ") return;
+        e.preventDefault();
+        const s = input.selectionStart ?? input.value.length;
+        const end = input.selectionEnd ?? s;
+        const next = input.value.slice(0, s) + "_" + input.value.slice(end);
+        setNativeValue(input, next);
+        input.setSelectionRange(s + 1, s + 1);
+      });
+
+      // Paste → strip spaces from pasted text
+      input.addEventListener("paste", (e) => {
+        const raw = e.clipboardData?.getData("text") ?? "";
+        const sanitized = raw.replace(/ /g, "_");
+        if (sanitized === raw) return; // no spaces, let default paste happen
+        e.preventDefault();
+        const s = input.selectionStart ?? input.value.length;
+        const end = input.selectionEnd ?? s;
+        const next = input.value.slice(0, s) + sanitized + input.value.slice(end);
+        setNativeValue(input, next);
+        input.setSelectionRange(s + sanitized.length, s + sanitized.length);
+      });
+    };
+
+    const scan = () => {
+      document
+        .querySelectorAll<HTMLInputElement>(
+          'input[name="username"], input[autocomplete="username"], input[id*="username"]'
+        )
+        .forEach(patchInput);
+    };
+
+    const observer = new MutationObserver(scan);
+    observer.observe(document.body, { childList: true, subtree: true });
+    scan(); // handle already-mounted inputs
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="w-full max-w-md mx-auto relative px-4 text-center">
