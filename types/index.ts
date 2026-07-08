@@ -42,6 +42,8 @@ export type PaymentMethods = {
   card?: boolean;
   doorpay?: boolean;
   bankTransfer?: boolean;
+  bankTransferAllowId?: boolean;
+  bankTransferAllowScreenshot?: boolean;
 };
 
 export type pricePlan = {

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,9 +27,16 @@ interface BankTransferModalProps {
   originalAmount?: number;
   validateBeforeOpen?: () => Promise<boolean> | boolean;
   beforeSubmit?: () => Promise<boolean> | boolean;
+  allowTransferId?: boolean;
+  allowScreenshot?: boolean;
 }
 
-export function BankTransferModal({
+export interface BankTransferModalHandle {
+  open: () => Promise<void>;
+}
+
+export const BankTransferModal = forwardRef<BankTransferModalHandle, BankTransferModalProps>(
+function BankTransferModalInner({
   eventId,
   buyerId,
   amount,
@@ -40,7 +48,9 @@ export function BankTransferModal({
   originalAmount,
   validateBeforeOpen,
   beforeSubmit,
-}: BankTransferModalProps) {
+  allowTransferId = false,
+  allowScreenshot = true,
+}: BankTransferModalProps, ref) {
   const [isOpen, setIsOpen] = useState(false);
   const [transferId, setTransferId] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -67,6 +77,8 @@ export function BankTransferModal({
 
     setIsOpen(true);
   };
+
+  useImperativeHandle(ref, () => ({ open: handleOpen }));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -248,23 +260,11 @@ export function BankTransferModal({
     setPreview(null);
   };
 
-  return (
-    <>
-      <motion.div
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      >
-        <Button
-          onClick={handleOpen}
-          className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
-        >
-          <Landmark className="mr-2 h-5 w-5" />
-          {text("cta", "Virement bancaire")} {amount} {currency}
-        </Button>
-      </motion.div>
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const modalContent = isOpen ? (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
           <div className="bg-card text-card-foreground border border-border rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
@@ -294,71 +294,19 @@ export function BankTransferModal({
                 </AlertDescription>
               </Alert>
 
-              <Tabs defaultValue="transfer-id" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50">
-                  <TabsTrigger value="transfer-id" className="text-sm">
-                    {text("transferIdTab", "Identifiant")}
-                  </TabsTrigger>
-                  <TabsTrigger value="screenshot" className="text-sm">
-                    {text("screenshotTab", "Capture")}
-                  </TabsTrigger>
-                </TabsList>
+              {/* Screenshot form (inline or in tab) */}
+              {(() => {
+                const showBoth = allowTransferId && allowScreenshot;
+                const defaultTab = allowScreenshot ? "screenshot" : "transfer-id";
 
-                <TabsContent value="transfer-id" className="mt-0">
-                  <form onSubmit={handleSubmitTransferId} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="transfer-id"
-                        className="text-sm font-medium"
-                      >
-                        {text("transferIdLabel", "Identifiant du virement")}
-                      </Label>
-                      <Input
-                        id="transfer-id"
-                        placeholder={text("transferIdPlaceholder", "ex. TRF12345678910")}
-                        value={transferId}
-                        onChange={(e) => setTransferId(e.target.value)}
-                        disabled={isLoading}
-                        className="text-sm"
-                      />
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {text(
-                        "transferIdHelp",
-                        "Saisissez la reference ou le numero de confirmation de votre virement bancaire."
-                      )}
-                    </p>
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-pink-500 hover:bg-pink-600 text-white rounded-lg py-2"
-                    >
-                      {isLoading ? (
-                        <>
-                          <Spinner className="mr-2 h-4 w-4" />
-                          {text("submitting", "Envoi...")}
-                        </>
-                      ) : (
-                        text("submitTransferId", "Envoyer l'identifiant")
-                      )}
-                    </Button>
-                  </form>
-                </TabsContent>
-
-                <TabsContent value="screenshot" className="mt-0">
+                const screenshotForm = (
                   <form onSubmit={handleSubmitScreenshot} className="space-y-4">
                     <div className="space-y-2">
-                      <Label
-                        htmlFor="screenshot"
-                        className="text-sm font-medium"
-                      >
+                      <Label htmlFor="screenshot" className="text-sm font-medium">
                         {text("uploadScreenshotLabel", "Televerser la capture")}
                       </Label>
                       <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-border p-4 transition-colors hover:border-primary/50 hover:bg-muted/50">
-                        <label
-                          htmlFor="file-upload"
-                          className="flex w-full cursor-pointer flex-col items-center justify-center"
-                        >
+                        <label htmlFor="file-upload" className="flex w-full cursor-pointer flex-col items-center justify-center">
                           <Upload className="h-6 w-6 text-muted-foreground" />
                           <p className="mt-1 text-xs font-medium text-foreground">
                             {text("uploadHint", "Cliquez pour televerser ou glissez-deposez")}
@@ -366,66 +314,82 @@ export function BankTransferModal({
                           <p className="text-xs text-muted-foreground">
                             {text("uploadFormats", "PNG, JPG, GIF jusqu'a 5 Mo")}
                           </p>
-                          <input
-                            id="file-upload"
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            disabled={isLoading}
-                          />
+                          <input id="file-upload" type="file" className="hidden" accept="image/*" onChange={handleFileChange} disabled={isLoading} />
                         </label>
                       </div>
-
                       {preview && (
                         <ScrollArea className="h-36 w-full rounded-lg border">
                           <div className="space-y-2">
-                            <p className="text-xs font-medium text-foreground">
-                              {text("previewLabel", "Preview:")}
-                            </p>
-
-                            <img
-                              src={preview || "/placeholder.svg"}
-                              alt="Screenshot preview"
-                              className="h-32 w-full rounded-lg object-cover"
-                            />
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setUploadedFile(null);
-                                setPreview(null);
-                              }}
-                              disabled={isLoading}
-                              className="text-xs text-blue-600 hover:text-blue-700"
-                            >
+                            <p className="text-xs font-medium text-foreground">{text("previewLabel", "Preview:")}</p>
+                            <img src={preview || "/placeholder.svg"} alt="Screenshot preview" className="h-32 w-full rounded-lg object-cover" />
+                            <button type="button" onClick={() => { setUploadedFile(null); setPreview(null); }} disabled={isLoading} className="text-xs text-blue-600 hover:text-blue-700">
                               {text("removeImage", "Remove image")}
                             </button>
                           </div>
                         </ScrollArea>
                       )}
                     </div>
-                    <Button
-                      type="submit"
-                      disabled={isLoading || !uploadedFile}
-                      className="w-full bg-pink-500 hover:bg-pink-600 text-white rounded-lg py-2"
-                    >
-                          {isLoading ? (
-                            <>
-                              <Spinner className="mr-2 h-4 w-4" />
-                              {text("uploading", "Televersement...")}
-                            </>
-                          ) : (
-                            text("submitScreenshot", "Envoyer la capture")
-                          )}
-                        </Button>
+                    <Button type="submit" disabled={isLoading || !uploadedFile} className="w-full bg-pink-500 hover:bg-pink-600 text-white rounded-lg py-2">
+                      {isLoading ? <><Spinner className="mr-2 h-4 w-4" />{text("uploading", "Televersement...")}</> : text("submitScreenshot", "Envoyer la capture")}
+                    </Button>
                   </form>
-                </TabsContent>
-              </Tabs>
+                );
+
+                const transferIdForm = (
+                  <form onSubmit={handleSubmitTransferId} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="transfer-id" className="text-sm font-medium">
+                        {text("transferIdLabel", "Identifiant du virement")}
+                      </Label>
+                      <Input id="transfer-id" placeholder={text("transferIdPlaceholder", "ex. TRF12345678910")} value={transferId} onChange={(e) => setTransferId(e.target.value)} disabled={isLoading} className="text-sm" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">{text("transferIdHelp", "Saisissez la reference ou le numero de confirmation de votre virement bancaire.")}</p>
+                    <Button type="submit" disabled={isLoading} className="w-full bg-pink-500 hover:bg-pink-600 text-white rounded-lg py-2">
+                      {isLoading ? <><Spinner className="mr-2 h-4 w-4" />{text("submitting", "Envoi...")}</> : text("submitTransferId", "Envoyer l'identifiant")}
+                    </Button>
+                  </form>
+                );
+
+                if (!allowScreenshot && !allowTransferId) {
+                  return <p className="text-sm text-muted-foreground text-center py-4">Aucune méthode de soumission activée par l&apos;organisateur.</p>;
+                }
+
+                if (!showBoth) {
+                  return allowScreenshot ? screenshotForm : transferIdForm;
+                }
+
+                return (
+                  <Tabs defaultValue={defaultTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50">
+                      <TabsTrigger value="screenshot" className="text-sm">{text("screenshotTab", "Capture")}</TabsTrigger>
+                      <TabsTrigger value="transfer-id" className="text-sm">{text("transferIdTab", "Identifiant")}</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="screenshot" className="mt-0">{screenshotForm}</TabsContent>
+                    <TabsContent value="transfer-id" className="mt-0">{transferIdForm}</TabsContent>
+                  </Tabs>
+                );
+              })()}
             </div>
           </div>
         </div>
-      )}
+  ) : null;
+
+  return (
+    <>
+      <motion.div
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      >
+        <Button
+          onClick={handleOpen}
+          className="w-full h-14 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full font-semibold shadow-lg shadow-pink-500/20 transition-all duration-300"
+        >
+          <Landmark className="mr-2 h-5 w-5" />
+          {text("cta", "Virement bancaire")} {amount} {currency}
+        </Button>
+      </motion.div>
+      {mounted && createPortal(modalContent, document.body)}
     </>
   );
-}
+});

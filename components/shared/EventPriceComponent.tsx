@@ -4,7 +4,7 @@ import CheckoutButton from "./CheckoutButton";
 import type { IEvent } from "@/lib/database/models/event.model";
 import type { IField } from "@/lib/database/models/field.model";
 import { getEventFields } from "@/lib/actions/field.action";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
@@ -25,7 +25,7 @@ import { createOrder, checkExistingRegistration } from "@/lib/actions/order.acti
 import { v4 as uuidv4 } from "uuid";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@clerk/nextjs";
-import { BankTransferModal } from "./bank-transfer-modal";
+import { BankTransferModal, type BankTransferModalHandle } from "./bank-transfer-modal";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
@@ -140,6 +140,10 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [emailAlreadyRegistered, setEmailAlreadyRegistered] = useState(false);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [mongoUserId, setMongoUserId] = useState("");
+  const [showLabSection, setShowLabSection] = useState(false);
+  const [labPendingBankOpen, setLabPendingBankOpen] = useState(false);
+  const labSectionRef = useRef<HTMLDivElement>(null);
+  const bankTransferRef = useRef<BankTransferModalHandle>(null);
   const t = useTranslations("eventPrice");
   const profileT = useTranslations("profile");
   const text = (key: string, fallback: string, values?: Record<string, string | number>) =>
@@ -441,6 +445,29 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const showCardPayment = pm.card !== false;
   const showDoorpayPayment = pm.doorpay !== false;
   const showBankPayment = pm.bankTransfer !== false;
+  const bankTransferAllowId: boolean = pm.bankTransferAllowId === true;
+  const bankTransferAllowScreenshot: boolean = pm.bankTransferAllowScreenshot !== false;
+
+  // Find the lab plan definition from all plans regardless of selection state
+  const labPlanDef = useMemo(
+    () =>
+      (event.pricePlan || []).find((p: any) =>
+        (p.options || []).some((o: any) =>
+          (typeof o === "object" ? o.name : String(o)).toLowerCase().includes("laboratoire")
+        )
+      ) ?? null,
+    [event.pricePlan]
+  );
+
+  // labPlan is active only when the user has selected the lab plan
+  const labPlan = labPlanDef && labPlanDef._id && checkPlan.includes(labPlanDef._id) ? labPlanDef : null;
+
+  // After state update from "Paiement par bénéficiaire" click, open bank transfer
+  useEffect(() => {
+    if (!labPendingBankOpen) return;
+    setLabPendingBankOpen(false);
+    bankTransferRef.current?.open();
+  }, [labPendingBankOpen]);
 
   // "Registration request only": a selected choice asks to hide payment buttons
   // and submit a pending registration request instead (e.g. lab payment by cheque).
@@ -689,7 +716,25 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       return false;
     }
 
-    return registrationIsValid && workIsValid;
+    if (!registrationIsValid) {
+      toast({
+        title: text("requiredField", "Champs obligatoires"),
+        description: "Veuillez remplir tous les champs obligatoires du formulaire d'inscription.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!workIsValid) {
+      toast({
+        title: "Champ requis",
+        description: "Veuillez renseigner au moins un titre ou un résumé pour la soumission.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
   };
 
   const persistWorkSummaryIfNeeded = async () => {
@@ -1255,6 +1300,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 )}
                 <div className="grid gap-3">
                   {event.pricePlan.map((plan: any) => {
+                    // Lab plan is displayed in the payment section, not here
+                    if (labPlanDef && plan._id === labPlanDef._id) return null;
                     const isSelected = checkPlan.includes(plan._id);
                     return (
                       <div key={plan._id} className="flex flex-col gap-2">
@@ -1326,7 +1373,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           </div>
                         )}
 
-                        {plan.options && plan.options.length > 0 && (
+                        {plan.options && plan.options.length > 0 &&
+                          /* Options whose plan becomes a payment modality ("laboratoire") are shown
+                             in the payment-buttons section instead of here */
+                          !((plan.options as any[]).some((o: any) =>
+                            (typeof o === "object" ? o.name : String(o)).toLowerCase().includes("laboratoire")
+                          )) && (
                           <div className="mx-2 my-1 p-3 bg-muted/40 rounded-2xl border border-dashed border-primary/20 space-y-2">
                             <div className="flex flex-col gap-2">
                               {plan.options.map((opt: any, idx: number) => {
@@ -1502,7 +1554,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   </>
                 )}
 
-                {!isFreeEvent && showBankPayment &&
+                {!isFreeEvent && showBankPayment && !labPlan &&
                   ((!userId && !allowGuestRegistration) ? (
                     <Button
                       onClick={() => router.push("/sign-in")}
@@ -1514,6 +1566,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                     </Button>
                   ) : (
                     <BankTransferModal
+                      ref={bankTransferRef}
                       eventId={event._id}
                       buyerId={userId || ""}
                       amount={Number(calculatePriceAsNumber(price))}
@@ -1539,8 +1592,122 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       originalAmount={price}
                       validateBeforeOpen={validateAll}
                       beforeSubmit={persistWorkSummaryIfNeeded}
+                      allowTransferId={bankTransferAllowId}
+                      allowScreenshot={bankTransferAllowScreenshot}
                     />
                   ))}
+
+                {/* ── Prise en charge laboratoire — carte plan après virement bancaire ── */}
+                {labPlanDef && userId && (
+                  <div ref={labSectionRef} className="flex flex-col gap-3">
+                    {/* Plan card — styled as a button matching virement bancaire */}
+                    <motion.div
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => {
+                        if (!labPlan) {
+                          handleAddPlan(labPlanDef._id ?? "");
+                          setShowLabSection(true);
+                          setTimeout(
+                            () => labSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
+                            150
+                          );
+                        } else {
+                          setShowLabSection((prev) => !prev);
+                        }
+                      }}
+                      className="relative flex cursor-pointer items-center justify-between rounded-full h-14 px-5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg shadow-pink-500/20 transition-all duration-300"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        {labPlan
+                          ? <CheckCircle size={18} className="text-white shrink-0" />
+                          : <svg className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                        }
+                        <span className="font-semibold text-sm truncate">{labPlanDef.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {(() => {
+                          const hasPricedOptions = (labPlanDef.options || []).some((o: any) => (typeof o === "object" ? o.price || 0 : 0) > 0);
+                          if (Number(labPlanDef.price) === 0 && hasPricedOptions) return null;
+                          return <span className="font-bold text-sm">{formatPriceByCountry(labPlanDef.price, event.country, "en-US", event.location)}</span>;
+                        })()}
+                        {labPlan ? (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemovePlan(labPlanDef._id ?? "");
+                              setShowLabSection(false);
+                            }}
+                            className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 hover:bg-white/40 transition-colors"
+                          >
+                            <X size={12} className="text-white" />
+                          </button>
+                        ) : (
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        )}
+                      </div>
+                    </motion.div>
+
+                    {/* Sub-options — visible only when lab plan is selected */}
+                    {labPlan && showLabSection && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="rounded-2xl border border-teal-200/50 bg-teal-50/40 dark:bg-teal-900/10 p-4 space-y-3"
+                      >
+                        <p className="text-xs font-semibold text-teal-700 dark:text-teal-400 uppercase tracking-wide text-center">
+                          Choisissez votre modalité de paiement
+                        </p>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          {(labPlan.options as any[]).map((opt: any) => {
+                            const optName = typeof opt === "object" ? opt.name : String(opt);
+                            const optDesc = typeof opt === "object" ? opt.description : undefined;
+                            const isLabOpt = optName.toLowerCase().includes("laboratoire");
+                            return (
+                              <motion.button
+                                key={optName}
+                                type="button"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => {
+                                  handleSelectOption(labPlan._id ?? "", optName);
+                                  if (!isLabOpt) {
+                                    setLabPendingBankOpen(true);
+                                  }
+                                }}
+                                className={`flex flex-col gap-2 rounded-2xl border-2 p-4 text-left transition-all duration-200 ${
+                                  isLabOpt
+                                    ? "border-amber-300/60 bg-amber-50 hover:border-amber-400 hover:bg-amber-100 dark:bg-amber-900/10 dark:hover:bg-amber-900/20"
+                                    : "border-teal-300/60 bg-white hover:border-teal-400 hover:bg-teal-50 dark:bg-slate-800 dark:hover:bg-slate-700"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  {isLabOpt ? (
+                                    <svg className="h-5 w-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                  ) : (
+                                    <Landmark className="h-5 w-5 text-teal-600 shrink-0" />
+                                  )}
+                                  <span className={`font-semibold text-sm ${isLabOpt ? "text-amber-700 dark:text-amber-400" : "text-teal-700 dark:text-teal-300"}`}>
+                                    {optName}
+                                  </span>
+                                </div>
+                                {optDesc && (
+                                  <p className="text-xs text-muted-foreground leading-relaxed pl-7">{optDesc}</p>
+                                )}
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                )}
               </>
               )
             )}

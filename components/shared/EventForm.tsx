@@ -631,18 +631,44 @@ const EventForm = ({
                   const pm = (form.watch("paymentMethods") as any) || {};
                   const checked = pm[m.key] !== false; // default enabled
                   return (
-                    <label key={m.key} className="flex items-center gap-2 cursor-pointer">
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={(v) =>
-                          form.setValue("paymentMethods", {
-                            ...((form.getValues("paymentMethods") as any) || {}),
-                            [m.key]: v === true,
-                          })
-                        }
-                      />
-                      <span className="text-sm">{m.label}</span>
-                    </label>
+                    <div key={m.key} className="flex flex-col gap-1">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <Checkbox
+                          checked={checked}
+                          onCheckedChange={(v) =>
+                            form.setValue("paymentMethods", {
+                              ...((form.getValues("paymentMethods") as any) || {}),
+                              [m.key]: v === true,
+                            })
+                          }
+                        />
+                        <span className="text-sm">{m.label}</span>
+                      </label>
+                      {m.key === "bankTransfer" && checked && (
+                        <div className="ml-6 flex flex-col gap-1 border-l-2 border-muted pl-3">
+                          {([
+                            { key: "bankTransferAllowScreenshot", label: "Autoriser l'envoi par capture (PJ)", defaultVal: true },
+                            { key: "bankTransferAllowId", label: "Autoriser l'envoi par identifiant de virement", defaultVal: false },
+                          ] as const).map((sub) => {
+                            const subChecked = pm[sub.key] !== undefined ? pm[sub.key] : sub.defaultVal;
+                            return (
+                              <label key={sub.key} className="flex items-center gap-2 cursor-pointer">
+                                <Checkbox
+                                  checked={subChecked}
+                                  onCheckedChange={(v) =>
+                                    form.setValue("paymentMethods", {
+                                      ...((form.getValues("paymentMethods") as any) || {}),
+                                      [sub.key]: v === true,
+                                    })
+                                  }
+                                />
+                                <span className="text-xs text-muted-foreground">{sub.label}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
