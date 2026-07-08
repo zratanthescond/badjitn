@@ -38,7 +38,7 @@ export function VideoDetailsPanel({
   `;
 
   return (
-    <div className={panelClasses}>
+    <div className={panelClasses} style={{ minWidth: 0 }}>
       <div className="w-full h-full overflow-y-auto no-scrollbar overflow-x-hidden">
         <div className="p-4 space-y-4 text-slate-900 dark:text-white max-w-full overflow-hidden">
           {/* Profile Section */}
