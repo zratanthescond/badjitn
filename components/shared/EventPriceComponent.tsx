@@ -1554,17 +1554,20 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   </>
                 )}
 
-                {!isFreeEvent && showBankPayment && !labPlan &&
-                  ((!userId && !allowGuestRegistration) ? (
-                    <Button
-                      onClick={() => router.push("/sign-in")}
-                      disabled={price === 0}
-                      className="h-14 w-full rounded-full bg-gradient-to-r from-pink-500 to-rose-500 font-semibold text-white shadow-lg shadow-pink-500/20 transition-all duration-300 hover:from-pink-600 hover:to-rose-600"
-                    >
-                      <Landmark className="mr-2 h-5 w-5" />
-                      Virement Bancaire {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
-                    </Button>
-                  ) : (
+                {!isFreeEvent && showBankPayment && !labPlan && !userId && !allowGuestRegistration && (
+                  <Button
+                    onClick={() => router.push("/sign-in")}
+                    disabled={price === 0}
+                    className="h-14 w-full rounded-full bg-gradient-to-r from-pink-500 to-rose-500 font-semibold text-white shadow-lg shadow-pink-500/20 transition-all duration-300 hover:from-pink-600 hover:to-rose-600"
+                  >
+                    <Landmark className="mr-2 h-5 w-5" />
+                    Virement Bancaire {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
+                  </Button>
+                )}
+
+                {/* BankTransferModal stays mounted even when lab plan is active so bankTransferRef stays valid */}
+                {!isFreeEvent && showBankPayment && (userId || allowGuestRegistration) && (
+                  <div className={labPlan ? "hidden" : ""}>
                     <BankTransferModal
                       ref={bankTransferRef}
                       eventId={event._id}
@@ -1595,11 +1598,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       allowTransferId={bankTransferAllowId}
                       allowScreenshot={bankTransferAllowScreenshot}
                     />
-                  ))}
+                  </div>
+                )}
 
                 {/* ── Prise en charge laboratoire — carte plan après virement bancaire ── */}
-                {labPlanDef && userId && (
-                  <div ref={labSectionRef} className="flex flex-col gap-3">
+                {labPlanDef && (
+                  <div ref={labSectionRef} className="w-full flex flex-col gap-3">
                     {/* Plan card — styled as a button matching virement bancaire */}
                     <motion.div
                       whileHover={{ scale: 1.03 }}
@@ -1616,9 +1620,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           setShowLabSection((prev) => !prev);
                         }
                       }}
-                      className="relative flex cursor-pointer items-center justify-between rounded-full h-14 px-5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg shadow-pink-500/20 transition-all duration-300"
+                      className="relative w-full flex cursor-pointer items-center justify-between rounded-full h-14 px-5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg shadow-pink-500/20 transition-all duration-300 overflow-hidden"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex items-center gap-3 min-w-0 overflow-hidden">
                         {labPlan
                           ? <CheckCircle size={18} className="text-white shrink-0" />
                           : <svg className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
