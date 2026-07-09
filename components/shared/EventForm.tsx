@@ -65,6 +65,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TUNISIAN_BANKS } from "@/constants/tunisian-banks";
 
 type EventFormProps = {
   userId: string;
@@ -645,7 +646,7 @@ const EventForm = ({
                         <span className="text-sm">{m.label}</span>
                       </label>
                       {m.key === "bankTransfer" && checked && (
-                        <div className="ml-6 flex flex-col gap-1 border-l-2 border-muted pl-3">
+                        <div className="ml-6 flex flex-col gap-2 border-l-2 border-muted pl-3">
                           {([
                             { key: "bankTransferAllowScreenshot", label: "Autoriser l'envoi par capture (PJ)", defaultVal: true },
                             { key: "bankTransferAllowId", label: "Autoriser l'envoi par identifiant de virement", defaultVal: false },
@@ -666,6 +667,78 @@ const EventForm = ({
                               </label>
                             );
                           })}
+
+                          {/* ── RIB / Bank info config ── */}
+                          {(() => {
+                            const bankInfo = (form.watch("bankInfo") as any) || {};
+                            const selectedBank = TUNISIAN_BANKS.find(b => b.name === bankInfo.bankName);
+                            return (
+                              <div className="mt-1 flex flex-col gap-2 border-t border-muted/60 pt-2">
+                                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+                                  RIB pour l'ordre de virement (optionnel)
+                                </span>
+
+                                {/* Bank dropdown */}
+                                <Select
+                                  value={bankInfo.bankName || ""}
+                                  onValueChange={(v) =>
+                                    form.setValue("bankInfo" as any, { ...bankInfo, bankName: v })
+                                  }
+                                >
+                                  <SelectTrigger className="h-9 text-xs rounded-xl">
+                                    {selectedBank ? (
+                                      <div className="flex items-center gap-2">
+                                        <span
+                                          className="inline-flex h-5 w-9 items-center justify-center rounded text-[9px] font-bold text-white shrink-0"
+                                          style={{ backgroundColor: selectedBank.color }}
+                                        >
+                                          {selectedBank.short}
+                                        </span>
+                                        <span className="truncate text-xs">{selectedBank.name}</span>
+                                      </div>
+                                    ) : (
+                                      <SelectValue placeholder="Choisir la banque..." />
+                                    )}
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {TUNISIAN_BANKS.map((bank) => (
+                                      <SelectItem key={bank.name} value={bank.name} className="text-xs">
+                                        <div className="flex items-center gap-2">
+                                          <span
+                                            className="inline-flex h-5 w-9 items-center justify-center rounded text-[9px] font-bold text-white shrink-0"
+                                            style={{ backgroundColor: bank.color }}
+                                          >
+                                            {bank.short}
+                                          </span>
+                                          {bank.name}
+                                        </div>
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                {/* Account holder */}
+                                <Input
+                                  className="h-9 text-xs rounded-xl"
+                                  placeholder="Nom du bénéficiaire"
+                                  value={bankInfo.accountHolder || ""}
+                                  onChange={(e) =>
+                                    form.setValue("bankInfo" as any, { ...bankInfo, accountHolder: e.target.value })
+                                  }
+                                />
+
+                                {/* RIB */}
+                                <Input
+                                  className="h-9 text-xs rounded-xl font-mono tracking-wider"
+                                  placeholder="RIB (ex: 01 234 5678901234567 89)"
+                                  value={bankInfo.rib || ""}
+                                  onChange={(e) =>
+                                    form.setValue("bankInfo" as any, { ...bankInfo, rib: e.target.value })
+                                  }
+                                />
+                              </div>
+                            );
+                          })()}
                         </div>
                       )}
                     </div>

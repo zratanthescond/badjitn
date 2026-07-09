@@ -46,6 +46,12 @@ export type PaymentMethods = {
   bankTransferAllowScreenshot?: boolean;
 };
 
+export type BankInfo = {
+  bankName?: string;
+  accountHolder?: string;
+  rib?: string;
+};
+
 export type pricePlan = {
   name: string;
   price: number;
@@ -96,6 +102,7 @@ export type CreateEventParams = {
     pricePlanNote?: string;
     registrationFeeNote?: string;
     paymentMethods?: PaymentMethods;
+    bankInfo?: BankInfo;
   };
   path: string;
 };
@@ -142,6 +149,7 @@ export type UpdateEventParams = {
     pricePlanNote?: string;
     registrationFeeNote?: string;
     paymentMethods?: PaymentMethods;
+    bankInfo?: BankInfo;
   };
   path: string;
 };

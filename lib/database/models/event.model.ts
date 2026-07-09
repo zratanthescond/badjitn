@@ -27,6 +27,7 @@ export interface IEvent extends Document {
   pricePlanNote?: string;
   registrationFeeNote?: string;
   paymentMethods?: { card?: boolean; doorpay?: boolean; bankTransfer?: boolean; bankTransferAllowId?: boolean; bankTransferAllowScreenshot?: boolean };
+  bankInfo?: { bankName?: string; accountHolder?: string; rib?: string };
   createdAt: Date;
   imageUrl: string;
   startDateTime: Date;
@@ -105,6 +106,11 @@ const EventSchema = new Schema({
     bankTransfer: { type: Boolean, default: true },
     bankTransferAllowId: { type: Boolean, default: false },
     bankTransferAllowScreenshot: { type: Boolean, default: true },
+  },
+  bankInfo: {
+    bankName: { type: String },
+    accountHolder: { type: String },
+    rib: { type: String },
   },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },

@@ -50,6 +50,7 @@ export const eventDefaultValues = {
   customRegistrationFields: [],
   showProfileButton: true,
   showReturnButton: true,
+  bankInfo: undefined as { bankName?: string; accountHolder?: string; rib?: string } | undefined,
 };
 export const borderColors = [
   "#ef4444", // red

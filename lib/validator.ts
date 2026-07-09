@@ -77,6 +77,13 @@ export const eventFormSchema = z
         bankTransfer: z.boolean().optional(),
       })
       .optional(),
+    bankInfo: z
+      .object({
+        bankName: z.string().optional(),
+        accountHolder: z.string().optional(),
+        rib: z.string().optional(),
+      })
+      .optional(),
     jobTitleLabel: z.string().optional(),
     selectedRepublic: z.string().optional(),
     customRegistrationFields: z.array(z.object({

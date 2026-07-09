@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import {
   ArrowRight,
   CheckCircle,
+  Copy,
   FileText,
   Landmark,
   LogIn,
@@ -50,6 +51,7 @@ import {
 import { countries } from "country-data-list";
 import { countryGovernorates } from "@/constants/country-governorates";
 import { calcFinalPrice, formatPriceByCountry, getCurrencyCodeByCountry } from "@/lib/utils";
+import { TUNISIAN_BANKS } from "@/constants/tunisian-banks";
 import { useSubmitWorkSummary, type ClientInfo } from "@/hooks/useUploadWork";
 
 type RegistrationInfoItem = {
@@ -1552,6 +1554,88 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       </motion.div>
                     )}
                   </>
+                )}
+
+                {/* ── RIB pour l'ordre de virement ── */}
+                {!isFreeEvent && showBankPayment && !labPlan && (event as any).bankInfo?.rib && (
+                  <div className="rounded-2xl border border-blue-200/50 bg-gradient-to-br from-blue-50/60 to-indigo-50/30 dark:from-blue-900/10 dark:to-indigo-900/5 p-4 space-y-3">
+                    {/* Header: bank logo + name */}
+                    <div className="flex items-center gap-3">
+                      {(() => {
+                        const bank = TUNISIAN_BANKS.find(b => b.name === (event as any).bankInfo?.bankName);
+                        return (
+                          <>
+                            {bank && (
+                              <span
+                                className="inline-flex h-9 w-14 items-center justify-center rounded-xl text-[11px] font-bold text-white shrink-0 shadow-sm"
+                                style={{ backgroundColor: bank.color }}
+                              >
+                                {bank.short}
+                              </span>
+                            )}
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                                RIB pour l&apos;ordre de virement
+                              </p>
+                              {bank && (
+                                <p className="text-sm font-semibold text-foreground">{bank.name}</p>
+                              )}
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+
+                    {/* Account holder */}
+                    {(event as any).bankInfo?.accountHolder && (
+                      <div className="flex items-center justify-between gap-3 rounded-xl border border-blue-200/40 bg-white/70 dark:bg-white/5 px-3 py-2.5">
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                            Nom du bénéficiaire
+                          </span>
+                          <span className="text-sm font-semibold text-foreground truncate">
+                            {(event as any).bankInfo.accountHolder}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText((event as any).bankInfo.accountHolder);
+                            toast({ title: "Copié !", description: "Nom du bénéficiaire copié dans le presse-papier." });
+                          }}
+                          className="shrink-0 flex items-center gap-1.5 rounded-lg border border-border/60 bg-muted/50 hover:bg-muted px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          title="Copier"
+                        >
+                          <Copy size={12} />
+                          <span className="hidden sm:inline">Copier</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* RIB */}
+                    <div className="flex items-center justify-between gap-3 rounded-xl border border-blue-200/40 bg-white/70 dark:bg-white/5 px-3 py-2.5">
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                          RIB
+                        </span>
+                        <span className="text-sm font-mono font-semibold text-foreground tracking-wider truncate">
+                          {(event as any).bankInfo.rib}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText((event as any).bankInfo.rib);
+                          toast({ title: "Copié !", description: "RIB copié dans le presse-papier." });
+                        }}
+                        className="shrink-0 flex items-center gap-1.5 rounded-lg border border-border/60 bg-muted/50 hover:bg-muted px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                        title="Copier le RIB"
+                      >
+                        <Copy size={12} />
+                        <span className="hidden sm:inline">Copier</span>
+                      </button>
+                    </div>
+                  </div>
                 )}
 
                 {!isFreeEvent && showBankPayment && !labPlan && !userId && !allowGuestRegistration && (
