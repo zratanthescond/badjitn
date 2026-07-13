@@ -129,6 +129,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [optionEmails, setOptionEmails] = useState<Record<string, string>>({});
   const [optionEmailErrors, setOptionEmailErrors] = useState<Record<string, string>>({});
   const [isProcessing, setIsProcessing] = useState(false);
+  const isSubmittingRef = useRef(false);
   const [isHovered, setIsHovered] = useState(false);
   const [customFields, setCustomFields] = useState<IField[]>([]);
   const [registrationValues, setRegistrationValues] = useState<Record<string, string>>({});
@@ -775,12 +776,18 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   };
 
   const handleGetPreorder = async (asRequest = false) => {
-    if (!(await validateAll())) {
-      return;
-    }
+    // Synchronous re-entrancy guard: `isProcessing` state only takes effect on the
+    // next render, which is too late to stop a fast double-click/tap from slipping
+    // through while `validateAll()` (which itself awaits a network call) is pending.
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    setIsProcessing(true);
 
     try {
-      setIsProcessing(true);
+      if (!(await validateAll())) {
+        return;
+      }
+
       const workReady = await persistWorkSummaryIfNeeded();
       if (!workReady) return;
 
@@ -829,6 +836,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         variant: "destructive",
       });
     } finally {
+      isSubmittingRef.current = false;
       setIsProcessing(false);
     }
   };

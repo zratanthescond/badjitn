@@ -23,6 +23,8 @@ import {
   sendRegistrationConfirmationEmail,
 } from "../mail";
 
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -82,6 +84,28 @@ export const createOrder = async (order: CreateOrderParams) => {
     const event = await Event.findById(order.eventId).select(
       "title country location discount"
     );
+
+    // Last-moment duplicate guard: the client already checks this before submitting,
+    // but that check-then-act is racy under double submission (double click, retry,
+    // multiple tabs). Re-check right before the insert to close most of that window.
+    const emailInfo = (order.requiredUserInfo || []).find(
+      (info: any) => String(info.field).toLowerCase() === "email"
+    );
+    const email = emailInfo?.value?.trim();
+    if (email) {
+      const existingOrder = await Order.findOne({
+        event: order.eventId,
+        requiredUserInfo: {
+          $elemMatch: {
+            field: "email",
+            value: { $regex: new RegExp(`^${escapeRegExp(email)}$`, "i") },
+          },
+        },
+      });
+      if (existingOrder) {
+        return JSON.parse(JSON.stringify(existingOrder));
+      }
+    }
 
     // Determine if this registration needs admin review:
     //  - a discount was applied AND the organizer requires a proof document, OR
@@ -716,7 +740,7 @@ export const checkExistingRegistration = async (eventId: string, email: string) 
       requiredUserInfo: {
         $elemMatch: {
           field: "email",
-          value: { $regex: new RegExp(`^${email.trim()}$`, "i") },
+          value: { $regex: new RegExp(`^${escapeRegExp(email.trim())}$`, "i") },
         },
       },
     });
