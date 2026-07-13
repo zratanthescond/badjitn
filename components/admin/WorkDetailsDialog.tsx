@@ -45,6 +45,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   const queryClient = useQueryClient();
   const summaryStatus = value?.summaryStatus ?? value?.status ?? "submitted";
   const isApproved = summaryStatus === "approved";
+  const isPendingRegistration = value?.isPendingRegistration === true;
 
   if (!value) {
     return null;
@@ -139,7 +140,12 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
   return (
     <div className={`flex w-full items-center justify-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
-      {!isApproved && (
+      {isPendingRegistration && (
+        <Badge className="bg-yellow-500/20 border border-yellow-500/30 text-yellow-700 dark:text-yellow-400 px-3 py-1.5 rounded-full text-xs font-semibold">
+          {t("status.pending")}
+        </Badge>
+      )}
+      {!isApproved && !isPendingRegistration && (
         <Button
           variant="outline"
           size="sm"

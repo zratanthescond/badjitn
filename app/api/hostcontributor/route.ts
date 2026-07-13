@@ -11,8 +11,11 @@ export async function POST(req: Request) {
   // console.log(data);
   const details: any[] = [];
   if (data.checkPlan && data.checkPlan.length > 0) {
-    data.checkPlan.map((plan: number) => {
-      details.push(data.event.pricePlan[plan]);
+    data.checkPlan.forEach((plan: number) => {
+      const selectedPlan = data.event.pricePlan[plan];
+      if (selectedPlan) {
+        details.push({ name: selectedPlan.name, price: selectedPlan.price });
+      }
     });
   }
   console.log(details);

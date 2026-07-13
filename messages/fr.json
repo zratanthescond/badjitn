@@ -1504,6 +1504,7 @@
     "scanCoverage": "Couverture des Scans",
     "shareLinkLabel": "Lien du rapport",
     "creatorLabel": "Créateur de l'événement",
+    "organizedByLabel": "Organisateur",
     "highlightsTitle": "Points clés",
     "totalSuffix": "total",
     "highlights": {
@@ -1551,6 +1552,7 @@
     },
     "ticketTypes": {
       "paid": "Payant",
+      "free": "Gratuit",
       "hosted": "Hébergé",
       "doorpay": "Paiement à la Porte",
       "bankTransfer": "Virement Bancaire"

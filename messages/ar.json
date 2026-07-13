@@ -1504,6 +1504,7 @@
     "scanCoverage": "تغطية المسح",
     "shareLinkLabel": "رابط التقرير",
     "creatorLabel": "منشئ الفعالية",
+    "organizedByLabel": "المنظم",
     "highlightsTitle": "أهم النقاط",
     "totalSuffix": "الإجمالي",
     "highlights": {
@@ -1551,6 +1552,7 @@
     },
     "ticketTypes": {
       "paid": "مدفوع",
+      "free": "مجاني",
       "hosted": "مستضاف",
       "doorpay": "الدفع عند الباب",
       "bankTransfer": "تحويل بنكي"

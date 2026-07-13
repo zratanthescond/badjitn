@@ -51,10 +51,11 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
     documentTitle: `event-report-${eventId || "report"}`,
   });
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["eventReport", eventId],
     queryFn: () => getEventReportData(eventId),
     enabled: isOpen && !!eventId,
+    retry: false,
   });
 
   const event = data?.event;
@@ -233,7 +234,7 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                       <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-2 mb-2">
                         <img src={event.organisation.logo} alt={tx("organizationLogoAlt", "Organization logo")} className="h-9 w-9 rounded-full object-cover border border-slate-200" />
                         <div>
-                          <div className="text-xs text-slate-500">{t("organizedByLabel") || "Organisateur"}</div>
+                          <div className="text-xs text-slate-500">{tx("organizedByLabel", "Organisateur")}</div>
                           <div className="text-sm font-semibold text-slate-800">{event.organisation.name}</div>
                         </div>
                       </div>
@@ -258,9 +259,9 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                           <div className="mt-2 pt-2 border-t border-amber-200/50">
                             <div className="text-[9px] uppercase font-bold text-amber-800/70 mb-1">{tx("availableChoices", "Choix disponibles :")}</div>
                             <div className="flex flex-wrap gap-1">
-                              {plan.options.map((opt: string, optIdx: number) => (
+                              {plan.options.map((opt: any, optIdx: number) => (
                                 <span key={optIdx} className="text-[9px] bg-white/70 border border-amber-200 text-amber-800 px-1.5 py-0.5 rounded leading-tight">
-                                  {opt}
+                                  {typeof opt === "object" ? opt?.name || "" : opt}
                                 </span>
                               ))}
                             </div>
@@ -526,6 +527,11 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
             <div className="text-center py-20">
               <FileText className="h-12 w-12 text-slate-500 mx-auto mb-4" />
               <p className="text-slate-400">{t("noData")}</p>
+              {error && (
+                <p className="text-red-400 text-sm mt-2">
+                  {error instanceof Error ? error.message : String(error)}
+                </p>
+              )}
             </div>
           )}
         </div>

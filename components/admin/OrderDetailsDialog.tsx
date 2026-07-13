@@ -290,11 +290,18 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
-                            {detail.name}
+                            {typeof detail.name === "string"
+                              ? detail.name
+                              : detail.name?.name || ""}
                           </span>
-                          {detail.option && (
+                          {detail.option && typeof detail.option !== "object" && (
                             <span className="text-xs font-semibold text-primary/70 mt-0.5">
                               {detail.option}
+                            </span>
+                          )}
+                          {detail.option && typeof detail.option === "object" && (
+                            <span className="text-xs font-semibold text-primary/70 mt-0.5">
+                              {detail.option.name || ""}
                             </span>
                           )}
                         </div>
@@ -439,7 +446,16 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                 </CardHeader>
 
                 <CardContent className="space-y-3">
-                  {value.requiredUserInfo.map((info: any, index: number) => (
+                  {value.requiredUserInfo.map((info: any, index: number) => {
+                    const renderableLabel =
+                      typeof info?.label === "string" || typeof info?.label === "number"
+                        ? info.label
+                        : info?.label?.name || "";
+                    const renderableValue =
+                      typeof info?.value === "string" || typeof info?.value === "number"
+                        ? info.value
+                        : info?.value?.name || "";
+                    return (
                     <div
                       key={index}
                       className={`flex justify-between items-center p-3 glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 rounded-xl hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all duration-200 ${
@@ -456,7 +472,7 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                             isRTL ? "font-arabic" : ""
                           }`}
                         >
-                          {info.label}:
+                          {renderableLabel}:
                         </span>
                         {info.label === value.discountInfo?.label && (
                           <Badge
@@ -475,7 +491,7 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                           }`}
                         >
                           <Badge className="glass bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 font-semibold">
-                            {info.value}
+                            {renderableValue}
                           </Badge>
                           <Badge
                             variant="outline"
@@ -489,11 +505,12 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
                           variant="outline"
                           className="glass bg-slate-500/10 border-slate-500/30 text-slate-700 dark:text-slate-300"
                         >
-                          {info.value}
+                          {renderableValue}
                         </Badge>
                       )}
                     </div>
-                  ))}
+                    );
+                  })}
                 </CardContent>
               </Card>
             )}

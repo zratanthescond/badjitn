@@ -1504,6 +1504,7 @@
     "scanCoverage": "Scan Coverage",
     "shareLinkLabel": "Report link",
     "creatorLabel": "Event creator",
+    "organizedByLabel": "Organizer",
     "highlightsTitle": "Key Highlights",
     "totalSuffix": "total",
     "highlights": {
@@ -1551,6 +1552,7 @@
     },
     "ticketTypes": {
       "paid": "Paid",
+      "free": "Free",
       "hosted": "Hosted",
       "doorpay": "Door Pay",
       "bankTransfer": "Bank Transfer"

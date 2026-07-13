@@ -523,7 +523,7 @@ export async function getEventReportData(eventId: string) {
     const orders = await Order.find({ event: eventId }).populate({
       path: "buyer",
       model: User,
-      select: "firstName lastName email phone_number",
+      select: "firstName lastName email phoneNumber",
     });
 
     const totalOrders = orders.length;
@@ -654,7 +654,7 @@ export async function getEventReportData(eventId: string) {
     orders.forEach((o: any) => {
       let userName = "";
       let userEmail = o.buyer?.email || "";
-      let userPhone = o.buyer?.phone_number || "";
+      let userPhone = o.buyer?.phoneNumber || "";
 
       if (o.buyer) userName = `${o.buyer.firstName || ""} ${o.buyer.lastName || ""}`.trim();
 

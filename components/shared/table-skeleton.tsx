@@ -44,7 +44,7 @@ export default function TableSkeleton({
                                 ? "60px"
                                 : colIndex === columns - 1
                                 ? "60px"
-                                : `${Math.floor(Math.random() * 40) + 60}px`,
+                                : `${60 + ((rowIndex * 7 + colIndex * 13) % 40)}px`,
                           }}
                         ></div>
                       </td>

@@ -21,9 +21,9 @@ export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-   const clerkId = clerkUser?.id;
+  //  const clerkId = clerkUser?.id;
   // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-//  const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+ const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
     if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
@@ -96,9 +96,9 @@ export async function updateCurrentUserProfile(
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-    const clerkId = clerkUser?.id;
+    // const clerkId = clerkUser?.id;
     // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-    // const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+    const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
 
     if (!clerkId) throw new Error("Not authenticated");
 
@@ -479,6 +479,36 @@ export async function getUserWorkByEvent({
     handleError(error);
   }
 }
+/** Best-effort display name for a registration, falling back to its free-form custom fields. */
+function getOrderParticipantName(order: any) {
+  const info: any[] = order.requiredUserInfo || [];
+  const findByKeys = (fieldKeys: string[], labelKeys: string[]) =>
+    info.find((i: any) => {
+      const field = String(i?.field || "").toLowerCase();
+      const label = String(i?.label || "").toLowerCase();
+      return fieldKeys.includes(field) || labelKeys.includes(label);
+    })?.value || "";
+
+  const firstName =
+    order.buyer?.firstName ||
+    findByKeys(
+      ["firstname", "first_name", "prenom", "prénom"],
+      ["first name", "firstname", "prenom", "prénom"]
+    );
+  const lastName =
+    order.buyer?.lastName ||
+    findByKeys(
+      ["lastname", "last_name", "nom", "familyname", "family_name"],
+      ["last name", "lastname", "nom", "family name"]
+    );
+
+  const fullName = `${firstName} ${lastName}`.trim();
+  if (fullName) return fullName;
+
+  const email = findByKeys(["email"], ["email", "e-mail", "courriel"]);
+  return email || "Participant";
+}
+
 export async function getUserWorkByEventId({
   eventId,
   searchString,
@@ -491,7 +521,7 @@ export async function getUserWorkByEventId({
     await connectToDatabase();
     const eventObjectId = new ObjectId(eventId);
     if (!eventId) throw new Error("Event ID is required");
-    const orders = await EventWork.aggregate([
+    const works = await EventWork.aggregate([
       {
         $lookup: {
           from: "users",
@@ -520,6 +550,7 @@ export async function getUserWorkByEventId({
           createdAt: 1,
           eventTitle: "$event.title",
           eventId: "$event._id",
+          userId: 1,
           buyer: {
             $concat: [
               { $ifNull: ["$buyer.firstName", ""] },
@@ -539,15 +570,63 @@ export async function getUserWorkByEventId({
       },
       {
         $match: {
-          $and: [
-            { eventId: eventObjectId },
-            { buyer: { $regex: RegExp(searchString, "i") } },
-          ],
+          eventId: eventObjectId,
         },
       },
     ]);
-    console.log(orders);
-    return JSON.parse(JSON.stringify(orders));
+
+    // Registrations that answered "yes" to "Soumettre un travail" at checkout
+    // but never went through the separate work-upload flow (so no EventWork
+    // document exists yet) — surface them here too, otherwise they never
+    // show up in this admin view even though the intent was captured.
+    const existingWorkUserIds = new Set(
+      works
+        .map((w: any) => w.userId && String(w.userId))
+        .filter(Boolean)
+    );
+
+    const event = await Event.findById(eventObjectId).select("title");
+    const ordersWithWorkIntent = await Order.find({
+      event: eventObjectId,
+      requiredUserInfo: {
+        $elemMatch: { field: "wantsToSubmitWork", value: "yes" },
+      },
+    }).populate({ path: "buyer", model: User, select: "firstName lastName" });
+
+    const pendingWorks = ordersWithWorkIntent
+      .filter(
+        (order: any) =>
+          !order.buyer || !existingWorkUserIds.has(String(order.buyer._id))
+      )
+      .map((order: any) => {
+        const getInfo = (field: string) =>
+          (order.requiredUserInfo || []).find((i: any) => i.field === field)
+            ?.value || "";
+
+        return {
+          _id: String(order._id),
+          createdAt: order.createdAt,
+          eventTitle: event?.title || "",
+          eventId,
+          buyer: getOrderParticipantName(order),
+          title: getInfo("workSummaryTitle") || "Sans titre",
+          note: getInfo("workSummaryNote") || "",
+          clientInfo: undefined,
+          fileUrls: [],
+          summaryStatus: "draft",
+          submittedAt: undefined,
+          approvedAt: undefined,
+          status: "pending",
+          isPendingRegistration: true,
+        };
+      });
+
+    const combined = [...works, ...pendingWorks];
+    const filtered = searchString
+      ? combined.filter((w: any) => new RegExp(searchString, "i").test(w.buyer))
+      : combined;
+
+    return JSON.parse(JSON.stringify(filtered));
   } catch (error) {
     handleError(error);
   }

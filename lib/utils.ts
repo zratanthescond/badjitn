@@ -282,7 +282,15 @@ export function removeKeysFromQuery({
 
 export const handleError = (error: unknown) => {
   console.error(error);
-  throw new Error(typeof error === "string" ? error : JSON.stringify(error));
+  if (typeof error === "string") throw new Error(error);
+  if (error instanceof Error) throw error;
+  let serialized: string;
+  try {
+    serialized = JSON.stringify(error);
+  } catch {
+    serialized = "Unknown error";
+  }
+  throw new Error(serialized);
 };
 export function formatSeconds(seconds: number): string {
   const hours = Math.floor(seconds / 3600);

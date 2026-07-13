@@ -175,8 +175,17 @@ export default function QRScannerDialog() {
                       <div className="mt-2 space-y-1">
                         {orderData.requiredUserInfo.map((info: any, index: number) => (
                           <div key={index} className="flex justify-between text-sm">
-                            <span className="text-muted-foreground capitalize">{info.label}:</span>
-                            <span className="font-medium">{info.value}</span>
+                            <span className="text-muted-foreground capitalize">
+                              {typeof info?.label === "string" || typeof info?.label === "number"
+                                ? info.label
+                                : info?.label?.name || ""}
+                              :
+                            </span>
+                            <span className="font-medium">
+                              {typeof info?.value === "string" || typeof info?.value === "number"
+                                ? info.value
+                                : info?.value?.name || ""}
+                            </span>
                           </div>
                         ))}
                       </div>

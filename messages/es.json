@@ -1504,6 +1504,7 @@
     "scanCoverage": "Cobertura de Escaneo",
     "shareLinkLabel": "Enlace del informe",
     "creatorLabel": "Creador del evento",
+    "organizedByLabel": "Organizador",
     "highlightsTitle": "Aspectos Destacados",
     "totalSuffix": "total",
     "highlights": {
@@ -1551,6 +1552,7 @@
     },
     "ticketTypes": {
       "paid": "Pagado",
+      "free": "Gratis",
       "hosted": "Alojado",
       "doorpay": "Pago en puerta",
       "bankTransfer": "Transferencia Bancaria"
