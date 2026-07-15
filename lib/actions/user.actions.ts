@@ -21,9 +21,9 @@ export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-   const clerkId = clerkUser?.id;
+  //  const clerkId = clerkUser?.id;
   // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-//  const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+ const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
     if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
@@ -96,9 +96,9 @@ export async function updateCurrentUserProfile(
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-    const clerkId = clerkUser?.id;
+    // const clerkId = clerkUser?.id;
     // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-    // const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+    const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
 
     if (!clerkId) throw new Error("Not authenticated");
 
@@ -215,6 +215,14 @@ function buildEventPortalUrl(eventId: string) {
   return `${serverUrl.replace(/\/$/, "")}/events/${eventId}`;
 }
 
+function buildSubmitWorkUrl(eventId: string) {
+  const serverUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL ||
+    process.env.NEXTAUTH_URL ||
+    "http://localhost:3000";
+  return `${serverUrl.replace(/\/$/, "")}/events/${eventId}/submit-work`;
+}
+
 async function sendWorkNotificationEmail({
   userEmail,
   subject,
@@ -224,6 +232,8 @@ async function sendWorkNotificationEmail({
   summaryTitle,
   eventId,
   extra,
+  ctaLabel,
+  ctaUrl,
 }: {
   userEmail?: string;
   subject: string;
@@ -233,6 +243,8 @@ async function sendWorkNotificationEmail({
   summaryTitle?: string;
   eventId: string;
   extra?: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
 }) {
   if (!userEmail) return;
 
@@ -244,8 +256,8 @@ async function sendWorkNotificationEmail({
       intro,
       eventTitle,
       summaryTitle,
-      ctaLabel: "Ouvrir l'evenement",
-      ctaUrl: buildEventPortalUrl(eventId),
+      ctaLabel: ctaLabel || "Ouvrir l'evenement",
+      ctaUrl: ctaUrl || buildEventPortalUrl(eventId),
       extra,
     });
   } catch (mailError) {
@@ -353,10 +365,49 @@ export async function approveWork(workId: string) {
       subject: "Resume approuve",
       title: "Votre resume a ete approuve",
       intro:
-        "Bonne nouvelle, le createur de l'evenement a approuve votre resume. Vous pouvez maintenant soumettre votre travail.",
+        "Bonne nouvelle, le createur de l'evenement a approuve votre resume. Vous pouvez maintenant soumettre votre travail avec vos pieces jointes en cliquant sur le lien ci-dessous.",
       eventTitle: event?.title || "Evenement",
       summaryTitle: work.title,
       eventId: String(work.eventId),
+      ctaLabel: "Soumettre mon travail",
+      ctaUrl: buildSubmitWorkUrl(String(work.eventId)),
+    });
+
+    return JSON.parse(JSON.stringify(work));
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
+
+export async function rejectWork(workId: string, reason?: string) {
+  try {
+    await connectToDatabase();
+    const work = await EventWork.findById(workId);
+    if (!work) throw new Error("Work not found");
+    await verifyOrganizerOrAdmin(String(work.eventId));
+    work.summaryStatus = "rejected";
+    work.rejectedAt = new Date();
+    work.rejectionReason = reason?.trim() || undefined;
+    await work.save();
+
+    const [event, user] = await Promise.all([
+      Event.findById(work.eventId),
+      User.findById(work.userId),
+    ]);
+
+    await sendWorkNotificationEmail({
+      userEmail: user?.email,
+      subject: "Resume refuse",
+      title: "Votre resume a ete refuse",
+      intro:
+        "Apres examen, le createur de l'evenement n'a pas pu valider votre resume.",
+      eventTitle: event?.title || "Evenement",
+      summaryTitle: work.title,
+      eventId: String(work.eventId),
+      extra: work.rejectionReason
+        ? `Motif : ${work.rejectionReason}`
+        : undefined,
     });
 
     return JSON.parse(JSON.stringify(work));
@@ -565,6 +616,8 @@ export async function getUserWorkByEventId({
           summaryStatus: 1,
           submittedAt: 1,
           approvedAt: 1,
+          rejectedAt: 1,
+          rejectionReason: 1,
           status: "$summaryStatus",
         },
       },
