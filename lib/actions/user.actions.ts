@@ -21,9 +21,9 @@ export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-  //  const clerkId = clerkUser?.id;
+   const clerkId = clerkUser?.id;
   // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
- const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+//  const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
     if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
@@ -96,9 +96,9 @@ export async function updateCurrentUserProfile(
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-    // const clerkId = clerkUser?.id;
+    const clerkId = clerkUser?.id;
     // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-    const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+    // const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
 
     if (!clerkId) throw new Error("Not authenticated");
 
@@ -345,35 +345,106 @@ export async function submitWorkSummary({
   }
 }
 
+async function applyWorkApproval(work: InstanceType<typeof EventWork>) {
+  work.summaryStatus = "approved";
+  work.approvedAt = new Date();
+  await work.save();
+
+  const [event, user] = await Promise.all([
+    Event.findById(work.eventId),
+    User.findById(work.userId),
+  ]);
+
+  await sendWorkNotificationEmail({
+    userEmail: user?.email,
+    subject: "Resume approuve",
+    title: "Votre resume a ete approuve",
+    intro:
+      "Bonne nouvelle, le createur de l'evenement a approuve votre resume. Vous pouvez maintenant soumettre votre travail avec vos pieces jointes en cliquant sur le lien ci-dessous.",
+    eventTitle: event?.title || "Evenement",
+    summaryTitle: work.title,
+    eventId: String(work.eventId),
+    ctaLabel: "Soumettre mon travail",
+    ctaUrl: buildSubmitWorkUrl(String(work.eventId)),
+  });
+
+  return JSON.parse(JSON.stringify(work));
+}
+
+async function applyWorkRejection(
+  work: InstanceType<typeof EventWork>,
+  reason?: string
+) {
+  work.summaryStatus = "rejected";
+  work.rejectedAt = new Date();
+  work.rejectionReason = reason?.trim() || undefined;
+  await work.save();
+
+  const [event, user] = await Promise.all([
+    Event.findById(work.eventId),
+    User.findById(work.userId),
+  ]);
+
+  await sendWorkNotificationEmail({
+    userEmail: user?.email,
+    subject: "Resume refuse",
+    title: "Votre resume a ete refuse",
+    intro:
+      "Apres examen, le createur de l'evenement n'a pas pu valider votre resume.",
+    eventTitle: event?.title || "Evenement",
+    summaryTitle: work.title,
+    eventId: String(work.eventId),
+    extra: work.rejectionReason
+      ? `Motif : ${work.rejectionReason}`
+      : undefined,
+  });
+
+  return JSON.parse(JSON.stringify(work));
+}
+
+/**
+ * Registrations that answered "yes" to "Soumettre un travail" at checkout but
+ * never went through the separate work-upload flow have no EventWork document
+ * yet — only the title/note captured at checkout, on the Order. Approving or
+ * rejecting one of these from the admin table must materialize that EventWork
+ * document first so it can carry a real status/history.
+ */
+async function resolveWorkFromOrder(orderId: string) {
+  const order = await Order.findById(orderId).populate({
+    path: "buyer",
+    model: User,
+  });
+  if (!order) throw new Error("Order not found");
+  if (!order.buyer) throw new Error("Buyer not found for this order");
+
+  const eventId = String(order.event);
+  const getInfo = (field: string) =>
+    (order.requiredUserInfo || []).find((i: any) => i.field === field)
+      ?.value || "";
+
+  let work = await EventWork.findOne({ eventId, userId: order.buyer._id });
+  if (!work) {
+    work = new EventWork({
+      eventId,
+      userId: order.buyer._id,
+      title: getInfo("workSummaryTitle") || "Sans titre",
+      note: getInfo("workSummaryNote") || "",
+      summaryStatus: "submitted",
+      submittedAt: order.createdAt || new Date(),
+      fileUrls: [],
+    });
+    await work.save();
+  }
+  return work;
+}
+
 export async function approveWork(workId: string) {
   try {
     await connectToDatabase();
     const work = await EventWork.findById(workId);
     if (!work) throw new Error("Work not found");
     await verifyOrganizerOrAdmin(String(work.eventId));
-    work.summaryStatus = "approved";
-    work.approvedAt = new Date();
-    await work.save();
-
-    const [event, user] = await Promise.all([
-      Event.findById(work.eventId),
-      User.findById(work.userId),
-    ]);
-
-    await sendWorkNotificationEmail({
-      userEmail: user?.email,
-      subject: "Resume approuve",
-      title: "Votre resume a ete approuve",
-      intro:
-        "Bonne nouvelle, le createur de l'evenement a approuve votre resume. Vous pouvez maintenant soumettre votre travail avec vos pieces jointes en cliquant sur le lien ci-dessous.",
-      eventTitle: event?.title || "Evenement",
-      summaryTitle: work.title,
-      eventId: String(work.eventId),
-      ctaLabel: "Soumettre mon travail",
-      ctaUrl: buildSubmitWorkUrl(String(work.eventId)),
-    });
-
-    return JSON.parse(JSON.stringify(work));
+    return await applyWorkApproval(work);
   } catch (error) {
     handleError(error);
     throw error;
@@ -386,31 +457,33 @@ export async function rejectWork(workId: string, reason?: string) {
     const work = await EventWork.findById(workId);
     if (!work) throw new Error("Work not found");
     await verifyOrganizerOrAdmin(String(work.eventId));
-    work.summaryStatus = "rejected";
-    work.rejectedAt = new Date();
-    work.rejectionReason = reason?.trim() || undefined;
-    await work.save();
+    return await applyWorkRejection(work, reason);
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
 
-    const [event, user] = await Promise.all([
-      Event.findById(work.eventId),
-      User.findById(work.userId),
-    ]);
+/** Approve a work summary still only captured on the order (no EventWork yet). */
+export async function approveOrderWork(orderId: string) {
+  try {
+    await connectToDatabase();
+    const work = await resolveWorkFromOrder(orderId);
+    await verifyOrganizerOrAdmin(String(work.eventId));
+    return await applyWorkApproval(work);
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
 
-    await sendWorkNotificationEmail({
-      userEmail: user?.email,
-      subject: "Resume refuse",
-      title: "Votre resume a ete refuse",
-      intro:
-        "Apres examen, le createur de l'evenement n'a pas pu valider votre resume.",
-      eventTitle: event?.title || "Evenement",
-      summaryTitle: work.title,
-      eventId: String(work.eventId),
-      extra: work.rejectionReason
-        ? `Motif : ${work.rejectionReason}`
-        : undefined,
-    });
-
-    return JSON.parse(JSON.stringify(work));
+/** Reject a work summary still only captured on the order (no EventWork yet). */
+export async function rejectOrderWork(orderId: string, reason?: string) {
+  try {
+    await connectToDatabase();
+    const work = await resolveWorkFromOrder(orderId);
+    await verifyOrganizerOrAdmin(String(work.eventId));
+    return await applyWorkRejection(work, reason);
   } catch (error) {
     handleError(error);
     throw error;

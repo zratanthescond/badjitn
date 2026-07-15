@@ -85,7 +85,11 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ workId: value._id }),
+          body: JSON.stringify(
+            isPendingRegistration
+              ? { orderId: value._id }
+              : { workId: value._id }
+          ),
         }
       );
       const data = await res.json();
@@ -121,7 +125,11 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ workId: value._id, reason: rejectionReason }),
+          body: JSON.stringify(
+            isPendingRegistration
+              ? { orderId: value._id, reason: rejectionReason }
+              : { workId: value._id, reason: rejectionReason }
+          ),
         }
       );
       const data = await res.json();
@@ -186,12 +194,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
   return (
     <div className={`flex w-full items-center justify-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
-      {isPendingRegistration && (
-        <Badge className="bg-yellow-500/20 border border-yellow-500/30 text-yellow-700 dark:text-yellow-400 px-3 py-1.5 rounded-full text-xs font-semibold">
-          {t("status.pending")}
-        </Badge>
-      )}
-      {!isApproved && !isRejected && !isPendingRegistration && (
+      {!isApproved && !isRejected && (
         <>
           <Button
             variant="outline"

@@ -1,18 +1,23 @@
 import { NextResponse } from "next/server";
-import { rejectWork } from "@/lib/actions/user.actions";
+import { rejectWork, rejectOrderWork } from "@/lib/actions/user.actions";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const workId = body.workId as string;
+    const workId = body.workId as string | undefined;
+    const orderId = body.orderId as string | undefined;
     const reason = body.reason as string | undefined;
-    if (!workId) {
+    if (!workId && !orderId) {
       return NextResponse.json(
-        { success: false, error: "workId is required" },
+        { success: false, error: "workId or orderId is required" },
         { status: 400 }
       );
     }
-    await rejectWork(workId, reason);
+    if (workId) {
+      await rejectWork(workId, reason);
+    } else {
+      await rejectOrderWork(orderId as string, reason);
+    }
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Rejection failed";
