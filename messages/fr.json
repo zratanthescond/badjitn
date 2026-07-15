@@ -3588,7 +3588,7 @@
     "stats": {
       "pending": "En Attente",
       "pendingReview": "Pending Review",
-      "rejected": "Rejected",
+      "rejected": "Refusés",
       "reviewed": "Examinés",
       "submitted": "Soumis",
       "total": "Total des Travaux",
@@ -3598,7 +3598,7 @@
       "approved": "Approuvé",
       "pending": "En Attente d'Examen",
       "pendingReview": "Pending Review",
-      "rejected": "Rejected",
+      "rejected": "Refusé",
       "reviewed": "Examiné",
       "submitted": "Soumis"
     },
@@ -3666,11 +3666,24 @@
       "unsupported": "Aperçu non pris en charge pour ce type de fichier."
     },
     "markAsSeen": "Marquer comme Vu",
+    "reject": {
+      "button": "Refuser",
+      "dialogTitle": "Refuser la soumission",
+      "dialogDescription": "Merci d'indiquer le motif du refus. Il sera communiqué au client par email.",
+      "reasonPlaceholder": "Motif du refus...",
+      "reasonCardTitle": "Motif du refus",
+      "cancel": "Annuler",
+      "confirm": "Confirmer le refus",
+      "toastTitle": "Résumé refusé",
+      "toastDescription": "Le client a été informé du refus par email.",
+      "toastErrorTitle": "Échec du refus"
+    },
     "status": {
       "pending": "En Attente d'Examen",
       "reviewed": "Examiné",
       "submitted": "Soumis",
-      "approved": "Approuvé"
+      "approved": "Approuvé",
+      "rejected": "Refusé"
     },
     "submittedOn": "Soumis le",
     "title": "Détails de Soumission de Travail",

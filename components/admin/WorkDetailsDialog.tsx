@@ -9,12 +9,15 @@ import {
   Sparkles,
   User,
   ThumbsUp,
+  ThumbsDown,
+  XCircle,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,6 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Badge } from "../ui/badge";
+import { Textarea } from "../ui/textarea";
 import { extractFileDetails } from "@/lib/utils";
 import { FaFilePdf, FaFileWord, FaFileImage, FaFile } from "react-icons/fa";
 import Link from "next/link";
@@ -41,10 +45,14 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   const locale = useLocale();
   const isRTL = locale === "ar";
   const [isApproving, setIsApproving] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
   const fileViewerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const summaryStatus = value?.summaryStatus ?? value?.status ?? "submitted";
   const isApproved = summaryStatus === "approved";
+  const isRejected = summaryStatus === "rejected";
   const isPendingRegistration = value?.isPendingRegistration === true;
 
   if (!value) {
@@ -104,6 +112,44 @@ export function WorkDetailsDialog({ value }: { value: any }) {
     }
   };
 
+  const handleReject = async () => {
+    if (!value._id) return;
+    setIsRejecting(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/work/reject`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ workId: value._id, reason: rejectionReason }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        queryClient.invalidateQueries({ queryKey: ["works"] });
+        toast({
+          title: t("reject.toastTitle"),
+          description: t("reject.toastDescription"),
+        });
+        setIsRejectDialogOpen(false);
+        setRejectionReason("");
+      } else {
+        toast({
+          title: t("reject.toastErrorTitle"),
+          description: data.error || "",
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({
+        title: t("reject.toastErrorTitle"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsRejecting(false);
+    }
+  };
+
   // Function to try and force scrollbar visibility and ensure height
   const adjustFileViewerScroll = () => {
     if (fileViewerRef.current) {
@@ -145,26 +191,86 @@ export function WorkDetailsDialog({ value }: { value: any }) {
           {t("status.pending")}
         </Badge>
       )}
-      {!isApproved && !isPendingRegistration && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleApprove}
-          disabled={isApproving}
-          className="bg-green-500/10 hover:bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 rounded-full transition-all duration-200 hover:scale-105"
-        >
-          {isApproving ? (
-            <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mr-2" />
-          ) : (
-            <ThumbsUp className="w-4 h-4 text-green-500 mr-2" />
-          )}
-          <span className={isRTL ? "font-arabic" : ""}>{t("approve.button")}</span>
-        </Button>
+      {!isApproved && !isRejected && !isPendingRegistration && (
+        <>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleApprove}
+            disabled={isApproving || isRejecting}
+            className="bg-green-500/10 hover:bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 rounded-full transition-all duration-200 hover:scale-105"
+          >
+            {isApproving ? (
+              <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mr-2" />
+            ) : (
+              <ThumbsUp className="w-4 h-4 text-green-500 mr-2" />
+            )}
+            <span className={isRTL ? "font-arabic" : ""}>{t("approve.button")}</span>
+          </Button>
+
+          <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={isApproving || isRejecting}
+                className="bg-red-500/10 hover:bg-red-500/20 border-red-500/30 text-red-700 dark:text-red-300 rounded-full transition-all duration-200 hover:scale-105"
+              >
+                <ThumbsDown className="w-4 h-4 text-red-500 mr-2" />
+                <span className={isRTL ? "font-arabic" : ""}>{t("reject.button")}</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className={isRTL ? "rtl text-right" : ""}>
+              <DialogHeader>
+                <DialogTitle className={isRTL ? "font-arabic" : ""}>
+                  {t("reject.dialogTitle")}
+                </DialogTitle>
+                <DialogDescription className={isRTL ? "font-arabic" : ""}>
+                  {t("reject.dialogDescription")}
+                </DialogDescription>
+              </DialogHeader>
+              <Textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder={t("reject.reasonPlaceholder")}
+                className={isRTL ? "font-arabic text-right" : ""}
+                rows={4}
+              />
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsRejectDialogOpen(false)}
+                  disabled={isRejecting}
+                >
+                  <span className={isRTL ? "font-arabic" : ""}>{t("reject.cancel")}</span>
+                </Button>
+                <Button
+                  onClick={handleReject}
+                  disabled={isRejecting}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  {isRejecting ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                  ) : (
+                    <XCircle className="w-4 h-4 mr-2" />
+                  )}
+                  <span className={isRTL ? "font-arabic" : ""}>{t("reject.confirm")}</span>
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </>
       )}
       {isApproved && (
         <Badge className="bg-green-500/20 border border-green-500/30 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-semibold">
           <CheckCheck className="w-3.5 h-3.5 mr-1" />
           {t("status.approved")}
+        </Badge>
+      )}
+      {isRejected && (
+        <Badge className="bg-red-500/20 border border-red-500/30 text-red-700 dark:text-red-400 px-3 py-1.5 rounded-full text-xs font-semibold">
+          <XCircle className="w-3.5 h-3.5 mr-1" />
+          {t("status.rejected")}
         </Badge>
       )}
 
@@ -224,12 +330,18 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                 className={
                   isApproved
                     ? "glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300"
+                    : isRejected
+                    ? "glass bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300"
                     : "glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/30 text-blue-700 dark:text-blue-300"
                 }
               >
                 <Sparkles className="h-3 w-3 mr-1" />
                 <span className={isRTL ? "font-arabic" : ""}>
-                  {isApproved ? t("status.approved") : t("status.submitted")}
+                  {isApproved
+                    ? t("status.approved")
+                    : isRejected
+                    ? t("status.rejected")
+                    : t("status.submitted")}
                 </span>
               </Badge>
               {value.submittedAt && (
@@ -308,6 +420,41 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                         </div>
                       </CardContent>
                     )}
+                  </Card>
+                )}
+
+                {/* Rejection Reason */}
+                {isRejected && value.rejectionReason && (
+                  <Card className="glass bg-gradient-to-br from-red-50/50 to-rose-50/50 dark:from-red-900/20 dark:to-rose-900/20 backdrop-blur-sm border border-red-200/30 dark:border-red-700/30">
+                    <CardHeader className="pb-2">
+                      <div
+                        className={`flex items-center gap-3 ${
+                          isRTL ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        <div className="p-2 rounded-lg bg-red-500/20">
+                          <XCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                        </div>
+                        <div className={isRTL ? "text-right" : ""}>
+                          <CardTitle
+                            className={`text-lg text-red-800 dark:text-red-200 ${
+                              isRTL ? "font-arabic" : ""
+                            }`}
+                          >
+                            {t("reject.reasonCardTitle")}
+                          </CardTitle>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <p
+                        className={`text-sm text-red-700 dark:text-red-300 ${
+                          isRTL ? "font-arabic text-right" : ""
+                        }`}
+                      >
+                        {value.rejectionReason}
+                      </p>
+                    </CardContent>
                   </Card>
                 )}
 

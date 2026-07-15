@@ -3666,11 +3666,24 @@
       "unsupported": "Previsualización no compatible para este tipo de archivo."
     },
     "markAsSeen": "Marcar como visto",
+    "reject": {
+      "button": "Rechazar",
+      "dialogTitle": "Rechazar la entrega",
+      "dialogDescription": "Indique el motivo del rechazo. Se enviará al cliente por correo electrónico.",
+      "reasonPlaceholder": "Motivo del rechazo...",
+      "reasonCardTitle": "Motivo del rechazo",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar rechazo",
+      "toastTitle": "Resumen rechazado",
+      "toastDescription": "Se ha notificado al cliente del rechazo por correo electrónico.",
+      "toastErrorTitle": "Fallo en el rechazo"
+    },
     "status": {
       "pending": "Pendiente de revisión",
       "reviewed": "Revisado",
       "submitted": "Enviado",
-      "approved": "Aprobado"
+      "approved": "Aprobado",
+      "rejected": "Rechazado"
     },
     "submittedOn": "Enviado el",
     "title": "Detalles de la entrega del trabajo",

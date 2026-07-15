@@ -76,6 +76,11 @@ export default function WorkAdministration({
           "glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300",
         label: t("status.reviewed"),
       },
+      rejected: {
+        className:
+          "glass bg-gradient-to-r from-red-500/20 to-rose-500/20 border-red-500/30 text-red-700 dark:text-red-300",
+        label: t("status.rejected"),
+      },
       draft: {
         className:
           "glass bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30 text-yellow-700 dark:text-yellow-300",
@@ -104,6 +109,7 @@ export default function WorkAdministration({
       submitted: t("status.submitted"),
       approved: t("status.approved"),
       reviewed: t("status.reviewed"),
+      rejected: t("status.rejected"),
       draft: t("status.pending"),
       pending: t("status.pending"),
     };

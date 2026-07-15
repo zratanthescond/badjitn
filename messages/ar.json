@@ -3588,7 +3588,7 @@
     "stats": {
       "pending": "قيد المراجعة",
       "pendingReview": "Pending Review",
-      "rejected": "Rejected",
+      "rejected": "مرفوض",
       "reviewed": "تمت مراجعتها",
       "submitted": "مقدمة",
       "total": "إجمالي الأعمال",
@@ -3598,7 +3598,7 @@
       "approved": "موافق عليه",
       "pending": "قيد المراجعة",
       "pendingReview": "Pending Review",
-      "rejected": "Rejected",
+      "rejected": "مرفوض",
       "reviewed": "تمت المراجعة",
       "submitted": "مقدم"
     },
@@ -3666,11 +3666,24 @@
       "unsupported": "المعاينة غير مدعومة لهذا النوع من الملفات."
     },
     "markAsSeen": "تحديد كمقروء",
+    "reject": {
+      "button": "رفض",
+      "dialogTitle": "رفض التقديم",
+      "dialogDescription": "يرجى تقديم سبب الرفض. سيتم إرساله إلى العميل عبر البريد الإلكتروني.",
+      "reasonPlaceholder": "سبب الرفض...",
+      "reasonCardTitle": "سبب الرفض",
+      "cancel": "إلغاء",
+      "confirm": "تأكيد الرفض",
+      "toastTitle": "تم رفض الملخص",
+      "toastDescription": "تم إعلام العميل بالرفض عبر البريد الإلكتروني.",
+      "toastErrorTitle": "فشل الرفض"
+    },
     "status": {
       "pending": "قيد المراجعة",
       "reviewed": "تمت المراجعة",
       "submitted": "مقدم",
-      "approved": "موافق عليه"
+      "approved": "موافق عليه",
+      "rejected": "مرفوض"
     },
     "submittedOn": "تم التقديم في",
     "title": "تفاصيل تقديم العمل",

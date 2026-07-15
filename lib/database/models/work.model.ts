@@ -16,9 +16,11 @@ interface IEventWork extends mongoose.Document {
   title?: string;
   clientInfo?: IClientInfo;
   note?: string;
-  summaryStatus: "draft" | "submitted" | "approved";
+  summaryStatus: "draft" | "submitted" | "approved" | "rejected";
   submittedAt?: Date;
   approvedAt?: Date;
+  rejectedAt?: Date;
+  rejectionReason?: string;
   fileUrls: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -54,11 +56,13 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
   note: { type: String, required: false },
   summaryStatus: {
     type: String,
-    enum: ["draft", "submitted", "approved"],
+    enum: ["draft", "submitted", "approved", "rejected"],
     default: "draft",
   },
   submittedAt: { type: Date, required: false },
   approvedAt: { type: Date, required: false },
+  rejectedAt: { type: Date, required: false },
+  rejectionReason: { type: String, required: false },
   fileUrls: {
     type: [String],
     default: [],

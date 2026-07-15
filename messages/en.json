@@ -3666,11 +3666,24 @@
       "unsupported": "Preview not supported for this file type."
     },
     "markAsSeen": "Mark as Seen",
+    "reject": {
+      "button": "Reject",
+      "dialogTitle": "Reject submission",
+      "dialogDescription": "Please provide a reason for the rejection. It will be sent to the client by email.",
+      "reasonPlaceholder": "Rejection reason...",
+      "reasonCardTitle": "Rejection reason",
+      "cancel": "Cancel",
+      "confirm": "Confirm rejection",
+      "toastTitle": "Summary rejected",
+      "toastDescription": "The client has been notified of the rejection by email.",
+      "toastErrorTitle": "Rejection failed"
+    },
     "status": {
       "pending": "Pending Review",
       "reviewed": "Reviewed",
       "submitted": "Submitted",
-      "approved": "Approved"
+      "approved": "Approved",
+      "rejected": "Rejected"
     },
     "submittedOn": "Submitted on",
     "title": "Work Submission Details",
