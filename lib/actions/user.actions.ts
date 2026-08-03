@@ -223,6 +223,49 @@ function buildSubmitWorkUrl(eventId: string) {
   return `${serverUrl.replace(/\/$/, "")}/events/${eventId}/submit-work`;
 }
 
+const WORK_STATUS_LABELS_FR: Record<string, string> = {
+  draft: "Brouillon",
+  submitted: "En attente d'approbation",
+  approved: "Approuve",
+  rejected: "Refuse",
+};
+
+async function buildWorkSummaryProgressHtml({
+  eventId,
+  userId,
+  maxWorkSubmissions,
+}: {
+  eventId: string;
+  userId: string;
+  maxWorkSubmissions?: number;
+}) {
+  const works = await EventWork.find({ eventId, userId }).sort({ createdAt: -1 });
+
+  const remainingLine = maxWorkSubmissions
+    ? (() => {
+        const acceptedCount = works.filter((w) => w.summaryStatus !== "rejected").length;
+        const remaining = Math.max(0, maxWorkSubmissions - acceptedCount);
+        return `<p style="margin:0 0 12px;">Il vous reste <strong>${remaining}</strong> soumission${remaining > 1 ? "s" : ""} de resume sur <strong>${maxWorkSubmissions}</strong> pour cet evenement.</p>`;
+      })()
+    : "";
+
+  const list = works.length
+    ? `<div style="margin:0 0 12px;">
+        <p style="margin:0 0 6px;font-weight:600;">Vos resumes pour cet evenement :</p>
+        <ul style="margin:0;padding-left:18px;">
+          ${works
+            .map(
+              (w) =>
+                `<li>${w.title || "Sans titre"} — ${WORK_STATUS_LABELS_FR[w.summaryStatus] || w.summaryStatus}</li>`
+            )
+            .join("")}
+        </ul>
+      </div>`
+    : "";
+
+  return `${remainingLine}${list}`;
+}
+
 async function sendWorkNotificationEmail({
   userEmail,
   subject,
@@ -302,6 +345,12 @@ export async function submitWorkSummary({
       work.approvedAt = undefined;
       await work.save();
 
+      const progressHtml = await buildWorkSummaryProgressHtml({
+        eventId,
+        userId,
+        maxWorkSubmissions: event.maxWorkSubmissions,
+      });
+
       await sendWorkNotificationEmail({
         userEmail: user.email,
         subject: "Resume modifie et renvoye",
@@ -311,10 +360,26 @@ export async function submitWorkSummary({
         eventTitle: event.title,
         summaryTitle: normalizedTitle,
         eventId,
+        extra: progressHtml,
+        ctaLabel: "Consulter mes resumes",
+        ctaUrl: buildSubmitWorkUrl(eventId),
       });
 
       return JSON.parse(JSON.stringify(work));
     } else {
+      if (event.maxWorkSubmissions) {
+        const acceptedCount = await EventWork.countDocuments({
+          eventId,
+          userId,
+          summaryStatus: { $ne: "rejected" },
+        });
+        if (acceptedCount >= event.maxWorkSubmissions) {
+          throw new Error(
+            "Vous avez atteint le nombre maximum de soumissions de resume autorisees pour cet evenement."
+          );
+        }
+      }
+
       const newWork = await EventWork.create({
         eventId,
         userId,
@@ -326,6 +391,12 @@ export async function submitWorkSummary({
         fileUrls: [],
       });
 
+      const progressHtml = await buildWorkSummaryProgressHtml({
+        eventId,
+        userId,
+        maxWorkSubmissions: event.maxWorkSubmissions,
+      });
+
       await sendWorkNotificationEmail({
         userEmail: user.email,
         subject: "Resume soumis",
@@ -335,6 +406,9 @@ export async function submitWorkSummary({
         eventTitle: event.title,
         summaryTitle: newWork.title,
         eventId,
+        extra: progressHtml,
+        ctaLabel: "Consulter mes resumes",
+        ctaUrl: buildSubmitWorkUrl(eventId),
       });
 
       return JSON.parse(JSON.stringify(newWork));

@@ -65,6 +65,11 @@ export const eventFormSchema = z
       .optional(),
     scanPoints: z.array(z.string()).optional().default([]),
     showWorkSubmissionPopup: z.boolean().optional().default(false),
+    maxWorkSubmissions: z.coerce
+      .number()
+      .int()
+      .min(0, "Must be 0 or more")
+      .optional(),
     allowGuestRegistration: z.boolean().optional().default(true),
     disabledBaseFields: z.array(z.string()).optional().default([]),
     city: z.string().optional(),

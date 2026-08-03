@@ -1626,7 +1626,10 @@
     "url": "URL",
     "workSubmission": {
       "title": "Show work submission popup after purchase",
-      "description": "If enabled, customers will see a confirmation after participating to choose between submitting work or returning home."
+      "description": "If enabled, customers will see a confirmation after participating to choose between submitting work or returning home.",
+      "maxLabel": "Maximum number of work submissions per participant",
+      "maxDescription": "Leave empty for no limit. Once a participant reaches this number of accepted submissions, they will no longer be able to submit new ones for this event.",
+      "maxPlaceholder": "No limit"
     },
     "city": "City",
     "village": "Village",

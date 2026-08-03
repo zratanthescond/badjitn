@@ -1626,7 +1626,10 @@
     "url": "URL",
     "workSubmission": {
       "title": "Mostrar el mensaje emergente de envío de trabajo tras la compra",
-      "description": "Si está habilitado, los clientes verán una confirmación tras su participación para elegir entre enviar el trabajo o volver al inicio."
+      "description": "Si está habilitado, los clientes verán una confirmación tras su participación para elegir entre enviar el trabajo o volver al inicio.",
+      "maxLabel": "Número máximo de resúmenes por participante",
+      "maxDescription": "Déjelo vacío para no establecer límite. Una vez que un participante alcance este número de envíos aceptados, ya no podrá enviar nuevos resúmenes para este evento.",
+      "maxPlaceholder": "Sin límite"
     },
     "city": "Ciudad",
     "village": "Pueblo",

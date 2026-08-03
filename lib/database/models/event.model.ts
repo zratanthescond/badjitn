@@ -56,6 +56,7 @@ export interface IEvent extends Document {
   restricted: boolean;
   scanPoints?: string[];
   showWorkSubmissionPopup?: boolean;
+  maxWorkSubmissions?: number;
   allowGuestRegistration?: boolean;
   disabledBaseFields?: string[];
   showProfileButton?: boolean;
@@ -136,6 +137,7 @@ const EventSchema = new Schema({
   },
   restricted: { type: Boolean, default: false },
   showWorkSubmissionPopup: { type: Boolean, default: false },
+  maxWorkSubmissions: { type: Number },
   allowGuestRegistration: { type: Boolean, default: true },
   disabledBaseFields: { type: [String], default: [] },
   city: { type: String },
