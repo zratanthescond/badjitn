@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { connectToDatabase } from "@/lib/database"
 import BadgeDesign from "@/lib/database/models/badge-design.model"
 import Order from "@/lib/database/models/order.model"
+import EventWork from "@/lib/database/models/work.model"
 import { handleError } from "@/lib/utils"
 import { ObjectId } from "mongodb"
 
@@ -129,6 +130,11 @@ export async function deleteAttendee(id: string) {
         // Deleting the "attendee" means deleting the Order registration
         const deletedOrder = await Order.findByIdAndDelete(id) as any
         if (deletedOrder && deletedOrder.event) {
+            // The order's résumé/work submission, if any, is a separate document —
+            // remove it too so it doesn't linger as an orphaned entry in the work admin table.
+            if (deletedOrder.buyer) {
+                await EventWork.deleteMany({ eventId: deletedOrder.event, userId: deletedOrder.buyer })
+            }
             revalidatePath(`/events/${deletedOrder.event}/badge`)
         }
         return { success: true }
