@@ -41,6 +41,7 @@ export const eventDefaultValues = {
   places: 0,
   scanPoints: [] as string[],
   showWorkSubmissionPopup: false,
+  maxWorkSubmissions: undefined as number | undefined,
   allowGuestRegistration: true,
   disabledBaseFields: [] as string[],
   city: "",

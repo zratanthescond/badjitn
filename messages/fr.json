@@ -1628,7 +1628,10 @@
     "village": "Village",
     "workSubmission": {
       "title": "Afficher la pop-up de soumission du travail après achat",
-      "description": "Si cette option est activée, le client verra une confirmation après participation pour choisir entre soumettre un travail ou revenir à l'accueil."
+      "description": "Si cette option est activée, le client verra une confirmation après participation pour choisir entre soumettre un travail ou revenir à l'accueil.",
+      "maxLabel": "Nombre maximum de résumés par participant",
+      "maxDescription": "Laissez vide pour ne fixer aucune limite. Une fois ce nombre de résumés acceptés atteint pour un participant donné, il ne pourra plus en soumettre de nouveaux pour cet événement.",
+      "maxPlaceholder": "Aucune limite"
     },
     "showProfileButton": {
       "title": "Afficher le bouton 'Consulter mon profil'",

@@ -1142,6 +1142,36 @@ const EventForm = ({
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="maxWorkSubmissions"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                          <div className="w-full space-y-1">
+                            <FormLabel htmlFor="maxWorkSubmissions">
+                              {t("workSubmission.maxLabel")}
+                            </FormLabel>
+                            <FormDescription>
+                              {t("workSubmission.maxDescription")}
+                            </FormDescription>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min={0}
+                                id="maxWorkSubmissions"
+                                placeholder={t("workSubmission.maxPlaceholder")}
+                                {...field}
+                                value={field.value ?? ""}
+                                className="rounded-full glass border-0"
+                              />
+                            </FormControl>
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </CardContent>
               </Card>
             </div>

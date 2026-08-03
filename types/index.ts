@@ -92,6 +92,7 @@ export type CreateEventParams = {
     scanPoints?: string[];
     organisationId?: string;
     showWorkSubmissionPopup?: boolean;
+    maxWorkSubmissions?: number;
     allowGuestRegistration?: boolean;
     disabledBaseFields?: string[];
     city?: string;
@@ -139,6 +140,7 @@ export type UpdateEventParams = {
     scanPoints?: string[];
     organisationId?: string;
     showWorkSubmissionPopup?: boolean;
+    maxWorkSubmissions?: number;
     allowGuestRegistration?: boolean;
     disabledBaseFields?: string[];
     city?: string;
@@ -226,6 +228,7 @@ export type Event = {
   Sponsors?: string[];
   attendees?: string[];
   showWorkSubmissionPopup?: boolean;
+  maxWorkSubmissions?: number;
   allowGuestRegistration?: boolean;
   disabledBaseFields?: string[];
   city?: string;
