@@ -62,6 +62,16 @@ export interface IEvent extends Document {
   showProfileButton?: boolean;
   showReturnButton?: boolean;
   isFromOtherPlatform?: boolean;
+  invitationEmail?: {
+    subject?: string;
+    headerImageUrl?: string;
+    bodyHtml?: string;
+    buttonLabel?: string;
+    footerText?: string;
+    footerPhone?: string;
+    footerEmail?: string;
+  };
+  invitedEmails?: string[];
 }
 const planOptionSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -151,6 +161,16 @@ const EventSchema = new Schema({
   showProfileButton: { type: Boolean, default: true },
   showReturnButton: { type: Boolean, default: true },
   isFromOtherPlatform: { type: Boolean, default: false },
+  invitationEmail: {
+    subject: { type: String },
+    headerImageUrl: { type: String },
+    bodyHtml: { type: String },
+    buttonLabel: { type: String },
+    footerText: { type: String },
+    footerPhone: { type: String },
+    footerEmail: { type: String },
+  },
+  invitedEmails: { type: [String], default: [] },
 });
 EventSchema.virtual("Sponsors", {
   ref: "Sponsor",

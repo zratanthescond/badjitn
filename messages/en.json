@@ -3922,7 +3922,9 @@
       "categories": "Categories",
       "categoriesShort": "Cats",
       "aiTools": "AI tools",
-      "aiToolsShort": "AI tools"
+      "aiToolsShort": "AI tools",
+      "invitations": "Invitations",
+      "invitationsShort": "Invites"
     }
   },
   "serverAdmin": {

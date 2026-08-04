@@ -14,6 +14,7 @@ import CategoryFilter from "@/components/shared/CategoryFilter";
 import CategorieAdministration from "@/components/admin/CategorieAdministration";
 import OrganisationsAdministration from "@/components/admin/OrganisationsAdministration";
 import AIToolAdministration from "@/components/admin/AIToolAdministration";
+import InvitationAdministration from "@/components/admin/InvitationAdministration";
 import { useTranslations } from "next-intl";
 
 const Orders = (props: SearchParamProps) => {
@@ -34,6 +35,8 @@ const Orders = (props: SearchParamProps) => {
         return <OrganisationsAdministration />;
       case "aitools":
         return <AIToolAdministration />;
+      case "invitations":
+        return <InvitationAdministration />;
       default:
         return <UsersAdministration />;
     }
@@ -58,7 +61,7 @@ const Orders = (props: SearchParamProps) => {
         className="w-full !rounded-full"
         onValueChange={(value) => setValue(value)}
       >
-        <TabsList className="grid w-full grid-cols-5 mb-4 sm:mb-6 rounded-full">
+        <TabsList className="grid w-full grid-cols-6 mb-4 sm:mb-6 rounded-full">
           <TabsTrigger
             value="users"
             className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-card rounded-full"
@@ -98,6 +101,14 @@ const Orders = (props: SearchParamProps) => {
             <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">{t("tabs.aiTools")}</span>
             <span className="sm:hidden">{t("tabs.aiToolsShort")}</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="invitations"
+            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-card rounded-full"
+          >
+            <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">{t("tabs.invitations")}</span>
+            <span className="sm:hidden">{t("tabs.invitationsShort")}</span>
           </TabsTrigger>
         </TabsList>
       </Tabs>

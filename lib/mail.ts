@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { buildInvitationEmailHtml, InvitationEmailData } from "./invitationTemplate";
 
 const cleanEnvVar = (val?: string) => val?.replace(/^["']|["']$/g, "") || "";
 
@@ -272,5 +273,22 @@ export async function sendWorkStatusEmail({
         ${cta}
       </div>
     `,
+  });
+}
+
+export async function sendInvitationEmail({
+  to,
+  subject,
+  template,
+}: {
+  to: string;
+  subject: string;
+  template: InvitationEmailData;
+}) {
+  await transporter.sendMail({
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject,
+    html: buildInvitationEmailHtml(template),
   });
 }
