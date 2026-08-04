@@ -10,6 +10,7 @@ import { getAllEvents } from "@/lib/actions/event.actions";
 import { formatDateTime } from "@/lib/utils";
 import InvitationTemplateEditor from "./InvitationTemplateEditor";
 import SendInvitationsPanel from "./SendInvitationsPanel";
+import InvitationHistoryPanel from "./InvitationHistoryPanel";
 
 type PickedEvent = {
   _id: string;
@@ -67,6 +68,9 @@ export default function InvitationAdministration() {
             <TabsTrigger value="send" className="rounded-full">
               Envoyer des invitations
             </TabsTrigger>
+            <TabsTrigger value="history" className="rounded-full">
+              Historique
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="template" className="mt-4">
             <InvitationTemplateEditor
@@ -76,6 +80,9 @@ export default function InvitationAdministration() {
           </TabsContent>
           <TabsContent value="send" className="mt-4">
             <SendInvitationsPanel eventId={selectedEvent._id} />
+          </TabsContent>
+          <TabsContent value="history" className="mt-4">
+            <InvitationHistoryPanel eventId={selectedEvent._id} />
           </TabsContent>
         </Tabs>
       </div>

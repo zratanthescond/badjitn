@@ -30,6 +30,14 @@ export type InvitationRecipient = {
   lastName?: string;
 };
 
+export type InvitationLogEntry = {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  status: "sent" | "failed";
+  sentAt: string | null;
+};
+
 // ====== GET INVITATION TEMPLATE SETTINGS FOR AN EVENT
 
 export async function getInvitationSettings(eventId: string) {
@@ -38,7 +46,7 @@ export async function getInvitationSettings(eventId: string) {
     await connectToDatabase();
 
     const event = await Event.findById(eventId).select(
-      "title imageUrl invitationEmail invitedEmails"
+      "title imageUrl invitationEmail invitedEmails invitationLog"
     );
     if (!event) {
       return { success: false, message: "Event not found" };
@@ -54,12 +62,23 @@ export async function getInvitationSettings(eventId: string) {
       footerEmail: event.invitationEmail?.footerEmail || "",
     };
 
+    const invitationLog: InvitationLogEntry[] = (event.invitationLog || [])
+      .map((entry: any) => ({
+        email: entry.email,
+        firstName: entry.firstName || "",
+        lastName: entry.lastName || "",
+        status: entry.status,
+        sentAt: entry.sentAt ? new Date(entry.sentAt).toISOString() : null,
+      }))
+      .reverse();
+
     return {
       success: true,
       data: {
         settings,
         registrationUrl: buildRegistrationUrl(eventId),
         invitedEmails: event.invitedEmails || [],
+        invitationLog,
       },
     };
   } catch (error) {
@@ -154,10 +173,25 @@ export async function sendEventInvitations({
       }
     }
 
+    const logEntries = results.map((r) => {
+      const recipient = uniqueRecipients.get(r.email);
+      return {
+        email: r.email,
+        firstName: recipient?.firstName || "",
+        lastName: recipient?.lastName || "",
+        status: r.status,
+      };
+    });
+
     const newlySent = results.filter((r) => r.status === "sent").map((r) => r.email);
     if (newlySent.length > 0) {
       const merged = new Set([...(event.invitedEmails || []), ...newlySent]);
       event.invitedEmails = Array.from(merged);
+    }
+    if (logEntries.length > 0) {
+      event.invitationLog = [...(event.invitationLog || []), ...logEntries];
+    }
+    if (newlySent.length > 0 || logEntries.length > 0) {
       await event.save();
     }
 

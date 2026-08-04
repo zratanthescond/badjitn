@@ -72,6 +72,13 @@ export interface IEvent extends Document {
     footerEmail?: string;
   };
   invitedEmails?: string[];
+  invitationLog?: {
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    status: "sent" | "failed";
+    sentAt: Date;
+  }[];
 }
 const planOptionSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -171,6 +178,18 @@ const EventSchema = new Schema({
     footerEmail: { type: String },
   },
   invitedEmails: { type: [String], default: [] },
+  invitationLog: {
+    type: [
+      {
+        email: { type: String, required: true },
+        firstName: { type: String },
+        lastName: { type: String },
+        status: { type: String, enum: ["sent", "failed"], default: "sent" },
+        sentAt: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  },
 });
 EventSchema.virtual("Sponsors", {
   ref: "Sponsor",
