@@ -76,14 +76,49 @@ export default function SendInvitationsPanel({ eventId }: { eventId: string }) {
     })();
   }, [eventId]);
 
-  const existingEmails = new Set(recipients.map((r) => r.email.toLowerCase()));
+  type AddSummary = {
+    added: number;
+    duplicateInBatch: number;
+    alreadyInvited: number;
+    invalid: number;
+  };
 
-  const addRecipients = (newOnes: InvitationRecipient[]) => {
-    const unique = newOnes.filter(
-      (r) => EMAIL_RE.test(r.email) && !existingEmails.has(r.email.toLowerCase())
-    );
-    if (unique.length === 0) return;
-    setRecipients((prev) => [...prev, ...unique]);
+  const addRecipients = (newOnes: InvitationRecipient[]): AddSummary => {
+    const seen = new Set(recipients.map((r) => r.email.toLowerCase()));
+    const alreadyInvitedSet = new Set(invitedEmails.map((e) => e.toLowerCase()));
+    const unique: InvitationRecipient[] = [];
+    let duplicateInBatch = 0;
+    let alreadyInvited = 0;
+    let invalid = 0;
+
+    for (const r of newOnes) {
+      const email = (r.email || "").trim().toLowerCase();
+      if (!EMAIL_RE.test(email)) {
+        invalid++;
+        continue;
+      }
+      if (seen.has(email)) {
+        duplicateInBatch++;
+        continue;
+      }
+      if (alreadyInvitedSet.has(email)) {
+        alreadyInvited++;
+        continue;
+      }
+      seen.add(email);
+      unique.push({ ...r, email });
+    }
+
+    if (unique.length > 0) setRecipients((prev) => [...prev, ...unique]);
+    return { added: unique.length, duplicateInBatch, alreadyInvited, invalid };
+  };
+
+  const summaryDescription = ({ added, duplicateInBatch, alreadyInvited, invalid }: AddSummary) => {
+    const parts = [`${added} ajouté(s)`];
+    if (alreadyInvited > 0) parts.push(`${alreadyInvited} déjà invité(s) ignoré(s)`);
+    if (duplicateInBatch > 0) parts.push(`${duplicateInBatch} doublon(s) ignoré(s)`);
+    if (invalid > 0) parts.push(`${invalid} invalide(s) ignoré(s)`);
+    return parts.join(" · ");
   };
 
   const addManualEmails = () => {
@@ -91,11 +126,11 @@ export default function SendInvitationsPanel({ eventId }: { eventId: string }) {
       .split(/[,;\n]+/)
       .map((e) => e.trim())
       .filter(Boolean);
-    addRecipients(emails.map((email) => ({ email })));
+    const summary = addRecipients(emails.map((email) => ({ email })));
     setManualInput("");
     toast({
       title: "Emails ajoutés",
-      description: `${emails.length} email(s) traité(s)`,
+      description: summaryDescription(summary),
     });
   };
 
@@ -163,10 +198,10 @@ export default function SendInvitationsPanel({ eventId }: { eventId: string }) {
             .flatMap((line) => line.split(/[,;\t]/))
             .map((c) => c.trim())
             .filter((c) => EMAIL_RE.test(c));
-          addRecipients(emails.map((email) => ({ email })));
+          const summary = addRecipients(emails.map((email) => ({ email })));
           toast({
             title: "Fichier importé",
-            description: `${emails.length} email(s) trouvé(s)`,
+            description: summaryDescription(summary),
           });
           resetFileState();
           return;
@@ -210,9 +245,9 @@ export default function SendInvitationsPanel({ eventId }: { eventId: string }) {
       lastName: lastNameIdx !== -1 ? row[lastNameIdx]?.trim() : undefined,
     }));
 
-    addRecipients(parsed);
+    const summary = addRecipients(parsed);
     resetFileState();
-    toast({ title: "Import terminé", description: `${parsed.length} ligne(s) traitée(s)` });
+    toast({ title: "Import terminé", description: summaryDescription(summary) });
   };
 
   const handleSend = async () => {

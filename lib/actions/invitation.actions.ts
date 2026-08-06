@@ -6,6 +6,10 @@ import Event from "@/lib/database/models/event.model";
 import { sendInvitationEmail } from "@/lib/mail";
 import { verifyOrganizerOrAdmin } from "./auth.actions";
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function buildRegistrationUrl(eventId: string) {
   const serverUrl =
     process.env.NEXT_PUBLIC_SERVER_URL ||
@@ -156,51 +160,66 @@ export async function sendEventInvitations({
       }
     }
 
-    const results: { email: string; status: "sent" | "failed"; alreadyInvited: boolean }[] = [];
+    const results: { email: string; status: "sent" | "failed" | "skipped" }[] = [];
     let sent = 0;
     let failed = 0;
+    let skipped = 0;
 
-    for (const recipient of Array.from(uniqueRecipients.values())) {
-      const alreadyInvited = previouslyInvited.has(recipient.email);
+    const toSend = Array.from(uniqueRecipients.values());
+    for (let i = 0; i < toSend.length; i++) {
+      const recipient = toSend[i];
+
+      // Never re-send to an email that was already successfully invited to this event.
+      if (previouslyInvited.has(recipient.email)) {
+        results.push({ email: recipient.email, status: "skipped" });
+        skipped++;
+        continue;
+      }
+
+      let status: "sent" | "failed";
       try {
         await sendInvitationEmail({ to: recipient.email, subject, template });
-        results.push({ email: recipient.email, status: "sent", alreadyInvited });
+        status = "sent";
+        previouslyInvited.add(recipient.email);
         sent++;
       } catch (err) {
         console.error(`Failed to send invitation to ${recipient.email}:`, err);
-        results.push({ email: recipient.email, status: "failed", alreadyInvited });
+        status = "failed";
         failed++;
       }
-    }
+      results.push({ email: recipient.email, status });
 
-    const logEntries = results.map((r) => {
-      const recipient = uniqueRecipients.get(r.email);
-      return {
-        email: r.email,
-        firstName: recipient?.firstName || "",
-        lastName: recipient?.lastName || "",
-        status: r.status,
+      // Persist each result immediately (rather than one bulk save at the end) so
+      // that a successful send is never lost — and never re-sent on retry — even
+      // if this batch gets interrupted (large batches can take a while).
+      const update: any = {
+        $push: {
+          invitationLog: {
+            email: recipient.email,
+            firstName: recipient.firstName || "",
+            lastName: recipient.lastName || "",
+            status,
+          },
+        },
       };
-    });
+      if (status === "sent") {
+        update.$addToSet = { invitedEmails: recipient.email };
+      }
+      await Event.findByIdAndUpdate(eventId, update);
 
-    const newlySent = results.filter((r) => r.status === "sent").map((r) => r.email);
-    if (newlySent.length > 0) {
-      const merged = new Set([...(event.invitedEmails || []), ...newlySent]);
-      event.invitedEmails = Array.from(merged);
-    }
-    if (logEntries.length > 0) {
-      event.invitationLog = [...(event.invitationLog || []), ...logEntries];
-    }
-    if (newlySent.length > 0 || logEntries.length > 0) {
-      await event.save();
+      // Small pacing delay between real send attempts to avoid SMTP provider
+      // rate-limiting/throttling on large batches (seen causing mass failures).
+      if (i < toSend.length - 1) {
+        await sleep(250);
+      }
     }
 
     revalidatePath(`/cockpit`);
 
     return {
       success: true,
-      message: `Invitations envoyées : ${sent} réussies, ${failed} échouées`,
-      data: { sent, failed, results },
+      message: `Invitations : ${sent} envoyées, ${failed} échouées, ${skipped} ignorées (déjà invitées avec succès)`,
+      data: { sent, failed, skipped, results },
     };
   } catch (error) {
     console.error("Error sending invitations:", error);
