@@ -6,16 +6,23 @@ import {
   getUserWorkByEvent,
   submitWorkSummary,
   appendWorkSubmissionImage,
+  appendAbstractFile,
 } from "@/lib/actions/user.actions";
 import { v4 as uuidv4 } from "uuid";
 import { uploadToFileServer } from "@/lib/upload-to-server";
 
 const UPLOAD_DIR = path.resolve(process.env.ROOT_PATH ?? "", "public/uploads");
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+const ABSTRACT_EXTENSIONS = [...IMAGE_EXTENSIONS, ".pdf", ".doc", ".docx"];
 
 function isImageFile(fileName: string): boolean {
   const ext = path.extname(fileName).toLowerCase();
   return IMAGE_EXTENSIONS.includes(ext);
+}
+
+function isAbstractFile(fileName: string): boolean {
+  const ext = path.extname(fileName).toLowerCase();
+  return ABSTRACT_EXTENSIONS.includes(ext);
 }
 
 export const POST = async (req: Request) => {
@@ -26,17 +33,22 @@ export const POST = async (req: Request) => {
   const eventId = (body.eventId as string) || "";
   const userId = (body.userId as string) || "";
   const workId = (body.workId as string) || "";
+  // "abstract" = document attached to the resume, uploadable any time.
+  // "poster" (default) = final e-poster, only unlocked once the resume is approved.
+  const kind = ((body.kind as string) || "poster") === "abstract" ? "abstract" : "poster";
 
   if (fileUrl || (file && (file as File).size > 0)) {
     let finalFileUrl = fileUrl;
 
     if (!fileUrl && file) {
       const fileName = (body.file as File).name;
-      if (!isImageFile(fileName)) {
-        return NextResponse.json(
-          { success: false, error: "Only image files are allowed (jpg, png, gif, webp)." },
-          { status: 400 }
-        );
+      const isAllowed = kind === "abstract" ? isAbstractFile(fileName) : isImageFile(fileName);
+      if (!isAllowed) {
+        const message =
+          kind === "abstract"
+            ? "Formats acceptés : jpg, png, gif, webp, pdf, doc, docx."
+            : "Only image files are allowed (jpg, png, gif, webp).";
+        return NextResponse.json({ success: false, error: message }, { status: 400 });
       }
       const buffer = Buffer.from(await (file as Blob).arrayBuffer());
       try {
@@ -48,12 +60,16 @@ export const POST = async (req: Request) => {
     }
 
     try {
-      await appendWorkSubmissionImage({
-        workId,
-        eventId,
-        userId,
-        fileUrl: finalFileUrl,
-      });
+      if (kind === "abstract") {
+        await appendAbstractFile({ workId, eventId, userId, fileUrl: finalFileUrl });
+      } else {
+        await appendWorkSubmissionImage({
+          workId,
+          eventId,
+          userId,
+          fileUrl: finalFileUrl,
+        });
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Database update failed";
       return NextResponse.json({ success: false, error: message }, { status: 400 });

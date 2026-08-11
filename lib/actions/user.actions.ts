@@ -21,9 +21,9 @@ export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-   const clerkId = clerkUser?.id;
+  //  const clerkId = clerkUser?.id;
   // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-//  const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+ const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
     if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
@@ -96,9 +96,9 @@ export async function updateCurrentUserProfile(
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-    const clerkId = clerkUser?.id;
+    // const clerkId = clerkUser?.id;
     // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-    // const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+    const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
 
     if (!clerkId) throw new Error("Not authenticated");
 
@@ -558,6 +558,32 @@ export async function rejectOrderWork(orderId: string, reason?: string) {
     const work = await resolveWorkFromOrder(orderId);
     await verifyOrganizerOrAdmin(String(work.eventId));
     return await applyWorkRejection(work, reason);
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
+
+/** Append an abstract document/image URL to a work; available as soon as the work exists (no approval gate). */
+export async function appendAbstractFile({
+  workId,
+  eventId,
+  userId,
+  fileUrl,
+}: {
+  workId: string;
+  eventId: string;
+  userId: string;
+  fileUrl: string;
+}) {
+  try {
+    await connectToDatabase();
+    const work = await EventWork.findOne({ _id: workId, eventId, userId });
+    if (!work) throw new Error("Work not found");
+    work.abstractFileUrls = work.abstractFileUrls || [];
+    work.abstractFileUrls.push(fileUrl);
+    await work.save();
+    return JSON.parse(JSON.stringify(work));
   } catch (error) {
     handleError(error);
     throw error;

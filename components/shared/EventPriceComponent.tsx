@@ -145,6 +145,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [mongoUserId, setMongoUserId] = useState("");
   const [showLabSection, setShowLabSection] = useState(false);
   const [labPendingBankOpen, setLabPendingBankOpen] = useState(false);
+  // "Prise en charge laboratoire" contact details (nom du laboratoire, contact, bon de commande)
+  const [labName, setLabName] = useState("");
+  const [labContactName, setLabContactName] = useState("");
+  const [labContactEmail, setLabContactEmail] = useState("");
+  const [labContactPhone, setLabContactPhone] = useState("");
+  const [labProofUrl, setLabProofUrl] = useState("");
+  const [labProofName, setLabProofName] = useState("");
+  const [isUploadingLabProof, setIsUploadingLabProof] = useState(false);
+  const [labFieldErrors, setLabFieldErrors] = useState<Record<string, string>>({});
   const labSectionRef = useRef<HTMLDivElement>(null);
   const bankTransferRef = useRef<BankTransferModalHandle>(null);
   const t = useTranslations("eventPrice");
@@ -227,6 +236,25 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       // upload failed silently
     } finally {
       setIsUploadingProof(false);
+    }
+  };
+
+  const handleLabProofUpload = async (file: File) => {
+    setIsUploadingLabProof(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload/", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setLabProofUrl(data.url);
+        setLabProofName(file.name);
+        setLabFieldErrors((prev) => ({ ...prev, proof: "" }));
+      }
+    } catch {
+      // upload failed silently
+    } finally {
+      setIsUploadingLabProof(false);
     }
   };
 
@@ -447,23 +475,37 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const pm = (event.paymentMethods as any) || {};
   const showCardPayment = pm.card !== false;
   const showDoorpayPayment = pm.doorpay !== false;
-  const showBankPayment = pm.bankTransfer !== false;
+  // Bank transfer & "prise en charge laboratoire" can be restricted to participants
+  // who declared Tunisia as their country of residence (residentsOnly). Others only
+  // see the doorpay ("paiement sur place") option, per the organizer's requirement.
+  const isTunisianResident = registrationValues.republic === "TUN";
+  const residentsOnlyRestriction = pm.residentsOnly === true && !isTunisianResident;
+  const showBankPayment = pm.bankTransfer !== false && !residentsOnlyRestriction;
   const bankTransferAllowId: boolean = pm.bankTransferAllowId === true;
   const bankTransferAllowScreenshot: boolean = pm.bankTransferAllowScreenshot !== false;
 
   // Find the lab plan definition from all plans regardless of selection state
   const labPlanDef = useMemo(
     () =>
-      (event.pricePlan || []).find((p: any) =>
-        (p.options || []).some((o: any) =>
-          (typeof o === "object" ? o.name : String(o)).toLowerCase().includes("laboratoire")
-        )
-      ) ?? null,
-    [event.pricePlan]
+      residentsOnlyRestriction
+        ? null
+        : (event.pricePlan || []).find((p: any) =>
+            (p.options || []).some((o: any) =>
+              (typeof o === "object" ? o.name : String(o)).toLowerCase().includes("laboratoire")
+            )
+          ) ?? null,
+    [event.pricePlan, residentsOnlyRestriction]
   );
 
   // labPlan is active only when the user has selected the lab plan
   const labPlan = labPlanDef && labPlanDef._id && checkPlan.includes(labPlanDef._id) ? labPlanDef : null;
+
+  // Whether the participant chose the "laboratoire" sub-option (prise en charge by a lab)
+  // rather than the direct bank-transfer sub-option within the lab plan.
+  const isLabOptionSelected = !!(
+    labPlan &&
+    String(selectedOptions[labPlan._id ?? ""] || "").toLowerCase().includes("laboratoire")
+  );
 
   // After state update from "Paiement par bénéficiaire" click, open bank transfer
   useEffect(() => {
@@ -547,6 +589,16 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       }
     });
 
+    if (isLabOptionSelected) {
+      items.push(
+        { field: "labName", label: "Nom du laboratoire", type: "text", value: labName.trim() },
+        { field: "labContactName", label: "Nom du contact", type: "text", value: labContactName.trim() },
+        { field: "labContactEmail", label: "Email du contact", type: "email", value: labContactEmail.trim() },
+        { field: "labContactPhone", label: "Téléphone du contact", type: "text", value: labContactPhone.trim() },
+        { field: "labProofUrl", label: "Bon de commande / justificatif", type: "file", value: labProofUrl }
+      );
+    }
+
     return items;
   }, [
     getFieldLabel,
@@ -560,6 +612,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     selectedOptions,
     optionEmails,
     event.pricePlan,
+    isLabOptionSelected,
+    labName,
+    labContactName,
+    labContactEmail,
+    labContactPhone,
+    labProofUrl,
   ]);
 
   const discountInfo = useMemo(() => {
@@ -695,11 +753,36 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return Object.keys(nextErrors).length === 0;
   };
 
+  const validateLabFields = () => {
+    if (!isLabOptionSelected) {
+      setLabFieldErrors({});
+      return true;
+    }
+    const nextErrors: Record<string, string> = {};
+    if (!labName.trim()) nextErrors.labName = text("requiredField", "Ce champ est obligatoire.");
+    if (!labContactName.trim()) nextErrors.labContactName = text("requiredField", "Ce champ est obligatoire.");
+    if (!labContactEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(labContactEmail.trim())) {
+      nextErrors.labContactEmail = text("invalidEmail", "Veuillez saisir une adresse email valide.");
+    }
+    setLabFieldErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const validateAll = async () => {
     const registrationIsValid = await validateRegistration();
     const workIsValid = validateWorkSubmission();
     const optionsAreValid = validateOptions();
     const optionEmailsAreValid = validateOptionEmails();
+    const labFieldsAreValid = validateLabFields();
+
+    if (!labFieldsAreValid) {
+      toast({
+        title: "Champ requis",
+        description: "Veuillez renseigner les coordonnées du laboratoire preneur en charge.",
+        variant: "destructive",
+      });
+      return false;
+    }
 
     if (!optionsAreValid) {
       toast({
@@ -1800,6 +1883,92 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             );
                           })}
                         </div>
+
+                        {isLabOptionSelected && (
+                          <div className="space-y-3 rounded-2xl border border-amber-300/50 bg-amber-50/50 dark:bg-amber-900/10 p-4">
+                            <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">
+                              Coordonnées du laboratoire preneur en charge
+                            </p>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                              <div className="space-y-1">
+                                <Label className="text-xs">Nom du laboratoire</Label>
+                                <Input
+                                  value={labName}
+                                  onChange={(e) => {
+                                    setLabName(e.target.value);
+                                    setLabFieldErrors((prev) => ({ ...prev, labName: "" }));
+                                  }}
+                                  className="rounded-xl h-10"
+                                />
+                                {labFieldErrors.labName && (
+                                  <p className="text-xs text-destructive">{labFieldErrors.labName}</p>
+                                )}
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">Nom du contact</Label>
+                                <Input
+                                  value={labContactName}
+                                  onChange={(e) => {
+                                    setLabContactName(e.target.value);
+                                    setLabFieldErrors((prev) => ({ ...prev, labContactName: "" }));
+                                  }}
+                                  className="rounded-xl h-10"
+                                />
+                                {labFieldErrors.labContactName && (
+                                  <p className="text-xs text-destructive">{labFieldErrors.labContactName}</p>
+                                )}
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">Email du contact</Label>
+                                <Input
+                                  type="email"
+                                  value={labContactEmail}
+                                  onChange={(e) => {
+                                    setLabContactEmail(e.target.value);
+                                    setLabFieldErrors((prev) => ({ ...prev, labContactEmail: "" }));
+                                  }}
+                                  className="rounded-xl h-10"
+                                />
+                                {labFieldErrors.labContactEmail && (
+                                  <p className="text-xs text-destructive">{labFieldErrors.labContactEmail}</p>
+                                )}
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">Téléphone du contact</Label>
+                                <Input
+                                  value={labContactPhone}
+                                  onChange={(e) => setLabContactPhone(e.target.value)}
+                                  className="rounded-xl h-10"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs">Bon de commande ou justificatif (optionnel)</Label>
+                              <label className="flex items-center gap-2 cursor-pointer">
+                                <div className={`flex flex-1 items-center justify-center gap-2 h-10 rounded-xl border-2 border-dashed text-xs font-medium transition-all ${
+                                  labProofUrl
+                                    ? "border-green-400 bg-green-50 text-green-700"
+                                    : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
+                                }`}>
+                                  {isUploadingLabProof ? (
+                                    <span className="animate-pulse">Téléchargement...</span>
+                                  ) : labProofUrl ? (
+                                    <><CheckCircle className="h-3.5 w-3.5" /> {labProofName || "Fichier téléchargé"}</>
+                                  ) : (
+                                    <><FileText className="h-3.5 w-3.5" /> Télécharger le fichier</>
+                                  )}
+                                </div>
+                                <input
+                                  type="file"
+                                  accept="image/*,.pdf,.doc,.docx"
+                                  className="hidden"
+                                  onChange={(e) => e.target.files?.[0] && handleLabProofUpload(e.target.files[0])}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     )}
                   </div>

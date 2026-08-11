@@ -26,7 +26,7 @@ export interface IEvent extends Document {
   }[];
   pricePlanNote?: string;
   registrationFeeNote?: string;
-  paymentMethods?: { card?: boolean; doorpay?: boolean; bankTransfer?: boolean; bankTransferAllowId?: boolean; bankTransferAllowScreenshot?: boolean };
+  paymentMethods?: { card?: boolean; doorpay?: boolean; bankTransfer?: boolean; bankTransferAllowId?: boolean; bankTransferAllowScreenshot?: boolean; residentsOnly?: boolean };
   bankInfo?: { bankName?: string; accountHolder?: string; rib?: string };
   createdAt: Date;
   imageUrl: string;
@@ -124,6 +124,10 @@ const EventSchema = new Schema({
     bankTransfer: { type: Boolean, default: true },
     bankTransferAllowId: { type: Boolean, default: false },
     bankTransferAllowScreenshot: { type: Boolean, default: true },
+    // When true, bank transfer & "prise en charge laboratoire" are only offered
+    // to participants whose declared country of residence is Tunisia; other
+    // participants only see the "paiement sur place" (doorpay) option.
+    residentsOnly: { type: Boolean, default: false },
   },
   bankInfo: {
     bankName: { type: String },

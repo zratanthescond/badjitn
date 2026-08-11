@@ -745,6 +745,25 @@ const EventForm = ({
                   );
                 })}
               </div>
+              {(() => {
+                const pm = (form.watch("paymentMethods") as any) || {};
+                return (
+                  <label className="mt-1 flex items-center gap-2 cursor-pointer">
+                    <Checkbox
+                      checked={pm.residentsOnly === true}
+                      onCheckedChange={(v) =>
+                        form.setValue("paymentMethods", {
+                          ...((form.getValues("paymentMethods") as any) || {}),
+                          residentsOnly: v === true,
+                        })
+                      }
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      Virement bancaire &amp; prise en charge laboratoire réservés aux résidents de Tunisie (les autres participants ne voient que le paiement à la porte)
+                    </span>
+                  </label>
+                );
+              })()}
             </div>
             <FormField
               control={form.control}

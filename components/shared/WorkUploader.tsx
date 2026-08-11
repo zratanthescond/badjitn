@@ -46,6 +46,10 @@ const defaultClientInfo: ClientInfo = {
   republic: "",
   city: "",
   village: "",
+  thematique: "",
+  coAuthors: "",
+  affiliation: "",
+  correspondenceEmail: "",
 };
 
 function isClientInfoEmpty(info: ClientInfo) {
@@ -58,6 +62,7 @@ type WorkRecord = {
   clientInfo?: ClientInfo;
   note?: string;
   summaryStatus?: "draft" | "submitted" | "approved";
+  abstractFileUrls?: string[];
   fileUrls?: string[];
   createdAt?: string;
   submittedAt?: string;
@@ -100,8 +105,14 @@ export default function WorkUploader({
   const [dragActive, setDragActive] = useState(false);
   const [clientInfoTouched, setClientInfoTouched] = useState(false);
 
+  // Abstract document upload (available immediately, not gated by approval)
+  const [abstractFile, setAbstractFile] = useState<File | null>(null);
+  const [abstractError, setAbstractError] = useState<string | null>(null);
+  const [abstractDragActive, setAbstractDragActive] = useState(false);
+
   const submitSummaryMutation = useSubmitWorkSummary();
   const uploadImageMutation = useUploadWorkImage();
+  const uploadAbstractMutation = useUploadWorkImage();
 
   useEffect(() => {
     if (!works.length) {
@@ -127,6 +138,8 @@ export default function WorkUploader({
     setFileType(null);
     setUploadProgress(0);
     setError(null);
+    setAbstractFile(null);
+    setAbstractError(null);
   }, [selectedWorkId, selectedWork]);
 
   useEffect(() => {
@@ -188,6 +201,29 @@ export default function WorkUploader({
     onDragLeave: () => setDragActive(false),
   });
 
+  const onDropAbstract = useCallback((acceptedFiles: File[]) => {
+    const selectedFile = acceptedFiles[0];
+    if (!selectedFile) return;
+    setAbstractFile(selectedFile);
+    setAbstractError(null);
+  }, []);
+
+  const { getRootProps: getAbstractRootProps, getInputProps: getAbstractInputProps, isDragActive: isAbstractDragActive } = useDropzone({
+    onDrop: onDropAbstract,
+    accept: {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/gif": [".gif"],
+      "image/webp": [".webp"],
+      "application/pdf": [".pdf"],
+      "application/msword": [".doc"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+    },
+    maxFiles: 1,
+    onDragEnter: () => setAbstractDragActive(true),
+    onDragLeave: () => setAbstractDragActive(false),
+  });
+
   const getNoteAsString = (): string => {
     if (typeof note === "string") return note;
     return "";
@@ -233,7 +269,7 @@ export default function WorkUploader({
     if (!file || !selectedWork?._id) return;
     setError(null);
     uploadImageMutation.mutate(
-      { workId: selectedWork._id, file, eventId, userId },
+      { workId: selectedWork._id, file, eventId, userId, kind: "poster" },
       {
         onSuccess: () => {
           setFile(null);
@@ -495,6 +531,51 @@ export default function WorkUploader({
                         className="h-9"
                       />
                     </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">{tx("summary.fields.thematique", "Thématique")}</Label>
+                      <Input
+                        value={clientInfo.thematique ?? ""}
+                        onChange={(e) =>
+                          (setClientInfoTouched(true),
+                          setClientInfo((prev) => ({ ...prev, thematique: e.target.value })))
+                        }
+                        className="h-9"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">{tx("summary.fields.affiliation", "Établissement / affiliation")}</Label>
+                      <Input
+                        value={clientInfo.affiliation ?? ""}
+                        onChange={(e) =>
+                          (setClientInfoTouched(true),
+                          setClientInfo((prev) => ({ ...prev, affiliation: e.target.value })))
+                        }
+                        className="h-9"
+                      />
+                    </div>
+                    <div className="sm:col-span-2 space-y-1">
+                      <Label className="text-xs">{tx("summary.fields.coAuthors", "Co-auteurs")}</Label>
+                      <Input
+                        value={clientInfo.coAuthors ?? ""}
+                        onChange={(e) =>
+                          (setClientInfoTouched(true),
+                          setClientInfo((prev) => ({ ...prev, coAuthors: e.target.value })))
+                        }
+                        className="h-9"
+                      />
+                    </div>
+                    <div className="sm:col-span-2 space-y-1">
+                      <Label className="text-xs">{tx("summary.fields.correspondenceEmail", "Email de correspondance")}</Label>
+                      <Input
+                        type="email"
+                        value={clientInfo.correspondenceEmail ?? ""}
+                        onChange={(e) =>
+                          (setClientInfoTouched(true),
+                          setClientInfo((prev) => ({ ...prev, correspondenceEmail: e.target.value })))
+                        }
+                        className="h-9"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -522,6 +603,112 @@ export default function WorkUploader({
                     />
                     <ScrollBar orientation="vertical" />
                   </ScrollArea>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>{tx("abstract.title", "Téléchargement de l'abstract")}</Label>
+                  <p className="text-xs text-muted-foreground">
+                    {tx("abstract.description", "Formats acceptés : PDF, Word ou image. Disponible dès l'enregistrement du résumé.")}
+                  </p>
+                  {!selectedWork ? (
+                    <div className="flex flex-col items-center justify-center py-6 text-center rounded-xl bg-muted/30 border border-dashed">
+                      <p className="text-sm text-muted-foreground">
+                        {tx("abstract.saveFirst", "Enregistrez d'abord le résumé ci-dessus pour pouvoir joindre le fichier de l'abstract.")}
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        {...getAbstractRootProps()}
+                        className={`relative border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all duration-300 ${
+                          isAbstractDragActive || abstractDragActive
+                            ? "border-primary bg-primary/5 scale-[1.01] shadow-lg"
+                            : "border-border hover:border-muted-foreground hover:bg-muted/20"
+                        }`}
+                      >
+                        <input {...getAbstractInputProps()} />
+                        <UploadCloud className="mx-auto h-6 w-6 text-primary mb-2" />
+                        <p className="text-sm font-medium text-foreground">
+                          {isAbstractDragActive
+                            ? t("upload.dropHere")
+                            : tx("abstract.dragDrop", "Glissez le fichier ici ou cliquez pour parcourir")}
+                        </p>
+                      </div>
+
+                      {abstractFile && (
+                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl border">
+                          {getFileIcon(extractFileDetails(abstractFile.name).extension)}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-foreground truncate text-sm">{abstractFile.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {(abstractFile.size / 1024).toFixed(1)} KB
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedWork.abstractFileUrls && selectedWork.abstractFileUrls.length > 0 && (
+                        <ScrollArea className="bg-muted/30 rounded-xl p-3">
+                          <div className="flex items-center gap-3">
+                            {selectedWork.abstractFileUrls.map((fileUrl: string, index: number) => (
+                              <a
+                                key={index}
+                                href={fileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs shrink-0 hover:border-primary/40"
+                              >
+                                <File className="h-4 w-4 text-muted-foreground" />
+                                {tx("abstract.fileLabel", "Fichier")} {index + 1}
+                              </a>
+                            ))}
+                          </div>
+                          <ScrollBar orientation="horizontal" />
+                        </ScrollArea>
+                      )}
+
+                      {abstractError && (
+                        <p className="text-xs text-destructive">{abstractError}</p>
+                      )}
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full h-10 rounded-xl"
+                        disabled={!abstractFile || uploadAbstractMutation.isPending}
+                        onClick={() => {
+                          if (!abstractFile || !selectedWork?._id) return;
+                          setAbstractError(null);
+                          uploadAbstractMutation.mutate(
+                            { workId: selectedWork._id, file: abstractFile, eventId, userId, kind: "abstract" },
+                            {
+                              onSuccess: () => {
+                                setAbstractFile(null);
+                                refetch();
+                                toast({
+                                  title: tx("abstract.uploadSuccess", "Fichier envoyé"),
+                                  description: tx("abstract.uploadSuccessDescription", "Le fichier de l'abstract a bien été enregistré."),
+                                });
+                              },
+                              onError: (err: Error) => setAbstractError(err.message),
+                            }
+                          );
+                        }}
+                      >
+                        {uploadAbstractMutation.isPending ? (
+                          <div className="flex items-center gap-2">
+                            <Loader className="h-4 w-4 animate-spin" />
+                            {t("actions.uploadingFile")}
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <UploadCloud className="h-4 w-4" />
+                            {tx("abstract.upload", "Envoyer le fichier")}
+                          </div>
+                        )}
+                      </Button>
+                    </>
+                  )}
                 </div>
 
                 {error && (
@@ -575,7 +762,7 @@ export default function WorkUploader({
                   </div>
                   <div>
                     <CardTitle className="text-xl font-bold text-foreground">
-                      {t("upload.title")}
+                      {t("upload.title")} <span className="text-sm font-normal text-muted-foreground">({tx("abstract.finalPoster", "e-poster final")})</span>
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
                       {t("upload.description")}

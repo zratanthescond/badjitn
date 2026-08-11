@@ -8,6 +8,10 @@ export type ClientInfo = {
   republic?: string;
   city?: string;
   village?: string;
+  thematique?: string;
+  coAuthors?: string;
+  affiliation?: string;
+  correspondenceEmail?: string;
 };
 
 export type SubmitSummaryParams = {
@@ -24,6 +28,9 @@ export type UploadImageParams = {
   file: File;
   userId: string;
   eventId: string;
+  // "abstract" = document attached to the resume, uploadable any time.
+  // "poster" (default) = final e-poster, only unlocked once the resume is approved.
+  kind?: "abstract" | "poster";
 };
 
 const submitSummary = async (data: SubmitSummaryParams) => {
@@ -47,7 +54,7 @@ const uploadSubmissionImage = async (data: UploadImageParams) => {
   // Step 1: Upload to the new native upload API
   const uploadFormData = new FormData();
   uploadFormData.append("file", data.file);
-  
+
   const uploadRes = await axios.post("/api/upload/", uploadFormData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -64,6 +71,7 @@ const uploadSubmissionImage = async (data: UploadImageParams) => {
   workFormData.append("userId", data.userId);
   workFormData.append("eventId", data.eventId);
   workFormData.append("fileUrl", fileUrl); // Send URL instead of binary file
+  workFormData.append("kind", data.kind || "poster");
 
   const res = await axios.post(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploadwork/`,
