@@ -119,7 +119,7 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
       details: details || [],
       requiredUserInfo: requiredUserInfo || [],
       discountInfo: discountInfo || null,
-      ...(discountProofUrl ? { discountProofUrl } : {}),
+      ...(discountProofUrl ? { discountProofUrl, eligibilityStatus: "pending" } : {}),
       ...(originalAmount !== undefined ? { originalAmount: Number(originalAmount) } : {}),
     })
 

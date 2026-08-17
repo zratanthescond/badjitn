@@ -36,6 +36,9 @@ export type PlanOption = {
   description?: string;
   requireEmail?: boolean;
   registrationRequestOnly?: boolean;
+  requireProof?: boolean;
+  proofDescription?: string;
+  proofFallbackPrice?: number;
 };
 
 export type PaymentMethods = {
@@ -53,12 +56,16 @@ export type BankInfo = {
 };
 
 export type pricePlan = {
+  _id?: string;
   name: string;
   price: number;
   places?: number;
   note?: string;
   options?: PlanOption[];
   isPackage?: boolean;
+  cardsLayout?: boolean;
+  groupedWithPlanId?: string;
+  displayPriceLabel?: string;
 };
 // ====== EVENT PARAMS
 export type CreateEventParams = {

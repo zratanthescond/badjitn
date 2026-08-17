@@ -22,7 +22,10 @@ export interface IEvent extends Document {
     places?: number;
     note?: string;
     isPackage?: boolean;
-    options?: { _id?: string; name: string; price: number; places?: number; description?: string; requireEmail?: boolean; registrationRequestOnly?: boolean }[];
+    cardsLayout?: boolean;
+    groupedWithPlanId?: string;
+    displayPriceLabel?: string;
+    options?: { _id?: string; name: string; price: number; places?: number; description?: string; requireEmail?: boolean; registrationRequestOnly?: boolean; requireProof?: boolean; proofDescription?: string; proofFallbackPrice?: number }[];
   }[];
   pricePlanNote?: string;
   registrationFeeNote?: string;
@@ -87,6 +90,12 @@ const planOptionSchema = new mongoose.Schema({
   description: { type: String },
   requireEmail: { type: Boolean, default: false },
   registrationRequestOnly: { type: Boolean, default: false },
+  requireProof: { type: Boolean, default: false },
+  proofDescription: { type: String },
+  // If set, an admin who rejects the uploaded proof bills the registrant this
+  // amount instead (e.g. the standard rate, when a student/resident claim fails
+  // verification) — mirrors the existing discount-eligibility fallback billing.
+  proofFallbackPrice: { type: Number },
 });
 
 const pricePlanSchema = new mongoose.Schema({
@@ -95,6 +104,16 @@ const pricePlanSchema = new mongoose.Schema({
   places: { type: Number },
   note: { type: String },
   isPackage: { type: Boolean, default: false },
+  // When true, this plan's options are rendered as horizontal cards (with each
+  // option's description shown as an "Incluant" block) instead of the compact list.
+  cardsLayout: { type: Boolean, default: false },
+  // When set, this whole plan is rendered as an extra card inside the cardsLayout
+  // row of the referenced plan, as an independent toggle (not mutually exclusive
+  // with that plan's own options) — e.g. a "Pré-congrès" add-on next to a base fee.
+  groupedWithPlanId: { type: String },
+  // Optional text shown instead of the computed price on a grouped card (e.g. an
+  // all-inclusive headline price while the actual add-on charge is a supplement).
+  displayPriceLabel: { type: String },
   options: { type: [planOptionSchema], default: [] },
 });
 const EventSchema = new Schema({

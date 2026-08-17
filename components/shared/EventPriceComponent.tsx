@@ -154,6 +154,11 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [labProofName, setLabProofName] = useState("");
   const [isUploadingLabProof, setIsUploadingLabProof] = useState(false);
   const [labFieldErrors, setLabFieldErrors] = useState<Record<string, string>>({});
+  // Proof of eligibility (e.g. student/resident card) required by some plan options
+  const [optionProofUrls, setOptionProofUrls] = useState<Record<string, string>>({});
+  const [optionProofNames, setOptionProofNames] = useState<Record<string, string>>({});
+  const [isUploadingOptionProof, setIsUploadingOptionProof] = useState<Record<string, boolean>>({});
+  const [optionProofErrors, setOptionProofErrors] = useState<Record<string, string>>({});
   const labSectionRef = useRef<HTMLDivElement>(null);
   const bankTransferRef = useRef<BankTransferModalHandle>(null);
   const t = useTranslations("eventPrice");
@@ -255,6 +260,25 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       // upload failed silently
     } finally {
       setIsUploadingLabProof(false);
+    }
+  };
+
+  const handleOptionProofUpload = async (planId: string, file: File) => {
+    setIsUploadingOptionProof((prev) => ({ ...prev, [planId]: true }));
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload/", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setOptionProofUrls((prev) => ({ ...prev, [planId]: data.url }));
+        setOptionProofNames((prev) => ({ ...prev, [planId]: file.name }));
+        setOptionProofErrors((prev) => ({ ...prev, [planId]: "" }));
+      }
+    } catch {
+      // upload failed silently
+    } finally {
+      setIsUploadingOptionProof((prev) => ({ ...prev, [planId]: false }));
     }
   };
 
@@ -500,6 +524,23 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   // labPlan is active only when the user has selected the lab plan
   const labPlan = labPlanDef && labPlanDef._id && checkPlan.includes(labPlanDef._id) ? labPlanDef : null;
 
+  // Plans flagged with groupedWithPlanId are rendered as an extra standalone
+  // card inside the cardsLayout row of the plan they reference, instead of
+  // appearing as their own top-level plan block.
+  const groupedChildPlansByParent = useMemo(() => {
+    const map: Record<string, any[]> = {};
+    (event.pricePlan || []).forEach((p: any) => {
+      if (p.groupedWithPlanId) {
+        (map[p.groupedWithPlanId] ||= []).push(p);
+      }
+    });
+    return map;
+  }, [event.pricePlan]);
+  const groupedChildPlanIds = useMemo(
+    () => new Set((event.pricePlan || []).filter((p: any) => p.groupedWithPlanId).map((p: any) => p._id)),
+    [event.pricePlan]
+  );
+
   // Whether the participant chose the "laboratoire" sub-option (prise en charge by a lab)
   // rather than the direct bank-transfer sub-option within the lab plan.
   const isLabOptionSelected = !!(
@@ -587,6 +628,14 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           value: (optionEmails[planId] || "").trim(),
         });
       }
+      if (selectedOpt && typeof selectedOpt === "object" && selectedOpt.requireProof) {
+        items.push({
+          field: `optionProof_${planId}`,
+          label: `Justificatif — ${selectedOptName}`,
+          type: "file",
+          value: optionProofUrls[planId] || "",
+        });
+      }
     });
 
     if (isLabOptionSelected) {
@@ -611,6 +660,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     checkPlan,
     selectedOptions,
     optionEmails,
+    optionProofUrls,
     event.pricePlan,
     isLabOptionSelected,
     labName,
@@ -642,6 +692,28 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       discountPlanIds: event.discount.discountPlanIds || [],
     };
   }, [event.discount, registrationFields, registrationValues]);
+
+  // The currently selected option (if any) that requires an admin-reviewed proof —
+  // used to route the registration into the pending/approved/rejected eligibility
+  // workflow, with an optional fallback price to bill if the proof is rejected.
+  const proofReviewInfo = useMemo(() => {
+    for (const planId of checkPlan) {
+      const plan = event.pricePlan?.find((p) => p._id === planId);
+      const selectedOptName = selectedOptions[planId];
+      const selectedOpt = (plan?.options as any[])?.find(
+        (o: any) => (typeof o === "object" ? o.name : o) === selectedOptName
+      );
+      if (selectedOpt && typeof selectedOpt === "object" && selectedOpt.requireProof) {
+        return {
+          planId,
+          optionPrice: Number(selectedOpt.price) || 0,
+          proofUrl: optionProofUrls[planId] || "",
+          fallbackPrice: selectedOpt.proofFallbackPrice as number | undefined,
+        };
+      }
+    }
+    return null;
+  }, [checkPlan, selectedOptions, event.pricePlan, optionProofUrls]);
 
   const calculatePriceAsNumber = (_unused?: number) => {
     const final = calcFinalPrice(baseFee, planSum, discountInfo, event.pricePlan as any[], checkPlan, selectedOptions);
@@ -753,6 +825,23 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return Object.keys(nextErrors).length === 0;
   };
 
+  // Validate that a proof file was uploaded for options flagged requireProof.
+  const validateOptionProofs = () => {
+    const nextErrors: Record<string, string> = {};
+    for (const planId of checkPlan) {
+      const plan = event.pricePlan?.find((p) => p._id === planId);
+      const selectedOptName = selectedOptions[planId];
+      const selectedOpt = (plan?.options as any[])?.find(
+        (o: any) => (typeof o === "object" ? o.name : o) === selectedOptName
+      );
+      if (selectedOpt && typeof selectedOpt === "object" && selectedOpt.requireProof && !optionProofUrls[planId]) {
+        nextErrors[planId] = text("requiredField", "Ce champ est obligatoire.");
+      }
+    }
+    setOptionProofErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const validateLabFields = () => {
     if (!isLabOptionSelected) {
       setLabFieldErrors({});
@@ -773,6 +862,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     const workIsValid = validateWorkSubmission();
     const optionsAreValid = validateOptions();
     const optionEmailsAreValid = validateOptionEmails();
+    const optionProofsAreValid = validateOptionProofs();
     const labFieldsAreValid = validateLabFields();
 
     if (!labFieldsAreValid) {
@@ -797,6 +887,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       toast({
         title: "Champ requis",
         description: "Veuillez saisir l'adresse email demandée pour le choix sélectionné.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!optionProofsAreValid) {
+      toast({
+        title: "Justificatif requis",
+        description: "Veuillez télécharger le justificatif demandé pour le choix sélectionné.",
         variant: "destructive",
       });
       return false;
@@ -890,6 +989,13 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           }) || [];
 
       const discountIsApplied = discountInfo && Number(discountInfo.value) > 0;
+      // Fallback total if an admin rejects the option-level proof (e.g. résident
+      // status not confirmed): current total minus the reduced option price, plus
+      // whatever the organizer configured as the full-price fallback for it.
+      const proofFallbackTotal =
+        proofReviewInfo?.fallbackPrice !== undefined
+          ? Number(calculatePriceAsNumber(price)) - proofReviewInfo.optionPrice + proofReviewInfo.fallbackPrice
+          : undefined;
       const order = await createOrder({
         eventId: event._id,
         totalAmount: calculatePriceAsNumber(price),
@@ -899,6 +1005,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         ...(discountIsApplied ? { originalAmount: price } : {}),
         ...(discountIsApplied && discountProofUrl ? { discountProofUrl } : {}),
         ...(asRequest ? { pendingReview: true } : {}),
+        ...(proofReviewInfo ? { pendingReview: true, discountProofUrl: proofReviewInfo.proofUrl } : {}),
+        ...(proofFallbackTotal !== undefined ? { originalAmount: proofFallbackTotal } : {}),
         details,
         buyerId: userId || "",
         stripeId: `${uuidv4()}`,
@@ -1021,7 +1129,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-3 px-3 pb-4">
+        <CardContent className="space-y-3 px-1.5 sm:px-3 pb-4">
           <div className="space-y-3">
             {baseFee > 0 && (
               <div className="rounded-[2rem] border border-border/50 bg-card/5 p-6 text-center backdrop-blur-sm">
@@ -1395,7 +1503,139 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   {event.pricePlan.map((plan: any) => {
                     // Lab plan is displayed in the payment section, not here
                     if (labPlanDef && plan._id === labPlanDef._id) return null;
+                    // Plans grouped into another plan's cards row are rendered there instead
+                    if (groupedChildPlanIds.has(plan._id)) return null;
                     const isSelected = checkPlan.includes(plan._id);
+
+                    if (plan.cardsLayout) {
+                      const childCards = groupedChildPlansByParent[plan._id] || [];
+                      return (
+                        <div key={plan._id} className="flex flex-col gap-2">
+                          <span className="font-semibold text-foreground">{plan.name}</span>
+                          {plan.note && (
+                            <div className="px-1 pb-1">
+                              <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-2 text-xs text-blue-600 shadow-sm dark:text-blue-400">
+                                <p className="font-medium">{t("note")}: {plan.note}</p>
+                              </div>
+                            </div>
+                          )}
+                          <div className="grid grid-cols-3 gap-1.5 sm:gap-3">
+                            {(plan.options || []).map((opt: any, idx: number) => {
+                              const optName = typeof opt === "object" ? opt.name : opt;
+                              const optPrice = typeof opt === "object" ? (opt.price || 0) : 0;
+                              const optDescription = typeof opt === "object" ? opt.description : undefined;
+                              const isOptSelected = checkPlan.includes(plan._id) && selectedOptions[plan._id] === optName;
+                              return (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => handleSelectOption(plan._id, optName)}
+                                  className={`flex flex-col gap-1 sm:gap-2 rounded-xl sm:rounded-2xl border-2 p-1.5 sm:p-4 text-left transition-all ${
+                                    isOptSelected
+                                      ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                                      : "border-border/50 bg-card/5 hover:border-primary/30 hover:bg-primary/[0.02]"
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between gap-1">
+                                    <div className={`flex h-3 w-3 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full border-2 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/30"}`}>
+                                      {isOptSelected && <CheckCircle size={9} className="text-primary-foreground" />}
+                                    </div>
+                                    <span className="font-semibold text-center flex-1 text-[10px] leading-tight sm:text-sm">{optName}</span>
+                                  </div>
+                                  <p className="text-center font-bold text-primary text-[11px] sm:text-base">
+                                    {formatPriceByCountry(optPrice, event.country, "en-US", event.location)}
+                                  </p>
+                                  {optDescription && (
+                                    <div className="rounded-lg sm:rounded-xl border border-blue-500/20 bg-blue-500/5 p-1 sm:p-2 text-[8px] sm:text-xs leading-snug text-muted-foreground">
+                                      {optDescription}
+                                    </div>
+                                  )}
+                                </button>
+                              );
+                            })}
+                            {childCards.map((child: any) => {
+                              const isChildSelected = checkPlan.includes(child._id);
+                              return (
+                                <button
+                                  key={child._id}
+                                  type="button"
+                                  onClick={() => (isChildSelected ? handleRemovePlan(child._id) : handleAddPlan(child._id))}
+                                  className={`flex flex-col gap-1 sm:gap-2 rounded-xl sm:rounded-2xl border-2 p-1.5 sm:p-4 text-left transition-all ${
+                                    isChildSelected
+                                      ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                                      : "border-border/50 bg-card/5 hover:border-primary/30 hover:bg-primary/[0.02]"
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between gap-1">
+                                    <div className={`flex h-3 w-3 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full border-2 ${isChildSelected ? "border-primary bg-primary" : "border-muted-foreground/30"}`}>
+                                      {isChildSelected && <CheckCircle size={9} className="text-primary-foreground" />}
+                                    </div>
+                                    <span className="font-semibold text-center flex-1 text-[10px] leading-tight sm:text-sm">{child.name}</span>
+                                  </div>
+                                  <p className="text-center font-bold text-primary text-[11px] sm:text-base">
+                                    {child.displayPriceLabel || formatPriceByCountry(child.price, event.country, "en-US", event.location)}
+                                  </p>
+                                  {child.note && (
+                                    <div className="rounded-lg sm:rounded-xl border border-blue-500/20 bg-blue-500/5 p-1 sm:p-2 text-[8px] sm:text-xs leading-snug text-muted-foreground">
+                                      {child.note}
+                                    </div>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {/* Proof upload when the selected card requires it (e.g. student/resident card) */}
+                          {(() => {
+                            const selectedOptName = selectedOptions[plan._id];
+                            const selectedOpt = (plan.options as any[])?.find(
+                              (o: any) => (typeof o === "object" ? o.name : o) === selectedOptName
+                            );
+                            if (!selectedOpt || typeof selectedOpt !== "object" || !selectedOpt.requireProof) {
+                              return null;
+                            }
+                            const proofUrl = optionProofUrls[plan._id];
+                            return (
+                              <div className="mt-1 space-y-1">
+                                <Label className="text-xs font-medium text-foreground flex items-center gap-1">
+                                  <FileText className="h-3.5 w-3.5" />
+                                  {text("proofRequiredTitle", "Justificatif requis")}
+                                  <span className="ml-1 text-destructive">*</span>
+                                </Label>
+                                {selectedOpt.proofDescription && (
+                                  <p className="text-[11px] text-muted-foreground">{selectedOpt.proofDescription}</p>
+                                )}
+                                <label className="flex flex-col gap-1 cursor-pointer">
+                                  <div className={`flex items-center justify-center gap-2 h-10 rounded-xl border-2 border-dashed text-xs font-medium transition-all ${
+                                    proofUrl
+                                      ? "border-green-400 bg-green-50 text-green-700"
+                                      : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
+                                  }`}>
+                                    {isUploadingOptionProof[plan._id] ? (
+                                      <span className="animate-pulse">{text("uploading", "Téléchargement...")}</span>
+                                    ) : proofUrl ? (
+                                      <><CheckCircle className="h-3.5 w-3.5" /> {optionProofNames[plan._id] || text("proofUploaded", "Justificatif téléchargé")}</>
+                                    ) : (
+                                      <><FileText className="h-3.5 w-3.5" /> {text("uploadProof", "Télécharger le justificatif")}</>
+                                    )}
+                                  </div>
+                                  <input
+                                    type="file"
+                                    accept="image/*,.pdf"
+                                    className="hidden"
+                                    onChange={(e) => e.target.files?.[0] && handleOptionProofUpload(plan._id, e.target.files[0])}
+                                  />
+                                </label>
+                                {optionProofErrors[plan._id] && (
+                                  <p className="text-xs text-destructive">{optionProofErrors[plan._id]}</p>
+                                )}
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      );
+                    }
+
                     return (
                       <div key={plan._id} className="flex flex-col gap-2">
                         <motion.div
@@ -1546,6 +1786,54 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                   />
                                   {optionEmailErrors[plan._id] && (
                                     <p className="text-xs text-destructive">{optionEmailErrors[plan._id]}</p>
+                                  )}
+                                </div>
+                              );
+                            })()}
+
+                            {/* Proof upload when the selected choice requires it (e.g. student/resident card) */}
+                            {(() => {
+                              const selectedOptName = selectedOptions[plan._id];
+                              const selectedOpt = (plan.options as any[])?.find(
+                                (o: any) => (typeof o === "object" ? o.name : o) === selectedOptName
+                              );
+                              if (!selectedOpt || typeof selectedOpt !== "object" || !selectedOpt.requireProof) {
+                                return null;
+                              }
+                              const proofUrl = optionProofUrls[plan._id];
+                              return (
+                                <div className="mt-2 space-y-1">
+                                  <Label className="text-xs font-medium text-foreground flex items-center gap-1">
+                                    <FileText className="h-3.5 w-3.5" />
+                                    {text("proofRequiredTitle", "Justificatif requis")}
+                                    <span className="ml-1 text-destructive">*</span>
+                                  </Label>
+                                  {selectedOpt.proofDescription && (
+                                    <p className="text-[11px] text-muted-foreground">{selectedOpt.proofDescription}</p>
+                                  )}
+                                  <label className="flex flex-col gap-1 cursor-pointer">
+                                    <div className={`flex items-center justify-center gap-2 h-10 rounded-xl border-2 border-dashed text-xs font-medium transition-all ${
+                                      proofUrl
+                                        ? "border-green-400 bg-green-50 text-green-700"
+                                        : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
+                                    }`}>
+                                      {isUploadingOptionProof[plan._id] ? (
+                                        <span className="animate-pulse">{text("uploading", "Téléchargement...")}</span>
+                                      ) : proofUrl ? (
+                                        <><CheckCircle className="h-3.5 w-3.5" /> {optionProofNames[plan._id] || text("proofUploaded", "Justificatif téléchargé")}</>
+                                      ) : (
+                                        <><FileText className="h-3.5 w-3.5" /> {text("uploadProof", "Télécharger le justificatif")}</>
+                                      )}
+                                    </div>
+                                    <input
+                                      type="file"
+                                      accept="image/*,.pdf"
+                                      className="hidden"
+                                      onChange={(e) => e.target.files?.[0] && handleOptionProofUpload(plan._id, e.target.files[0])}
+                                    />
+                                  </label>
+                                  {optionProofErrors[plan._id] && (
+                                    <p className="text-xs text-destructive">{optionProofErrors[plan._id]}</p>
                                   )}
                                 </div>
                               );
@@ -1766,8 +2054,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       }
                       requiredUserInfo={builtRegistrationInfo}
                       discountInfo={discountInfo}
-                      discountProofUrl={discountProofUrl}
-                      originalAmount={price}
+                      discountProofUrl={proofReviewInfo?.proofUrl || discountProofUrl}
+                      originalAmount={
+                        proofReviewInfo?.fallbackPrice !== undefined
+                          ? Number(calculatePriceAsNumber(price)) - proofReviewInfo.optionPrice + proofReviewInfo.fallbackPrice
+                          : price
+                      }
                       validateBeforeOpen={validateAll}
                       beforeSubmit={persistWorkSummaryIfNeeded}
                       allowTransferId={bankTransferAllowId}

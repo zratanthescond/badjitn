@@ -26,15 +26,22 @@ interface PlanOption {
   description?: string;
   requireEmail?: boolean;
   registrationRequestOnly?: boolean;
+  requireProof?: boolean;
+  proofDescription?: string;
+  proofFallbackPrice?: number;
 }
 
 interface PricePlan {
+  _id?: string;
   name: string;
   price: number;
   places?: number;
   note?: string;
   options?: PlanOption[];
   isPackage?: boolean;
+  cardsLayout?: boolean;
+  groupedWithPlanId?: string;
+  displayPriceLabel?: string;
 }
 
 interface PricePlanComponentProps {
@@ -64,6 +71,9 @@ export default function PricePlanComponent({
   const [planPlaces, setPlanPlaces] = useState("");
   const [planNote, setPlanNote] = useState("");
   const [planIsPackage, setPlanIsPackage] = useState(false);
+  const [planCardsLayout, setPlanCardsLayout] = useState(false);
+  const [planGroupedWithPlanId, setPlanGroupedWithPlanId] = useState("");
+  const [planDisplayPriceLabel, setPlanDisplayPriceLabel] = useState("");
   const [planOptions, setPlanOptions] = useState<PlanOption[]>([]);
   const [currentOption, setCurrentOption] = useState("");
   const [currentOptionPrice, setCurrentOptionPrice] = useState("");
@@ -71,6 +81,9 @@ export default function PricePlanComponent({
   const [currentOptionDescription, setCurrentOptionDescription] = useState("");
   const [currentOptionRequireEmail, setCurrentOptionRequireEmail] = useState(false);
   const [currentOptionRequestOnly, setCurrentOptionRequestOnly] = useState(false);
+  const [currentOptionRequireProof, setCurrentOptionRequireProof] = useState(false);
+  const [currentOptionProofDescription, setCurrentOptionProofDescription] = useState("");
+  const [currentOptionProofFallbackPrice, setCurrentOptionProofFallbackPrice] = useState("");
 
   // ── edit mode ────────────────────────────────────────────────────────────
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -84,6 +97,9 @@ export default function PricePlanComponent({
     setCurrentOptionDescription("");
     setCurrentOptionRequireEmail(false);
     setCurrentOptionRequestOnly(false);
+    setCurrentOptionRequireProof(false);
+    setCurrentOptionProofDescription("");
+    setCurrentOptionProofFallbackPrice("");
     setEditingOptionIndex(null);
   };
 
@@ -93,6 +109,9 @@ export default function PricePlanComponent({
     setPlanPlaces("");
     setPlanNote("");
     setPlanIsPackage(false);
+    setPlanCardsLayout(false);
+    setPlanGroupedWithPlanId("");
+    setPlanDisplayPriceLabel("");
     setPlanOptions([]);
     resetOptionForm();
     setEditingIndex(null);
@@ -105,6 +124,9 @@ export default function PricePlanComponent({
     setPlanPlaces(plan.places?.toString() ?? "");
     setPlanNote(plan.note ?? "");
     setPlanIsPackage(plan.isPackage ?? false);
+    setPlanCardsLayout(plan.cardsLayout ?? false);
+    setPlanGroupedWithPlanId(plan.groupedWithPlanId ?? "");
+    setPlanDisplayPriceLabel(plan.displayPriceLabel ?? "");
     setPlanOptions(plan.options ?? []);
     resetOptionForm();
     setEditingIndex(index);
@@ -120,6 +142,9 @@ export default function PricePlanComponent({
     setCurrentOptionDescription(opt.description ?? "");
     setCurrentOptionRequireEmail(!!opt.requireEmail);
     setCurrentOptionRequestOnly(!!opt.registrationRequestOnly);
+    setCurrentOptionRequireProof(!!opt.requireProof);
+    setCurrentOptionProofDescription(opt.proofDescription ?? "");
+    setCurrentOptionProofFallbackPrice(opt.proofFallbackPrice !== undefined ? opt.proofFallbackPrice.toString() : "");
     setEditingOptionIndex(index);
   };
 
@@ -132,6 +157,11 @@ export default function PricePlanComponent({
       description: currentOptionDescription.trim() || undefined,
       requireEmail: currentOptionRequireEmail || undefined,
       registrationRequestOnly: currentOptionRequestOnly || undefined,
+      requireProof: currentOptionRequireProof || undefined,
+      proofDescription: currentOptionRequireProof ? (currentOptionProofDescription.trim() || undefined) : undefined,
+      proofFallbackPrice: currentOptionRequireProof && currentOptionProofFallbackPrice.trim() !== ""
+        ? parseFloat(currentOptionProofFallbackPrice)
+        : undefined,
     };
     if (editingOptionIndex !== null) {
       setPlanOptions((prev) => prev.map((o, i) => (i === editingOptionIndex ? nextOption : o)));
@@ -158,11 +188,15 @@ export default function PricePlanComponent({
     e.preventDefault();
 
     const plan: PricePlan = {
+      ...(editingIndex !== null && pricePlan[editingIndex]?._id ? { _id: pricePlan[editingIndex]._id } : {}),
       name: planDescription.trim() || `${t("list.planNumber")} ${editingIndex !== null ? editingIndex + 1 : pricePlan.length + 1}`,
       price: parseFloat(planPrice) || 0,
       places: planPlaces ? parseInt(planPlaces) : undefined,
       note: planNote.trim() || undefined,
       isPackage: planIsPackage || undefined,
+      cardsLayout: planCardsLayout || undefined,
+      groupedWithPlanId: planGroupedWithPlanId || undefined,
+      displayPriceLabel: planGroupedWithPlanId ? (planDisplayPriceLabel.trim() || undefined) : undefined,
       options: planOptions.length > 0 ? planOptions : undefined,
     };
 
@@ -329,6 +363,57 @@ export default function PricePlanComponent({
               </label>
             </div>
 
+            {/* Cards layout toggle */}
+            <div className="md:col-span-2">
+              <label className="flex items-start gap-3 p-3 rounded-2xl border border-dashed border-primary/30 bg-primary/[0.03] cursor-pointer">
+                <Checkbox
+                  checked={planCardsLayout}
+                  onCheckedChange={(v) => setPlanCardsLayout(v === true)}
+                  className="mt-0.5"
+                />
+                <span className="text-sm">
+                  <span className="font-medium">{tx("cardsLayoutToggle.title", "Afficher les choix de ce plan sous forme de cartes")}</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">
+                    {tx("cardsLayoutToggle.description", "Présente les choix de ce plan en grandes cartes côte à côte (nom, prix, contenu inclus) plutôt qu'en liste compacte.")}
+                  </span>
+                </span>
+              </label>
+            </div>
+
+            {/* Group this plan as an extra card of another plan */}
+            <div className="md:col-span-2 space-y-2">
+              <Label className="text-xs text-muted-foreground mb-1 block">
+                {tx("groupedWith.label", "Regrouper cette carte avec le plan")}
+                <span className="ml-1 font-normal">{tx("groupedWith.hint", "(optionnel — affiche ce plan comme une carte supplémentaire, sélectionnable en plus des choix du plan visé, ex: un supplément « Pré-congrès »)")}</span>
+              </Label>
+              <select
+                value={planGroupedWithPlanId}
+                onChange={(e) => setPlanGroupedWithPlanId(e.target.value)}
+                className="w-full rounded-full border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">{tx("groupedWith.none", "Aucun — plan indépendant")}</option>
+                {pricePlan.map((p, i) => (
+                  i !== editingIndex && p._id ? (
+                    <option key={p._id} value={p._id}>{p.name}</option>
+                  ) : null
+                ))}
+              </select>
+              {planGroupedWithPlanId && (
+                <div>
+                  <Label className="text-xs text-muted-foreground mb-1 block">
+                    {tx("groupedWith.priceLabel", "Libellé de prix affiché sur la carte")}
+                    <span className="ml-1 font-normal">{tx("groupedWith.priceLabelHint", "(optionnel — ex: « 850 DT » si ce prix inclut déjà le plan regroupé ; le montant réellement facturé reste le prix ci-dessus)")}</span>
+                  </Label>
+                  <Input
+                    placeholder={tx("groupedWith.priceLabelPlaceholder", "Ex: 850 DT")}
+                    value={planDisplayPriceLabel}
+                    onChange={(e) => setPlanDisplayPriceLabel(e.target.value)}
+                    className="rounded-full"
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Choices Section */}
             <div className="md:col-span-2 space-y-3">
               <Label className="text-sm font-medium flex items-center gap-2">
@@ -414,6 +499,46 @@ export default function PricePlanComponent({
                     {tx("options.requestOnly", "Demande d'inscription uniquement (masque les boutons de paiement, un seul bouton « Envoyer la demande » — inscription en attente de validation)")}
                   </span>
                 </label>
+                <label className="mt-1 flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={currentOptionRequireProof}
+                    onCheckedChange={(v) => setCurrentOptionRequireProof(v === true)}
+                  />
+                  <span className="text-xs text-muted-foreground">
+                    {tx("options.requireProof", "Exiger l'upload d'un justificatif si ce choix est sélectionné (ex: carte d'étudiant, attestation de résidanat) — l'inscription reste « en attente » jusqu'à validation par un administrateur, qui reçoit le justificatif et notifie le participant par email (acceptation ou refus)")}
+                  </span>
+                </label>
+                {currentOptionRequireProof && (
+                  <div className="mt-2 pl-6 space-y-3">
+                    <div>
+                      <Label className="text-xs text-muted-foreground mb-1 block">
+                        {tx("options.proofDescription", "Précisions sur le justificatif attendu (affichées au participant)")}
+                      </Label>
+                      <Input
+                        placeholder={tx("options.proofDescriptionPlaceholder", "Ex: Carte d'étudiant ou attestation de résidanat en cours de validité")}
+                        value={currentOptionProofDescription}
+                        onChange={(e) => setCurrentOptionProofDescription(e.target.value)}
+                        className="rounded-xl text-sm"
+                        maxLength={200}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground mb-1 block">
+                        {tx("options.proofFallbackPrice", "Tarif facturé si le justificatif est refusé")} ({currencyCode})
+                        <span className="ml-1 font-normal">{tx("options.proofFallbackPriceHint", "(optionnel — en cas de refus, l'inscription passe automatiquement à ce tarif ; laisser vide pour ne pas changer le tarif)")}</span>
+                      </Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder={tx("options.proofFallbackPricePlaceholder", "Ex: 290 (tarif plein)")}
+                        value={currentOptionProofFallbackPrice}
+                        onChange={(e) => setCurrentOptionProofFallbackPrice(e.target.value)}
+                        className="rounded-xl text-sm"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {planOptions.length > 0 && (
@@ -439,6 +564,9 @@ export default function PricePlanComponent({
                           )}
                           {opt.registrationRequestOnly && (
                             <Badge variant="outline" className="rounded-full text-xs border-amber-400/50 text-amber-600">{tx("options.requestOnlyBadge", "demande seule")}</Badge>
+                          )}
+                          {opt.requireProof && (
+                            <Badge variant="outline" className="rounded-full text-xs border-rose-400/50 text-rose-600">{tx("options.requireProofBadge", "justificatif requis")}</Badge>
                           )}
                           <Button
                             type="button"

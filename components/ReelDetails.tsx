@@ -332,7 +332,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
       </div>
 
       {/* Content */}
-      <div className="flex w-full px-2 py-4 md:p-4 min-h-[500px]">
+      <div className="flex w-full px-1 py-4 md:p-4 min-h-[500px]">
         <div className="w-full">
           {RenderComponent}
         </div>
