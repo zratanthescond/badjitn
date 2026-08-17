@@ -508,18 +508,22 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const bankTransferAllowId: boolean = pm.bankTransferAllowId === true;
   const bankTransferAllowScreenshot: boolean = pm.bankTransferAllowScreenshot !== false;
 
-  // Find the lab plan definition from all plans regardless of selection state
-  const labPlanDef = useMemo(
+  // Find the lab plan definition from all plans regardless of selection state.
+  // Kept unconditional (independent of residentsOnlyRestriction) so the plan is
+  // always excluded from the generic plan grid below — otherwise, once hidden
+  // from the special lab section by the residency restriction, it would fall
+  // back to rendering as an ordinary, unrestricted plan card instead of being
+  // hidden entirely.
+  const labPlanDefRaw = useMemo(
     () =>
-      residentsOnlyRestriction
-        ? null
-        : (event.pricePlan || []).find((p: any) =>
-            (p.options || []).some((o: any) =>
-              (typeof o === "object" ? o.name : String(o)).toLowerCase().includes("laboratoire")
-            )
-          ) ?? null,
-    [event.pricePlan, residentsOnlyRestriction]
+      (event.pricePlan || []).find((p: any) =>
+        (p.options || []).some((o: any) =>
+          (typeof o === "object" ? o.name : String(o)).toLowerCase().includes("laboratoire")
+        )
+      ) ?? null,
+    [event.pricePlan]
   );
+  const labPlanDef = residentsOnlyRestriction ? null : labPlanDefRaw;
 
   // labPlan is active only when the user has selected the lab plan
   const labPlan = labPlanDef && labPlanDef._id && checkPlan.includes(labPlanDef._id) ? labPlanDef : null;
@@ -1501,8 +1505,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 )}
                 <div className="grid gap-3">
                   {event.pricePlan.map((plan: any) => {
-                    // Lab plan is displayed in the payment section, not here
-                    if (labPlanDef && plan._id === labPlanDef._id) return null;
+                    // Lab plan is displayed in the payment section (or hidden entirely
+                    // when residency-restricted), never in the generic grid.
+                    if (labPlanDefRaw && plan._id === labPlanDefRaw._id) return null;
                     // Plans grouped into another plan's cards row are rendered there instead
                     if (groupedChildPlanIds.has(plan._id)) return null;
                     const isSelected = checkPlan.includes(plan._id);
