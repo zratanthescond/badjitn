@@ -1,5 +1,7 @@
 "use client";
 
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import type { Event } from "@/types";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -13,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { differenceInDays, format } from "date-fns";
 import { enUS, es, fr, de, ar } from "date-fns/locale";
 import { useTranslations, useLocale } from "next-intl";
@@ -31,6 +33,7 @@ import {
   Users,
   Loader2,
   Globe,
+  ArrowUp,
 } from "lucide-react";
 import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
@@ -73,6 +76,44 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
   const [section, setSection] = useState<SectionType>("details");
   const [isJoining, setIsJoining] = useState(false);
   const isPast = new Date(event.endDateTime) < new Date();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const scrollPanelToTop = useCallback(() => {
+    const scrollable = rootRef.current?.closest(".overflow-y-auto") as HTMLElement | null;
+    if (scrollable) {
+      scrollable.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
+
+  // Only reveal the scroll-to-top button once the user has scrolled down a
+  // bit within the registration panel — no point showing it right at the top.
+  // The panel auto-scrolls a little when switching tabs, so the "top" we
+  // compare against is wherever it settles right after switching, not 0.
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  useEffect(() => {
+    if (section !== "registration") {
+      setShowScrollTop(false);
+      return;
+    }
+    const scrollable = rootRef.current?.closest(".overflow-y-auto") as HTMLElement | null;
+    if (!scrollable) return;
+
+    let baseline = scrollable.scrollTop;
+    const settle = window.setTimeout(() => {
+      baseline = scrollable.scrollTop;
+    }, 300);
+
+    const handleScroll = () => setShowScrollTop(scrollable.scrollTop > baseline + 200);
+    scrollable.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.clearTimeout(settle);
+      scrollable.removeEventListener("scroll", handleScroll);
+    };
+  }, [section]);
 
   // Get the appropriate date-fns locale object
   const dateLocale =
@@ -299,7 +340,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
   );
 
   return (
-    <div className="flex w-full h-full bg-transparent items-center flex-col relative">
+    <div ref={rootRef} className="flex w-full h-full bg-transparent items-center flex-col relative">
       {/* Navigation Tabs */}
       <div className="w-full sticky top-0 z-50 py-2 px-2 bg-background/95 backdrop-blur-xl border-b border-border/10">
         <Tabs
@@ -337,6 +378,30 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
           {RenderComponent}
         </div>
       </div>
+
+      {mounted && createPortal(
+        <AnimatePresence>
+          {section === "registration" && showScrollTop && (
+            <motion.button
+              type="button"
+              onClick={scrollPanelToTop}
+              aria-label={tx("scrollToTop", "Retour en haut")}
+              title={tx("scrollToTop", "Retour en haut")}
+              initial={{ opacity: 0, y: 24, scale: 0.5 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.5 }}
+              transition={{ type: "spring", stiffness: 400, damping: 24 }}
+              whileHover={{ scale: 1.12, rotate: -6 }}
+              whileTap={{ scale: 0.9 }}
+              className="fixed bottom-6 right-4 z-50 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary via-elite-cyan to-elite-violet text-white shadow-lg shadow-primary/40 ring-2 ring-white/40 dark:ring-white/10"
+            >
+              <span className="absolute inset-0 rounded-full bg-primary/60 animate-ping" />
+              <ArrowUp className="relative h-5 w-5" />
+            </motion.button>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }
