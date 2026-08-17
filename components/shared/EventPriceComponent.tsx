@@ -1331,22 +1331,22 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           <FileText className="h-5 w-5 text-primary" />
                         </div>
                         <div className="space-y-1">
-                          <h5 className="font-semibold text-foreground">{text("workSummaryHeading", "Resume de soumission")}</h5>
+                          <h5 className="font-semibold text-foreground">{text("workSummaryHeading", "Résumé de soumission")}</h5>
                           <p className="text-sm text-muted-foreground">
-                            {text("workSummaryHelp", "Renseignez ici le resume a associer a votre inscription.")}
+                            {text("workSummaryHelp", "Renseignez ici le résumé à associer à votre inscription.")}
                           </p>
                         </div>
                       </div>
 
                       {!userId && (
                         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
-                          {text("workGuestNote", "Votre choix sera enregistre avec l'inscription. Connectez-vous ensuite a Badgi pour retrouver et completer votre soumission.")}
+                          {text("workGuestNote", "Votre choix sera enregistré avec l'inscription. Connectez-vous ensuite à Badgi pour retrouver et compléter votre soumission.")}
                         </div>
                       )}
 
                       <div className="space-y-2">
                         <Label className="text-sm font-medium text-foreground">
-                          {text("workTitleLabel", "Titre du resume")}
+                          {text("workTitleLabel", "Titre du résumé")}
                         </Label>
                         <Input
                           value={workSummaryTitle}
@@ -1354,20 +1354,20 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             setWorkSummaryTitle(e.target.value);
                             setWorkSummaryError("");
                           }}
-                          placeholder={text("workTitlePlaceholder", "Titre de votre resume")}
+                          placeholder={text("workTitlePlaceholder", "Titre de votre résumé")}
                           className="rounded-2xl"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-sm font-medium text-foreground">{text("workSummaryLabel", "Resume")}</Label>
+                        <Label className="text-sm font-medium text-foreground">{text("workSummaryLabel", "Résumé")}</Label>
                         <Textarea
                           value={workSummaryNote}
                           onChange={(e) => {
                             setWorkSummaryNote(e.target.value);
                             setWorkSummaryError("");
                           }}
-                          placeholder={text("workSummaryPlaceholder", "Ajoutez ici le resume de votre travail")}
+                          placeholder={text("workSummaryPlaceholder", "Ajoutez ici le résumé de votre travail")}
                           className="min-h-[180px] rounded-2xl"
                         />
                       </div>
