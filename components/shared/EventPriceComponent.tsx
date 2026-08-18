@@ -110,7 +110,7 @@ const baseRegistrationFields = [
     label: "City",
     type: "text",
     placeholder: "Select a city",
-    required: true,
+    required: false,
     options: [],
   },
   {
