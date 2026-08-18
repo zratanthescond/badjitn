@@ -97,6 +97,15 @@ export default async function OrganisationsPage() {
 }
 
 export const metadata = {
-    title: "My Organisations",
-    description: "Manage your organisations",
+    title: "Organisations Directory - Top Event Organizers & Hosts",
+    description: "Discover verified event organizations, conference organizers, community groups, and enterprise hosts on Badgi.net.",
+    alternates: {
+        canonical: "/organisations",
+    },
+    openGraph: {
+        title: "Organisations Directory | Badgi.net",
+        description: "Discover verified event organizations, conference organizers, community groups, and enterprise hosts on Badgi.net.",
+        url: "/organisations",
+        images: [{ url: "/api/og?title=Event%20Organisations&category=Directory" }],
+    },
 };

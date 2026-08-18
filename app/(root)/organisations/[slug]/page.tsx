@@ -20,8 +20,63 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Sponsor from "@/lib/database/models/sponor.model";
+import { Metadata } from "next";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(props: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const params = await props.params;
+    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
+
+    try {
+        const organisation = await getOrganisationBySlug(params.slug);
+        if (!organisation) {
+            return {
+                title: "Organisation Not Found | Badgi.net",
+                description: "The requested organisation could not be found on Badgi.net.",
+            };
+        }
+
+        const title = `${organisation.name} - Events & Profile`;
+        const description =
+            organisation.description?.slice(0, 160) ||
+            `Explore upcoming events, conferences, and tickets hosted by ${organisation.name} on Badgi.net.`;
+        const orgUrl = `${baseUrl}/organisations/${organisation.slug}`;
+        const ogImage =
+            organisation.coverImage ||
+            organisation.logo ||
+            `${baseUrl}/api/og?title=${encodeURIComponent(organisation.name)}&category=Organisation&type=org`;
+
+        return {
+            title,
+            description,
+            alternates: {
+                canonical: orgUrl,
+            },
+            openGraph: {
+                title: `${organisation.name} | Badgi.net`,
+                description,
+                url: orgUrl,
+                siteName: "Badgi.net",
+                images: [{ url: ogImage, width: 1200, height: 630, alt: organisation.name }],
+                type: "profile",
+            },
+            twitter: {
+                card: "summary_large_image",
+                title: `${organisation.name} | Badgi.net`,
+                description,
+                images: [ogImage],
+            },
+        };
+    } catch {
+        return {
+            title: "Organisation | Badgi.net",
+        };
+    }
+}
 
 async function getOrganisationEvents(orgId: string, page: number = 1, limit: number = 6) {
     await connectToDatabase();
@@ -80,9 +135,27 @@ export default async function OrganisationPage(
         user &&
         organisation.admins?.some((admin: any) => admin._id === user._id);
     const hasAccess = isCreator || isAdmin;
+    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
+    const orgSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: organisation.name,
+        description: organisation.description,
+        url: `${baseUrl}/organisations/${organisation.slug}`,
+        logo: organisation.logo,
+        image: organisation.coverImage,
+        sameAs: [
+            organisation.socialLinks?.twitter,
+            organisation.socialLinks?.linkedin,
+            organisation.socialLinks?.facebook,
+            organisation.socialLinks?.instagram,
+            organisation.website,
+        ].filter(Boolean),
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-slate-950 dark:via-indigo-950/20 dark:to-purple-950/20">
+            <JsonLd data={orgSchema} />
             {/* Hero / Cover Section */}
             <div className="relative">
                 {organisation.coverImage ? (
@@ -267,23 +340,3 @@ export default async function OrganisationPage(
     );
 }
 
-export async function generateMetadata(
-    props: {
-        params: Promise<{ slug: string }>;
-    }
-) {
-    const params = await props.params;
-    try {
-        const organisation = await getOrganisationBySlug(params.slug);
-        return {
-            title: organisation?.name || "Organisation",
-            description:
-                organisation?.description || "Organisation on the event platform",
-        };
-    } catch {
-        return {
-            title: "Organisation",
-            description: "Organisation page",
-        };
-    }
-}

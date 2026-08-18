@@ -15,5 +15,9 @@ export default async function CreateEvent() {
 }
 export const metadata = {
   title: "Create Event",
-  description: "Create a new event",
+  description: "Create a new event on Badgi.net",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };

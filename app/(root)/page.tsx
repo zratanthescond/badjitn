@@ -14,8 +14,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import JsonLd from "@/components/seo/JsonLd";
+import { generateOrganizationSchema, generateWebSiteSchema } from "@/lib/seo/structuredData";
 
 export default async function Home(props: SearchParamProps) {
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
   const searchParams = await props.searchParams;
   const page = Number(searchParams?.page) || 1;
   const searchText = (searchParams?.query as string) || "";
@@ -38,8 +41,18 @@ export default async function Home(props: SearchParamProps) {
         })
       : undefined;
 
+  const webSiteSchema = generateWebSiteSchema(baseUrl);
+  const orgSchema = generateOrganizationSchema(baseUrl);
+
   return (
     <main className="relative min-h-screen bg-background pb-20 overflow-hidden">
+      <JsonLd data={[webSiteSchema, orgSchema]} />
+
+      {/* Visually hidden H1 for search engines & accessibility */}
+      <h1 className="sr-only">
+        Badgi.net - Discover, Create and Manage World-Class Events & Ticketing
+      </h1>
+
       {/* Dynamic Background Glows */}
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 dark:bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-elite-violet/10 dark:bg-elite-violet/5 blur-[120px] rounded-full pointer-events-none z-0" />

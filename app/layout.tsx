@@ -40,16 +40,91 @@ const outfit = Outfit({
 
 import { arSA, enUS, frFR } from "@clerk/localizations";
 import { dark } from "@clerk/themes";
-import Icon from "./favicon/favicon.ico";
+const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
+
 export const metadata: Metadata = {
-  title: "Badgi.net | Event Management Platform",
-  description: "Badgi.net is a platform for event management.",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "Badgi.net | Event Management, Ticketing & Discovery Platform",
+    template: "%s | Badgi.net",
+  },
+  description:
+    "Badgi.net is the all-in-one event management platform. Discover upcoming conferences, workshops, and concerts, create events, sell tickets, and generate smart badge credentials.",
+  keywords: [
+    "event management",
+    "event ticketing",
+    "conference platform",
+    "badge generator",
+    "ticket booking",
+    "online events",
+    "hybrid events",
+    "event discovery",
+    "Badgi",
+    "Badgi.net",
+    "event check-in",
+    "organizer dashboard",
+  ],
+  authors: [{ name: "Badgi.net Team", url: baseUrl }],
+  creator: "Badgi.net",
+  publisher: "Badgi.net",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/en",
+      "fr-FR": "/fr",
+      "ar-SA": "/ar",
+      "x-default": "/",
+    },
+  },
+  openGraph: {
+    title: "Badgi.net | Event Management, Ticketing & Discovery Platform",
+    description:
+      "Create, manage, and discover world-class events. Sell tickets, customize smart badges, and streamline attendee check-ins.",
+    url: baseUrl,
+    siteName: "Badgi.net",
+    images: [
+      {
+        url: "/api/og?title=Badgi.net%20-%20Event%20Management%20Platform",
+        width: 1200,
+        height: 630,
+        alt: "Badgi.net Event Management Platform",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Badgi.net | Event Management, Ticketing & Discovery Platform",
+    description:
+      "Create, manage, and discover world-class events. Sell tickets, customize smart badges, and streamline attendee check-ins.",
+    images: ["/api/og?title=Badgi.net%20-%20Event%20Management%20Platform"],
+    creator: "@badgi_net",
+    site: "@badgi_net",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: [
     {
       rel: "icon",
-      url: Icon.src,
+      url: "/favicon.ico",
     },
   ],
+  category: "events",
 };
 const inter = localFont({
   src: [
