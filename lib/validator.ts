@@ -6,7 +6,7 @@ const locationSchema = z.object({
 });
 const discountSchema = z.object({
   field: z.string(),
-  value: z.string(),
+  value: z.union([z.string(), z.array(z.string())]),
   discount: z
     .union([z.string(), z.number()])
     .transform((val) => Number(val))

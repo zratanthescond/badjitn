@@ -723,7 +723,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       (field) => String(field._id) === event.discount?.field
     );
     const fieldValue = registrationValues[event.discount.field] || "";
-    const isApplied = fieldValue === event.discount.value;
+    const isApplied = Array.isArray(event.discount.value)
+      ? event.discount.value.includes(fieldValue)
+      : fieldValue === event.discount.value;
 
     return {
       field: event.discount.field,

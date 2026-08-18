@@ -48,7 +48,7 @@ export interface IEvent extends Document {
   organisation?: { _id: string; name: string; slug: string; logo: string };
   discount: {
     field: string;
-    value: string;
+    value: string | string[];
     discount: number;
     discountType?: "percentage" | "fixed";
     discountTarget?: "all" | "inscription" | "plan";
@@ -172,7 +172,10 @@ const EventSchema = new Schema({
   organisation: { type: Schema.Types.ObjectId, ref: "Organisation", required: true },
   discount: {
     field: { type: String },
-    value: { type: String },
+    // String for a single qualifying value, or an array when several field
+    // choices (e.g. "Résident en médecine" and "Professionnel de santé")
+    // should share the same discounted tariff.
+    value: { type: Schema.Types.Mixed },
     discount: { type: Number },
     discountType: { type: String, default: "percentage" },
     discountTarget: { type: String, default: "all" },

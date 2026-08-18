@@ -149,22 +149,36 @@ const DiscountDialog: React.FC<DiscountDialogProps> = ({ form, fields, pricePlan
                           <label className="text-sm font-medium">{t("fieldValue")}</label>
                           {field.value?.field ? (
                             fieldSelected?.type === "select" || fieldSelected?.type === "radio" ? (
-                              <Select
-                                onValueChange={(value) => field.onChange({ ...field.value, value })}
-                                value={field.value?.value}
-                              >
-                                <SelectTrigger className="h-12 rounded-xl border-2 border-gray-200 bg-white/50 backdrop-blur-sm">
-                                  <SelectValue placeholder={t("selectValue")} />
-                                  <ChevronDown className="h-4 w-4 opacity-50" />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-xl border-0 bg-card/95 backdrop-blur-xl shadow-xl">
-                                  {fieldSelected?.options?.map((opt) => (
-                                    <SelectItem key={opt} value={opt} className="rounded-lg hover:bg-indigo-50 focus:bg-indigo-50">
-                                      {opt}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <div className="flex flex-col gap-2">
+                                {fieldSelected?.options?.map((opt) => {
+                                  const selectedValues: string[] = Array.isArray(field.value?.value)
+                                    ? field.value.value
+                                    : field.value?.value
+                                    ? [field.value.value]
+                                    : [];
+                                  const isSelected = selectedValues.includes(opt);
+                                  return (
+                                    <button
+                                      key={opt}
+                                      type="button"
+                                      onClick={() => {
+                                        const updated = isSelected
+                                          ? selectedValues.filter((v) => v !== opt)
+                                          : [...selectedValues, opt];
+                                        field.onChange({ ...field.value, value: updated });
+                                      }}
+                                      className={`flex items-center justify-between h-11 px-4 rounded-xl border-2 text-sm font-medium transition-all ${
+                                        isSelected
+                                          ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                                          : "border-gray-200 bg-white/50 text-gray-600 hover:border-indigo-300"
+                                      }`}
+                                    >
+                                      <span>{opt}</span>
+                                      {isSelected && <Check className="h-4 w-4 text-indigo-600" />}
+                                    </button>
+                                  );
+                                })}
+                              </div>
                             ) : (
                               <Input
                                 onChange={(e) => field.onChange({ ...field.value, value: e.target.value })}
