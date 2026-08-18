@@ -3,6 +3,8 @@ import { connectToDatabase } from "@/lib/database";
 import Event from "@/lib/database/models/event.model";
 import Organisation from "@/lib/database/models/organisation.model";
 
+export const revalidate = 3600; // Cache sitemap for 1 hour
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
 

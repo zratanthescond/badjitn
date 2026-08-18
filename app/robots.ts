@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next";
 
+export const revalidate = 86400; // Cache robots for 24 hours
+
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
 

@@ -20,6 +20,26 @@ const isPublicRoute = createRouteMatcher([
   /^\/(?:[a-z]{2}\/)?$/,
   /^\/(?:[a-z]{2}\/)?events\/?$/,
   /^\/(?:[a-z]{2}\/)?events\/(?!create|update$)[^/]+\/?$/,
+  "/sitemap.xml",
+  "/robots.txt",
+  "/manifest.webmanifest",
+  "/feed.xml",
+  "/favicon.ico",
+  "/api/og(.*)",
+  /^\/(?:[a-z]{2}\/)?about(.*)/,
+  /^\/(?:[a-z]{2}\/)?features(.*)/,
+  /^\/(?:[a-z]{2}\/)?pricing(.*)/,
+  /^\/(?:[a-z]{2}\/)?blog(.*)/,
+  /^\/(?:[a-z]{2}\/)?contact(.*)/,
+  /^\/(?:[a-z]{2}\/)?careers(.*)/,
+  /^\/(?:[a-z]{2}\/)?community(.*)/,
+  /^\/(?:[a-z]{2}\/)?documentation(.*)/,
+  /^\/(?:[a-z]{2}\/)?help(.*)/,
+  /^\/(?:[a-z]{2}\/)?terms(.*)/,
+  /^\/(?:[a-z]{2}\/)?privacy(.*)/,
+  /^\/(?:[a-z]{2}\/)?cookies(.*)/,
+  /^\/(?:[a-z]{2}\/)?gdpr(.*)/,
+  /^\/(?:[a-z]{2}\/)?status(.*)/,
   "/api/webhook/clerk(.*)",
   "/api/webhook/fileServer(.*)",
   "/api/webhook/stripe(.*)",
@@ -47,6 +67,17 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
       url.pathname = `/org/${orgSlug}`;
       return NextResponse.rewrite(url);
     }
+    return NextResponse.next();
+  }
+
+  const pathname = req.nextUrl.pathname;
+  if (
+    pathname === "/sitemap.xml" ||
+    pathname === "/robots.txt" ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/feed.xml" ||
+    pathname.startsWith("/api/og")
+  ) {
     return NextResponse.next();
   }
 
