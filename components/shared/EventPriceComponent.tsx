@@ -1702,7 +1702,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                 <button
                                   key={idx}
                                   type="button"
-                                  onClick={() => handleSelectOption(plan._id, optName)}
+                                  onClick={() => {
+                                    // The whole cards group (this plan's own options + any
+                                    // grouped child cards) behaves as a single-select: picking
+                                    // one deselects whichever child card was active.
+                                    childCards.forEach((child: any) => {
+                                      if (checkPlan.includes(child._id)) handleRemovePlan(child._id);
+                                    });
+                                    handleSelectOption(plan._id, optName);
+                                  }}
                                   className={`flex flex-col gap-1 sm:gap-2 rounded-xl sm:rounded-2xl border-2 p-1.5 sm:p-4 text-left transition-all ${
                                     isOptSelected
                                       ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
@@ -1732,7 +1740,25 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                 <button
                                   key={child._id}
                                   type="button"
-                                  onClick={() => (isChildSelected ? handleRemovePlan(child._id) : handleAddPlan(child._id))}
+                                  onClick={() => {
+                                    if (isChildSelected) {
+                                      handleRemovePlan(child._id);
+                                      return;
+                                    }
+                                    // Single-select across the whole group: drop this plan's own
+                                    // selected option and any other grouped child before picking this one.
+                                    setSelectedOptions((prev) => {
+                                      const next = { ...prev };
+                                      delete next[plan._id];
+                                      return next;
+                                    });
+                                    childCards.forEach((other: any) => {
+                                      if (other._id !== child._id && checkPlan.includes(other._id)) {
+                                        handleRemovePlan(other._id);
+                                      }
+                                    });
+                                    handleAddPlan(child._id);
+                                  }}
                                   className={`flex flex-col gap-1 sm:gap-2 rounded-xl sm:rounded-2xl border-2 p-1.5 sm:p-4 text-left transition-all ${
                                     isChildSelected
                                       ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
@@ -2270,11 +2296,11 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         <span className="font-semibold text-sm truncate">{labPlanDef.name}</span>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        {(() => {
-                          const hasPricedOptions = (labPlanDef.options || []).some((o: any) => (typeof o === "object" ? o.price || 0 : 0) > 0);
-                          if (Number(labPlanDef.price) === 0 && hasPricedOptions) return null;
-                          return <span className="font-bold text-sm">{formatPriceByCountry(labPlanDef.price, event.country, "en-US", event.location)}</span>;
-                        })()}
+                        {!isFreeEvent && (
+                          <span className="font-bold text-sm">
+                            {formatPriceByCountry(calculatePriceAsNumber(price), event.country, "en-US", event.location)}
+                          </span>
+                        )}
                         {labPlan ? (
                           <button
                             type="button"
