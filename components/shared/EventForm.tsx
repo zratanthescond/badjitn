@@ -1191,6 +1191,149 @@ const EventForm = ({
                       </FormItem>
                     )}
                   />
+
+                  {form.watch("showWorkSubmissionPopup") && (
+                    <>
+                      <Separator className="my-4" />
+                      <FormField
+                        control={form.control}
+                        name="workAbstractConfig.allowCoAuthors"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                              <FormControl>
+                                <Checkbox
+                                  checked={!!field.value}
+                                  onCheckedChange={(checked) => field.onChange(checked === true)}
+                                  id="workAbstractConfig.allowCoAuthors"
+                                  className="mt-1"
+                                />
+                              </FormControl>
+                              <div className="space-y-1">
+                                <FormLabel htmlFor="workAbstractConfig.allowCoAuthors" className="cursor-pointer">
+                                  Autoriser les co-auteurs
+                                </FormLabel>
+                                <FormDescription>
+                                  Le participant pourra ajouter un ou plusieurs co-auteurs (prénom, nom, affiliation) à sa soumission.
+                                </FormDescription>
+                              </div>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="workAbstractConfig.totalWordLimit"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                              <div className="w-full space-y-1">
+                                <FormLabel htmlFor="workAbstractConfig.totalWordLimit">
+                                  Limite de mots pour l&apos;ensemble du résumé
+                                </FormLabel>
+                                <FormDescription>
+                                  S&apos;applique au total des sections (ou au résumé libre s&apos;il n&apos;y a pas de section). Laisser vide pour ne pas limiter.
+                                </FormDescription>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min={1}
+                                    id="workAbstractConfig.totalWordLimit"
+                                    placeholder="Ex: 500"
+                                    {...field}
+                                    value={field.value ?? ""}
+                                    className="rounded-full glass border-0"
+                                  />
+                                </FormControl>
+                              </div>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="workAbstractConfig.sections"
+                        render={({ field }) => (
+                          <FormItem className="space-y-4">
+                            <div className="flex items-center justify-between gap-4">
+                              <div className="space-y-1">
+                                <FormLabel className="text-base">Sections du résumé</FormLabel>
+                                <FormDescription>
+                                  Si aucune section n&apos;est définie, un simple champ « Résumé » libre est proposé au participant.
+                                </FormDescription>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="rounded-xl border-dashed shrink-0"
+                                onClick={() => {
+                                  const current = field.value || [];
+                                  field.onChange([...current, { label: "", wordLimit: undefined }]);
+                                }}
+                              >
+                                <Plus className="h-4 w-4 mr-2" />
+                                Ajouter une section
+                              </Button>
+                            </div>
+
+                            <div className="space-y-3">
+                              {(field.value || []).map((section: any, index: number) => (
+                                <div key={index} className="flex gap-3 items-start bg-background/20 p-4 rounded-2xl border border-border/20">
+                                  <div className="flex-1 space-y-2">
+                                    <Input
+                                      placeholder="Ex: Introduction"
+                                      value={section.label}
+                                      onChange={(e) => {
+                                        const newList = [...(field.value || [])];
+                                        newList[index] = { ...newList[index], label: e.target.value };
+                                        field.onChange(newList);
+                                      }}
+                                      className="bg-background/40 rounded-xl border-border/40"
+                                    />
+                                  </div>
+                                  <div className="w-44 space-y-2">
+                                    <Input
+                                      type="number"
+                                      min={1}
+                                      placeholder="Limite de mots"
+                                      value={section.wordLimit ?? ""}
+                                      onChange={(e) => {
+                                        const newList = [...(field.value || [])];
+                                        newList[index] = {
+                                          ...newList[index],
+                                          wordLimit: e.target.value ? Number(e.target.value) : undefined,
+                                        };
+                                        field.onChange(newList);
+                                      }}
+                                      className="bg-background/40 rounded-xl border-border/40"
+                                    />
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full"
+                                    onClick={() => {
+                                      const newList = (field.value || []).filter((_: any, i: number) => i !== index);
+                                      field.onChange(newList);
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </div>

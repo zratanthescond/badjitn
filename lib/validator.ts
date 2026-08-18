@@ -70,6 +70,21 @@ export const eventFormSchema = z
       .int()
       .min(0, "Must be 0 or more")
       .optional(),
+    workAbstractConfig: z
+      .object({
+        allowCoAuthors: z.boolean().optional().default(false),
+        sections: z
+          .array(
+            z.object({
+              label: z.string(),
+              wordLimit: z.coerce.number().int().min(1).optional(),
+            })
+          )
+          .optional()
+          .default([]),
+        totalWordLimit: z.coerce.number().int().min(1).optional(),
+      })
+      .optional(),
     allowGuestRegistration: z.boolean().optional().default(true),
     disabledBaseFields: z.array(z.string()).optional().default([]),
     city: z.string().optional(),

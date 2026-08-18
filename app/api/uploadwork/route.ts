@@ -90,8 +90,22 @@ export const POST = async (req: Request) => {
   } catch {
     // leave clientInfo empty
   }
+  let sections: { label: string; content: string }[] | undefined;
+  try {
+    const raw = body.sections as string;
+    if (raw && typeof raw === "string") sections = JSON.parse(raw);
+  } catch {
+    // leave sections undefined
+  }
+  let coAuthors: { firstName?: string; lastName?: string; affiliation?: string }[] | undefined;
+  try {
+    const raw = body.coAuthors as string;
+    if (raw && typeof raw === "string") coAuthors = JSON.parse(raw);
+  } catch {
+    // leave coAuthors undefined
+  }
 
-  if (eventId && userId && (title || note)) {
+  if (eventId && userId && (title || note || sections?.length)) {
     try {
       const work = await submitWorkSummary({
         workId: workId || undefined,
@@ -100,6 +114,8 @@ export const POST = async (req: Request) => {
         title: title || "Sans titre",
         clientInfo: clientInfo as { firstName?: string; lastName?: string; jobTitle?: string; republic?: string; city?: string; village?: string },
         note: note || "",
+        sections,
+        coAuthors,
       });
       return NextResponse.json({ success: true, work });
     } catch (err: unknown) {

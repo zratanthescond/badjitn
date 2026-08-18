@@ -14,6 +14,17 @@ export type ClientInfo = {
   correspondenceEmail?: string;
 };
 
+export type CoAuthor = {
+  firstName?: string;
+  lastName?: string;
+  affiliation?: string;
+};
+
+export type WorkSection = {
+  label: string;
+  content: string;
+};
+
 export type SubmitSummaryParams = {
   workId?: string;
   userId: string;
@@ -21,6 +32,8 @@ export type SubmitSummaryParams = {
   title: string;
   clientInfo: ClientInfo;
   note: string;
+  sections?: WorkSection[];
+  coAuthors?: CoAuthor[];
 };
 
 export type UploadImageParams = {
@@ -41,6 +54,8 @@ const submitSummary = async (data: SubmitSummaryParams) => {
   formData.append("title", data.title);
   formData.append("clientInfo", JSON.stringify(data.clientInfo));
   formData.append("note", typeof data.note === "string" ? data.note : "");
+  if (data.sections?.length) formData.append("sections", JSON.stringify(data.sections));
+  if (data.coAuthors?.length) formData.append("coAuthors", JSON.stringify(data.coAuthors));
   const res = await axios.post(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploadwork/`,
     formData,

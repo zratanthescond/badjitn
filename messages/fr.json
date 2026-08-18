@@ -1709,7 +1709,7 @@
     "workYes": "Oui, soumettre un travail",
     "workSummaryHeading": "Résumé de soumission",
     "workSummaryHelp": "Renseignez ici le résumé à associer à votre inscription.",
-    "workGuestNote": "Votre choix sera enregistré avec l'inscription. Connectez-vous ensuite à Badgi pour retrouver et compléter votre soumission.",
+    "workGuestNote": "Votre choix sera enregistré avec l'inscription. Vous serez notifié(e) par email en cas d'approbation, afin de compléter votre soumission.",
     "workTitleLabel": "Titre du résumé",
     "workTitlePlaceholder": "Titre de votre résumé",
     "workSummaryLabel": "Résumé",

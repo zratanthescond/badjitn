@@ -9,7 +9,7 @@ import Event from "@/lib/database/models/event.model";
 import Report from "@/lib/database/models/report.model";
 import { handleError } from "@/lib/utils";
 import { CreateUserParams, UpdateUserParams } from "@/types";
-import EventWork, { IClientInfo } from "../database/models/work.model";
+import EventWork, { IClientInfo, ICoAuthor, IWorkSection } from "../database/models/work.model";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { ObjectId } from "mongodb";
@@ -308,6 +308,27 @@ async function sendWorkNotificationEmail({
   }
 }
 
+// Builds a plain-text fallback from structured sections/co-authors, so every
+// place that only ever reads `work.note` / `clientInfo.coAuthors` (emails,
+// admin review lists) keeps showing something sensible without being rewritten.
+function composeNoteFromSections(sections?: IWorkSection[], fallback?: string): string {
+  if (!sections || sections.length === 0) return fallback || "";
+  return sections
+    .map((s) => `${s.label} :\n${(s.content || "").trim()}`)
+    .join("\n\n");
+}
+
+function composeCoAuthorsText(coAuthors?: ICoAuthor[]): string | undefined {
+  if (!coAuthors || coAuthors.length === 0) return undefined;
+  return coAuthors
+    .map((c) => {
+      const name = [c.firstName, c.lastName].filter(Boolean).join(" ").trim();
+      return c.affiliation ? `${name} (${c.affiliation})` : name;
+    })
+    .filter(Boolean)
+    .join("; ");
+}
+
 export async function submitWorkSummary({
   workId,
   eventId,
@@ -315,6 +336,8 @@ export async function submitWorkSummary({
   title,
   clientInfo,
   note,
+  sections,
+  coAuthors,
 }: {
   workId?: string;
   eventId: string;
@@ -322,6 +345,8 @@ export async function submitWorkSummary({
   title: string;
   clientInfo: IClientInfo;
   note: string;
+  sections?: IWorkSection[];
+  coAuthors?: ICoAuthor[];
 }) {
   try {
     await connectToDatabase();
@@ -332,14 +357,21 @@ export async function submitWorkSummary({
 
     const normalizedTitle = title?.trim() || "Sans titre";
     const submittedAt = new Date();
+    const composedNote = sections?.length ? composeNoteFromSections(sections, note) : note;
+    const coAuthorsText = composeCoAuthorsText(coAuthors);
+    const normalizedClientInfo = coAuthorsText
+      ? { ...clientInfo, coAuthors: coAuthorsText }
+      : clientInfo;
 
     if (workId) {
       const work = await EventWork.findOne({ _id: workId, eventId, userId });
       if (!work) throw new Error("Work not found");
 
       work.title = normalizedTitle;
-      work.clientInfo = clientInfo;
-      work.note = note;
+      work.clientInfo = normalizedClientInfo;
+      work.note = composedNote;
+      work.sections = sections?.length ? sections : undefined;
+      work.coAuthors = coAuthors?.length ? coAuthors : undefined;
       work.summaryStatus = "submitted";
       work.submittedAt = submittedAt;
       work.approvedAt = undefined;
@@ -384,8 +416,10 @@ export async function submitWorkSummary({
         eventId,
         userId,
         title: normalizedTitle,
-        clientInfo,
-        note,
+        clientInfo: normalizedClientInfo,
+        note: composedNote,
+        sections: sections?.length ? sections : undefined,
+        coAuthors: coAuthors?.length ? coAuthors : undefined,
         summaryStatus: "submitted",
         submittedAt,
         fileUrls: [],

@@ -15,6 +15,7 @@ import {
   FileText,
   Landmark,
   LogIn,
+  Plus,
   ShoppingBag,
   Sparkles,
   Ticket,
@@ -137,6 +138,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [workChoice, setWorkChoice] = useState<WorkChoice>("no");
   const [workSummaryTitle, setWorkSummaryTitle] = useState("");
   const [workSummaryNote, setWorkSummaryNote] = useState("");
+  // Structured abstract content, keyed by section label, when the event
+  // configures workAbstractConfig.sections instead of a single free-text résumé.
+  const [workSectionValues, setWorkSectionValues] = useState<Record<string, string>>({});
+  const [workCoAuthors, setWorkCoAuthors] = useState<
+    { firstName: string; lastName: string; affiliation: string }[]
+  >([]);
   const [workSummaryError, setWorkSummaryError] = useState("");
   const [workSummaryId, setWorkSummaryId] = useState("");
   const [successOpen, setSuccessOpen] = useState(false);
@@ -572,6 +579,13 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
   const allowGuestRegistration = event.allowGuestRegistration !== false;
   const shouldShowWorkSubmission = event.showWorkSubmissionPopup === true;
+  const workAbstractSections = event.workAbstractConfig?.sections;
+  const workTotalWordLimit = event.workAbstractConfig?.totalWordLimit;
+  const workAllowCoAuthors = event.workAbstractConfig?.allowCoAuthors === true;
+  const countWords = (text: string) => (text.trim() ? text.trim().split(/\s+/).length : 0);
+  const workTotalWordCount = workAbstractSections?.length
+    ? workAbstractSections.reduce((sum, s) => sum + countWords(workSectionValues[s.label] || ""), 0)
+    : countWords(workSummaryNote);
   const workSummaryClientInfo = {
     firstName: registrationValues.firstName || "",
     lastName: registrationValues.lastName || "",
@@ -600,20 +614,42 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       });
 
       if (workChoice === "yes") {
-        items.push(
-          {
-            field: "workSummaryTitle",
-            label: "Titre du resume",
-            type: "text",
-            value: workSummaryTitle.trim(),
-          },
-          {
+        items.push({
+          field: "workSummaryTitle",
+          label: "Titre du resume",
+          type: "text",
+          value: workSummaryTitle.trim(),
+        });
+
+        if (workAbstractSections?.length) {
+          workAbstractSections.forEach((s) => {
+            items.push({
+              field: `workSection_${s.label}`,
+              label: s.label,
+              type: "text",
+              value: (workSectionValues[s.label] || "").trim(),
+            });
+          });
+        } else {
+          items.push({
             field: "workSummaryNote",
             label: "Resume",
             type: "text",
             value: workSummaryNote.trim(),
-          }
-        );
+          });
+        }
+
+        if (workAllowCoAuthors && workCoAuthors.length > 0) {
+          items.push({
+            field: "workCoAuthors",
+            label: "Co-auteurs",
+            type: "text",
+            value: workCoAuthors
+              .map((c) => [c.firstName, c.lastName, c.affiliation ? `(${c.affiliation})` : ""].filter(Boolean).join(" "))
+              .filter(Boolean)
+              .join("; "),
+          });
+        }
       }
     }
 
@@ -661,6 +697,10 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     workChoice,
     workSummaryNote,
     workSummaryTitle,
+    workAbstractSections,
+    workSectionValues,
+    workAllowCoAuthors,
+    workCoAuthors,
     checkPlan,
     selectedOptions,
     optionEmails,
@@ -786,9 +826,32 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       return true;
     }
 
-    if (!workSummaryTitle.trim() && !workSummaryNote.trim()) {
+    const hasContent = workAbstractSections?.length
+      ? workAbstractSections.some((s) => (workSectionValues[s.label] || "").trim())
+      : workSummaryNote.trim();
+
+    if (!workSummaryTitle.trim() && !hasContent) {
       setWorkSummaryError(
         "Veuillez renseigner au moins un titre ou un resume pour la soumission."
+      );
+      return false;
+    }
+
+    if (workAbstractSections?.length) {
+      for (const s of workAbstractSections) {
+        const words = countWords(workSectionValues[s.label] || "");
+        if (s.wordLimit && words > s.wordLimit) {
+          setWorkSummaryError(
+            `La section « ${s.label} » dépasse la limite de ${s.wordLimit} mots (${words} mots).`
+          );
+          return false;
+        }
+      }
+    }
+
+    if (workTotalWordLimit && workTotalWordCount > workTotalWordLimit) {
+      setWorkSummaryError(
+        `Le résumé dépasse la limite de ${workTotalWordLimit} mots (${workTotalWordCount} mots).`
       );
       return false;
     }
@@ -948,6 +1011,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       title: workSummaryTitle.trim() || "Sans titre",
       clientInfo: workSummaryClientInfo,
       note: workSummaryNote.trim(),
+      ...(workAbstractSections?.length
+        ? { sections: workAbstractSections.map((s) => ({ label: s.label, content: (workSectionValues[s.label] || "").trim() })) }
+        : {}),
+      ...(workAllowCoAuthors && workCoAuthors.length > 0
+        ? { coAuthors: workCoAuthors.filter((c) => c.firstName.trim() || c.lastName.trim() || c.affiliation.trim()) }
+        : {}),
     }).then((response) => {
       if (response?.work?._id) {
         setWorkSummaryId(response.work._id);
@@ -1340,7 +1409,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
                       {!userId && (
                         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
-                          {text("workGuestNote", "Votre choix sera enregistré avec l'inscription. Connectez-vous ensuite à Badgi pour retrouver et compléter votre soumission.")}
+                          {text("workGuestNote", "Votre choix sera enregistré avec l'inscription. Vous serez notifié(e) par email en cas d'approbation, afin de compléter votre soumission.")}
                         </div>
                       )}
 
@@ -1359,18 +1428,117 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-foreground">{text("workSummaryLabel", "Résumé")}</Label>
-                        <Textarea
-                          value={workSummaryNote}
-                          onChange={(e) => {
-                            setWorkSummaryNote(e.target.value);
-                            setWorkSummaryError("");
-                          }}
-                          placeholder={text("workSummaryPlaceholder", "Ajoutez ici le résumé de votre travail")}
-                          className="min-h-[180px] rounded-2xl"
-                        />
-                      </div>
+                      {workAbstractSections?.length ? (
+                        <div className="space-y-4">
+                          {workAbstractSections.map((s) => {
+                            const value = workSectionValues[s.label] || "";
+                            const words = countWords(value);
+                            const overLimit = !!s.wordLimit && words > s.wordLimit;
+                            return (
+                              <div key={s.label} className="space-y-2">
+                                <div className="flex items-center justify-between gap-2">
+                                  <Label className="text-sm font-medium text-foreground">{s.label}</Label>
+                                  {s.wordLimit && (
+                                    <span className={`text-xs shrink-0 ${overLimit ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                                      {words} / {s.wordLimit} mots
+                                    </span>
+                                  )}
+                                </div>
+                                <Textarea
+                                  value={value}
+                                  onChange={(e) => {
+                                    setWorkSectionValues((prev) => ({ ...prev, [s.label]: e.target.value }));
+                                    setWorkSummaryError("");
+                                  }}
+                                  placeholder={`Rédigez la section « ${s.label} »`}
+                                  className={`min-h-[110px] rounded-2xl ${overLimit ? "border-destructive" : ""}`}
+                                />
+                              </div>
+                            );
+                          })}
+                          {workTotalWordLimit && (
+                            <p className={`text-xs text-right font-semibold ${workTotalWordCount > workTotalWordLimit ? "text-destructive" : "text-muted-foreground"}`}>
+                              Total : {workTotalWordCount} / {workTotalWordLimit} mots
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <Label className="text-sm font-medium text-foreground">{text("workSummaryLabel", "Résumé")}</Label>
+                            {workTotalWordLimit && (
+                              <span className={`text-xs shrink-0 ${workTotalWordCount > workTotalWordLimit ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                                {workTotalWordCount} / {workTotalWordLimit} mots
+                              </span>
+                            )}
+                          </div>
+                          <Textarea
+                            value={workSummaryNote}
+                            onChange={(e) => {
+                              setWorkSummaryNote(e.target.value);
+                              setWorkSummaryError("");
+                            }}
+                            placeholder={text("workSummaryPlaceholder", "Ajoutez ici le résumé de votre travail")}
+                            className="min-h-[180px] rounded-2xl"
+                          />
+                        </div>
+                      )}
+
+                      {workAllowCoAuthors && (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <Label className="text-sm font-medium text-foreground">Co-auteurs</Label>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="rounded-full h-8"
+                              onClick={() =>
+                                setWorkCoAuthors((prev) => [...prev, { firstName: "", lastName: "", affiliation: "" }])
+                              }
+                            >
+                              <Plus className="h-3.5 w-3.5 mr-1" />
+                              Ajouter un co-auteur
+                            </Button>
+                          </div>
+                          {workCoAuthors.map((co, idx) => (
+                            <div key={idx} className="relative grid gap-2 sm:grid-cols-3 rounded-2xl border border-border/50 bg-background/40 p-3">
+                              <Input
+                                placeholder="Prénom"
+                                value={co.firstName}
+                                onChange={(e) =>
+                                  setWorkCoAuthors((prev) => prev.map((c, i) => (i === idx ? { ...c, firstName: e.target.value } : c)))
+                                }
+                                className="rounded-xl h-9"
+                              />
+                              <Input
+                                placeholder="Nom"
+                                value={co.lastName}
+                                onChange={(e) =>
+                                  setWorkCoAuthors((prev) => prev.map((c, i) => (i === idx ? { ...c, lastName: e.target.value } : c)))
+                                }
+                                className="rounded-xl h-9"
+                              />
+                              <Input
+                                placeholder="Affiliation"
+                                value={co.affiliation}
+                                onChange={(e) =>
+                                  setWorkCoAuthors((prev) => prev.map((c, i) => (i === idx ? { ...c, affiliation: e.target.value } : c)))
+                                }
+                                className="rounded-xl h-9"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setWorkCoAuthors((prev) => prev.filter((_, i) => i !== idx))}
+                                className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-white transition-colors"
+                                aria-label="Retirer ce co-auteur"
+                              >
+                                <X size={11} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
                       {workSummaryError && (
                         <p className="text-sm text-destructive">{workSummaryError}</p>

@@ -95,12 +95,20 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
   // compare against is wherever it settles right after switching, not 0.
   const [showScrollTop, setShowScrollTop] = useState(false);
   useEffect(() => {
+    const scrollable = rootRef.current?.closest(".overflow-y-auto") as HTMLElement | null;
+
     if (section !== "registration") {
       setShowScrollTop(false);
+      // Restore the default hidden scrollbar on every other tab.
+      scrollable?.classList.remove("thin-scrollbar");
+      scrollable?.classList.add("no-scrollbar");
       return;
     }
-    const scrollable = rootRef.current?.closest(".overflow-y-auto") as HTMLElement | null;
     if (!scrollable) return;
+
+    // Show a small, subtle scrollbar only while browsing the registration form.
+    scrollable.classList.remove("no-scrollbar");
+    scrollable.classList.add("thin-scrollbar");
 
     let baseline = scrollable.scrollTop;
     const settle = window.setTimeout(() => {
@@ -112,6 +120,8 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
     return () => {
       window.clearTimeout(settle);
       scrollable.removeEventListener("scroll", handleScroll);
+      scrollable.classList.remove("thin-scrollbar");
+      scrollable.classList.add("no-scrollbar");
     };
   }, [section]);
 

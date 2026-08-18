@@ -6,6 +6,7 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
+    timeZone: "Africa/Tunis",
     messages: (await import(`../messages/${locale}.json`)).default,
     getMessageFallback({namespace, key, error}) {
       const path = [namespace, key].filter((part) => part != null).join('.');

@@ -14,6 +14,17 @@ export interface IClientInfo {
   correspondenceEmail?: string;
 }
 
+export interface ICoAuthor {
+  firstName?: string;
+  lastName?: string;
+  affiliation?: string;
+}
+
+export interface IWorkSection {
+  label: string;
+  content: string;
+}
+
 interface IEventWork extends mongoose.Document {
   _id: any;
   eventId: mongoose.Schema.Types.ObjectId;
@@ -21,6 +32,11 @@ interface IEventWork extends mongoose.Document {
   title?: string;
   clientInfo?: IClientInfo;
   note?: string;
+  // Structured co-authors (in addition to the legacy free-text clientInfo.coAuthors).
+  coAuthors?: ICoAuthor[];
+  // Structured abstract, used when the event configures workAbstractConfig.sections.
+  // `note` is still kept in sync (concatenated) for places that only read the plain text.
+  sections?: IWorkSection[];
   summaryStatus: "draft" | "submitted" | "approved" | "rejected";
   submittedAt?: Date;
   approvedAt?: Date;
@@ -66,6 +82,21 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
     required: false,
   },
   note: { type: String, required: false },
+  coAuthors: {
+    type: [{
+      firstName: String,
+      lastName: String,
+      affiliation: String,
+    }],
+    default: undefined,
+  },
+  sections: {
+    type: [{
+      label: String,
+      content: String,
+    }],
+    default: undefined,
+  },
   summaryStatus: {
     type: String,
     enum: ["draft", "submitted", "approved", "rejected"],

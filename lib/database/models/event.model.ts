@@ -60,6 +60,11 @@ export interface IEvent extends Document {
   scanPoints?: string[];
   showWorkSubmissionPopup?: boolean;
   maxWorkSubmissions?: number;
+  workAbstractConfig?: {
+    allowCoAuthors?: boolean;
+    sections?: { label: string; wordLimit?: number }[];
+    totalWordLimit?: number;
+  };
   allowGuestRegistration?: boolean;
   disabledBaseFields?: string[];
   showProfileButton?: boolean;
@@ -178,6 +183,17 @@ const EventSchema = new Schema({
   restricted: { type: Boolean, default: false },
   showWorkSubmissionPopup: { type: Boolean, default: false },
   maxWorkSubmissions: { type: Number },
+  workAbstractConfig: {
+    allowCoAuthors: { type: Boolean, default: false },
+    sections: {
+      type: [{
+        label: { type: String },
+        wordLimit: { type: Number },
+      }],
+      default: undefined,
+    },
+    totalWordLimit: { type: Number },
+  },
   allowGuestRegistration: { type: Boolean, default: true },
   disabledBaseFields: { type: [String], default: [] },
   city: { type: String },
