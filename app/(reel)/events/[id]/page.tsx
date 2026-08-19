@@ -86,6 +86,9 @@ export async function generateMetadata(props: SearchParamProps): Promise<Metadat
       icons: {
         icon: event.organisation?.logo || "/favicon.ico",
       },
+      other: {
+        "fb:app_id": process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "966242223397117",
+      },
     };
   } catch {
     return {
