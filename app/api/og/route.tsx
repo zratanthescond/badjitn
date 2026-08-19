@@ -165,6 +165,10 @@ export async function GET(request: NextRequest) {
       {
         width: 1200,
         height: 630,
+        headers: {
+          "content-type": "image/png",
+          "cache-control": "public, immutable, no-transform, max-age=86400",
+        },
       }
     );
   } catch (e: any) {

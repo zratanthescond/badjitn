@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import JsonLd from "@/components/seo/JsonLd";
 import { generateBreadcrumbSchema } from "@/lib/seo/structuredData";
 
+const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
+
 export const metadata: Metadata = {
   title: "Blog - Event Trends, Organizing Guides & Industry Insights",
   description:
@@ -13,8 +15,16 @@ export const metadata: Metadata = {
     title: "Blog | Badgi.net Insights & Guides",
     description:
       "Articles, guides, and tips for event organizers, conference planners, and community leaders.",
-    url: "/blog",
-    images: [{ url: "/api/og?title=Event%20Insights%20%26%20Guides&category=Blog" }],
+    url: `${baseUrl}/blog`,
+    images: [
+      {
+        url: `${baseUrl}/api/og?title=Event%20Insights%20%26%20Guides&category=Blog`,
+        secureUrl: `${baseUrl}/api/og?title=Event%20Insights%20%26%20Guides&category=Blog`,
+        width: 1200,
+        height: 630,
+        type: "image/png",
+      },
+    ],
   },
 };
 

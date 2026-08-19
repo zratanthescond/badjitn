@@ -26,11 +26,33 @@ export async function generateMetadata(props: SearchParamProps): Promise<Metadat
       event.description?.slice(0, 160) ||
       `Join ${event.title} on Badgi.net. Get event details, schedule, tickets, and location.`;
     const eventUrl = `${baseUrl}/events/${event.slug || event._id}`;
-    const ogImage =
-      event.imageUrl ||
-      `${baseUrl}/api/og?title=${encodeURIComponent(event.title)}&category=${encodeURIComponent(
+    const isVideoStream =
+      event.imageUrl &&
+      (/\.(m3u8|mp4|webm|ogg|mov)(\?|$)/i.test(event.imageUrl) ||
+        event.imageUrl.includes("/manifest") ||
+        event.imageUrl.includes(".m3u8"));
+
+    let ogImageUrl = "";
+    if (event.imageUrl && !isVideoStream) {
+      ogImageUrl =
+        event.imageUrl.startsWith("http://") || event.imageUrl.startsWith("https://")
+          ? event.imageUrl
+          : `${baseUrl}${event.imageUrl.startsWith("/") ? "" : "/"}${event.imageUrl}`;
+    } else {
+      ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(
+        event.title || "Event"
+      )}&category=${encodeURIComponent(
         event.category?.name || "Event"
+      )}&date=${encodeURIComponent(
+        event.startDateTime
+          ? new Date(event.startDateTime).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : ""
       )}&type=event`;
+    }
 
     return {
       title,
@@ -45,10 +67,12 @@ export async function generateMetadata(props: SearchParamProps): Promise<Metadat
         siteName: "Badgi.net",
         images: [
           {
-            url: ogImage,
+            url: ogImageUrl,
+            secureUrl: ogImageUrl,
             width: 1200,
             height: 630,
             alt: title,
+            type: "image/png",
           },
         ],
         type: "article",
@@ -57,7 +81,7 @@ export async function generateMetadata(props: SearchParamProps): Promise<Metadat
         card: "summary_large_image",
         title: `${title} | Badgi.net`,
         description,
-        images: [ogImage],
+        images: [ogImageUrl],
       },
       icons: {
         icon: event.organisation?.logo || "/favicon.ico",

@@ -89,10 +89,12 @@ export const metadata: Metadata = {
     siteName: "Badgi.net",
     images: [
       {
-        url: "/api/og?title=Badgi.net%20-%20Event%20Management%20Platform",
+        url: `${baseUrl}/api/og?title=Badgi.net%20-%20Event%20Management%20Platform`,
+        secureUrl: `${baseUrl}/api/og?title=Badgi.net%20-%20Event%20Management%20Platform`,
         width: 1200,
         height: 630,
         alt: "Badgi.net Event Management Platform",
+        type: "image/png",
       },
     ],
     locale: "en_US",
@@ -103,7 +105,7 @@ export const metadata: Metadata = {
     title: "Badgi.net | Event Management, Ticketing & Discovery Platform",
     description:
       "Create, manage, and discover world-class events. Sell tickets, customize smart badges, and streamline attendee check-ins.",
-    images: ["/api/og?title=Badgi.net%20-%20Event%20Management%20Platform"],
+    images: [`${baseUrl}/api/og?title=Badgi.net%20-%20Event%20Management%20Platform`],
     creator: "@badgi_net",
     site: "@badgi_net",
   },

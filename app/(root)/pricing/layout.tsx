@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import JsonLd from "@/components/seo/JsonLd";
 import { generateFAQSchema } from "@/lib/seo/structuredData";
 
+const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
+
 export const metadata: Metadata = {
   title: "Pricing Plans - Affordable Event Management & Ticketing",
   description:
@@ -13,8 +15,16 @@ export const metadata: Metadata = {
     title: "Pricing Plans | Badgi.net",
     description:
       "Simple, transparent pricing for event organizers of all sizes. Free, Pro, and Enterprise options available.",
-    url: "/pricing",
-    images: [{ url: "/api/og?title=Pricing%20Plans&category=Pricing" }],
+    url: `${baseUrl}/pricing`,
+    images: [
+      {
+        url: `${baseUrl}/api/og?title=Pricing%20Plans&category=Pricing`,
+        secureUrl: `${baseUrl}/api/og?title=Pricing%20Plans&category=Pricing`,
+        width: 1200,
+        height: 630,
+        type: "image/png",
+      },
+    ],
   },
 };
 

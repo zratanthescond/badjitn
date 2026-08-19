@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import JsonLd from "@/components/seo/JsonLd";
 import { generateBreadcrumbSchema } from "@/lib/seo/structuredData";
 
+const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
+
 export const metadata: Metadata = {
   title: "About Us - The Future of Event Management",
   description:
@@ -13,8 +15,16 @@ export const metadata: Metadata = {
     title: "About Us | Badgi.net",
     description:
       "Learn about Badgi.net's mission to revolutionize event management and community gatherings.",
-    url: "/about",
-    images: [{ url: "/api/og?title=About%20Badgi.net&category=Company" }],
+    url: `${baseUrl}/about`,
+    images: [
+      {
+        url: `${baseUrl}/api/og?title=About%20Badgi.net&category=Company`,
+        secureUrl: `${baseUrl}/api/og?title=About%20Badgi.net&category=Company`,
+        width: 1200,
+        height: 630,
+        type: "image/png",
+      },
+    ],
   },
 };
 

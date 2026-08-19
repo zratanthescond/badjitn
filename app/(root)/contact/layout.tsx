@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import JsonLd from "@/components/seo/JsonLd";
 import { generateBreadcrumbSchema } from "@/lib/seo/structuredData";
 
+const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
+
 export const metadata: Metadata = {
   title: "Contact Us - Support, Sales & Inquiries",
   description:
@@ -13,8 +15,16 @@ export const metadata: Metadata = {
     title: "Contact Us | Badgi.net",
     description:
       "Have questions or need assistance? Contact the Badgi.net team for sales and support.",
-    url: "/contact",
-    images: [{ url: "/api/og?title=Contact%20Badgi.net&category=Support" }],
+    url: `${baseUrl}/contact`,
+    images: [
+      {
+        url: `${baseUrl}/api/og?title=Contact%20Badgi.net&category=Support`,
+        secureUrl: `${baseUrl}/api/og?title=Contact%20Badgi.net&category=Support`,
+        width: 1200,
+        height: 630,
+        type: "image/png",
+      },
+    ],
   },
 };
 

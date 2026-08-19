@@ -56,6 +56,14 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
+  const userAgent = req.headers.get("user-agent") || "";
+  const isBot = /bot|crawler|spider|facebookexternalhit|Facebot|WhatsApp|Twitterbot|LinkedInBot|Slackbot|Discordbot|TelegramBot|meta-externalagent/i.test(
+    userAgent
+  );
+  if (isBot) {
+    return NextResponse.next();
+  }
+
   const host = req.headers.get("host") ?? "";
   const orgSlug = extractOrgSubdomain(host);
 

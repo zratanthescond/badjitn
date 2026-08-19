@@ -45,10 +45,12 @@ export async function generateMetadata(props: {
             organisation.description?.slice(0, 160) ||
             `Explore upcoming events, conferences, and tickets hosted by ${organisation.name} on Badgi.net.`;
         const orgUrl = `${baseUrl}/organisations/${organisation.slug}`;
-        const ogImage =
-            organisation.coverImage ||
-            organisation.logo ||
-            `${baseUrl}/api/og?title=${encodeURIComponent(organisation.name)}&category=Organisation&type=org`;
+        const rawOg = organisation.coverImage || organisation.logo;
+        const ogImage = rawOg
+            ? (rawOg.startsWith("http://") || rawOg.startsWith("https://")
+                ? rawOg
+                : `${baseUrl}${rawOg.startsWith("/") ? "" : "/"}${rawOg}`)
+            : `${baseUrl}/api/og?title=${encodeURIComponent(organisation.name)}&category=Organisation&type=org`;
 
         return {
             title,
@@ -61,7 +63,16 @@ export async function generateMetadata(props: {
                 description,
                 url: orgUrl,
                 siteName: "Badgi.net",
-                images: [{ url: ogImage, width: 1200, height: 630, alt: organisation.name }],
+                images: [
+                    {
+                        url: ogImage,
+                        secureUrl: ogImage,
+                        width: 1200,
+                        height: 630,
+                        alt: organisation.name,
+                        type: "image/png",
+                    },
+                ],
                 type: "profile",
             },
             twitter: {
