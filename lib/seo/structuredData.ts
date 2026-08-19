@@ -77,12 +77,24 @@ export function generateEventSchema({
 
   const offerPrice = isFree ? "0" : typeof price === "number" ? price.toString() : (price || "0");
 
+  const isVideoOrInvalid =
+    !imageUrl ||
+    imageUrl.includes(".m3u8") ||
+    imageUrl.includes("/videos/") ||
+    /\.(mp4|webm|ogg|mov|m3u8|ts)(\?|$)/i.test(imageUrl);
+
+  const cleanImageUrl = isVideoOrInvalid
+    ? undefined
+    : imageUrl.startsWith("http://") || imageUrl.startsWith("https://")
+    ? imageUrl
+    : `https://badgi.net${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+
   return {
     "@context": "https://schema.org",
     "@type": "Event",
     name,
     description: description || name,
-    image: imageUrl ? [imageUrl] : undefined,
+    image: cleanImageUrl ? [cleanImageUrl] : undefined,
     startDate: startISO,
     ...(endISO ? { endDate: endISO } : {}),
     eventStatus: "https://schema.org/EventScheduled",

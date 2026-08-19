@@ -8,6 +8,35 @@ import {
   generateBreadcrumbSchema,
 } from "@/lib/seo/structuredData";
 
+function getEventOgImage(event: any, baseUrl: string): string {
+  const isVideoStream =
+    !event.imageUrl ||
+    event.imageUrl.includes(".m3u8") ||
+    event.imageUrl.includes("/videos/") ||
+    /\.(m3u8|mp4|webm|ogg|mov|ts)(\?|$)/i.test(event.imageUrl) ||
+    event.imageUrl.includes("/manifest");
+
+  if (event.imageUrl && !isVideoStream) {
+    return event.imageUrl.startsWith("http://") || event.imageUrl.startsWith("https://")
+      ? event.imageUrl
+      : `${baseUrl}${event.imageUrl.startsWith("/") ? "" : "/"}${event.imageUrl}`;
+  }
+
+  return `${baseUrl}/api/og?title=${encodeURIComponent(
+    event.title || "Event"
+  )}&category=${encodeURIComponent(
+    event.category?.name || "Event"
+  )}&date=${encodeURIComponent(
+    event.startDateTime
+      ? new Date(event.startDateTime).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : ""
+  )}&type=event`;
+}
+
 export async function generateMetadata(props: SearchParamProps): Promise<Metadata> {
   const params = await props.params;
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net";
@@ -26,33 +55,7 @@ export async function generateMetadata(props: SearchParamProps): Promise<Metadat
       event.description?.slice(0, 160) ||
       `Join ${event.title} on Badgi.net. Get event details, schedule, tickets, and location.`;
     const eventUrl = `${baseUrl}/events/${event.slug || event._id}`;
-    const isVideoStream =
-      event.imageUrl &&
-      (/\.(m3u8|mp4|webm|ogg|mov)(\?|$)/i.test(event.imageUrl) ||
-        event.imageUrl.includes("/manifest") ||
-        event.imageUrl.includes(".m3u8"));
-
-    let ogImageUrl = "";
-    if (event.imageUrl && !isVideoStream) {
-      ogImageUrl =
-        event.imageUrl.startsWith("http://") || event.imageUrl.startsWith("https://")
-          ? event.imageUrl
-          : `${baseUrl}${event.imageUrl.startsWith("/") ? "" : "/"}${event.imageUrl}`;
-    } else {
-      ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(
-        event.title || "Event"
-      )}&category=${encodeURIComponent(
-        event.category?.name || "Event"
-      )}&date=${encodeURIComponent(
-        event.startDateTime
-          ? new Date(event.startDateTime).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })
-          : ""
-      )}&type=event`;
-    }
+    const ogImageUrl = getEventOgImage(event, baseUrl);
 
     return {
       title,
@@ -107,12 +110,13 @@ const EventDetails = async (props: SearchParamProps) => {
   }
 
   const eventUrl = `${baseUrl}/events/${event.slug || event._id}`;
+  const ogImageUrl = getEventOgImage(event, baseUrl);
 
   const eventSchema = generateEventSchema({
     name: event.title,
     description: event.description,
     url: eventUrl,
-    imageUrl: event.imageUrl,
+    imageUrl: ogImageUrl,
     startDate: event.startDateTime,
     endDate: event.endDateTime,
     isOnline: event.isOnline,
