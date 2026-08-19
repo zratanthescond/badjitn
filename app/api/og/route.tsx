@@ -1,19 +1,21 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
-export const runtime = "edge";
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const title = searchParams.get("title") || "Badgi.net - Discover & Manage Events";
-    const description =
+    const rawTitle = searchParams.get("title") || "Badgi.net - Discover & Manage Events";
+    const rawDescription =
       searchParams.get("description") ||
       "All-in-one platform for event management, ticketing, badge generation, and discovery.";
     const category = searchParams.get("category") || "Events";
     const date = searchParams.get("date") || "";
     const type = searchParams.get("type") || "event";
+
+    // Clean and trim text for Satori SVG renderer
+    const title = rawTitle.length > 75 ? `${rawTitle.slice(0, 75)}...` : rawTitle;
+    const description = rawDescription.length > 130 ? `${rawDescription.slice(0, 130)}...` : rawDescription;
 
     return new ImageResponse(
       (
@@ -24,15 +26,12 @@ export async function GET(request: NextRequest) {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            backgroundColor: "#0b0f19",
-            backgroundImage:
-              "radial-gradient(circle at 25% 25%, rgba(124, 58, 237, 0.25) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.2) 0%, transparent 50%)",
-            padding: "60px 80px",
-            fontFamily: "sans-serif",
+            backgroundColor: "#090d16",
+            padding: "50px 70px",
             color: "#ffffff",
           }}
         >
-          {/* Header Brand */}
+          {/* Header */}
           <div
             style={{
               display: "flex",
@@ -45,7 +44,7 @@ export async function GET(request: NextRequest) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "16px",
+                gap: "14px",
               }}
             >
               <div
@@ -53,39 +52,39 @@ export async function GET(request: NextRequest) {
                   width: "48px",
                   height: "48px",
                   borderRadius: "12px",
-                  background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                  backgroundColor: "#7c3aed",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: "26px",
-                  fontWeight: "bold",
+                  fontWeight: 800,
+                  color: "#ffffff",
                 }}
               >
                 B
               </div>
-              <span
+              <div
                 style={{
-                  fontSize: "32px",
-                  fontWeight: "800",
+                  fontSize: "30px",
+                  fontWeight: 800,
+                  color: "#ffffff",
                   letterSpacing: "-0.5px",
-                  background: "linear-gradient(to right, #ffffff, #cbd5e1)",
-                  backgroundClip: "text",
-                  color: "transparent",
                 }}
               >
                 Badgi.net
-              </span>
+              </div>
             </div>
 
-            {category && (
+            {category ? (
               <div
                 style={{
+                  display: "flex",
                   padding: "8px 20px",
-                  borderRadius: "9999px",
-                  backgroundColor: "rgba(124, 58, 237, 0.3)",
-                  border: "1px solid rgba(139, 92, 246, 0.4)",
-                  fontSize: "18px",
-                  fontWeight: "600",
+                  borderRadius: "20px",
+                  backgroundColor: "#2e1065",
+                  border: "1px solid #7c3aed",
+                  fontSize: "16px",
+                  fontWeight: 700,
                   color: "#c4b5fd",
                   textTransform: "uppercase",
                   letterSpacing: "1px",
@@ -93,23 +92,24 @@ export async function GET(request: NextRequest) {
               >
                 {category}
               </div>
-            )}
+            ) : null}
           </div>
 
-          {/* Main Title & Description */}
+          {/* Body */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "16px",
-              maxWidth: "1000px",
+              gap: "18px",
+              marginTop: "20px",
+              marginBottom: "20px",
             }}
           >
             <div
               style={{
-                fontSize: title.length > 50 ? "46px" : "56px",
-                fontWeight: "900",
-                lineHeight: 1.15,
+                fontSize: title.length > 45 ? "44px" : "54px",
+                fontWeight: 900,
+                lineHeight: 1.2,
                 color: "#ffffff",
                 letterSpacing: "-1px",
               }}
@@ -117,46 +117,43 @@ export async function GET(request: NextRequest) {
               {title}
             </div>
 
-            <div
-              style={{
-                fontSize: "22px",
-                color: "#94a3b8",
-                lineHeight: 1.4,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              {description}
-            </div>
+            {description ? (
+              <div
+                style={{
+                  fontSize: "22px",
+                  color: "#94a3b8",
+                  lineHeight: 1.4,
+                }}
+              >
+                {description}
+              </div>
+            ) : null}
           </div>
 
-          {/* Footer with meta badge */}
+          {/* Footer */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-              paddingTop: "24px",
+              borderTop: "1px solid #1e293b",
+              paddingTop: "20px",
               fontSize: "18px",
               color: "#94a3b8",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-              {date && (
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#e2e8f0" }}>
-                  <span>📅</span> {date}
+            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+              {date ? (
+                <div style={{ display: "flex", color: "#e2e8f0" }}>
+                  📅 {date}
                 </div>
-              )}
-              <div style={{ color: "#a855f7" }}>
+              ) : null}
+              <div style={{ display: "flex", color: "#a855f7" }}>
                 ✨ {type === "event" ? "Live Event" : "Platform"}
               </div>
             </div>
 
-            <div style={{ color: "#64748b", fontWeight: "500" }}>
+            <div style={{ display: "flex", color: "#64748b", fontWeight: 600 }}>
               badgi.net
             </div>
           </div>
@@ -166,14 +163,37 @@ export async function GET(request: NextRequest) {
         width: 1200,
         height: 630,
         headers: {
-          "content-type": "image/png",
-          "cache-control": "public, immutable, no-transform, max-age=86400",
+          "Content-Type": "image/png",
+          "Cache-Control": "public, immutable, no-transform, max-age=86400",
         },
       }
     );
   } catch (e: any) {
-    return new Response(`Failed to generate the image: ${e.message}`, {
-      status: 500,
-    });
+    console.error("OG Image generation error:", e);
+    // Minimal fallback SVG/PNG
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#090d16",
+            color: "#ffffff",
+            fontSize: "48px",
+            fontWeight: 800,
+          }}
+        >
+          Badgi.net - Events & Ticketing
+        </div>
+      ),
+      {
+        width: 1200,
+        height: 630,
+      }
+    );
   }
 }
