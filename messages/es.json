@@ -3825,6 +3825,11 @@
     "export": {
       "title": "Exportaci?n de transferencias bancarias"
     },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageInfo": "Página {page} de {totalPages}"
+    },
     "dialog": {
       "title": "Detalles de la transferencia bancaria",
       "description": "Revisa y verifica este pago por transferencia bancaria",

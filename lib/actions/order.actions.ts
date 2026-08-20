@@ -117,6 +117,13 @@ export const createOrder = async (order: CreateOrderParams) => {
       (discountApplied && event?.discount?.requireProof);
     const eligibilityStatus: "pending" | undefined = needsReview ? "pending" : undefined;
 
+    // Mirrors the client-side check: a discount that requires proof (e.g. the
+    // "Résident en médecine" tarif préférentiel) cannot be granted without a
+    // justificatif, even if a caller bypasses the UI.
+    if (discountApplied && event?.discount?.requireProof && !order.discountProofUrl) {
+      throw new Error("Un justificatif est requis pour bénéficier de ce tarif préférentiel.");
+    }
+
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,

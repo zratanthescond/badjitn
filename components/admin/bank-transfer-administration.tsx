@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,8 @@ import {
   User,
   FileText,
   Image as ImageIcon,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Zoom from "react-medium-image-zoom";
@@ -78,6 +80,7 @@ export default function BankTransferAdministration({
   const [statusFilter, setStatusFilter] = useState<
     "all" | "pending" | "approved" | "rejected"
   >("all");
+  const [page, setPage] = useState(1);
   const [selectedTransfer, setSelectedTransfer] = useState<any>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const { toast } = useToast();
@@ -87,15 +90,26 @@ export default function BankTransferAdministration({
   const t = useTranslations("bankTransferAdministration");
   const [isExporting, setIsExporting] = useState(false);
 
+  // Reset to page 1 whenever the filter/search context changes, so we don't
+  // end up stuck on an out-of-range page for the new result set.
+  const handleStatusFilterChange = (value: "all" | "pending" | "approved" | "rejected") => {
+    setStatusFilter(value);
+    setPage(1);
+  };
+  useEffect(() => {
+    setPage(1);
+  }, [searchString]);
+
   // Fetch bank transfers
   const { isPending, data, error } = useQuery({
-    queryKey: ["bankTransfers", eventId, eventTitle, statusFilter, searchString],
+    queryKey: ["bankTransfers", eventId, eventTitle, statusFilter, searchString, page],
     queryFn: () =>
       getBankTransfers({
         eventId,
         eventTitle,
         status: statusFilter,
         searchString,
+        page,
       }),
   });
 
@@ -337,7 +351,7 @@ export default function BankTransferAdministration({
 
   type ExportFormat = "csv" | "xlsx" | "word" | "pdf";
 
-  const getExportPayload = () => {
+  const getExportPayload = (transfers: any[]) => {
     const headers = [
       t("table.date"),
       t("table.buyer"),
@@ -347,7 +361,7 @@ export default function BankTransferAdministration({
       t("table.event"),
     ];
 
-    const rows = (data?.data || []).map((transfer: any) => [
+    const rows = (transfers || []).map((transfer: any) => [
       transfer?.createdAt ? formatDateTime(transfer.createdAt).dateTime : "",
       transfer?.buyerName ?? "",
       typeof transfer?.amount === "number"
@@ -362,7 +376,7 @@ export default function BankTransferAdministration({
   };
 
   const handleExportTransfers = async (format: ExportFormat) => {
-    if (!data || !data.data || data.data.length === 0) {
+    if (!data || !data.totalCount) {
       toast({
         title: t("actions.export"),
         description: t("messages.noTransfersToExport"),
@@ -377,7 +391,22 @@ export default function BankTransferAdministration({
       .replace(/[^a-zA-Z0-9-_ ]/g, "")
       .replace(/\s+/g, "_");
     const baseFileName = `${safeEventTitle || "bank_transfers"}_${safeDate}`;
-    const { headers, rows } = getExportPayload();
+
+    // Export must cover every matching transfer, not just the current page
+    // (the table only shows `limit` rows at a time).
+    let exportTransfers: any[] = data.data;
+    if (data.totalCount > data.data.length) {
+      const full = await getBankTransfers({
+        eventId,
+        eventTitle,
+        status: statusFilter,
+        searchString,
+        page: 1,
+        limit: data.totalCount,
+      });
+      exportTransfers = full.data;
+    }
+    const { headers, rows } = getExportPayload(exportTransfers);
 
     const downloadBlob = (blob: Blob, fileName: string) => {
       const url = URL.createObjectURL(blob);
@@ -491,7 +520,7 @@ export default function BankTransferAdministration({
       toast({
         title: t("actions.export"),
         description: t("messages.exportSuccess", {
-          count: data.data.length,
+          count: exportTransfers.length,
           format: format.toUpperCase(),
         }),
       });
@@ -541,7 +570,7 @@ export default function BankTransferAdministration({
                   size="icon"
                   title={t("actions.export")}
                   disabled={
-                    isExporting || isPending || !data || !data.data || data.data.length === 0
+                    isExporting || isPending || !data || !data.totalCount
                   }
                 >
                   <Download className="h-4 w-4" />
@@ -574,7 +603,7 @@ export default function BankTransferAdministration({
                   <Landmark className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-xl md:text-2xl font-bold">{data.totalCount}</p>
+                  <p className="text-xl md:text-2xl font-bold">{data.statusCounts?.total ?? data.totalCount}</p>
                   <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.total")}</p>
                 </div>
               </div>
@@ -587,7 +616,7 @@ export default function BankTransferAdministration({
                 </div>
                 <div>
                   <p className="text-xl md:text-2xl font-bold">
-                    {data.data.filter((t: any) => t.status === "pending").length}
+                    {data.statusCounts?.pending ?? 0}
                   </p>
                   <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.pending")}</p>
                 </div>
@@ -601,7 +630,7 @@ export default function BankTransferAdministration({
                 </div>
                 <div>
                   <p className="text-xl md:text-2xl font-bold">
-                    {data.data.filter((t: any) => t.status === "approved").length}
+                    {data.statusCounts?.approved ?? 0}
                   </p>
                   <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.approved")}</p>
                 </div>
@@ -615,7 +644,7 @@ export default function BankTransferAdministration({
                 </div>
                 <div>
                   <p className="text-xl md:text-2xl font-bold">
-                    {data.data.filter((t: any) => t.status === "rejected").length}
+                    {data.statusCounts?.rejected ?? 0}
                   </p>
                   <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.rejected")}</p>
                 </div>
@@ -626,7 +655,7 @@ export default function BankTransferAdministration({
       </div>
 
       {/* Filter Tabs */}
-      <Tabs value={statusFilter} onValueChange={(v: any) => setStatusFilter(v)}>
+      <Tabs value={statusFilter} onValueChange={(v: any) => handleStatusFilterChange(v)}>
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="all">{t("tabs.all")}</TabsTrigger>
           <TabsTrigger value="pending">{t("tabs.pending")}</TabsTrigger>
@@ -670,6 +699,32 @@ export default function BankTransferAdministration({
             <p className="text-muted-foreground">
               {t("empty.description")}
             </p>
+          </div>
+        )}
+
+        {data && data.totalPages > 1 && (
+          <div className="mt-6 flex items-center justify-between gap-3 border-t border-white/20 pt-4 dark:border-slate-700/50">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              {t("pagination.previous")}
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              {t("pagination.pageInfo", { page, totalPages: data.totalPages })}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
+              disabled={page >= data.totalPages}
+            >
+              {t("pagination.next")}
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
           </div>
         )}
       </div>

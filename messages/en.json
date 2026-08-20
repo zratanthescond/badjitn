@@ -3825,6 +3825,11 @@
     "export": {
       "title": "Bank Transfers Export"
     },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {page} of {totalPages}"
+    },
     "dialog": {
       "title": "Bank Transfer Details",
       "description": "Review and verify this bank transfer payment",

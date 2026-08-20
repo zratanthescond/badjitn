@@ -85,14 +85,36 @@ export async function getBankTransfers({
 
         const totalCount = await BankTransfer.countDocuments(query);
 
+        // Status breakdown across the full event/search scope (ignoring the status
+        // tab and pagination), so the stats cards reflect the real totals instead
+        // of only whatever page of results happens to be loaded.
+        const { status: _status, ...baseQuery } = query;
+        const [scopeTotal, pendingCount, approvedCount, rejectedCount] = await Promise.all([
+            BankTransfer.countDocuments(baseQuery),
+            BankTransfer.countDocuments({ ...baseQuery, status: "pending" }),
+            BankTransfer.countDocuments({ ...baseQuery, status: "approved" }),
+            BankTransfer.countDocuments({ ...baseQuery, status: "rejected" }),
+        ]);
+
         return {
             data: JSON.parse(JSON.stringify(transfers)),
             totalPages: Math.ceil(totalCount / limit),
             totalCount,
+            statusCounts: {
+                total: scopeTotal,
+                pending: pendingCount,
+                approved: approvedCount,
+                rejected: rejectedCount,
+            },
         };
     } catch (error) {
         handleError(error);
-        return { data: [], totalPages: 0, totalCount: 0 };
+        return {
+            data: [],
+            totalPages: 0,
+            totalCount: 0,
+            statusCounts: { total: 0, pending: 0, approved: 0, rejected: 0 },
+        };
     }
 }
 

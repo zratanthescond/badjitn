@@ -198,6 +198,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [discountProofPreview, setDiscountProofPreview] = useState<string>("");
   const [discountProofName, setDiscountProofName] = useState<string>("");
   const [discountProofIsImage, setDiscountProofIsImage] = useState(false);
+  const [discountProofError, setDiscountProofError] = useState<string>("");
 
   useEffect(() => {
     const loadFields = async () => {
@@ -243,6 +244,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         });
         setDiscountProofName(file.name);
         setDiscountProofIsImage(file.type.startsWith("image/"));
+        setDiscountProofError("");
       }
     } catch {
       // upload failed silently
@@ -911,6 +913,23 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return Object.keys(nextErrors).length === 0;
   };
 
+  // Validate that a justificatif was uploaded when the applied discount requires proof
+  // (e.g. "Résident en médecine" tarif préférentiel).
+  const validateDiscountProof = () => {
+    const requiresProof =
+      !!discountInfo && Number(discountInfo.value) > 0 && !!event.discount?.requireProof;
+    if (!requiresProof) {
+      setDiscountProofError("");
+      return true;
+    }
+    if (!discountProofUrl) {
+      setDiscountProofError(text("requiredField", "Ce champ est obligatoire."));
+      return false;
+    }
+    setDiscountProofError("");
+    return true;
+  };
+
   const validateLabFields = () => {
     if (!isLabOptionSelected) {
       setLabFieldErrors({});
@@ -932,6 +951,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     const optionsAreValid = validateOptions();
     const optionEmailsAreValid = validateOptionEmails();
     const optionProofsAreValid = validateOptionProofs();
+    const discountProofIsValid = validateDiscountProof();
     const labFieldsAreValid = validateLabFields();
 
     if (!labFieldsAreValid) {
@@ -965,6 +985,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       toast({
         title: "Justificatif requis",
         description: "Veuillez télécharger le justificatif demandé pour le choix sélectionné.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!discountProofIsValid) {
+      toast({
+        title: "Justificatif requis",
+        description: "Veuillez télécharger le justificatif demandé pour bénéficier du tarif préférentiel.",
         variant: "destructive",
       });
       return false;
@@ -1577,6 +1606,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-2">
                         <FileText className="h-4 w-4" />
                         {text("proofRequiredTitle", "Justificatif requis")}
+                        {event.discount?.requireProof && <span className="text-destructive">*</span>}
                       </p>
                       {event.discount?.proofDescription && (
                         <p className="text-xs text-amber-700 dark:text-amber-400">{event.discount.proofDescription}</p>
@@ -1585,6 +1615,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         <div className={`flex items-center justify-center gap-2 h-11 rounded-xl border-2 border-dashed text-sm font-medium transition-all ${
                           discountProofUrl
                             ? "border-green-400 bg-green-50 text-green-700"
+                            : discountProofError
+                            ? "border-destructive bg-destructive/5 text-destructive"
                             : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
                         }`}>
                           {isUploadingProof ? (
@@ -1602,6 +1634,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           onChange={(e) => e.target.files?.[0] && handleProofUpload(e.target.files[0])}
                         />
                       </label>
+                      {discountProofError && (
+                        <p className="text-xs font-medium text-destructive">{discountProofError}</p>
+                      )}
 
                       {/* Preview of the uploaded justificatif */}
                       {discountProofUrl && discountProofPreview && (
