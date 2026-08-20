@@ -85,6 +85,12 @@ const aiTools = [
     domain: "genspark.ai",
     color: "from-yellow-400 to-orange-500",
     url: "https://www.genspark.ai/",
+  },
+  {
+    id: "mentimeter",
+    domain: "mentimeter.com",
+    color: "from-rose-500 to-pink-600",
+    url: "https://www.mentimeter.com/app/home",
   }
 ];
 

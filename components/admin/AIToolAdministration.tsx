@@ -33,6 +33,7 @@ const ALL_TOOLS = [
   { id: "capcut", name: "CapCut" },
   { id: "deepl", name: "DeepL" },
   { id: "genspark", name: "Genspark" },
+  { id: "mentimeter", name: "Mentimeter" },
 ];
 
 interface ToolAccessDetail {
