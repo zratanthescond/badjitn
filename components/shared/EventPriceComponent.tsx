@@ -554,10 +554,24 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     [event.pricePlan]
   );
 
-  // Whether the participant chose the "laboratoire" sub-option (prise en charge by a lab)
-  // rather than the direct bank-transfer sub-option within the lab plan.
+  // The lab-plan option the participant currently has selected, if any.
+  const selectedLabOpt = labPlan
+    ? (labPlan.options as any[])?.find(
+        (o: any) => (typeof o === "object" ? o.name : o) === selectedOptions[labPlan._id ?? ""]
+      )
+    : null;
+  const selectedLabOptRequiresProof = !!(
+    selectedLabOpt && typeof selectedLabOpt === "object" && selectedLabOpt.requireProof
+  );
+
+  // Whether the participant chose the "laboratoire" sub-option (prise en charge by a lab,
+  // paid later by cheque) rather than the direct bank-transfer sub-option within the lab
+  // plan — this is what asks for the lab's contact details below. Options configured with
+  // requireProof instead (a simple "upload your justificatif" flow, per event) are excluded:
+  // those only need the proof widget, not the lab contact form.
   const isLabOptionSelected = !!(
     labPlan &&
+    !selectedLabOptRequiresProof &&
     String(selectedOptions[labPlan._id ?? ""] || "").toLowerCase().includes("laboratoire")
   );
 
@@ -1135,6 +1149,62 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       setIsProcessing(false);
     }
   };
+
+  // Justificatif card for a lab-plan option configured with requireProof.
+  // Rendered in two places because selecting a `registrationRequestOnly` option
+  // swaps the whole payment area for the single "send request" button.
+  const labProofCard =
+    selectedLabOptRequiresProof && labPlan ? (
+      <div className="rounded-xl border border-amber-400/40 bg-amber-50/70 dark:bg-amber-900/10 p-3 space-y-2">
+        <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+          <FileText className="h-4 w-4" />
+          {text("proofRequiredTitle", "Justificatif requis")}
+          <span className="text-destructive">*</span>
+        </p>
+        {selectedLabOpt?.proofDescription && (
+          <p className="text-xs text-amber-700 dark:text-amber-400">{selectedLabOpt.proofDescription}</p>
+        )}
+        <label className="flex flex-col gap-2 cursor-pointer">
+          <div
+            className={`flex items-center justify-center gap-2 h-11 rounded-xl border-2 border-dashed text-sm font-medium transition-all ${
+              optionProofUrls[labPlan._id ?? ""]
+                ? "border-green-400 bg-green-50 text-green-700"
+                : optionProofErrors[labPlan._id ?? ""]
+                ? "border-destructive bg-destructive/5 text-destructive"
+                : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
+            }`}
+          >
+            {isUploadingOptionProof[labPlan._id ?? ""] ? (
+              <span className="animate-pulse">{text("uploading", "Téléchargement...")}</span>
+            ) : optionProofUrls[labPlan._id ?? ""] ? (
+              <>
+                <CheckCircle className="h-4 w-4" />{" "}
+                {optionProofNames[labPlan._id ?? ""] || text("proofUploaded", "Justificatif téléchargé")}
+              </>
+            ) : (
+              <>
+                <FileText className="h-4 w-4" /> {text("uploadProof", "Télécharger le justificatif")}
+              </>
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*,.pdf"
+            className="hidden"
+            onChange={(e) => e.target.files?.[0] && handleOptionProofUpload(labPlan._id ?? "", e.target.files[0])}
+          />
+        </label>
+        {optionProofErrors[labPlan._id ?? ""] && (
+          <p className="text-xs font-medium text-destructive">{optionProofErrors[labPlan._id ?? ""]}</p>
+        )}
+        <p className="text-[11px] leading-relaxed text-amber-700/80 dark:text-amber-400/80">
+          {text(
+            "pendingValidationNote",
+            "Votre inscription sera enregistrée puis validée après vérification de votre justificatif par l'organisateur."
+          )}
+        </p>
+      </div>
+    ) : null;
 
   return (
     <div className="relative mx-auto w-full max-w-full">
@@ -2085,22 +2155,28 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
             {isAvailable() && (
               isRegistrationRequest ? (
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button
-                    onClick={() => void handleGetPreorder(true)}
-                    disabled={isProcessing}
-                    className="h-14 w-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 font-semibold text-white shadow-lg transition-all hover:from-amber-600 hover:to-orange-600"
-                  >
-                    {isProcessing ? (
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    ) : (
-                      <div className="flex items-center justify-center gap-2">
-                        <FileText className="h-5 w-5" />
-                        {text("sendRegistrationRequest", "Envoyer la demande d'inscription")}
-                      </div>
-                    )}
-                  </Button>
-                </motion.div>
+                // Selecting a `registrationRequestOnly` option replaces the payment
+                // buttons with a single request button — the required justificatif
+                // must therefore be rendered here too, right above it.
+                <div className="space-y-3">
+                  {labProofCard}
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      onClick={() => void handleGetPreorder(true)}
+                      disabled={isProcessing}
+                      className="h-14 w-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 font-semibold text-white shadow-lg transition-all hover:from-amber-600 hover:to-orange-600"
+                    >
+                      {isProcessing ? (
+                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      ) : (
+                        <div className="flex items-center justify-center gap-2">
+                          <FileText className="h-5 w-5" />
+                          {text("sendRegistrationRequest", "Envoyer la demande d'inscription")}
+                        </div>
+                      )}
+                    </Button>
+                  </motion.div>
+                </div>
               ) : (
               <>
                 {(isFreeEvent || showCardPayment) && (
@@ -2313,7 +2389,17 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                       whileTap={{ scale: 0.97 }}
                       onClick={() => {
                         if (!labPlan) {
-                          handleAddPlan(labPlanDef._id ?? "");
+                          // A plan with a single modality (e.g. just "Prise en charge par
+                          // un laboratoire") has nothing to choose between — select it
+                          // directly instead of making the participant pick it twice.
+                          const labOptions = (labPlanDef.options as any[]) || [];
+                          if (labOptions.length === 1) {
+                            const onlyOptName =
+                              typeof labOptions[0] === "object" ? labOptions[0].name : String(labOptions[0]);
+                            handleSelectOption(labPlanDef._id ?? "", onlyOptName);
+                          } else {
+                            handleAddPlan(labPlanDef._id ?? "");
+                          }
                           setShowLabSection(true);
                           setTimeout(
                             () => labSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
@@ -2366,51 +2452,62 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         transition={{ duration: 0.2 }}
                         className="rounded-2xl border border-teal-200/50 bg-teal-50/40 dark:bg-teal-900/10 p-4 space-y-3"
                       >
-                        <p className="text-xs font-semibold text-teal-700 dark:text-teal-400 uppercase tracking-wide text-center">
-                          Choisissez votre modalité de paiement
-                        </p>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          {(labPlan.options as any[]).map((opt: any) => {
-                            const optName = typeof opt === "object" ? opt.name : String(opt);
-                            const optDesc = typeof opt === "object" ? opt.description : undefined;
-                            const isLabOpt = optName.toLowerCase().includes("laboratoire");
-                            return (
-                              <motion.button
-                                key={optName}
-                                type="button"
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => {
-                                  handleSelectOption(labPlan._id ?? "", optName);
-                                  if (!isLabOpt) {
-                                    setLabPendingBankOpen(true);
-                                  }
-                                }}
-                                className={`flex flex-col gap-2 rounded-2xl border-2 p-4 text-left transition-all duration-200 ${
-                                  isLabOpt
-                                    ? "border-amber-300/60 bg-amber-50 hover:border-amber-400 hover:bg-amber-100 dark:bg-amber-900/10 dark:hover:bg-amber-900/20"
-                                    : "border-teal-300/60 bg-white hover:border-teal-400 hover:bg-teal-50 dark:bg-slate-800 dark:hover:bg-slate-700"
-                                }`}
-                              >
-                                <div className="flex items-center gap-2">
-                                  {isLabOpt ? (
-                                    <svg className="h-5 w-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                  ) : (
-                                    <Landmark className="h-5 w-5 text-teal-600 shrink-0" />
-                                  )}
-                                  <span className={`font-semibold text-sm ${isLabOpt ? "text-amber-700 dark:text-amber-400" : "text-teal-700 dark:text-teal-300"}`}>
-                                    {optName}
-                                  </span>
-                                </div>
-                                {optDesc && (
-                                  <p className="text-xs text-muted-foreground leading-relaxed pl-7">{optDesc}</p>
-                                )}
-                              </motion.button>
-                            );
-                          })}
-                        </div>
+                        {/* A plan with a single modality has nothing to pick between —
+                            skip straight to the justificatif / lab-contact section. */}
+                        {(labPlan.options as any[]).length > 1 && (
+                          <>
+                            <p className="text-xs font-semibold text-teal-700 dark:text-teal-400 uppercase tracking-wide text-center">
+                              Choisissez votre modalité de paiement
+                            </p>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                              {(labPlan.options as any[]).map((opt: any) => {
+                                const optName = typeof opt === "object" ? opt.name : String(opt);
+                                const optDesc = typeof opt === "object" ? opt.description : undefined;
+                                const isLabOpt = optName.toLowerCase().includes("laboratoire");
+                                return (
+                                  <motion.button
+                                    key={optName}
+                                    type="button"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => {
+                                      handleSelectOption(labPlan._id ?? "", optName);
+                                      if (!isLabOpt) {
+                                        setLabPendingBankOpen(true);
+                                      }
+                                    }}
+                                    className={`flex flex-col gap-2 rounded-2xl border-2 p-4 text-left transition-all duration-200 ${
+                                      isLabOpt
+                                        ? "border-amber-300/60 bg-amber-50 hover:border-amber-400 hover:bg-amber-100 dark:bg-amber-900/10 dark:hover:bg-amber-900/20"
+                                        : "border-teal-300/60 bg-white hover:border-teal-400 hover:bg-teal-50 dark:bg-slate-800 dark:hover:bg-slate-700"
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      {isLabOpt ? (
+                                        <svg className="h-5 w-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                      ) : (
+                                        <Landmark className="h-5 w-5 text-teal-600 shrink-0" />
+                                      )}
+                                      <span className={`font-semibold text-sm ${isLabOpt ? "text-amber-700 dark:text-amber-400" : "text-teal-700 dark:text-teal-300"}`}>
+                                        {optName}
+                                      </span>
+                                    </div>
+                                    {optDesc && (
+                                      <p className="text-xs text-muted-foreground leading-relaxed pl-7">{optDesc}</p>
+                                    )}
+                                  </motion.button>
+                                );
+                              })}
+                            </div>
+                          </>
+                        )}
+
+                        {/* Required justificatif (shared card) — only reachable when the
+                            option is NOT registrationRequestOnly; otherwise it renders next
+                            to the request button above. */}
+                        {labProofCard}
 
                         {isLabOptionSelected && (
                           <div className="space-y-3 rounded-2xl border border-amber-300/50 bg-amber-50/50 dark:bg-amber-900/10 p-4">
