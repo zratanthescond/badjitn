@@ -523,12 +523,18 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   // from the special lab section by the residency restriction, it would fall
   // back to rendering as an ordinary, unrestricted plan card instead of being
   // hidden entirely.
+  // Only plans offering a genuine choice between payment modalities (e.g. "paid
+  // directly by the beneficiary" vs "paid by the lab, by cheque") need the special
+  // dual-choice UI below. A plan with a single "laboratoire" option (e.g. just a
+  // requireProof checkbox) should render through the normal per-option flow instead.
   const labPlanDefRaw = useMemo(
     () =>
-      (event.pricePlan || []).find((p: any) =>
-        (p.options || []).some((o: any) =>
-          (typeof o === "object" ? o.name : String(o)).toLowerCase().includes("laboratoire")
-        )
+      (event.pricePlan || []).find(
+        (p: any) =>
+          (p.options || []).length > 1 &&
+          (p.options || []).some((o: any) =>
+            (typeof o === "object" ? o.name : String(o)).toLowerCase().includes("laboratoire")
+          )
       ) ?? null,
     [event.pricePlan]
   );
