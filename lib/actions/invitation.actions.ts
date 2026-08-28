@@ -39,6 +39,7 @@ export type InvitationLogEntry = {
   firstName?: string;
   lastName?: string;
   status: "sent" | "failed";
+  errorMessage?: string;
   sentAt: string | null;
 };
 
@@ -72,6 +73,7 @@ export async function getInvitationSettings(eventId: string) {
         firstName: entry.firstName || "",
         lastName: entry.lastName || "",
         status: entry.status,
+        errorMessage: entry.errorMessage || "",
         sentAt: entry.sentAt ? new Date(entry.sentAt).toISOString() : null,
       }))
       .reverse();
@@ -177,14 +179,16 @@ export async function sendEventInvitations({
       }
 
       let status: "sent" | "failed";
+      let errorMessage: string | undefined;
       try {
         await sendInvitationEmail({ to: recipient.email, subject, template });
         status = "sent";
         previouslyInvited.add(recipient.email);
         sent++;
-      } catch (err) {
+      } catch (err: any) {
         console.error(`Failed to send invitation to ${recipient.email}:`, err);
         status = "failed";
+        errorMessage = err?.response || err?.message || String(err);
         failed++;
       }
       results.push({ email: recipient.email, status });
@@ -199,6 +203,7 @@ export async function sendEventInvitations({
             firstName: recipient.firstName || "",
             lastName: recipient.lastName || "",
             status,
+            errorMessage,
           },
         },
       };

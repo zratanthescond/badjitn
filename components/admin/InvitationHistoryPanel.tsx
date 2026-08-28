@@ -112,6 +112,14 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">{formatSentAt(entry.sentAt)}</p>
+                {entry.status === "failed" && entry.errorMessage && (
+                  <p
+                    className="text-xs text-red-500/80 truncate max-w-[420px]"
+                    title={entry.errorMessage}
+                  >
+                    {entry.errorMessage}
+                  </p>
+                )}
               </div>
               {entry.status === "sent" ? (
                 <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 hover:bg-emerald-100 gap-1 shrink-0">
@@ -119,7 +127,10 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
                   Envoyé
                 </Badge>
               ) : (
-                <Badge className="bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400 hover:bg-red-100 gap-1 shrink-0">
+                <Badge
+                  className="bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400 hover:bg-red-100 gap-1 shrink-0"
+                  title={entry.errorMessage}
+                >
                   <XCircle className="h-3 w-3" />
                   Échoué
                 </Badge>

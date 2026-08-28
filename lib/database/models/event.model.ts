@@ -85,6 +85,7 @@ export interface IEvent extends Document {
     firstName?: string;
     lastName?: string;
     status: "sent" | "failed";
+    errorMessage?: string;
     sentAt: Date;
   }[];
 }
@@ -227,6 +228,7 @@ const EventSchema = new Schema({
         firstName: { type: String },
         lastName: { type: String },
         status: { type: String, enum: ["sent", "failed"], default: "sent" },
+        errorMessage: { type: String },
         sentAt: { type: Date, default: Date.now },
       },
     ],
