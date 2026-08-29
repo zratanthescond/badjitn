@@ -43,6 +43,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhook/clerk(.*)",
   "/api/webhook/fileServer(.*)",
   "/api/webhook/stripe(.*)",
+  "/api/cron(.*)",
   "/api/uploadthing(.*)",
   "/api/upload-bank-transfer(.*)",
   /^\/(?:[a-z]{2}\/)?banned(.*)/,
