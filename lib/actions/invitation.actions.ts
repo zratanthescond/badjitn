@@ -77,7 +77,17 @@ export async function getInvitationSettings(eventId: string) {
       footerEmail: event.invitationEmail?.footerEmail || "",
     };
 
-    const invitationLog: InvitationLogEntry[] = (event.invitationLog || [])
+    // The raw log has one entry per *attempt* — a retried email can appear many
+    // times. Collapse to the latest attempt per email so counts and the list
+    // reflect actual recipients, not attempt history.
+    const latestByEmail = new Map<string, any>();
+    for (const entry of event.invitationLog || []) {
+      const email = entry.email?.toLowerCase();
+      if (!email) continue;
+      latestByEmail.set(email, entry);
+    }
+
+    const invitationLog: InvitationLogEntry[] = Array.from(latestByEmail.values())
       .map((entry: any) => ({
         email: entry.email,
         firstName: entry.firstName || "",
@@ -86,7 +96,7 @@ export async function getInvitationSettings(eventId: string) {
         errorMessage: entry.errorMessage || "",
         sentAt: entry.sentAt ? new Date(entry.sentAt).toISOString() : null,
       }))
-      .reverse();
+      .sort((a, b) => (b.sentAt || "").localeCompare(a.sentAt || ""));
 
     return {
       success: true,

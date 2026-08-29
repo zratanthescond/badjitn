@@ -53,6 +53,10 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
     () => log.filter((entry) => entry.status === "failed").length,
     [log]
   );
+  const sentCount = useMemo(
+    () => log.filter((entry) => entry.status === "sent").length,
+    [log]
+  );
 
   const handleRetryFailed = async () => {
     setRetrying(true);
@@ -85,7 +89,8 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
         <div className="flex items-center gap-2 flex-wrap">
           <h3 className="text-sm font-semibold flex items-center gap-1.5">
             <History className="h-4 w-4" />
-            Invitations envoyées ({log.length})
+            Destinataires ({log.length}) — {sentCount} envoyé{sentCount > 1 ? "s" : ""},{" "}
+            {failedCount} échoué{failedCount > 1 ? "s" : ""}
           </h3>
           {queueLength > 0 && (
             <Badge
