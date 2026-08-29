@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Search, History, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
+import { Loader2, Search, History, CheckCircle2, XCircle, RefreshCw, RotateCcw, Clock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 import {
   getInvitationSettings,
+  retryFailedInvitations,
   type InvitationLogEntry,
 } from "@/lib/actions/invitation.actions";
 
@@ -28,13 +30,16 @@ function formatSentAt(sentAt: string | null) {
 export default function InvitationHistoryPanel({ eventId }: { eventId: string }) {
   const [loading, setLoading] = useState(true);
   const [log, setLog] = useState<InvitationLogEntry[]>([]);
+  const [queueLength, setQueueLength] = useState(0);
   const [search, setSearch] = useState("");
+  const [retrying, setRetrying] = useState(false);
 
   const load = async () => {
     setLoading(true);
     const res = await getInvitationSettings(eventId);
     if (res.success && res.data) {
       setLog(res.data.invitationLog || []);
+      setQueueLength(res.data.queueLength || 0);
     }
     setLoading(false);
   };
@@ -43,6 +48,26 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId]);
+
+  const failedCount = useMemo(
+    () => log.filter((entry) => entry.status === "failed").length,
+    [log]
+  );
+
+  const handleRetryFailed = async () => {
+    setRetrying(true);
+    try {
+      const res = await retryFailedInvitations({ eventId });
+      if (res.success) {
+        toast({ title: "Nouvel essai programmé", description: res.message });
+        await load();
+      } else {
+        toast({ title: "Erreur", description: res.message, variant: "destructive" });
+      }
+    } finally {
+      setRetrying(false);
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -57,11 +82,38 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h3 className="text-sm font-semibold flex items-center gap-1.5">
-          <History className="h-4 w-4" />
-          Invitations envoyées ({log.length})
-        </h3>
+        <div className="flex items-center gap-2 flex-wrap">
+          <h3 className="text-sm font-semibold flex items-center gap-1.5">
+            <History className="h-4 w-4" />
+            Invitations envoyées ({log.length})
+          </h3>
+          {queueLength > 0 && (
+            <Badge
+              variant="secondary"
+              className="gap-1 bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+            >
+              <Clock className="h-3 w-3" />
+              {queueLength} en attente d'envoi
+            </Badge>
+          )}
+        </div>
         <div className="flex items-center gap-2">
+          {failedCount > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 rounded-full text-xs"
+              onClick={handleRetryFailed}
+              disabled={retrying}
+            >
+              {retrying ? (
+                <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+              ) : (
+                <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+              )}
+              Réessayer les échoués ({failedCount})
+            </Button>
+          )}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input

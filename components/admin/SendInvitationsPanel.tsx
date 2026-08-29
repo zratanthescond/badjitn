@@ -24,7 +24,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import {
   getInvitationSettings,
-  sendEventInvitations,
+  enqueueEventInvitations,
   type InvitationRecipient,
 } from "@/lib/actions/invitation.actions";
 
@@ -254,9 +254,9 @@ export default function SendInvitationsPanel({ eventId }: { eventId: string }) {
     if (recipients.length === 0) return;
     setSending(true);
     try {
-      const res = await sendEventInvitations({ eventId, recipients });
+      const res = await enqueueEventInvitations({ eventId, recipients });
       if (res.success) {
-        toast({ title: "Envoi terminé", description: res.message });
+        toast({ title: "Mise en file d'envoi", description: res.message });
         setRecipients([]);
         const res2 = await getInvitationSettings(eventId);
         if (res2.success && res2.data) setInvitedEmails(res2.data.invitedEmails || []);
@@ -402,6 +402,11 @@ export default function SendInvitationsPanel({ eventId }: { eventId: string }) {
             ))}
           </div>
 
+          <p className="text-xs text-muted-foreground">
+            L'envoi se fait progressivement en arrière-plan (par petits lots) pour éviter
+            que le fournisseur mail ne bloque le compte — les invitations apparaîtront
+            envoyées au fil du temps dans l'onglet Historique, pas instantanément.
+          </p>
           <Button
             onClick={handleSend}
             disabled={sending}
@@ -413,8 +418,8 @@ export default function SendInvitationsPanel({ eventId }: { eventId: string }) {
               <Send className="h-4 w-4 mr-2" />
             )}
             {sending
-              ? "Envoi en cours..."
-              : `Envoyer ${recipients.length} invitation${recipients.length > 1 ? "s" : ""}`}
+              ? "Mise en file..."
+              : `Mettre en file ${recipients.length} invitation${recipients.length > 1 ? "s" : ""}`}
           </Button>
         </div>
       )}

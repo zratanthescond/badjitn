@@ -88,6 +88,12 @@ export interface IEvent extends Document {
     errorMessage?: string;
     sentAt: Date;
   }[];
+  invitationQueue?: {
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    queuedAt: Date;
+  }[];
 }
 const planOptionSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -230,6 +236,17 @@ const EventSchema = new Schema({
         status: { type: String, enum: ["sent", "failed"], default: "sent" },
         errorMessage: { type: String },
         sentAt: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  },
+  invitationQueue: {
+    type: [
+      {
+        email: { type: String, required: true },
+        firstName: { type: String },
+        lastName: { type: String },
+        queuedAt: { type: Date, default: Date.now },
       },
     ],
     default: [],
