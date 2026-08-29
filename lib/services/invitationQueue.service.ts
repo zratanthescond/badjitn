@@ -18,8 +18,19 @@ export type QueueBatchResult = {
   processedEvents: number;
   sent: number;
   failed: number;
+  quotaDeferred: number;
   remaining: number;
 };
+
+function isQuotaError(err: any) {
+  const text = `${err?.response || ""} ${err?.message || ""}`.toLowerCase();
+  return (
+    text.includes("quota exceeded") ||
+    text.includes("exceeded the limit") ||
+    text.includes("too many mails") ||
+    text.includes("too many messages")
+  );
+}
 
 // Sends up to `maxTotal` queued invitations across all events, oldest-queued first,
 // pacing sends with `delayMs` between each. Meant to be called on a schedule (e.g. every
@@ -38,11 +49,13 @@ export async function processInvitationQueueBatch({
 
   let sent = 0;
   let failed = 0;
+  let quotaDeferred = 0;
   let remainingBudget = maxTotal;
   let processedEvents = 0;
+  let quotaHit = false;
 
   for (const event of events) {
-    if (remainingBudget <= 0) break;
+    if (remainingBudget <= 0 || quotaHit) break;
     const queue = event.invitationQueue || [];
     if (queue.length === 0) continue;
     processedEvents++;
@@ -82,6 +95,14 @@ export async function processInvitationQueueBatch({
         status = "sent";
         sent++;
       } catch (err: any) {
+        if (isQuotaError(err)) {
+          // The provider's hourly quota is exhausted for this run — leave this
+          // recipient (and the rest of the batch) queued untouched and stop
+          // early rather than burning through them as false "failed" entries.
+          quotaDeferred++;
+          quotaHit = true;
+          break;
+        }
         status = "failed";
         errorMessage = err?.response || err?.message || String(err);
         failed++;
@@ -120,6 +141,7 @@ export async function processInvitationQueueBatch({
     processedEvents,
     sent,
     failed,
+    quotaDeferred,
     remaining: remainingAgg[0]?.total || 0,
   };
 }
