@@ -227,8 +227,70 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     void loadFields();
   }, [event.requiredInfo, event.discount?.field]);
 
-  const handleProofUpload = async (file: File) => {
+  const MAX_PROOF_FILE_SIZE = 8 * 1024 * 1024;
+
+  const isHeicFile = (file: File) =>
+    file.type === "image/heic" ||
+    file.type === "image/heif" ||
+    /\.hei[cf]$/i.test(file.name);
+
+  // iPhones default to HEIC for camera photos (screenshots stay PNG). Browsers
+  // can't decode/preview HEIC and the file server only accepts JPG/PNG/PDF, so
+  // convert it to a JPEG client-side before it ever reaches the upload request.
+  const convertHeicToJpeg = async (file: File): Promise<File> => {
+    const heic2any = (await import("heic2any")).default;
+    const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
+    const blob = Array.isArray(converted) ? converted[0] : converted;
+    const newName = file.name.replace(/\.hei[cf]$/i, "") + ".jpg";
+    return new File([blob], newName, { type: "image/jpeg" });
+  };
+
+  // Client-side gate before spending a network round-trip: catches oversized
+  // files and formats the server silently drops.
+  const validateProofFile = (file: File): string | null => {
+    if (file.size > MAX_PROOF_FILE_SIZE) {
+      return `Fichier trop volumineux (${(file.size / (1024 * 1024)).toFixed(1)} Mo). Taille maximale : 8 Mo.`;
+    }
+    const isImage = file.type.startsWith("image/");
+    const isPdf = file.type === "application/pdf";
+    const isDoc = /\.docx?$/i.test(file.name);
+    if (!isImage && !isPdf && !isHeicFile(file) && !isDoc) {
+      return "Format non pris en charge. Utilisez une image (JPG, PNG, HEIC), un PDF ou un document Word.";
+    }
+    return null;
+  };
+
+  // Runs before validation/upload in every proof handler: converts HEIC to
+  // JPEG first (so the size/type check below applies to the file we actually
+  // send), and surfaces a clear error if the conversion itself fails.
+  const prepareProofFile = async (file: File): Promise<{ file: File; error: string | null }> => {
+    if (!isHeicFile(file)) return { file, error: null };
+    try {
+      return { file: await convertHeicToJpeg(file), error: null };
+    } catch {
+      return {
+        file,
+        error: "Impossible de convertir cette photo HEIC. Réessayez ou convertissez-la en JPG avant de la televerser.",
+      };
+    }
+  };
+
+  const handleProofUpload = async (rawFile: File) => {
     setIsUploadingProof(true);
+    const { file, error: conversionError } = await prepareProofFile(rawFile);
+    if (conversionError) {
+      setIsUploadingProof(false);
+      setDiscountProofError(conversionError);
+      toast({ title: "Fichier invalide", description: conversionError, variant: "destructive" });
+      return;
+    }
+    const validationError = validateProofFile(file);
+    if (validationError) {
+      setIsUploadingProof(false);
+      setDiscountProofError(validationError);
+      toast({ title: "Fichier invalide", description: validationError, variant: "destructive" });
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -245,16 +307,40 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         setDiscountProofName(file.name);
         setDiscountProofIsImage(file.type.startsWith("image/"));
         setDiscountProofError("");
+      } else {
+        toast({
+          title: "Échec du téléchargement",
+          description: data.message || "Le fichier n'a pas pu être téléchargé. Réessayez avec une image (JPG, PNG) ou un PDF.",
+          variant: "destructive",
+        });
       }
     } catch {
-      // upload failed silently
+      toast({
+        title: "Échec du téléchargement",
+        description: "Une erreur est survenue lors du téléchargement du justificatif. Vérifiez votre connexion et réessayez.",
+        variant: "destructive",
+      });
     } finally {
       setIsUploadingProof(false);
     }
   };
 
-  const handleLabProofUpload = async (file: File) => {
+  const handleLabProofUpload = async (rawFile: File) => {
     setIsUploadingLabProof(true);
+    const { file, error: conversionError } = await prepareProofFile(rawFile);
+    if (conversionError) {
+      setIsUploadingLabProof(false);
+      setLabFieldErrors((prev) => ({ ...prev, proof: conversionError }));
+      toast({ title: "Fichier invalide", description: conversionError, variant: "destructive" });
+      return;
+    }
+    const validationError = validateProofFile(file);
+    if (validationError) {
+      setIsUploadingLabProof(false);
+      setLabFieldErrors((prev) => ({ ...prev, proof: validationError }));
+      toast({ title: "Fichier invalide", description: validationError, variant: "destructive" });
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -264,16 +350,40 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         setLabProofUrl(data.url);
         setLabProofName(file.name);
         setLabFieldErrors((prev) => ({ ...prev, proof: "" }));
+      } else {
+        toast({
+          title: "Échec du téléchargement",
+          description: data.message || "Le fichier n'a pas pu être téléchargé. Réessayez avec une image (JPG, PNG) ou un PDF.",
+          variant: "destructive",
+        });
       }
     } catch {
-      // upload failed silently
+      toast({
+        title: "Échec du téléchargement",
+        description: "Une erreur est survenue lors du téléchargement du justificatif. Vérifiez votre connexion et réessayez.",
+        variant: "destructive",
+      });
     } finally {
       setIsUploadingLabProof(false);
     }
   };
 
-  const handleOptionProofUpload = async (planId: string, file: File) => {
+  const handleOptionProofUpload = async (planId: string, rawFile: File) => {
     setIsUploadingOptionProof((prev) => ({ ...prev, [planId]: true }));
+    const { file, error: conversionError } = await prepareProofFile(rawFile);
+    if (conversionError) {
+      setIsUploadingOptionProof((prev) => ({ ...prev, [planId]: false }));
+      setOptionProofErrors((prev) => ({ ...prev, [planId]: conversionError }));
+      toast({ title: "Fichier invalide", description: conversionError, variant: "destructive" });
+      return;
+    }
+    const validationError = validateProofFile(file);
+    if (validationError) {
+      setIsUploadingOptionProof((prev) => ({ ...prev, [planId]: false }));
+      setOptionProofErrors((prev) => ({ ...prev, [planId]: validationError }));
+      toast({ title: "Fichier invalide", description: validationError, variant: "destructive" });
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -283,9 +393,19 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         setOptionProofUrls((prev) => ({ ...prev, [planId]: data.url }));
         setOptionProofNames((prev) => ({ ...prev, [planId]: file.name }));
         setOptionProofErrors((prev) => ({ ...prev, [planId]: "" }));
+      } else {
+        toast({
+          title: "Échec du téléchargement",
+          description: data.message || "Le fichier n'a pas pu être téléchargé. Réessayez avec une image (JPG, PNG) ou un PDF.",
+          variant: "destructive",
+        });
       }
     } catch {
-      // upload failed silently
+      toast({
+        title: "Échec du téléchargement",
+        description: "Une erreur est survenue lors du téléchargement du justificatif. Vérifiez votre connexion et réessayez.",
+        variant: "destructive",
+      });
     } finally {
       setIsUploadingOptionProof((prev) => ({ ...prev, [planId]: false }));
     }
@@ -1189,7 +1309,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           </div>
           <input
             type="file"
-            accept="image/*,.pdf"
+            accept="image/*,.heic,.heif,.pdf"
             className="hidden"
             onChange={(e) => e.target.files?.[0] && handleOptionProofUpload(labPlan._id ?? "", e.target.files[0])}
           />
@@ -1699,7 +1819,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         </div>
                         <input
                           type="file"
-                          accept="image/*,.pdf"
+                          accept="image/*,.heic,.heif,.pdf"
                           className="hidden"
                           onChange={(e) => e.target.files?.[0] && handleProofUpload(e.target.files[0])}
                         />
@@ -1927,7 +2047,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                   </div>
                                   <input
                                     type="file"
-                                    accept="image/*,.pdf"
+                                    accept="image/*,.heic,.heif,.pdf"
                                     className="hidden"
                                     onChange={(e) => e.target.files?.[0] && handleOptionProofUpload(plan._id, e.target.files[0])}
                                   />
@@ -2133,7 +2253,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                     </div>
                                     <input
                                       type="file"
-                                      accept="image/*,.pdf"
+                                      accept="image/*,.heic,.heif,.pdf"
                                       className="hidden"
                                       onChange={(e) => e.target.files?.[0] && handleOptionProofUpload(plan._id, e.target.files[0])}
                                     />
@@ -2586,7 +2706,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                 </div>
                                 <input
                                   type="file"
-                                  accept="image/*,.pdf,.doc,.docx"
+                                  accept="image/*,.heic,.heif,.pdf,.doc,.docx"
                                   className="hidden"
                                   onChange={(e) => e.target.files?.[0] && handleLabProofUpload(e.target.files[0])}
                                 />
