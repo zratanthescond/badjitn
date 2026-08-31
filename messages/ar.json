@@ -3094,7 +3094,11 @@
       },
       "actions": {
         "edit": "تعديل",
-        "open": "فتح"
+        "open": "فتح",
+        "viewSubmissions": "عرض التسجيلات",
+        "hideSubmissions": "إخفاء التسجيلات",
+        "badges": "الشارات",
+        "report": "التقرير"
       },
       "empty": {
         "title": "لا توجد نماذج بعد",

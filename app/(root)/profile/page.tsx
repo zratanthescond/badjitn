@@ -134,6 +134,10 @@ const ProfilePage = async (props: SearchParamProps) => {
       actions: {
         edit: t("forms.actions.edit"),
         open: t("forms.actions.open"),
+        viewSubmissions: t("forms.actions.viewSubmissions"),
+        hideSubmissions: t("forms.actions.hideSubmissions"),
+        badges: t("forms.actions.badges"),
+        report: t("forms.actions.report"),
       },
       empty: {
         title: t("forms.empty.title"),

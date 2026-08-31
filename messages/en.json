@@ -3093,7 +3093,11 @@
       },
       "actions": {
         "edit": "Edit",
-        "open": "Open"
+        "open": "Open",
+        "viewSubmissions": "View Submissions",
+        "hideSubmissions": "Hide Submissions",
+        "badges": "Badges",
+        "report": "Report"
       },
       "empty": {
         "title": "No forms yet",

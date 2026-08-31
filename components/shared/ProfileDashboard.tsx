@@ -22,6 +22,9 @@ import {
     Loader2,
     Pencil,
     Trash2,
+    Eye,
+    IdCard,
+    FileBarChart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +60,8 @@ import {
 import { cn } from "@/lib/utils";
 import { countryGovernorates } from "@/constants/country-governorates";
 import EventFormBuilder from "@/components/shared/EventFormBuilder";
+import EventFormSubmissions from "@/components/shared/EventFormSubmissions";
+import FormReportDialog from "@/components/shared/FormReportDialog";
 import InviteDialog from "@/components/shared/InviteDialog";
 import { getFormsByCreator, deleteEventForm } from "@/lib/actions/eventform.actions";
 
@@ -166,6 +171,10 @@ interface TranslationStrings {
         actions: {
             edit: string;
             open: string;
+            viewSubmissions: string;
+            hideSubmissions: string;
+            badges: string;
+            report: string;
         };
         empty: {
             title: string;
@@ -318,6 +327,8 @@ export default function ProfileDashboard({
     const [showFormBuilder, setShowFormBuilder] = useState(false);
     const [editingForm, setEditingForm] = useState<any | null>(null);
     const [deletingFormId, setDeletingFormId] = useState<string | null>(null);
+    const [viewingSubmissionsFormId, setViewingSubmissionsFormId] = useState<string | null>(null);
+    const [reportFormId, setReportFormId] = useState<string | null>(null);
 
     const handleDeleteForm = async (formId: string) => {
         if (!confirm(translations.forms.deleteConfirm)) return;
@@ -1164,6 +1175,36 @@ export default function ProfileDashboard({
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
+                                                            className="rounded-full text-xs"
+                                                            onClick={() =>
+                                                                setViewingSubmissionsFormId(
+                                                                    viewingSubmissionsFormId === form._id ? null : form._id
+                                                                )
+                                                            }
+                                                        >
+                                                            <Eye className="h-3 w-3 mr-1" />
+                                                            {viewingSubmissionsFormId === form._id
+                                                                ? translations.forms.actions.hideSubmissions
+                                                                : translations.forms.actions.viewSubmissions}
+                                                        </Button>
+                                                        <Link href={`/forms/${form.slug}/badge`} target="_blank">
+                                                            <Button variant="outline" size="sm" className="rounded-full text-xs">
+                                                                <IdCard className="h-3 w-3 mr-1" />
+                                                                {translations.forms.actions.badges}
+                                                            </Button>
+                                                        </Link>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="rounded-full text-xs"
+                                                            onClick={() => setReportFormId(form._id)}
+                                                        >
+                                                            <FileBarChart className="h-3 w-3 mr-1" />
+                                                            {translations.forms.actions.report}
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
                                                             className="rounded-full text-xs text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
                                                             disabled={deletingFormId === form._id}
                                                             onClick={() => handleDeleteForm(form._id)}
@@ -1176,6 +1217,11 @@ export default function ProfileDashboard({
                                                         </Button>
                                                     </div>
                                                 </div>
+                                                {viewingSubmissionsFormId === form._id && (
+                                                    <div className="mt-4 pt-4 border-t border-border/30">
+                                                        <EventFormSubmissions formId={form._id} formTitle={form.title} />
+                                                    </div>
+                                                )}
                                             </CardContent>
                                         </Card>
                                     ))}
@@ -1200,6 +1246,11 @@ export default function ProfileDashboard({
                                     </div>
                                 </div>
                             )}
+                            <FormReportDialog
+                                formId={reportFormId || ""}
+                                isOpen={!!reportFormId}
+                                onClose={() => setReportFormId(null)}
+                            />
                         </div>
                     )}
 

@@ -3093,7 +3093,11 @@
       },
       "actions": {
         "edit": "Editar",
-        "open": "Abrir"
+        "open": "Abrir",
+        "viewSubmissions": "Ver inscripciones",
+        "hideSubmissions": "Ocultar inscripciones",
+        "badges": "Credenciales",
+        "report": "Informe"
       },
       "empty": {
         "title": "Aún no hay formularios",

@@ -12,6 +12,8 @@ export interface IFormSubmission extends Document {
     email: string;
     name: string;
     responses: IFieldResponse[];
+    category: string;
+    badgePrinted: boolean;
     submittedAt: Date;
 }
 
@@ -28,6 +30,8 @@ const FormSubmissionSchema = new Schema<IFormSubmission>(
         email: { type: String, required: true },
         name: { type: String, required: true },
         responses: { type: [FieldResponseSchema], default: [] },
+        category: { type: String, default: "attendee" },
+        badgePrinted: { type: Boolean, default: false },
         submittedAt: { type: Date, default: Date.now },
     },
 );

@@ -3094,7 +3094,11 @@
       },
       "actions": {
         "edit": "Modifier",
-        "open": "Ouvrir"
+        "open": "Ouvrir",
+        "viewSubmissions": "Voir les inscriptions",
+        "hideSubmissions": "Masquer les inscriptions",
+        "badges": "Badges",
+        "report": "Rapport"
       },
       "empty": {
         "title": "Aucun formulaire pour le moment",

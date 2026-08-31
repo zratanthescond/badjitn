@@ -253,6 +253,147 @@ export async function getFormSubmissions(formId: string) {
     }
 }
 
+// ====== BADGE MANAGEMENT: SUBMISSIONS AS "ATTENDEES"
+//
+// Mirrors lib/actions/badge.actions.ts's getAttendeesByEvent/deleteAttendee,
+// but reads from FormSubmission (custom-form registrants) instead of Order
+// (regular event registrants) so the same badge designer/printer UI can be
+// reused unchanged for both flows.
+
+export async function getFormAttendees(formId: string) {
+    try {
+        await connectToDatabase();
+
+        const submissions = await FormSubmission.find({ form: formId }).sort({ submittedAt: -1 });
+
+        const getResponseVal = (responses: any[], fields: string[]) => {
+            const found = responses.find(
+                (r) =>
+                    fields.some((f) => r.label?.toLowerCase().includes(f)) ||
+                    fields.some((f) => r.fieldId?.toLowerCase().includes(f))
+            );
+            return found ? (Array.isArray(found.value) ? found.value.join(", ") : found.value) : "";
+        };
+
+        const attendees = submissions.map((submission: any) => ({
+            _id: submission._id.toString(),
+            name: submission.name,
+            email: submission.email,
+            photo: "",
+            company: getResponseVal(submission.responses || [], ["company", "société", "societe", "organisation"]),
+            title: getResponseVal(submission.responses || [], ["title", "poste", "fonction", "job"]),
+            category: submission.category || "attendee",
+            badgePrinted: submission.badgePrinted || false,
+            orderId: submission._id.toString(),
+        }));
+
+        return JSON.parse(JSON.stringify(attendees));
+    } catch (error) {
+        console.error("Error fetching form attendees:", error);
+        return [];
+    }
+}
+
+export async function updateFormAttendee(id: string, params: any) {
+    try {
+        await connectToDatabase();
+        const updated = await FormSubmission.findByIdAndUpdate(id, params, { new: true });
+        revalidatePath("/profile");
+        return updated ? JSON.parse(JSON.stringify(updated)) : null;
+    } catch (error) {
+        console.error("Error updating form attendee:", error);
+        return null;
+    }
+}
+
+export async function deleteFormAttendee(id: string) {
+    try {
+        await connectToDatabase();
+        await FormSubmission.findByIdAndDelete(id);
+        revalidatePath("/profile");
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting form attendee:", error);
+        return { success: false, message: (error as Error).message };
+    }
+}
+
+// ====== PDF-STYLE REPORT DATA FOR A FORM
+
+export async function getFormReportData(formId: string) {
+    try {
+        await connectToDatabase();
+
+        const form = await EventForm.findById(formId)
+            .populate({ path: "organisation", model: "Organisation", select: "name logo" });
+        if (!form) {
+            return { success: false, message: "Form not found" };
+        }
+
+        const submissions = await FormSubmission.find({ form: formId }).sort({ submittedAt: 1 });
+
+        // Daily submission trend (last 14 days that actually have data, chronological)
+        const byDay = new Map<string, number>();
+        for (const s of submissions) {
+            const day = new Date(s.submittedAt).toISOString().slice(0, 10);
+            byDay.set(day, (byDay.get(day) || 0) + 1);
+        }
+        const submissionTrend = Array.from(byDay.entries())
+            .sort(([a], [b]) => a.localeCompare(b))
+            .slice(-14)
+            .map(([date, count]) => ({ date, count }));
+
+        // Per-field breakdown for choice-based fields (select/radio/checkbox)
+        const choiceFields = (form.fields || []).filter((f: any) =>
+            ["select", "radio", "checkbox"].includes(f.type)
+        );
+        const fieldBreakdowns = choiceFields.map((field: any) => {
+            const counts: Record<string, number> = {};
+            for (const option of field.options || []) counts[option] = 0;
+            for (const s of submissions) {
+                const response = (s.responses || []).find((r: any) => r.label === field.label);
+                if (!response) continue;
+                const values = Array.isArray(response.value) ? response.value : [response.value];
+                for (const v of values) {
+                    if (v == null || v === "") continue;
+                    counts[v] = (counts[v] || 0) + 1;
+                }
+            }
+            return { label: field.label, counts };
+        });
+
+        const participantsList = submissions
+            .slice()
+            .reverse()
+            .map((s: any) => ({
+                name: s.name,
+                email: s.email,
+                submittedAt: s.submittedAt,
+                responses: (s.responses || []).map((r: any) => ({
+                    label: r.label,
+                    value: Array.isArray(r.value) ? r.value.join(", ") : r.value,
+                })),
+            }));
+
+        return {
+            success: true,
+            data: {
+                form: JSON.parse(JSON.stringify(form)),
+                stats: {
+                    totalSubmissions: submissions.length,
+                    invitedCount: (form.invitedEmails || []).length,
+                    submissionTrend,
+                    fieldBreakdowns,
+                    participantsList,
+                },
+            },
+        };
+    } catch (error) {
+        console.error("Error building form report:", error);
+        return { success: false, message: (error as Error).message };
+    }
+}
+
 // ====== SEND INVITATIONS VIA EMAIL
 
 export async function sendFormInvitations(params: SendInvitationsParams) {
