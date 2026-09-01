@@ -1777,7 +1777,10 @@
   "eventFormSubmissions": {
     "submissionsCount": "{count, plural, one {تسجيل واحد} other {# تسجيلات}}",
     "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني...",
-    "exportCsv": "تصدير CSV",
+    "exportCsv": "تصدير إلى Excel",
+    "exporting": "جارٍ التصدير...",
+    "exportErrorTitle": "خطأ في التصدير",
+    "exportErrorDescription": "فشل إنشاء ملف Excel. يرجى المحاولة مرة أخرى.",
     "noSubmissionsTitle": "لا توجد تسجيلات بعد",
     "noSubmissionsDescription": "ستظهر التسجيلات هنا بمجرد أن يملأ المشاركون النموذج.",
     "noSearchResults": "لا توجد تسجيلات مطابقة لبحثك.",

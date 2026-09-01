@@ -1777,7 +1777,10 @@
   "eventFormSubmissions": {
     "submissionsCount": "{count, plural, one {# inscription} other {# inscriptions}}",
     "searchPlaceholder": "Rechercher par nom ou email...",
-    "exportCsv": "Exporter en CSV",
+    "exportCsv": "Exporter en Excel",
+    "exporting": "Export en cours...",
+    "exportErrorTitle": "Erreur d'export",
+    "exportErrorDescription": "Échec de la génération du fichier Excel. Veuillez réessayer.",
     "noSubmissionsTitle": "Aucune inscription pour le moment",
     "noSubmissionsDescription": "Les inscriptions apparaîtront ici dès que des participants rempliront le formulaire.",
     "noSearchResults": "Aucune inscription ne correspond à votre recherche.",

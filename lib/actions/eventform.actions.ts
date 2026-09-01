@@ -493,7 +493,8 @@ export async function getEventFormById(formId: string) {
 
         const form = await EventForm.findById(formId)
             .populate({ path: "event", select: "title imageUrl startDateTime endDateTime location" })
-            .populate({ path: "creator", model: "User", select: "firstName lastName photo" });
+            .populate({ path: "creator", model: "User", select: "firstName lastName photo" })
+            .populate({ path: "organisation", model: "Organisation", select: "name logo" });
 
         if (!form) {
             return { success: false, message: "Form not found" };

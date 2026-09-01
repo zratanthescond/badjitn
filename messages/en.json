@@ -1777,7 +1777,10 @@
   "eventFormSubmissions": {
     "submissionsCount": "{count, plural, one {# submission} other {# submissions}}",
     "searchPlaceholder": "Search by name or email...",
-    "exportCsv": "Export CSV",
+    "exportCsv": "Export Excel",
+    "exporting": "Exporting...",
+    "exportErrorTitle": "Export error",
+    "exportErrorDescription": "Failed to generate the Excel file. Please try again.",
     "noSubmissionsTitle": "No submissions yet",
     "noSubmissionsDescription": "Submissions will appear here once attendees fill out the form.",
     "noSearchResults": "No submissions match your search.",

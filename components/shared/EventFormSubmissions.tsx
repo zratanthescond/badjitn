@@ -21,7 +21,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getFormSubmissions } from "@/lib/actions/eventform.actions";
+import { getFormSubmissions, getEventFormById } from "@/lib/actions/eventform.actions";
+import { toast } from "@/hooks/use-toast";
 
 interface Submission {
     _id: string;
@@ -44,6 +45,7 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
     const t = useTranslations("eventFormSubmissions");
     const [submissions, setSubmissions] = useState<Submission[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isExporting, setIsExporting] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedSubmission, setExpandedSubmission] = useState<string | null>(null);
 
@@ -69,39 +71,214 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
             s.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const exportCSV = () => {
+    // Styled the same way as the event registrations export (order-administration.tsx):
+    // logo + "BADGI - EXPORT INSCRIPTIONS" banner, a metadata block (rows 3-8), then a
+    // blue-header data table with autofilter, frozen header row and zebra striping.
+    const exportXLSX = async () => {
         if (submissions.length === 0) return;
 
-        // Collect all unique labels
-        const allLabels = new Set<string>();
-        submissions.forEach((s) => s.responses.forEach((r) => allLabels.add(r.label)));
-        const labelArr = Array.from(allLabels);
+        setIsExporting(true);
+        try {
+            const formResult = await getEventFormById(formId);
+            const form = formResult.success ? (formResult.data as any) : null;
 
-        // Build CSV
-        const headers = ["Name", "Email", "Submitted At", ...labelArr];
-        const rows = submissions.map((s) => {
-            const responseMap: Record<string, string> = {};
-            s.responses.forEach((r) => {
-                responseMap[r.label] = Array.isArray(r.value) ? r.value.join(", ") : r.value;
+            const ensureUniqueHeader = (usedHeaders: Set<string>, header: string) => {
+                const normalizedHeader = (header || "").trim() || "Colonne";
+                if (!usedHeaders.has(normalizedHeader)) {
+                    usedHeaders.add(normalizedHeader);
+                    return normalizedHeader;
+                }
+                let index = 2;
+                while (usedHeaders.has(`${normalizedHeader} (${index})`)) index += 1;
+                const uniqueHeader = `${normalizedHeader} (${index})`;
+                usedHeaders.add(uniqueHeader);
+                return uniqueHeader;
+            };
+
+            const baseHeaders = ["Nom complet", "Email", "Date d'inscription"];
+            const usedHeaders = new Set<string>(baseHeaders);
+            const labelToHeader = new Map<string, string>();
+            submissions.forEach((s) =>
+                s.responses.forEach((r) => {
+                    if (!r.label || labelToHeader.has(r.label)) return;
+                    labelToHeader.set(r.label, ensureUniqueHeader(usedHeaders, r.label));
+                })
+            );
+
+            const headers = [...baseHeaders, ...Array.from(labelToHeader.values())];
+            const rows = submissions.map((s) => {
+                const responseMap = new Map<string, string>();
+                s.responses.forEach((r) => {
+                    responseMap.set(r.label, Array.isArray(r.value) ? r.value.join(", ") : r.value || "");
+                });
+                const row: (string | number)[] = [s.name, s.email, new Date(s.submittedAt).toLocaleString()];
+                labelToHeader.forEach((_, label) => row.push(responseMap.get(label) || ""));
+                return row;
             });
-            return [
-                s.name,
-                s.email,
-                new Date(s.submittedAt).toLocaleString(),
-                ...labelArr.map((label) => responseMap[label] || ""),
-            ];
-        });
 
-        const csvContent = [
-            headers.join(","),
-            ...rows.map((r) => r.map((v) => `"${v}"`).join(",")),
-        ].join("\n");
+            const eventMeta = {
+                title: form?.title || formTitle,
+                organisation: form?.organisation?.name || "-",
+                createdAt: form?.createdAt ? new Date(form.createdAt).toLocaleString() : "-",
+                link:
+                    typeof window !== "undefined" && form?.slug
+                        ? `${window.location.origin}/forms/${form.slug}`
+                        : "-",
+                totalSubmissions: submissions.length,
+                exportDate: new Date().toLocaleString(),
+            };
 
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${formTitle.replace(/\s+/g, "_")}_submissions.csv`;
-        link.click();
+            const exceljsModule = await import("exceljs");
+            const ExcelJS: any = (exceljsModule as any).default ?? exceljsModule;
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Submissions");
+
+            const totalColumns = Math.max(headers.length, 1);
+            const headerRowNumber = 10;
+            const dataStartRowNumber = headerRowNumber + 1;
+            const platformLogoUrl = `${(process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net").replace(/\/$/, "")}/assets/images/logoDark.png`;
+
+            if (totalColumns >= 2) {
+                worksheet.getCell("B1").value = "BADGI - EXPORT INSCRIPTIONS";
+                worksheet.mergeCells(1, 2, 1, totalColumns);
+                worksheet.mergeCells(3, 2, 3, totalColumns);
+                worksheet.mergeCells(4, 2, 4, totalColumns);
+                worksheet.mergeCells(5, 2, 5, totalColumns);
+                worksheet.mergeCells(6, 2, 6, totalColumns);
+                worksheet.mergeCells(7, 2, 7, totalColumns);
+                worksheet.mergeCells(8, 2, 8, totalColumns);
+            } else {
+                worksheet.getCell("A1").value = "BADGI - EXPORT INSCRIPTIONS";
+            }
+
+            worksheet.getCell("A3").value = "Formulaire";
+            worksheet.getCell("B3").value = eventMeta.title || "-";
+            worksheet.getCell("A4").value = "Organisation";
+            worksheet.getCell("B4").value = eventMeta.organisation || "-";
+            worksheet.getCell("A5").value = "Créé le";
+            worksheet.getCell("B5").value = eventMeta.createdAt || "-";
+            worksheet.getCell("A6").value = "Lien";
+            worksheet.getCell("B6").value = eventMeta.link || "-";
+            worksheet.getCell("A7").value = "Total inscriptions";
+            worksheet.getCell("B7").value = eventMeta.totalSubmissions;
+            worksheet.getCell("A8").value = "Exporté le";
+            worksheet.getCell("B8").value = eventMeta.exportDate || "-";
+
+            try {
+                const logoResp = await fetch(platformLogoUrl);
+                if (logoResp.ok) {
+                    const logoBlob = await logoResp.blob();
+                    const logoBase64: string = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(String(reader.result || ""));
+                        reader.readAsDataURL(logoBlob);
+                    });
+                    if (logoBase64.startsWith("data:image")) {
+                        const logoImageId = workbook.addImage({ base64: logoBase64, extension: "png" });
+                        worksheet.addImage(logoImageId, {
+                            tl: { col: 0, row: 0 },
+                            ext: { width: 165, height: 50 },
+                        });
+                    }
+                }
+            } catch (_logoError) {
+                // Non-blocking: continue export even if the logo can't be loaded
+            }
+
+            worksheet.getRow(headerRowNumber).values = headers;
+            rows.forEach((row, idx) => {
+                worksheet.getRow(dataStartRowNumber + idx).values = row as any;
+            });
+
+            for (let c = 1; c <= totalColumns; c += 1) {
+                const header = String(headers[c - 1] || "");
+                const values = rows.map((r) => String(r?.[c - 1] ?? ""));
+                const maxLen = [header, ...values].reduce((max, v) => Math.max(max, v.length), 8);
+                worksheet.getColumn(c).width = Math.min(48, Math.max(12, maxLen + 2));
+            }
+
+            worksheet.views = [{ state: "frozen", ySplit: headerRowNumber }];
+            worksheet.autoFilter = {
+                from: { row: headerRowNumber, column: 1 },
+                to: { row: headerRowNumber, column: totalColumns },
+            };
+
+            const borderThin = {
+                top: { style: "thin", color: { argb: "FFD1D5DB" } },
+                bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+                left: { style: "thin", color: { argb: "FFD1D5DB" } },
+                right: { style: "thin", color: { argb: "FFD1D5DB" } },
+            };
+
+            const titleCell = worksheet.getCell(totalColumns >= 2 ? "B1" : "A1");
+            titleCell.font = { bold: true, size: 14, color: { argb: "FF0F172A" } };
+            titleCell.alignment = { horizontal: "left", vertical: "middle" };
+            titleCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFDCEBFF" } };
+            titleCell.border = borderThin as any;
+            worksheet.getRow(1).height = 36;
+
+            for (let r = 3; r <= 8; r += 1) {
+                const labelCell = worksheet.getCell(r, 1);
+                const valueCell = worksheet.getCell(r, 2);
+                labelCell.font = { bold: true, color: { argb: "FF1F2937" } };
+                labelCell.alignment = { horizontal: "left", vertical: "middle" };
+                labelCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFE5E7EB" } };
+                labelCell.border = borderThin as any;
+
+                valueCell.alignment = { horizontal: "left", vertical: "middle" };
+                valueCell.border = borderThin as any;
+                worksheet.getRow(r).height = 22;
+            }
+
+            const headerRow = worksheet.getRow(headerRowNumber);
+            headerRow.height = 24;
+            headerRow.eachCell((cell: any) => {
+                cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+                cell.alignment = { horizontal: "center", vertical: "middle" };
+                cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF2563EB" } };
+                cell.border = borderThin as any;
+            });
+
+            rows.forEach((_row, rowIndex) => {
+                const rowNumber = dataStartRowNumber + rowIndex;
+                const excelRow = worksheet.getRow(rowNumber);
+                const isZebra = rowIndex % 2 === 1;
+                excelRow.height = 20;
+                for (let c = 1; c <= totalColumns; c += 1) {
+                    const cell = excelRow.getCell(c);
+                    cell.border = borderThin as any;
+                    cell.alignment = { horizontal: "left", vertical: "middle" } as any;
+                    if (isZebra) {
+                        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFF8FAFC" } };
+                    }
+                }
+            });
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
+
+            const safeTitle = String(eventMeta.title || "form")
+                .trim()
+                .replace(/[^a-zA-Z0-9-_ ]/g, "")
+                .replace(/\s+/g, "_");
+            const safeDate = new Date().toISOString().slice(0, 10);
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${safeTitle || "form"}_${safeDate}.xlsx`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("[EventFormSubmissions] Export error:", err);
+            toast({ title: t("exportErrorTitle"), description: t("exportErrorDescription"), variant: "destructive" });
+        } finally {
+            setIsExporting(false);
+        }
     };
 
     if (isLoading) {
@@ -133,11 +310,16 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
                 {submissions.length > 0 && (
                     <Button
                         variant="outline"
-                        onClick={exportCSV}
+                        onClick={exportXLSX}
+                        disabled={isExporting}
                         className="rounded-full"
                     >
-                        <Download className="h-4 w-4 mr-2" />
-                        {t("exportCsv")}
+                        {isExporting ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                            <Download className="h-4 w-4 mr-2" />
+                        )}
+                        {isExporting ? t("exporting") : t("exportCsv")}
                     </Button>
                 )}
             </div>
