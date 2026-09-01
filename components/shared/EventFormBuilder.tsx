@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useTranslations } from "next-intl";
 import {
     Plus,
     Trash2,
@@ -58,16 +59,16 @@ interface FormField {
     isEditing: boolean;
 }
 
-const FIELD_TYPES: { type: FieldType; label: string; icon: any }[] = [
-    { type: "text", label: "Text", icon: Type },
-    { type: "email", label: "Email", icon: Mail },
-    { type: "number", label: "Number", icon: Hash },
-    { type: "phone", label: "Phone", icon: Phone },
-    { type: "textarea", label: "Long Text", icon: AlignLeft },
-    { type: "select", label: "Dropdown", icon: List },
-    { type: "radio", label: "Radio", icon: CircleDot },
-    { type: "checkbox", label: "Checkbox", icon: CheckSquare },
-    { type: "date", label: "Date", icon: Calendar },
+const FIELD_TYPES: { type: FieldType; icon: any }[] = [
+    { type: "text", icon: Type },
+    { type: "email", icon: Mail },
+    { type: "number", icon: Hash },
+    { type: "phone", icon: Phone },
+    { type: "textarea", icon: AlignLeft },
+    { type: "select", icon: List },
+    { type: "radio", icon: CircleDot },
+    { type: "checkbox", icon: CheckSquare },
+    { type: "date", icon: Calendar },
 ];
 
 interface Organisation {
@@ -113,6 +114,7 @@ export default function EventFormBuilder({
     onFormCreated,
     onFormUpdated,
 }: EventFormBuilderProps) {
+    const t = useTranslations("eventFormBuilder");
     const isEditMode = !!editForm;
 
     const [formTitle, setFormTitle] = useState(editForm?.title || "");
@@ -140,6 +142,8 @@ export default function EventFormBuilder({
     const [emailList, setEmailList] = useState<string[]>([]);
     const [isSending, setIsSending] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const fieldTypeLabel = (type: FieldType) => t(`fieldTypes.${type}`);
 
     const generateId = () => Math.random().toString(36).slice(2, 11);
 
@@ -181,20 +185,20 @@ export default function EventFormBuilder({
 
     const handleSave = async () => {
         if (!formTitle.trim()) {
-            toast({ title: "Error", description: "Please enter a form title", variant: "destructive" });
+            toast({ title: t("toasts.errorTitle"), description: t("errors.titleRequired"), variant: "destructive" });
             return;
         }
         if (!selectedOrgId) {
-            toast({ title: "Error", description: "Please select an organisation", variant: "destructive" });
+            toast({ title: t("toasts.errorTitle"), description: t("errors.orgRequired"), variant: "destructive" });
             return;
         }
         if (fields.length === 0) {
-            toast({ title: "Error", description: "Please add at least one field", variant: "destructive" });
+            toast({ title: t("toasts.errorTitle"), description: t("errors.fieldsRequired"), variant: "destructive" });
             return;
         }
         const emptyLabels = fields.filter((f) => !f.label.trim());
         if (emptyLabels.length > 0) {
-            toast({ title: "Error", description: "All fields must have a label", variant: "destructive" });
+            toast({ title: t("toasts.errorTitle"), description: t("errors.labelsRequired"), variant: "destructive" });
             return;
         }
 
@@ -218,10 +222,10 @@ export default function EventFormBuilder({
                 });
 
                 if (result.success) {
-                    toast({ title: "Updated!", description: "Form updated successfully" });
+                    toast({ title: t("toasts.updatedTitle"), description: t("toasts.updatedDescription") });
                     onFormUpdated?.();
                 } else {
-                    toast({ title: "Error", description: result.message || "Unknown error", variant: "destructive" });
+                    toast({ title: t("toasts.errorTitle"), description: result.message || t("toasts.unknownError"), variant: "destructive" });
                 }
             } else {
                 // Create new form
@@ -244,15 +248,15 @@ export default function EventFormBuilder({
                 if (result.success) {
                     setCreatedFormId(result.data._id);
                     setCreatedFormSlug(result.data.slug);
-                    toast({ title: "Success!", description: "Form created successfully" });
+                    toast({ title: t("toasts.createdTitle"), description: t("toasts.createdDescription") });
                     onFormCreated?.(result.data.slug);
                 } else {
-                    toast({ title: "Error", description: result.message || "Unknown error", variant: "destructive" });
+                    toast({ title: t("toasts.errorTitle"), description: result.message || t("toasts.unknownError"), variant: "destructive" });
                 }
             }
         } catch (err) {
             console.error("[EventFormBuilder] Error:", err);
-            toast({ title: "Error", description: "Failed to save form: " + (err as Error).message, variant: "destructive" });
+            toast({ title: t("toasts.errorTitle"), description: t("errors.saveFailed", { error: (err as Error).message }), variant: "destructive" });
         } finally {
             setIsSaving(false);
         }
@@ -268,7 +272,7 @@ export default function EventFormBuilder({
         const unique = newEmails.filter((e) => !emailList.includes(e));
         if (unique.length > 0) {
             setEmailList((prev) => [...prev, ...unique]);
-            toast({ title: "Added!", description: `${unique.length} email(s) added to the list` });
+            toast({ title: t("toasts.updatedTitle"), description: t("toasts.emailsAdded", { count: unique.length }) });
         }
         setEmailInput("");
     };
@@ -296,9 +300,9 @@ export default function EventFormBuilder({
                 const unique = emails.filter((e) => !emailList.includes(e));
                 if (unique.length > 0) {
                     setEmailList((prev) => [...prev, ...unique]);
-                    toast({ title: "File Imported!", description: `${unique.length} email(s) found in ${file.name}` });
+                    toast({ title: t("toasts.fileImportedTitle"), description: t("toasts.fileImportedDescription", { count: unique.length, file: file.name }) });
                 } else {
-                    toast({ title: "No new emails", description: "No valid new emails found in the file", variant: "destructive" });
+                    toast({ title: t("toasts.noNewEmailsTitle"), description: t("toasts.noNewEmailsDescription"), variant: "destructive" });
                 }
             } else if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
                 // Parse Excel using xlsx library (loaded dynamically)
@@ -326,16 +330,16 @@ export default function EventFormBuilder({
                 const unique = allEmails.filter((e) => !emailList.includes(e));
                 if (unique.length > 0) {
                     setEmailList((prev) => [...prev, ...unique]);
-                    toast({ title: "Excel Imported!", description: `${unique.length} email(s) found in ${file.name}` });
+                    toast({ title: t("toasts.excelImportedTitle"), description: t("toasts.excelImportedDescription", { count: unique.length, file: file.name }) });
                 } else {
-                    toast({ title: "No new emails", description: "No valid new emails found in the file", variant: "destructive" });
+                    toast({ title: t("toasts.noNewEmailsTitle"), description: t("toasts.noNewEmailsDescription"), variant: "destructive" });
                 }
             } else {
-                toast({ title: "Unsupported file", description: "Please upload a .csv, .txt, or .xlsx file", variant: "destructive" });
+                toast({ title: t("toasts.unsupportedFileTitle"), description: t("toasts.unsupportedFileDescription"), variant: "destructive" });
             }
         } catch (err) {
             console.error("File parse error:", err);
-            toast({ title: "Error", description: "Failed to parse file. Please check the format.", variant: "destructive" });
+            toast({ title: t("toasts.errorTitle"), description: t("toasts.fileParseErrorDescription"), variant: "destructive" });
         }
 
         // Reset file input
@@ -355,14 +359,14 @@ export default function EventFormBuilder({
             });
 
             if (result.success) {
-                toast({ title: "Invitations Sent!", description: result.message });
+                toast({ title: t("toasts.invitationsSentTitle"), description: result.message });
                 setEmailList([]);
                 setEmailInput("");
             } else {
-                toast({ title: "Error", description: result.message, variant: "destructive" });
+                toast({ title: t("toasts.errorTitle"), description: result.message, variant: "destructive" });
             }
         } catch (err) {
-            toast({ title: "Error", description: "Failed to send invitations", variant: "destructive" });
+            toast({ title: t("toasts.sendFailedTitle"), description: t("toasts.sendFailedDescription"), variant: "destructive" });
         } finally {
             setIsSending(false);
         }
@@ -390,10 +394,10 @@ export default function EventFormBuilder({
                     </div>
                     <div>
                         <h2 className="text-xl font-bold">
-                            {isEditMode ? "Edit Custom Event Form" : "Create Custom Event Form"}
+                            {isEditMode ? t("editTitle") : t("createTitle")}
                         </h2>
                         <p className="text-sm text-muted-foreground">
-                            {isEditMode ? "Modify your form fields and settings" : "Build your registration form with custom fields"}
+                            {isEditMode ? t("editSubtitle") : t("createSubtitle")}
                         </p>
                     </div>
                 </div>
@@ -403,7 +407,7 @@ export default function EventFormBuilder({
                     <div>
                         <Label className="text-sm font-medium flex items-center gap-1.5">
                             <Building2 className="h-3.5 w-3.5" />
-                            Organisation *
+                            {t("organisationLabel")}
                         </Label>
                         {organisations.length > 0 ? (
                             <Select
@@ -412,7 +416,7 @@ export default function EventFormBuilder({
                                 disabled={isEditMode}
                             >
                                 <SelectTrigger className="mt-1.5 bg-white/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
-                                    <SelectValue placeholder="Select an organisation..." />
+                                    <SelectValue placeholder={t("organisationPlaceholder")} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {organisations.map((org) => (
@@ -431,37 +435,37 @@ export default function EventFormBuilder({
                             </Select>
                         ) : (
                             <p className="text-sm text-muted-foreground mt-1.5 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200/30 dark:border-amber-700/30">
-                                You need to create an organisation first before creating forms.
+                                {t("organisationMissing")}
                             </p>
                         )}
                     </div>
 
                     <div>
-                        <Label className="text-sm font-medium">Form Title *</Label>
+                        <Label className="text-sm font-medium">{t("formTitleLabel")}</Label>
                         <Input
                             value={formTitle}
                             onChange={(e) => setFormTitle(e.target.value)}
                             className="mt-1.5 bg-white/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
-                            placeholder="e.g. Workshop Registration, Conference Sign-up..."
+                            placeholder={t("formTitlePlaceholder")}
                         />
                     </div>
                     <div>
-                        <Label className="text-sm font-medium">Description (optional)</Label>
+                        <Label className="text-sm font-medium">{t("descriptionLabel")}</Label>
                         <Textarea
                             value={formDescription}
                             onChange={(e) => setFormDescription(e.target.value)}
                             className="mt-1.5 bg-white/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 min-h-[80px]"
-                            placeholder="Describe your event and what information you need from attendees..."
+                            placeholder={t("descriptionPlaceholder")}
                         />
                     </div>
                     <div>
-                        <Label className="text-sm font-medium">Cover Photo (optional)</Label>
+                        <Label className="text-sm font-medium">{t("coverPhotoLabel")}</Label>
                         <div className="mt-1.5 bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
                             <ImageUploader
                                 value={coverImage}
                                 onChange={setCoverImage}
                                 aspectRatio="wide"
-                                placeholder="Upload a cover photo for your custom event form..."
+                                placeholder={t("coverPhotoPlaceholder")}
                             />
                         </div>
                     </div>
@@ -471,10 +475,10 @@ export default function EventFormBuilder({
             {/* Add Field Buttons */}
             <div className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-2xl p-6">
                 <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">
-                    Add Fields
+                    {t("addFieldsTitle")}
                 </h3>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                    {FIELD_TYPES.map(({ type, label, icon: Icon }) => (
+                    {FIELD_TYPES.map(({ type, icon: Icon }) => (
                         <button
                             key={type}
                             type="button"
@@ -483,7 +487,7 @@ export default function EventFormBuilder({
                         >
                             <Icon className="h-4 w-4 text-muted-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
                             <span className="text-xs font-medium text-muted-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                {label}
+                                {fieldTypeLabel(type)}
                             </span>
                         </button>
                     ))}
@@ -494,7 +498,7 @@ export default function EventFormBuilder({
             {fields.length > 0 && (
                 <div className="space-y-3">
                     <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground px-1">
-                        Form Fields ({fields.length})
+                        {t("formFieldsCount", { count: fields.length })}
                     </h3>
                     {fields.map((field, index) => (
                         <Card
@@ -528,27 +532,27 @@ export default function EventFormBuilder({
                                     <div className="flex-1 space-y-3">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             <Badge variant="secondary" className="text-xs">
-                                                {FIELD_TYPES.find((t) => t.type === field.type)?.label || field.type}
+                                                {fieldTypeLabel(field.type)}
                                             </Badge>
                                             <span className="text-xs text-muted-foreground">#{index + 1}</span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
-                                                <Label className="text-xs text-muted-foreground">Label *</Label>
+                                                <Label className="text-xs text-muted-foreground">{t("labelField")}</Label>
                                                 <Input
                                                     value={field.label}
                                                     onChange={(e) => updateField(field.id, "label", e.target.value)}
-                                                    placeholder="Field label"
+                                                    placeholder={t("labelPlaceholder")}
                                                     className="mt-1 h-9 text-sm bg-white/50 dark:bg-slate-800/50"
                                                 />
                                             </div>
                                             <div>
-                                                <Label className="text-xs text-muted-foreground">Placeholder</Label>
+                                                <Label className="text-xs text-muted-foreground">{t("placeholderField")}</Label>
                                                 <Input
                                                     value={field.placeholder}
                                                     onChange={(e) => updateField(field.id, "placeholder", e.target.value)}
-                                                    placeholder="Placeholder text"
+                                                    placeholder={t("placeholderPlaceholder")}
                                                     className="mt-1 h-9 text-sm bg-white/50 dark:bg-slate-800/50"
                                                 />
                                             </div>
@@ -558,7 +562,7 @@ export default function EventFormBuilder({
                                         {(field.type === "select" || field.type === "radio" || field.type === "checkbox") && (
                                             <div>
                                                 <Label className="text-xs text-muted-foreground">
-                                                    Options (comma separated)
+                                                    {t("optionsLabel")}
                                                 </Label>
                                                 <Input
                                                     value={field.options.join(", ")}
@@ -569,7 +573,7 @@ export default function EventFormBuilder({
                                                             e.target.value.split(",").map((o) => o.trim())
                                                         )
                                                     }
-                                                    placeholder="Option 1, Option 2, Option 3"
+                                                    placeholder={t("optionsPlaceholder")}
                                                     className="mt-1 h-9 text-sm bg-white/50 dark:bg-slate-800/50"
                                                 />
                                             </div>
@@ -582,7 +586,7 @@ export default function EventFormBuilder({
                                                 onCheckedChange={(checked) => updateField(field.id, "required", checked)}
                                                 className="scale-75"
                                             />
-                                            <Label className="text-xs text-muted-foreground">Required field</Label>
+                                            <Label className="text-xs text-muted-foreground">{t("requiredFieldLabel")}</Label>
                                         </div>
                                     </div>
 
@@ -607,7 +611,7 @@ export default function EventFormBuilder({
                     <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
                             <Eye className="h-4 w-4 text-indigo-500" />
-                            Form Preview
+                            {t("previewTitle")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -617,7 +621,7 @@ export default function EventFormBuilder({
                         {fields.map((field) => (
                             <div key={field.id} className="space-y-1.5">
                                 <Label className="text-sm">
-                                    {field.label || "Untitled Field"}
+                                    {field.label || t("untitledField")}
                                     {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </Label>
                                 {field.type === "textarea" ? (
@@ -625,7 +629,7 @@ export default function EventFormBuilder({
                                 ) : field.type === "select" ? (
                                     <Select disabled>
                                         <SelectTrigger className="bg-white/50 dark:bg-slate-800/50">
-                                            <SelectValue placeholder="Select an option" />
+                                            <SelectValue placeholder={t("selectOptionPlaceholder")} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {field.options.map((opt, i) => (
@@ -676,12 +680,12 @@ export default function EventFormBuilder({
                         disabled={fields.length === 0}
                     >
                         <Eye className="h-4 w-4 mr-2" />
-                        {showPreview ? "Hide Preview" : "Preview"}
+                        {showPreview ? t("hidePreview") : t("showPreview")}
                     </Button>
                     <Button
                         type="button"
                         onClick={handleSave}
-                        disabled={isSaving || fields.length === 0 || !selectedOrgId}
+                        disabled={isSaving}
                         className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 rounded-full"
                     >
                         {isSaving ? (
@@ -689,7 +693,7 @@ export default function EventFormBuilder({
                         ) : (
                             <Save className="h-4 w-4 mr-2" />
                         )}
-                        {isSaving ? "Saving..." : isEditMode ? "Update Form" : "Create Form"}
+                        {isSaving ? t("saving") : isEditMode ? t("updateForm") : t("createForm")}
                     </Button>
                 </div>
             )}
@@ -700,7 +704,7 @@ export default function EventFormBuilder({
                     {/* Form Link */}
                     <div className="glass bg-gradient-to-r from-green-50/70 to-emerald-50/70 dark:from-green-950/20 dark:to-emerald-950/20 backdrop-blur-md border border-green-200/30 dark:border-green-700/30 rounded-2xl p-6">
                         <h3 className="font-semibold text-green-700 dark:text-green-400 flex items-center gap-2 mb-3">
-                            {isEditMode ? "📋 Form Link" : "✅ Form Created Successfully!"}
+                            {isEditMode ? t("formLinkTitle") : t("formCreatedTitle")}
                         </h3>
                         <div className="flex items-center gap-2">
                             <Input
@@ -714,10 +718,10 @@ export default function EventFormBuilder({
                                 className="shrink-0"
                                 onClick={() => {
                                     navigator.clipboard.writeText(formUrl);
-                                    toast({ title: "Copied!", description: "Form link copied to clipboard" });
+                                    toast({ title: t("copiedTitle"), description: t("copiedDescription") });
                                 }}
                             >
-                                Copy
+                                {t("copyButton")}
                             </Button>
                         </div>
                     </div>
@@ -726,22 +730,22 @@ export default function EventFormBuilder({
                     <div className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-2xl p-6">
                         <h3 className="font-semibold mb-3 flex items-center gap-2">
                             <Send className="h-4 w-4 text-indigo-500" />
-                            Send Invitations
+                            {t("sendInvitationsTitle")}
                         </h3>
                         <p className="text-sm text-muted-foreground mb-4">
-                            Enter email addresses manually or upload a CSV/Excel file containing the attendee email list.
+                            {t("sendInvitationsDescription")}
                         </p>
 
                         <div className="space-y-3">
                             {/* Manual email input */}
                             <div>
                                 <Label className="text-xs text-muted-foreground">
-                                    Email Addresses (comma, semicolon, or newline separated)
+                                    {t("emailsLabel")}
                                 </Label>
                                 <Textarea
                                     value={emailInput}
                                     onChange={(e) => setEmailInput(e.target.value)}
-                                    placeholder="email1@example.com, email2@example.com..."
+                                    placeholder={t("emailsPlaceholder")}
                                     className="mt-1.5 bg-white/50 dark:bg-slate-800/50 min-h-[80px]"
                                 />
                             </div>
@@ -755,7 +759,7 @@ export default function EventFormBuilder({
                                     disabled={!emailInput.trim()}
                                 >
                                     <Plus className="h-4 w-4 mr-2" />
-                                    Add Emails
+                                    {t("addEmailsButton")}
                                 </Button>
 
                                 {/* File upload */}
@@ -774,10 +778,10 @@ export default function EventFormBuilder({
                                     onClick={() => fileInputRef.current?.click()}
                                 >
                                     <Upload className="h-4 w-4 mr-2" />
-                                    Import from File
+                                    {t("importFromFile")}
                                 </Button>
                                 <span className="text-xs text-muted-foreground">
-                                    Supports .csv, .txt, .xlsx
+                                    {t("supportsFormats")}
                                 </span>
                             </div>
 
@@ -785,7 +789,7 @@ export default function EventFormBuilder({
                             {emailList.length > 0 && (
                                 <div className="space-y-2">
                                     <p className="text-sm font-medium">
-                                        Recipients ({emailList.length})
+                                        {t("recipientsCount", { count: emailList.length })}
                                     </p>
                                     <div className="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
                                         {emailList.map((email) => (
@@ -817,7 +821,7 @@ export default function EventFormBuilder({
                                         ) : (
                                             <Send className="h-4 w-4 mr-2" />
                                         )}
-                                        {isSending ? "Sending..." : `Send to ${emailList.length} recipient${emailList.length > 1 ? "s" : ""}`}
+                                        {isSending ? t("sending") : t("sendToRecipients", { count: emailList.length })}
                                     </Button>
                                 </div>
                             )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import {
     FileText,
     MapPin,
@@ -72,6 +73,8 @@ interface PublicEventFormProps {
 }
 
 export default function PublicEventForm({ formData }: PublicEventFormProps) {
+    const t = useTranslations("publicEventForm");
+    const locale = useLocale();
     const [responses, setResponses] = useState<Record<string, string | string[]>>({});
     const [attendeeName, setAttendeeName] = useState("");
     const [attendeeEmail, setAttendeeEmail] = useState("");
@@ -102,11 +105,11 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
         setError("");
 
         if (!attendeeName.trim()) {
-            setError("Please enter your name");
+            setError(t("nameRequired"));
             return;
         }
         if (!attendeeEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(attendeeEmail)) {
-            setError("Please enter a valid email address");
+            setError(t("emailRequired"));
             return;
         }
 
@@ -115,7 +118,7 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
             if (field.required) {
                 const val = responses[field._id];
                 if (!val || (Array.isArray(val) && val.length === 0) || (typeof val === "string" && !val.trim())) {
-                    setError(`"${field.label}" is required`);
+                    setError(t("fieldRequired", { field: field.label }));
                     return;
                 }
             }
@@ -138,17 +141,17 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
             if (result.success) {
                 setSubmitted(true);
             } else {
-                setError(result.message || "Something went wrong");
+                setError(result.message || t("submitErrorGeneric"));
             }
         } catch (err) {
-            setError("Failed to submit. Please try again.");
+            setError(t("submitFailed"));
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const eventDate = formData.event?.startDateTime
-        ? new Date(formData.event.startDateTime).toLocaleDateString("en-US", {
+        ? new Date(formData.event.startDateTime).toLocaleDateString(locale, {
             weekday: "long",
             year: "numeric",
             month: "long",
@@ -165,13 +168,19 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/25">
                             <CheckCircle className="h-10 w-10 text-white" />
                         </div>
-                        <h2 className="text-2xl font-bold mb-2">Registration Complete!</h2>
+                        <h2 className="text-2xl font-bold mb-2">{t("registrationCompleteTitle")}</h2>
                         <p className="text-muted-foreground mb-4">
-                            Thank you, <strong>{attendeeName}</strong>! Your registration for{" "}
-                            <strong>{formData.title}</strong> has been submitted successfully.
+                            {t.rich("thankYou", {
+                                b: (chunks) => <strong>{chunks}</strong>,
+                                name: attendeeName,
+                                title: formData.title,
+                            })}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                            A confirmation will be sent to <strong>{attendeeEmail}</strong>.
+                            {t.rich("confirmationSent", {
+                                b: (chunks) => <strong>{chunks}</strong>,
+                                email: attendeeEmail,
+                            })}
                         </p>
                     </CardContent>
                 </Card>
@@ -188,9 +197,9 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-orange-500/25">
                             <AlertCircle className="h-10 w-10 text-white" />
                         </div>
-                        <h2 className="text-2xl font-bold mb-2">Form Closed</h2>
+                        <h2 className="text-2xl font-bold mb-2">{t("formClosedTitle")}</h2>
                         <p className="text-muted-foreground">
-                            This registration form is no longer accepting responses.
+                            {t("formClosedDescription")}
                         </p>
                     </CardContent>
                 </Card>
@@ -280,7 +289,7 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                                     <Building2 className="h-3.5 w-3.5 text-indigo-500" />
                                     {formData.organisation.name}
                                 </p>
-                                <p className="text-xs text-muted-foreground">Event Organizer</p>
+                                <p className="text-xs text-muted-foreground">{t("eventOrganizer")}</p>
                             </div>
                         </>
                     ) : (
@@ -296,7 +305,7 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                                 <p className="text-sm font-medium">
                                     {formData.creator?.firstName} {formData.creator?.lastName}
                                 </p>
-                                <p className="text-xs text-muted-foreground">Event Organizer</p>
+                                <p className="text-xs text-muted-foreground">{t("eventOrganizer")}</p>
                             </div>
                         </>
                     )}
@@ -322,19 +331,19 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <Label className="text-sm font-medium">
-                                        Full Name <span className="text-red-500">*</span>
+                                        {t("fullName")} <span className="text-red-500">*</span>
                                     </Label>
                                     <Input
                                         value={attendeeName}
                                         onChange={(e) => setAttendeeName(e.target.value)}
-                                        placeholder="Your full name"
+                                        placeholder={t("fullNamePlaceholder")}
                                         className="mt-1.5 bg-white/50 dark:bg-slate-800/50"
                                         required
                                     />
                                 </div>
                                 <div>
                                     <Label className="text-sm font-medium">
-                                        Email Address <span className="text-red-500">*</span>
+                                        {t("emailAddress")} <span className="text-red-500">*</span>
                                     </Label>
                                     <Input
                                         type="email"
@@ -369,7 +378,7 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                                             onValueChange={(val) => updateResponse(field._id, val)}
                                         >
                                             <SelectTrigger className="bg-white/50 dark:bg-slate-800/50">
-                                                <SelectValue placeholder={field.placeholder || "Select an option"} />
+                                                <SelectValue placeholder={field.placeholder || t("selectOption")} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {field.options?.map((opt, i) => (
@@ -458,7 +467,7 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                                 ) : (
                                     <Send className="h-5 w-5 mr-2" />
                                 )}
-                                {isSubmitting ? "Submitting..." : "Submit Registration"}
+                                {isSubmitting ? t("submitting") : t("submitRegistration")}
                             </Button>
                         </form>
                     </CardContent>
@@ -466,7 +475,7 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
 
                 {/* Footer */}
                 <p className="text-center text-xs text-muted-foreground pb-8">
-                    Powered by <strong>badgi.tn</strong> — Event Management Platform
+                    {t.rich("poweredBy", { b: (chunks) => <strong>{chunks}</strong> })}
                 </p>
             </div>
         </div>

@@ -1663,6 +1663,123 @@
       }
     }
   },
+  "eventFormBuilder": {
+    "createTitle": "Create Custom Event Form",
+    "editTitle": "Edit Custom Event Form",
+    "createSubtitle": "Build your registration form with custom fields",
+    "editSubtitle": "Modify your form fields and settings",
+    "organisationLabel": "Organisation *",
+    "organisationPlaceholder": "Select an organisation...",
+    "organisationMissing": "You need to create an organisation first before creating forms.",
+    "formTitleLabel": "Form Title *",
+    "formTitlePlaceholder": "e.g. Workshop Registration, Conference Sign-up...",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Describe your event and what information you need from attendees...",
+    "coverPhotoLabel": "Cover Photo (optional)",
+    "coverPhotoPlaceholder": "Upload a cover photo for your custom event form...",
+    "addFieldsTitle": "Add Fields",
+    "fieldTypes": {
+      "text": "Text",
+      "email": "Email",
+      "number": "Number",
+      "phone": "Phone",
+      "textarea": "Long Text",
+      "select": "Dropdown",
+      "radio": "Radio",
+      "checkbox": "Checkbox",
+      "date": "Date"
+    },
+    "formFieldsCount": "Form Fields ({count})",
+    "labelField": "Label *",
+    "labelPlaceholder": "Field label",
+    "placeholderField": "Placeholder",
+    "placeholderPlaceholder": "Placeholder text",
+    "optionsLabel": "Options (comma separated)",
+    "optionsPlaceholder": "Option 1, Option 2, Option 3",
+    "requiredFieldLabel": "Required field",
+    "previewTitle": "Form Preview",
+    "selectOptionPlaceholder": "Select an option",
+    "untitledField": "Untitled Field",
+    "hidePreview": "Hide Preview",
+    "showPreview": "Preview",
+    "saving": "Saving...",
+    "updateForm": "Update Form",
+    "createForm": "Create Form",
+    "errors": {
+      "titleRequired": "Please enter a form title",
+      "orgRequired": "Please select an organisation",
+      "fieldsRequired": "Please add at least one field",
+      "labelsRequired": "All fields must have a label",
+      "saveFailed": "Failed to save form: {error}"
+    },
+    "toasts": {
+      "updatedTitle": "Updated!",
+      "updatedDescription": "Form updated successfully",
+      "createdTitle": "Success!",
+      "createdDescription": "Form created successfully",
+      "errorTitle": "Error",
+      "unknownError": "Unknown error",
+      "emailsAdded": "{count} email(s) added to the list",
+      "noNewEmailsTitle": "No new emails",
+      "noNewEmailsDescription": "No valid new emails found in the file",
+      "fileImportedTitle": "File Imported!",
+      "fileImportedDescription": "{count} email(s) found in {file}",
+      "excelImportedTitle": "Excel Imported!",
+      "excelImportedDescription": "{count} email(s) found in {file}",
+      "fileParseErrorTitle": "Error",
+      "fileParseErrorDescription": "Failed to parse file. Please check the format.",
+      "unsupportedFileTitle": "Unsupported file",
+      "unsupportedFileDescription": "Please upload a .csv, .txt, or .xlsx file",
+      "invitationsSentTitle": "Invitations Sent!",
+      "sendFailedTitle": "Error",
+      "sendFailedDescription": "Failed to send invitations"
+    },
+    "formLinkTitle": "📋 Form Link",
+    "formCreatedTitle": "✅ Form Created Successfully!",
+    "copyButton": "Copy",
+    "copiedTitle": "Copied!",
+    "copiedDescription": "Form link copied to clipboard",
+    "sendInvitationsTitle": "Send Invitations",
+    "sendInvitationsDescription": "Enter email addresses manually or upload a CSV/Excel file containing the attendee email list.",
+    "emailsLabel": "Email Addresses (comma, semicolon, or newline separated)",
+    "emailsPlaceholder": "email1@example.com, email2@example.com...",
+    "addEmailsButton": "Add Emails",
+    "importFromFile": "Import from File",
+    "supportsFormats": "Supports .csv, .txt, .xlsx",
+    "recipientsCount": "Recipients ({count})",
+    "sendToRecipients": "Send to {count} recipient(s)",
+    "sending": "Sending..."
+  },
+  "publicEventForm": {
+    "nameRequired": "Please enter your name",
+    "emailRequired": "Please enter a valid email address",
+    "fieldRequired": "\"{field}\" is required",
+    "submitErrorGeneric": "Something went wrong",
+    "submitFailed": "Failed to submit. Please try again.",
+    "registrationCompleteTitle": "Registration Complete!",
+    "thankYou": "Thank you, <b>{name}</b>! Your registration for <b>{title}</b> has been submitted successfully.",
+    "confirmationSent": "A confirmation will be sent to <b>{email}</b>.",
+    "formClosedTitle": "Form Closed",
+    "formClosedDescription": "This registration form is no longer accepting responses.",
+    "eventOrganizer": "Event Organizer",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Your full name",
+    "emailAddress": "Email Address",
+    "selectOption": "Select an option",
+    "submitting": "Submitting...",
+    "submitRegistration": "Submit Registration",
+    "poweredBy": "Powered by <b>badgi.tn</b> — Event Management Platform"
+  },
+  "eventFormSubmissions": {
+    "submissionsCount": "{count, plural, one {# submission} other {# submissions}}",
+    "searchPlaceholder": "Search by name or email...",
+    "exportCsv": "Export CSV",
+    "noSubmissionsTitle": "No submissions yet",
+    "noSubmissionsDescription": "Submissions will appear here once attendees fill out the form.",
+    "noSearchResults": "No submissions match your search.",
+    "emptyValue": "Empty",
+    "submittedLabel": "Submitted:"
+  },
   "eventPrice": {
     "availablePlaces": "Available Places",
     "buyTicket": "Register for the event or request on-site access",
@@ -3861,8 +3978,12 @@
     "notFoundTitle": "Event not found",
     "returnHome": "Return home",
     "backToEvent": "Back to event",
+    "backToProfile": "Back to profile",
     "title": "Generate event badges",
-    "description": "Design custom badges and manage printing for registered participants."
+    "description": "Design custom badges and manage printing for registered participants.",
+    "formTitle": "Badge Management",
+    "formDescription": "Design a badge and print it for registrants of this form.",
+    "formNotFoundTitle": "Form not found"
   },
   "eventEditPage": {
     "title": "Update event"
@@ -4448,5 +4569,83 @@
     "bgColor": "Background color",
     "delete": "Delete",
     "sampleText": "Sample Text"
+  },
+  "badgeManagement": {
+    "title": "Badge Management",
+    "tabs": {
+      "design": "Design",
+      "attendees": "Attendees",
+      "print": "Print Info"
+    },
+    "readyToPrint": {
+      "title": "Ready to Print?",
+      "description": "Go to the <b>Attendees</b> tab to select registered participants and print their badges. You can also customize your badge layout in the <b>Design</b> tab.",
+      "customizeDesign": "Customize Design",
+      "manageAttendees": "Manage Attendees"
+    }
+  },
+  "attendeeManager": {
+    "searchPlaceholder": "Search...",
+    "printSelected": "Print Selected ({count})",
+    "columns": {
+      "attendee": "Attendee",
+      "companyTitle": "Company & Title",
+      "category": "Category",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "emptyEvent": "No attendees found. Try syncing from orders.",
+    "emptyForm": "No submissions found yet.",
+    "printed": "Printed",
+    "notPrinted": "Not Printed",
+    "actionsLabel": "Actions",
+    "printBadge": "Print Badge",
+    "delete": "Delete",
+    "deleteConfirmEvent": "Are you sure you want to delete this attendee?",
+    "deleteConfirmForm": "Are you sure you want to delete this submission?",
+    "deleteSuccessEvent": "Attendee deleted",
+    "deleteSuccessForm": "Submission deleted",
+    "deleteFailedEvent": "Failed to delete attendee",
+    "deleteFailedForm": "Failed to delete submission",
+    "loadFailedEvent": "Failed to load attendees",
+    "loadFailedForm": "Failed to load submissions",
+    "selectToPrint": "Please select items to print"
+  },
+  "badgePrinter": {
+    "documentTitle": "Event Badges",
+    "previewTitle": "{count, plural, one {Print Preview (# badge)} other {Print Preview (# badges)}}",
+    "subtitleFrontBack": "Full A4 — 1 badge per page (front + back)",
+    "subtitleFrontOnly": "Full A4 — 1 badge per page (front only)",
+    "printNow": "Print Now"
+  },
+  "formReport": {
+    "dialogTitle": "Form Report",
+    "loading": "Loading report...",
+    "generatedOn": "Generated on",
+    "organizer": "Organizer",
+    "sections": {
+      "stats": "Statistics",
+      "trend": "Registration Trend",
+      "breakdown": "Breakdown by Field",
+      "participants": "Registrants List"
+    },
+    "stats": {
+      "totalSubmissions": "Total Submissions",
+      "invitedCount": "Invited Emails",
+      "fieldsCount": "Form Fields"
+    },
+    "trendEmpty": "No submissions yet.",
+    "tableHeaders": {
+      "fullName": "Full Name",
+      "email": "Email",
+      "responses": "Responses",
+      "registrationDate": "Registration Date"
+    },
+    "noData": "No data available",
+    "footer": "Automatically generated report",
+    "shareSubject": "Form Report",
+    "shareTotal": "Total Submissions",
+    "shareInvited": "Invited Emails",
+    "shareLink": "Form Link"
   }
 }

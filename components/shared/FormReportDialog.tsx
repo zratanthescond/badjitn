@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useMemo, useRef } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,8 @@ const getTrendPolyline = (values: number[], width = 320, height = 100) => {
 };
 
 export default function FormReportDialog({ formId, isOpen, onClose }: FormReportDialogProps) {
+  const t = useTranslations("formReport");
+  const locale = useLocale();
   const reportRef = useRef<HTMLDivElement>(null);
   const printFn = useReactToPrint({
     contentRef: reportRef,
@@ -63,18 +66,18 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
     if (!form) return "";
     const link = typeof window !== "undefined" ? `${window.location.origin}/forms/${form.slug}` : "";
     return [
-      `Rapport du formulaire : ${form.title}`,
-      `Total des inscriptions : ${stats?.totalSubmissions || 0}`,
-      `Emails invités : ${stats?.invitedCount || 0}`,
-      `Lien du formulaire : ${link}`,
+      `${t("shareSubject")} : ${form.title}`,
+      `${t("shareTotal")} : ${stats?.totalSubmissions || 0}`,
+      `${t("shareInvited")} : ${stats?.invitedCount || 0}`,
+      `${t("shareLink")} : ${link}`,
     ].join("\n");
-  }, [form, stats]);
+  }, [form, stats, t]);
 
   const handleShareEmail = useCallback(() => {
-    const subject = encodeURIComponent(`Rapport du formulaire : ${form?.title || ""}`);
+    const subject = encodeURIComponent(`${t("shareSubject")} : ${form?.title || ""}`);
     const body = encodeURIComponent(getShareText());
     window.open(`mailto:?subject=${subject}&body=${body}`, "_self");
-  }, [form?.title, getShareText]);
+  }, [form?.title, getShareText, t]);
 
   const handleShareWhatsApp = useCallback(() => {
     const text = encodeURIComponent(getShareText());
@@ -89,7 +92,7 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
             <DialogHeader className="space-y-0">
               <DialogTitle className="text-lg font-bold text-slate-100 flex items-center gap-2">
                 <FileText className="h-5 w-5 text-blue-400" />
-                Rapport du formulaire
+                {t("dialogTitle")}
               </DialogTitle>
             </DialogHeader>
             <div className="flex items-center gap-2">
@@ -105,7 +108,7 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <Loader2 className="h-10 w-10 animate-spin text-blue-400" />
-              <p className="text-slate-300">Chargement du rapport...</p>
+              <p className="text-slate-300">{t("loading")}</p>
             </div>
           ) : form ? (
             <div ref={reportRef} className="report-root rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 text-slate-900">
@@ -114,7 +117,7 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">{form.title}</h1>
                 {form.description && <p className="text-sm text-slate-600 max-w-xl mx-auto">{form.description}</p>}
                 <p className="text-sm text-slate-500 mt-2">
-                  Généré le {new Date().toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  {t("generatedOn")} {new Date().toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
 
@@ -125,7 +128,7 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
                       <img src={form.organisation.logo} alt="" className="h-9 w-9 rounded-full object-cover border border-slate-200" />
                     )}
                     <div>
-                      <div className="text-xs text-slate-500">Organisateur</div>
+                      <div className="text-xs text-slate-500">{t("organizer")}</div>
                       <div className="text-sm font-semibold text-slate-800">{form.organisation.name}</div>
                     </div>
                   </div>
@@ -133,25 +136,25 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
               )}
 
               <div className="mb-6 report-section">
-                <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Statistiques</h3>
+                <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.stats")}</h3>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5 no-split">
                   <div className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2.5">
-                    <div className="text-[11px] text-blue-700/80">Total des inscriptions</div>
+                    <div className="text-[11px] text-blue-700/80">{t("stats.totalSubmissions")}</div>
                     <div className="text-2xl font-extrabold text-blue-700">{stats?.totalSubmissions || 0}</div>
                   </div>
                   <div className="rounded-xl border border-violet-200 bg-violet-50 px-3 py-2.5">
-                    <div className="text-[11px] text-violet-700/80">Emails invités</div>
+                    <div className="text-[11px] text-violet-700/80">{t("stats.invitedCount")}</div>
                     <div className="text-2xl font-extrabold text-violet-700">{stats?.invitedCount || 0}</div>
                   </div>
                   <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5">
-                    <div className="text-[11px] text-emerald-700/80">Champs du formulaire</div>
+                    <div className="text-[11px] text-emerald-700/80">{t("stats.fieldsCount")}</div>
                     <div className="text-2xl font-extrabold text-emerald-700">{form.fields?.length || 0}</div>
                   </div>
                 </div>
               </div>
 
               <div className="mb-6 report-section">
-                <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Évolution des inscriptions</h3>
+                <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.trend")}</h3>
                 <div className="rounded-xl border border-slate-200 bg-white p-3 no-split">
                   {trendValues.length > 0 ? (
                     <div>
@@ -171,14 +174,14 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
                       </div>
                     </div>
                   ) : (
-                    <div className="text-sm text-slate-500 py-8 text-center">Aucune inscription pour le moment.</div>
+                    <div className="text-sm text-slate-500 py-8 text-center">{t("trendEmpty")}</div>
                   )}
                 </div>
               </div>
 
               {stats?.fieldBreakdowns?.length > 0 && (
                 <div className="mb-6 report-section">
-                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Répartition par champ</h3>
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.breakdown")}</h3>
                   <div className="grid sm:grid-cols-2 gap-3 no-split">
                     {stats.fieldBreakdowns.map((field: any) => {
                       const max = getMax(field.counts);
@@ -210,15 +213,15 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
 
               {stats?.participantsList?.length > 0 && (
                 <div className="mb-6 report-section">
-                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Liste des inscrits</h3>
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{t("sections.participants")}</h3>
                   <div className="overflow-x-auto rounded-xl border border-slate-200 no-split">
                     <table className="w-full border-collapse text-xs report-table">
                       <thead>
                         <tr>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Nom complet</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Email</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Réponses</th>
-                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">Date d'inscription</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{t("tableHeaders.fullName")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{t("tableHeaders.email")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{t("tableHeaders.responses")}</th>
+                          <th className="bg-slate-100 px-2.5 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{t("tableHeaders.registrationDate")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -235,7 +238,7 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
                               ))}
                             </td>
                             <td className="px-2.5 py-2 text-slate-700 whitespace-nowrap">
-                              {new Date(p.submittedAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                              {new Date(p.submittedAt).toLocaleDateString(locale, { day: "2-digit", month: "2-digit", year: "numeric" })}
                             </td>
                           </tr>
                         ))}
@@ -247,13 +250,13 @@ export default function FormReportDialog({ formId, isOpen, onClose }: FormReport
 
               <div className="text-center mt-8 pt-4 border-t-2 border-slate-200 text-xs text-slate-400">
                 <img src="/assets/images/logoDark.png" alt="badgi" className="h-7 w-auto object-contain mx-auto mb-2" />
-                <p>Rapport généré automatiquement - {new Date().getFullYear()} badgi.net</p>
+                <p>{t("footer")} - {new Date().getFullYear()} badgi.net</p>
               </div>
             </div>
           ) : (
             <div className="text-center py-20">
               <FileText className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-              <p className="text-slate-400">Aucune donnée disponible</p>
+              <p className="text-slate-400">{t("noData")}</p>
               {error && (
                 <p className="text-red-400 text-sm mt-2">
                   {error instanceof Error ? error.message : String(error)}

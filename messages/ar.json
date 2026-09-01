@@ -1663,6 +1663,123 @@
       }
     }
   },
+  "eventFormBuilder": {
+    "createTitle": "إنشاء نموذج تسجيل مخصص",
+    "editTitle": "تعديل نموذج التسجيل المخصص",
+    "createSubtitle": "أنشئ نموذج التسجيل الخاص بك بحقول مخصصة",
+    "editSubtitle": "عدّل حقول النموذج وإعداداته",
+    "organisationLabel": "المؤسسة *",
+    "organisationPlaceholder": "اختر مؤسسة...",
+    "organisationMissing": "يجب عليك إنشاء مؤسسة أولاً قبل إنشاء النماذج.",
+    "formTitleLabel": "عنوان النموذج *",
+    "formTitlePlaceholder": "مثال: تسجيل ورشة عمل، تسجيل مؤتمر...",
+    "descriptionLabel": "الوصف (اختياري)",
+    "descriptionPlaceholder": "صف فعاليتك والمعلومات التي تحتاجها من المشاركين...",
+    "coverPhotoLabel": "صورة الغلاف (اختياري)",
+    "coverPhotoPlaceholder": "قم بتحميل صورة غلاف لنموذج فعاليتك المخصص...",
+    "addFieldsTitle": "إضافة حقول",
+    "fieldTypes": {
+      "text": "نص",
+      "email": "بريد إلكتروني",
+      "number": "رقم",
+      "phone": "هاتف",
+      "textarea": "نص طويل",
+      "select": "قائمة منسدلة",
+      "radio": "اختيار واحد",
+      "checkbox": "خانات اختيار",
+      "date": "تاريخ"
+    },
+    "formFieldsCount": "حقول النموذج ({count})",
+    "labelField": "التسمية *",
+    "labelPlaceholder": "تسمية الحقل",
+    "placeholderField": "النص التوضيحي",
+    "placeholderPlaceholder": "النص التوضيحي",
+    "optionsLabel": "الخيارات (مفصولة بفواصل)",
+    "optionsPlaceholder": "خيار 1، خيار 2، خيار 3",
+    "requiredFieldLabel": "حقل إلزامي",
+    "previewTitle": "معاينة النموذج",
+    "selectOptionPlaceholder": "اختر خيارًا",
+    "untitledField": "حقل بدون عنوان",
+    "hidePreview": "إخفاء المعاينة",
+    "showPreview": "معاينة",
+    "saving": "جارٍ الحفظ...",
+    "updateForm": "تحديث النموذج",
+    "createForm": "إنشاء النموذج",
+    "errors": {
+      "titleRequired": "يرجى إدخال عنوان للنموذج",
+      "orgRequired": "يرجى اختيار مؤسسة",
+      "fieldsRequired": "يرجى إضافة حقل واحد على الأقل",
+      "labelsRequired": "يجب أن تحتوي جميع الحقول على تسمية",
+      "saveFailed": "فشل حفظ النموذج: {error}"
+    },
+    "toasts": {
+      "updatedTitle": "تم التحديث!",
+      "updatedDescription": "تم تحديث النموذج بنجاح",
+      "createdTitle": "تم بنجاح!",
+      "createdDescription": "تم إنشاء النموذج بنجاح",
+      "errorTitle": "خطأ",
+      "unknownError": "خطأ غير معروف",
+      "emailsAdded": "تمت إضافة {count} بريد إلكتروني إلى القائمة",
+      "noNewEmailsTitle": "لا توجد رسائل بريد إلكتروني جديدة",
+      "noNewEmailsDescription": "لم يتم العثور على رسائل بريد إلكتروني صالحة جديدة في الملف",
+      "fileImportedTitle": "تم استيراد الملف!",
+      "fileImportedDescription": "تم العثور على {count} بريد إلكتروني في {file}",
+      "excelImportedTitle": "تم استيراد ملف Excel!",
+      "excelImportedDescription": "تم العثور على {count} بريد إلكتروني في {file}",
+      "fileParseErrorTitle": "خطأ",
+      "fileParseErrorDescription": "فشل تحليل الملف. يرجى التحقق من التنسيق.",
+      "unsupportedFileTitle": "ملف غير مدعوم",
+      "unsupportedFileDescription": "يرجى تحميل ملف بصيغة .csv أو .txt أو .xlsx",
+      "invitationsSentTitle": "تم إرسال الدعوات!",
+      "sendFailedTitle": "خطأ",
+      "sendFailedDescription": "فشل إرسال الدعوات"
+    },
+    "formLinkTitle": "📋 رابط النموذج",
+    "formCreatedTitle": "✅ تم إنشاء النموذج بنجاح!",
+    "copyButton": "نسخ",
+    "copiedTitle": "تم النسخ!",
+    "copiedDescription": "تم نسخ رابط النموذج إلى الحافظة",
+    "sendInvitationsTitle": "إرسال الدعوات",
+    "sendInvitationsDescription": "أدخل عناوين البريد الإلكتروني يدويًا أو قم بتحميل ملف CSV/Excel يحتوي على قائمة بريد المشاركين.",
+    "emailsLabel": "عناوين البريد الإلكتروني (مفصولة بفاصلة أو فاصلة منقوطة أو سطر جديد)",
+    "emailsPlaceholder": "email1@example.com، email2@example.com...",
+    "addEmailsButton": "إضافة رسائل البريد الإلكتروني",
+    "importFromFile": "استيراد من ملف",
+    "supportsFormats": "يدعم .csv و .txt و .xlsx",
+    "recipientsCount": "المستلمون ({count})",
+    "sendToRecipients": "إرسال إلى {count} مستلم",
+    "sending": "جارٍ الإرسال..."
+  },
+  "publicEventForm": {
+    "nameRequired": "يرجى إدخال اسمك",
+    "emailRequired": "يرجى إدخال عنوان بريد إلكتروني صالح",
+    "fieldRequired": "الحقل «{field}» إلزامي",
+    "submitErrorGeneric": "حدث خطأ ما",
+    "submitFailed": "فشل الإرسال. يرجى المحاولة مرة أخرى.",
+    "registrationCompleteTitle": "اكتمل التسجيل!",
+    "thankYou": "شكرًا لك، <b>{name}</b>! تم إرسال تسجيلك في <b>{title}</b> بنجاح.",
+    "confirmationSent": "سيتم إرسال تأكيد إلى <b>{email}</b>.",
+    "formClosedTitle": "النموذج مغلق",
+    "formClosedDescription": "لم يعد هذا النموذج يقبل الردود.",
+    "eventOrganizer": "منظم الفعالية",
+    "fullName": "الاسم الكامل",
+    "fullNamePlaceholder": "اسمك الكامل",
+    "emailAddress": "البريد الإلكتروني",
+    "selectOption": "اختر خيارًا",
+    "submitting": "جارٍ الإرسال...",
+    "submitRegistration": "إرسال التسجيل",
+    "poweredBy": "بدعم من <b>badgi.tn</b> — منصة إدارة الفعاليات"
+  },
+  "eventFormSubmissions": {
+    "submissionsCount": "{count, plural, one {تسجيل واحد} other {# تسجيلات}}",
+    "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني...",
+    "exportCsv": "تصدير CSV",
+    "noSubmissionsTitle": "لا توجد تسجيلات بعد",
+    "noSubmissionsDescription": "ستظهر التسجيلات هنا بمجرد أن يملأ المشاركون النموذج.",
+    "noSearchResults": "لا توجد تسجيلات مطابقة لبحثك.",
+    "emptyValue": "فارغ",
+    "submittedLabel": "تاريخ الإرسال:"
+  },
   "eventPrice": {
     "availablePlaces": "الأماكن المتاحة",
     "buyTicket": "اشتري تذكرة أو احصل على طلب مسبق",
@@ -3858,11 +3975,15 @@
     }
   },
   "badgePage": {
-    "notFoundTitle": "???????? ??? ??????",
-    "returnHome": "?????? ??? ?????? ????????",
-    "backToEvent": "?????? ??? ????????",
-    "title": "????? ????? ????????",
-    "description": "??? ????? ????? ????? ??????? ????????? ????????."
+    "notFoundTitle": "الفعالية غير موجودة",
+    "returnHome": "العودة إلى الصفحة الرئيسية",
+    "backToEvent": "العودة إلى الفعالية",
+    "backToProfile": "العودة إلى الملف الشخصي",
+    "title": "إنشاء شارات الفعالية",
+    "description": "صمم شارات مخصصة وأدر طباعتها للمشاركين المسجلين.",
+    "formTitle": "إدارة الشارات",
+    "formDescription": "صمم شارة واطبعها للمسجلين عبر هذا النموذج.",
+    "formNotFoundTitle": "النموذج غير موجود"
   },
   "eventEditPage": {
     "title": "????? ????????"
@@ -4448,5 +4569,83 @@
     "bgColor": "لون الخلفية",
     "delete": "حذف",
     "sampleText": "نص تجريبي"
+  },
+  "badgeManagement": {
+    "title": "إدارة الشارات",
+    "tabs": {
+      "design": "التصميم",
+      "attendees": "المشاركون",
+      "print": "معلومات الطباعة"
+    },
+    "readyToPrint": {
+      "title": "جاهز للطباعة؟",
+      "description": "انتقل إلى علامة التبويب <b>المشاركون</b> لاختيار المسجلين وطباعة شاراتهم. يمكنك أيضًا تخصيص تصميم الشارة من علامة التبويب <b>التصميم</b>.",
+      "customizeDesign": "تخصيص التصميم",
+      "manageAttendees": "إدارة المشاركين"
+    }
+  },
+  "attendeeManager": {
+    "searchPlaceholder": "بحث...",
+    "printSelected": "طباعة المحدد ({count})",
+    "columns": {
+      "attendee": "المشارك",
+      "companyTitle": "الشركة والمنصب",
+      "category": "الفئة",
+      "status": "الحالة",
+      "actions": "إجراءات"
+    },
+    "emptyEvent": "لم يتم العثور على مشاركين. حاول المزامنة من الطلبات.",
+    "emptyForm": "لا توجد تسجيلات بعد.",
+    "printed": "تمت الطباعة",
+    "notPrinted": "لم تتم الطباعة",
+    "actionsLabel": "إجراءات",
+    "printBadge": "طباعة الشارة",
+    "delete": "حذف",
+    "deleteConfirmEvent": "هل أنت متأكد من حذف هذا المشارك؟",
+    "deleteConfirmForm": "هل أنت متأكد من حذف هذا التسجيل؟",
+    "deleteSuccessEvent": "تم حذف المشارك",
+    "deleteSuccessForm": "تم حذف التسجيل",
+    "deleteFailedEvent": "فشل حذف المشارك",
+    "deleteFailedForm": "فشل حذف التسجيل",
+    "loadFailedEvent": "فشل تحميل المشاركين",
+    "loadFailedForm": "فشل تحميل التسجيلات",
+    "selectToPrint": "يرجى اختيار عناصر للطباعة"
+  },
+  "badgePrinter": {
+    "documentTitle": "الشارات",
+    "previewTitle": "{count, plural, one {معاينة الطباعة (شارة واحدة)} other {معاينة الطباعة (# شارات)}}",
+    "subtitleFrontBack": "صفحة A4 كاملة — شارة واحدة لكل صفحة (أمامي + خلفي)",
+    "subtitleFrontOnly": "صفحة A4 كاملة — شارة واحدة لكل صفحة (أمامي فقط)",
+    "printNow": "طباعة الآن"
+  },
+  "formReport": {
+    "dialogTitle": "تقرير النموذج",
+    "loading": "جارٍ تحميل التقرير...",
+    "generatedOn": "تم الإنشاء في",
+    "organizer": "المنظم",
+    "sections": {
+      "stats": "الإحصائيات",
+      "trend": "تطور التسجيلات",
+      "breakdown": "التوزيع حسب الحقل",
+      "participants": "قائمة المسجلين"
+    },
+    "stats": {
+      "totalSubmissions": "إجمالي التسجيلات",
+      "invitedCount": "رسائل البريد المدعوة",
+      "fieldsCount": "حقول النموذج"
+    },
+    "trendEmpty": "لا توجد تسجيلات بعد.",
+    "tableHeaders": {
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "responses": "الردود",
+      "registrationDate": "تاريخ التسجيل"
+    },
+    "noData": "لا توجد بيانات متاحة",
+    "footer": "تقرير تم إنشاؤه تلقائيًا",
+    "shareSubject": "تقرير النموذج",
+    "shareTotal": "إجمالي التسجيلات",
+    "shareInvited": "رسائل البريد المدعوة",
+    "shareLink": "رابط النموذج"
   }
 }

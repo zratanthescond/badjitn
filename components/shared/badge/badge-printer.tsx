@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from "react"
+import { useTranslations } from "next-intl"
 import { useReactToPrint } from "react-to-print"
 import { Button } from "@/components/ui/button"
 import { Printer, X } from "lucide-react"
@@ -60,11 +61,12 @@ export function BadgePrinter({
     eventDetails,
     onClose
 }: BadgePrinterProps) {
+    const t = useTranslations("badgePrinter")
     const componentRef = useRef<HTMLDivElement>(null)
 
     const handlePrint = useReactToPrint({
         contentRef: componentRef,
-        documentTitle: "Event Badges",
+        documentTitle: t("documentTitle"),
     })
 
     const replacePlaceholders = (text: string, attendee: any) => {
@@ -186,15 +188,15 @@ export function BadgePrinter({
         <div className="fixed inset-0 z-50 bg-black/80 flex flex-col">
             <div className="bg-card border-b p-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <h2 className="text-lg font-bold">Print Preview ({attendees.length} badge{attendees.length > 1 ? "s" : ""})</h2>
+                    <h2 className="text-lg font-bold">{t("previewTitle", { count: attendees.length })}</h2>
                     <p className="text-sm text-muted-foreground">
-                        Full A4 — 1 badge per page{hasBackContent ? " (front + back)" : " (front only)"}
+                        {hasBackContent ? t("subtitleFrontBack") : t("subtitleFrontOnly")}
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button onClick={() => handlePrint()}>
                         <Printer className="w-4 h-4 mr-2" />
-                        Print Now
+                        {t("printNow")}
                     </Button>
                     <Button variant="ghost" size="icon" onClick={onClose}>
                         <X className="w-4 h-4" />

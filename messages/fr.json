@@ -1663,6 +1663,123 @@
       }
     }
   },
+  "eventFormBuilder": {
+    "createTitle": "Créer un formulaire personnalisé",
+    "editTitle": "Modifier le formulaire personnalisé",
+    "createSubtitle": "Créez votre formulaire d'inscription avec des champs personnalisés",
+    "editSubtitle": "Modifiez les champs et paramètres de votre formulaire",
+    "organisationLabel": "Organisation *",
+    "organisationPlaceholder": "Sélectionner une organisation...",
+    "organisationMissing": "Vous devez d'abord créer une organisation avant de créer des formulaires.",
+    "formTitleLabel": "Titre du formulaire *",
+    "formTitlePlaceholder": "ex. Inscription à l'atelier, Inscription à la conférence...",
+    "descriptionLabel": "Description (facultatif)",
+    "descriptionPlaceholder": "Décrivez votre événement et les informations dont vous avez besoin de la part des participants...",
+    "coverPhotoLabel": "Photo de couverture (facultatif)",
+    "coverPhotoPlaceholder": "Téléversez une photo de couverture pour votre formulaire...",
+    "addFieldsTitle": "Ajouter des champs",
+    "fieldTypes": {
+      "text": "Texte",
+      "email": "Email",
+      "number": "Nombre",
+      "phone": "Téléphone",
+      "textarea": "Texte long",
+      "select": "Liste déroulante",
+      "radio": "Choix unique",
+      "checkbox": "Cases à cocher",
+      "date": "Date"
+    },
+    "formFieldsCount": "Champs du formulaire ({count})",
+    "labelField": "Libellé *",
+    "labelPlaceholder": "Libellé du champ",
+    "placeholderField": "Texte indicatif",
+    "placeholderPlaceholder": "Texte indicatif",
+    "optionsLabel": "Options (séparées par des virgules)",
+    "optionsPlaceholder": "Option 1, Option 2, Option 3",
+    "requiredFieldLabel": "Champ obligatoire",
+    "previewTitle": "Aperçu du formulaire",
+    "selectOptionPlaceholder": "Sélectionnez une option",
+    "untitledField": "Champ sans titre",
+    "hidePreview": "Masquer l'aperçu",
+    "showPreview": "Aperçu",
+    "saving": "Enregistrement...",
+    "updateForm": "Mettre à jour le formulaire",
+    "createForm": "Créer le formulaire",
+    "errors": {
+      "titleRequired": "Veuillez saisir un titre pour le formulaire",
+      "orgRequired": "Veuillez sélectionner une organisation",
+      "fieldsRequired": "Veuillez ajouter au moins un champ",
+      "labelsRequired": "Tous les champs doivent avoir un libellé",
+      "saveFailed": "Échec de l'enregistrement du formulaire : {error}"
+    },
+    "toasts": {
+      "updatedTitle": "Mis à jour !",
+      "updatedDescription": "Formulaire mis à jour avec succès",
+      "createdTitle": "Succès !",
+      "createdDescription": "Formulaire créé avec succès",
+      "errorTitle": "Erreur",
+      "unknownError": "Erreur inconnue",
+      "emailsAdded": "{count} email(s) ajouté(s) à la liste",
+      "noNewEmailsTitle": "Aucun nouvel email",
+      "noNewEmailsDescription": "Aucun nouvel email valide trouvé dans le fichier",
+      "fileImportedTitle": "Fichier importé !",
+      "fileImportedDescription": "{count} email(s) trouvé(s) dans {file}",
+      "excelImportedTitle": "Fichier Excel importé !",
+      "excelImportedDescription": "{count} email(s) trouvé(s) dans {file}",
+      "fileParseErrorTitle": "Erreur",
+      "fileParseErrorDescription": "Échec de la lecture du fichier. Vérifiez le format.",
+      "unsupportedFileTitle": "Fichier non pris en charge",
+      "unsupportedFileDescription": "Veuillez téléverser un fichier .csv, .txt ou .xlsx",
+      "invitationsSentTitle": "Invitations envoyées !",
+      "sendFailedTitle": "Erreur",
+      "sendFailedDescription": "Échec de l'envoi des invitations"
+    },
+    "formLinkTitle": "📋 Lien du formulaire",
+    "formCreatedTitle": "✅ Formulaire créé avec succès !",
+    "copyButton": "Copier",
+    "copiedTitle": "Copié !",
+    "copiedDescription": "Lien du formulaire copié dans le presse-papiers",
+    "sendInvitationsTitle": "Envoyer des invitations",
+    "sendInvitationsDescription": "Saisissez des adresses email manuellement ou importez un fichier CSV/Excel contenant la liste des participants.",
+    "emailsLabel": "Adresses email (séparées par une virgule, un point-virgule ou un retour à la ligne)",
+    "emailsPlaceholder": "email1@exemple.com, email2@exemple.com...",
+    "addEmailsButton": "Ajouter des emails",
+    "importFromFile": "Importer depuis un fichier",
+    "supportsFormats": "Formats acceptés : .csv, .txt, .xlsx",
+    "recipientsCount": "Destinataires ({count})",
+    "sendToRecipients": "Envoyer à {count} destinataire(s)",
+    "sending": "Envoi en cours..."
+  },
+  "publicEventForm": {
+    "nameRequired": "Veuillez saisir votre nom",
+    "emailRequired": "Veuillez saisir une adresse email valide",
+    "fieldRequired": "« {field} » est obligatoire",
+    "submitErrorGeneric": "Une erreur est survenue",
+    "submitFailed": "Échec de l'envoi. Veuillez réessayer.",
+    "registrationCompleteTitle": "Inscription terminée !",
+    "thankYou": "Merci, <b>{name}</b> ! Votre inscription pour <b>{title}</b> a bien été envoyée.",
+    "confirmationSent": "Une confirmation sera envoyée à <b>{email}</b>.",
+    "formClosedTitle": "Formulaire fermé",
+    "formClosedDescription": "Ce formulaire d'inscription n'accepte plus de réponses.",
+    "eventOrganizer": "Organisateur de l'événement",
+    "fullName": "Nom complet",
+    "fullNamePlaceholder": "Votre nom complet",
+    "emailAddress": "Adresse email",
+    "selectOption": "Sélectionnez une option",
+    "submitting": "Envoi en cours...",
+    "submitRegistration": "Envoyer l'inscription",
+    "poweredBy": "Propulsé par <b>badgi.tn</b> — Plateforme de gestion d'événements"
+  },
+  "eventFormSubmissions": {
+    "submissionsCount": "{count, plural, one {# inscription} other {# inscriptions}}",
+    "searchPlaceholder": "Rechercher par nom ou email...",
+    "exportCsv": "Exporter en CSV",
+    "noSubmissionsTitle": "Aucune inscription pour le moment",
+    "noSubmissionsDescription": "Les inscriptions apparaîtront ici dès que des participants rempliront le formulaire.",
+    "noSearchResults": "Aucune inscription ne correspond à votre recherche.",
+    "emptyValue": "Vide",
+    "submittedLabel": "Envoyé le :"
+  },
   "eventPrice": {
     "availablePlaces": "Places Disponibles",
     "backToEvent": "Retourner à l'événement",
@@ -3861,8 +3978,12 @@
     "notFoundTitle": "Evenement introuvable",
     "returnHome": "Retour a l'accueil",
     "backToEvent": "Retour a l'evenement",
+    "backToProfile": "Retour au profil",
     "title": "Generer les badges de l'evenement",
-    "description": "Concevez des badges personnalises et gerez l'impression pour les participants inscrits."
+    "description": "Concevez des badges personnalises et gerez l'impression pour les participants inscrits.",
+    "formTitle": "Gestion des badges",
+    "formDescription": "Concevez un badge et imprimez-le pour les inscrits via ce formulaire.",
+    "formNotFoundTitle": "Formulaire introuvable"
   },
   "eventEditPage": {
     "title": "Modifier l'evenement"
@@ -4448,5 +4569,83 @@
     "bgColor": "Couleur fond",
     "delete": "Supprimer",
     "sampleText": "Exemple de texte"
+  },
+  "badgeManagement": {
+    "title": "Gestion des badges",
+    "tabs": {
+      "design": "Conception",
+      "attendees": "Participants",
+      "print": "Impression"
+    },
+    "readyToPrint": {
+      "title": "Prêt à imprimer ?",
+      "description": "Allez dans l'onglet <b>Participants</b> pour sélectionner les inscrits et imprimer leurs badges. Vous pouvez aussi personnaliser la mise en page dans l'onglet <b>Conception</b>.",
+      "customizeDesign": "Personnaliser la conception",
+      "manageAttendees": "Gérer les participants"
+    }
+  },
+  "attendeeManager": {
+    "searchPlaceholder": "Rechercher...",
+    "printSelected": "Imprimer la sélection ({count})",
+    "columns": {
+      "attendee": "Participant",
+      "companyTitle": "Société et fonction",
+      "category": "Catégorie",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "emptyEvent": "Aucun participant trouvé. Essayez de synchroniser depuis les commandes.",
+    "emptyForm": "Aucune inscription trouvée pour le moment.",
+    "printed": "Imprimé",
+    "notPrinted": "Non imprimé",
+    "actionsLabel": "Actions",
+    "printBadge": "Imprimer le badge",
+    "delete": "Supprimer",
+    "deleteConfirmEvent": "Êtes-vous sûr de vouloir supprimer ce participant ?",
+    "deleteConfirmForm": "Êtes-vous sûr de vouloir supprimer cette inscription ?",
+    "deleteSuccessEvent": "Participant supprimé",
+    "deleteSuccessForm": "Inscription supprimée",
+    "deleteFailedEvent": "Échec de la suppression du participant",
+    "deleteFailedForm": "Échec de la suppression de l'inscription",
+    "loadFailedEvent": "Échec du chargement des participants",
+    "loadFailedForm": "Échec du chargement des inscriptions",
+    "selectToPrint": "Veuillez sélectionner des éléments à imprimer"
+  },
+  "badgePrinter": {
+    "documentTitle": "Badges",
+    "previewTitle": "{count, plural, one {Aperçu avant impression (# badge)} other {Aperçu avant impression (# badges)}}",
+    "subtitleFrontBack": "A4 complet — 1 badge par page (recto + verso)",
+    "subtitleFrontOnly": "A4 complet — 1 badge par page (recto uniquement)",
+    "printNow": "Imprimer maintenant"
+  },
+  "formReport": {
+    "dialogTitle": "Rapport du formulaire",
+    "loading": "Chargement du rapport...",
+    "generatedOn": "Généré le",
+    "organizer": "Organisateur",
+    "sections": {
+      "stats": "Statistiques",
+      "trend": "Évolution des inscriptions",
+      "breakdown": "Répartition par champ",
+      "participants": "Liste des inscrits"
+    },
+    "stats": {
+      "totalSubmissions": "Total des inscriptions",
+      "invitedCount": "Emails invités",
+      "fieldsCount": "Champs du formulaire"
+    },
+    "trendEmpty": "Aucune inscription pour le moment.",
+    "tableHeaders": {
+      "fullName": "Nom complet",
+      "email": "Email",
+      "responses": "Réponses",
+      "registrationDate": "Date d'inscription"
+    },
+    "noData": "Aucune donnée disponible",
+    "footer": "Rapport généré automatiquement",
+    "shareSubject": "Rapport du formulaire",
+    "shareTotal": "Total des inscriptions",
+    "shareInvited": "Emails invités",
+    "shareLink": "Lien du formulaire"
   }
 }

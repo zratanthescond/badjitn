@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
@@ -53,6 +54,7 @@ interface AttendeeManagerProps {
 }
 
 export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: AttendeeManagerProps) {
+    const t = useTranslations("attendeeManager")
     const [attendees, setAttendees] = useState<Attendee[]>([])
     const [searchTerm, setSearchTerm] = useState("")
     const [isLoading, setIsLoading] = useState(true)
@@ -64,7 +66,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
             const data = await getAttendeesByEvent(eventId)
             setAttendees(data || [])
         } catch (error) {
-            toast.error("Failed to load attendees")
+            toast.error(t("loadFailedEvent"))
         } finally {
             setIsLoading(false)
         }
@@ -75,15 +77,15 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
     }, [eventId])
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this attendee?")) return
+        if (!confirm(t("deleteConfirmEvent"))) return
         try {
             const res = await deleteAttendee(id)
             if (res?.success) {
                 setAttendees(attendees.filter((a) => a._id !== id))
-                toast.success("Attendee deleted")
+                toast.success(t("deleteSuccessEvent"))
             }
         } catch (error) {
-            toast.error("Failed to delete attendee")
+            toast.error(t("deleteFailedEvent"))
         }
     }
 
@@ -111,7 +113,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
     const handlePrintSelected = () => {
         const selected = attendees.filter((a) => selectedAttendees.includes(a._id))
         if (selected.length === 0) {
-            toast.error("Please select attendees to print")
+            toast.error(t("selectToPrint"))
             return
         }
         onPrintBadges(selected)
@@ -123,7 +125,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
                 <div className="relative w-full md:w-96">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                        placeholder="Search attendees..."
+                        placeholder={t("searchPlaceholder")}
                         className="pl-10"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -132,7 +134,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
                 <div className="flex items-center gap-2 w-full md:w-auto">
                     <Button onClick={handlePrintSelected} disabled={selectedAttendees.length === 0} className="flex-1 md:flex-none">
                         <Printer className="w-4 h-4 mr-2" />
-                        Print Selected ({selectedAttendees.length})
+                        {t("printSelected", { count: selectedAttendees.length })}
                     </Button>
                 </div>
             </div>
@@ -150,11 +152,11 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
                                     disabled={filteredAttendees.length === 0}
                                 />
                             </TableHead>
-                            <TableHead>Attendee</TableHead>
-                            <TableHead>Company & Title</TableHead>
-                            <TableHead>Category</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead>{t("columns.attendee")}</TableHead>
+                            <TableHead>{t("columns.companyTitle")}</TableHead>
+                            <TableHead>{t("columns.category")}</TableHead>
+                            <TableHead>{t("columns.status")}</TableHead>
+                            <TableHead className="text-right">{t("columns.actions")}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -167,7 +169,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
                         ) : filteredAttendees.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
-                                    No attendees found. Try syncing from orders.
+                                    {t("emptyEvent")}
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -215,12 +217,12 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
                                         {attendee.badgePrinted ? (
                                             <div className="flex items-center gap-1 text-green-500 text-xs">
                                                 <CheckCircle2 className="w-3 h-3" />
-                                                Printed
+                                                {t("printed")}
                                             </div>
                                         ) : (
                                             <div className="flex items-center gap-1 text-muted-foreground text-xs">
                                                 <XCircle className="w-3 h-3" />
-                                                Not Printed
+                                                {t("notPrinted")}
                                             </div>
                                         )}
                                     </TableCell>
@@ -232,10 +234,10 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                <DropdownMenuLabel>{t("actionsLabel")}</DropdownMenuLabel>
                                                 <DropdownMenuItem onClick={() => onPrintSingle(attendee)}>
                                                     <Printer className="w-4 h-4 mr-2" />
-                                                    Print Badge
+                                                    {t("printBadge")}
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
                                                 <DropdownMenuItem
@@ -243,7 +245,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
                                                     onClick={() => handleDelete(attendee._id)}
                                                 >
                                                     <Trash2 className="w-4 h-4 mr-2" />
-                                                    Delete
+                                                    {t("delete")}
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>

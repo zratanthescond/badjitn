@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +20,7 @@ interface IntegratedBadgeSystemProps {
 }
 
 export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEnd }: IntegratedBadgeSystemProps) {
+    const t = useTranslations("badgeManagement")
     const [activeTab, setActiveTab] = useState("design")
     const [badgeDesign, setBadgeDesign] = useState<any>(null)
     const [loading, setLoading] = useState(true)
@@ -69,7 +71,7 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
                 <div className="px-4 md:px-6 py-4">
                     <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                         <div className="flex items-center gap-2 md:gap-4">
-                            <h1 className="text-xl md:text-2xl font-bold text-foreground">Badge Management</h1>
+                            <h1 className="text-xl md:text-2xl font-bold text-foreground">{t("title")}</h1>
                             <Badge variant="secondary" className="text-xs">
                                 {eventTitle}
                             </Badge>
@@ -83,15 +85,15 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
                     <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="design" className="flex items-center gap-2">
                             <Palette className="w-4 h-4" />
-                            <span>Design</span>
+                            <span>{t("tabs.design")}</span>
                         </TabsTrigger>
                         <TabsTrigger value="attendees" className="flex items-center gap-2">
                             <Users className="w-4 h-4" />
-                            <span>Attendees</span>
+                            <span>{t("tabs.attendees")}</span>
                         </TabsTrigger>
                         <TabsTrigger value="print" className="flex items-center gap-2">
                             <Printer className="w-4 h-4" />
-                            <span>Print Info</span>
+                            <span>{t("tabs.print")}</span>
                         </TabsTrigger>
                     </TabsList>
 
@@ -115,18 +117,18 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
                     <TabsContent value="print" className="space-y-6">
                         <Card className="p-12 text-center">
                             <Printer className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-20" />
-                            <h3 className="text-xl font-semibold mb-2">Ready to Print?</h3>
+                            <h3 className="text-xl font-semibold mb-2">{t("readyToPrint.title")}</h3>
                             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                                Go to the **Attendees** tab to select registered participants and print their badges. You can also customize your badge layout in the **Design** tab.
+                                {t.rich("readyToPrint.description", { b: (chunks) => <strong>{chunks}</strong> })}
                             </p>
                             <div className="flex items-center justify-center gap-4">
                                 <Button variant="outline" onClick={() => setActiveTab("design")}>
                                     <Palette className="w-4 h-4 mr-2" />
-                                    Customize Design
+                                    {t("readyToPrint.customizeDesign")}
                                 </Button>
                                 <Button onClick={() => setActiveTab("attendees")}>
                                     <Users className="w-4 h-4 mr-2" />
-                                    Manage Attendees
+                                    {t("readyToPrint.manageAttendees")}
                                 </Button>
                             </div>
                         </Card>

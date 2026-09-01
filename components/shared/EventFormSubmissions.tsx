@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
     Users,
     Download,
@@ -40,6 +41,7 @@ interface EventFormSubmissionsProps {
 }
 
 export default function EventFormSubmissions({ formId, formTitle }: EventFormSubmissionsProps) {
+    const t = useTranslations("eventFormSubmissions");
     const [submissions, setSubmissions] = useState<Submission[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -123,7 +125,7 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
                     <div>
                         <h3 className="font-semibold">{formTitle}</h3>
                         <p className="text-sm text-muted-foreground">
-                            {submissions.length} submission{submissions.length !== 1 ? "s" : ""}
+                            {t("submissionsCount", { count: submissions.length })}
                         </p>
                     </div>
                 </div>
@@ -135,7 +137,7 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
                         className="rounded-full"
                     >
                         <Download className="h-4 w-4 mr-2" />
-                        Export CSV
+                        {t("exportCsv")}
                     </Button>
                 )}
             </div>
@@ -147,7 +149,7 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
                     <Input
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by name or email..."
+                        placeholder={t("searchPlaceholder")}
                         className="pl-10 bg-white/50 dark:bg-slate-800/50"
                     />
                 </div>
@@ -159,9 +161,9 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
                     <div className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mx-auto mb-4">
                         <Users className="h-8 w-8 text-indigo-500" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-1">No submissions yet</h3>
+                    <h3 className="font-semibold text-lg mb-1">{t("noSubmissionsTitle")}</h3>
                     <p className="text-sm text-muted-foreground">
-                        Submissions will appear here once attendees fill out the form.
+                        {t("noSubmissionsDescription")}
                     </p>
                 </div>
             )}
@@ -223,14 +225,14 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
                                                     {Array.isArray(r.value)
                                                         ? r.value.join(", ")
                                                         : r.value || (
-                                                            <span className="text-muted-foreground italic">Empty</span>
+                                                            <span className="text-muted-foreground italic">{t("emptyValue")}</span>
                                                         )}
                                                 </p>
                                             </div>
                                         ))}
                                     </div>
                                     <div className="mt-3 pt-3 border-t border-border/40 text-xs text-muted-foreground">
-                                        Submitted: {new Date(submission.submittedAt).toLocaleString()}
+                                        {t("submittedLabel")} {new Date(submission.submittedAt).toLocaleString()}
                                     </div>
                                 </CardContent>
                             </>
@@ -241,7 +243,7 @@ export default function EventFormSubmissions({ formId, formTitle }: EventFormSub
 
             {searchQuery && filteredSubmissions.length === 0 && submissions.length > 0 && (
                 <div className="text-center py-8 text-sm text-muted-foreground">
-                    No submissions match your search.
+                    {t("noSearchResults")}
                 </div>
             )}
         </div>

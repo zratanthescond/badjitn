@@ -1663,6 +1663,123 @@
       }
     }
   },
+  "eventFormBuilder": {
+    "createTitle": "Crear formulario de evento personalizado",
+    "editTitle": "Editar formulario de evento personalizado",
+    "createSubtitle": "Crea tu formulario de inscripción con campos personalizados",
+    "editSubtitle": "Modifica los campos y ajustes de tu formulario",
+    "organisationLabel": "Organización *",
+    "organisationPlaceholder": "Selecciona una organización...",
+    "organisationMissing": "Debes crear una organización antes de crear formularios.",
+    "formTitleLabel": "Título del formulario *",
+    "formTitlePlaceholder": "ej. Inscripción al taller, Inscripción a la conferencia...",
+    "descriptionLabel": "Descripción (opcional)",
+    "descriptionPlaceholder": "Describe tu evento y la información que necesitas de los asistentes...",
+    "coverPhotoLabel": "Foto de portada (opcional)",
+    "coverPhotoPlaceholder": "Sube una foto de portada para tu formulario...",
+    "addFieldsTitle": "Añadir campos",
+    "fieldTypes": {
+      "text": "Texto",
+      "email": "Email",
+      "number": "Número",
+      "phone": "Teléfono",
+      "textarea": "Texto largo",
+      "select": "Lista desplegable",
+      "radio": "Opción única",
+      "checkbox": "Casillas de verificación",
+      "date": "Fecha"
+    },
+    "formFieldsCount": "Campos del formulario ({count})",
+    "labelField": "Etiqueta *",
+    "labelPlaceholder": "Etiqueta del campo",
+    "placeholderField": "Texto de ayuda",
+    "placeholderPlaceholder": "Texto de ayuda",
+    "optionsLabel": "Opciones (separadas por comas)",
+    "optionsPlaceholder": "Opción 1, Opción 2, Opción 3",
+    "requiredFieldLabel": "Campo obligatorio",
+    "previewTitle": "Vista previa del formulario",
+    "selectOptionPlaceholder": "Selecciona una opción",
+    "untitledField": "Campo sin título",
+    "hidePreview": "Ocultar vista previa",
+    "showPreview": "Vista previa",
+    "saving": "Guardando...",
+    "updateForm": "Actualizar formulario",
+    "createForm": "Crear formulario",
+    "errors": {
+      "titleRequired": "Por favor, introduce un título para el formulario",
+      "orgRequired": "Por favor, selecciona una organización",
+      "fieldsRequired": "Por favor, añade al menos un campo",
+      "labelsRequired": "Todos los campos deben tener una etiqueta",
+      "saveFailed": "Error al guardar el formulario: {error}"
+    },
+    "toasts": {
+      "updatedTitle": "¡Actualizado!",
+      "updatedDescription": "Formulario actualizado correctamente",
+      "createdTitle": "¡Éxito!",
+      "createdDescription": "Formulario creado correctamente",
+      "errorTitle": "Error",
+      "unknownError": "Error desconocido",
+      "emailsAdded": "{count} email(s) añadido(s) a la lista",
+      "noNewEmailsTitle": "Sin correos nuevos",
+      "noNewEmailsDescription": "No se encontraron correos válidos nuevos en el archivo",
+      "fileImportedTitle": "¡Archivo importado!",
+      "fileImportedDescription": "{count} email(s) encontrado(s) en {file}",
+      "excelImportedTitle": "¡Excel importado!",
+      "excelImportedDescription": "{count} email(s) encontrado(s) en {file}",
+      "fileParseErrorTitle": "Error",
+      "fileParseErrorDescription": "Error al leer el archivo. Verifica el formato.",
+      "unsupportedFileTitle": "Archivo no admitido",
+      "unsupportedFileDescription": "Sube un archivo .csv, .txt o .xlsx",
+      "invitationsSentTitle": "¡Invitaciones enviadas!",
+      "sendFailedTitle": "Error",
+      "sendFailedDescription": "Error al enviar las invitaciones"
+    },
+    "formLinkTitle": "📋 Enlace del formulario",
+    "formCreatedTitle": "✅ ¡Formulario creado correctamente!",
+    "copyButton": "Copiar",
+    "copiedTitle": "¡Copiado!",
+    "copiedDescription": "Enlace del formulario copiado al portapapeles",
+    "sendInvitationsTitle": "Enviar invitaciones",
+    "sendInvitationsDescription": "Introduce direcciones de correo manualmente o sube un archivo CSV/Excel con la lista de asistentes.",
+    "emailsLabel": "Direcciones de email (separadas por coma, punto y coma o salto de línea)",
+    "emailsPlaceholder": "email1@ejemplo.com, email2@ejemplo.com...",
+    "addEmailsButton": "Añadir emails",
+    "importFromFile": "Importar desde archivo",
+    "supportsFormats": "Admite .csv, .txt, .xlsx",
+    "recipientsCount": "Destinatarios ({count})",
+    "sendToRecipients": "Enviar a {count} destinatario(s)",
+    "sending": "Enviando..."
+  },
+  "publicEventForm": {
+    "nameRequired": "Por favor, introduce tu nombre",
+    "emailRequired": "Por favor, introduce una dirección de email válida",
+    "fieldRequired": "«{field}» es obligatorio",
+    "submitErrorGeneric": "Algo salió mal",
+    "submitFailed": "Error al enviar. Por favor, inténtalo de nuevo.",
+    "registrationCompleteTitle": "¡Inscripción completada!",
+    "thankYou": "Gracias, <b>{name}</b>. Tu inscripción para <b>{title}</b> se ha enviado correctamente.",
+    "confirmationSent": "Se enviará una confirmación a <b>{email}</b>.",
+    "formClosedTitle": "Formulario cerrado",
+    "formClosedDescription": "Este formulario de inscripción ya no acepta respuestas.",
+    "eventOrganizer": "Organizador del evento",
+    "fullName": "Nombre completo",
+    "fullNamePlaceholder": "Tu nombre completo",
+    "emailAddress": "Dirección de email",
+    "selectOption": "Selecciona una opción",
+    "submitting": "Enviando...",
+    "submitRegistration": "Enviar inscripción",
+    "poweredBy": "Desarrollado por <b>badgi.tn</b> — Plataforma de gestión de eventos"
+  },
+  "eventFormSubmissions": {
+    "submissionsCount": "{count, plural, one {# inscripción} other {# inscripciones}}",
+    "searchPlaceholder": "Buscar por nombre o email...",
+    "exportCsv": "Exportar CSV",
+    "noSubmissionsTitle": "Aún no hay inscripciones",
+    "noSubmissionsDescription": "Las inscripciones aparecerán aquí cuando los asistentes completen el formulario.",
+    "noSearchResults": "Ninguna inscripción coincide con tu búsqueda.",
+    "emptyValue": "Vacío",
+    "submittedLabel": "Enviado el:"
+  },
   "eventPrice": {
     "availablePlaces": "Plazas Disponibles",
     "buyTicket": "Inscribirse al evento o solicitar acceso en sitio",
@@ -3861,8 +3978,12 @@
     "notFoundTitle": "Evento no encontrado",
     "returnHome": "Volver al inicio",
     "backToEvent": "Volver al evento",
+    "backToProfile": "Volver al perfil",
     "title": "Generar credenciales del evento",
-    "description": "Disena credenciales personalizadas y gestiona la impresion para los participantes inscritos."
+    "description": "Disena credenciales personalizadas y gestiona la impresion para los participantes inscritos.",
+    "formTitle": "Gestión de credenciales",
+    "formDescription": "Diseña una credencial e imprímela para los inscritos de este formulario.",
+    "formNotFoundTitle": "Formulario no encontrado"
   },
   "eventEditPage": {
     "title": "Actualizar evento"
@@ -4448,5 +4569,83 @@
     "bgColor": "Color de fondo",
     "delete": "Eliminar",
     "sampleText": "Texto de ejemplo"
+  },
+  "badgeManagement": {
+    "title": "Gestión de credenciales",
+    "tabs": {
+      "design": "Diseño",
+      "attendees": "Participantes",
+      "print": "Impresión"
+    },
+    "readyToPrint": {
+      "title": "¿Listo para imprimir?",
+      "description": "Ve a la pestaña <b>Participantes</b> para seleccionar a los inscritos e imprimir sus credenciales. También puedes personalizar el diseño en la pestaña <b>Diseño</b>.",
+      "customizeDesign": "Personalizar diseño",
+      "manageAttendees": "Gestionar participantes"
+    }
+  },
+  "attendeeManager": {
+    "searchPlaceholder": "Buscar...",
+    "printSelected": "Imprimir selección ({count})",
+    "columns": {
+      "attendee": "Participante",
+      "companyTitle": "Empresa y cargo",
+      "category": "Categoría",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "emptyEvent": "No se encontraron participantes. Intenta sincronizar desde los pedidos.",
+    "emptyForm": "Aún no se encontraron inscripciones.",
+    "printed": "Impreso",
+    "notPrinted": "No impreso",
+    "actionsLabel": "Acciones",
+    "printBadge": "Imprimir credencial",
+    "delete": "Eliminar",
+    "deleteConfirmEvent": "¿Seguro que quieres eliminar este participante?",
+    "deleteConfirmForm": "¿Seguro que quieres eliminar esta inscripción?",
+    "deleteSuccessEvent": "Participante eliminado",
+    "deleteSuccessForm": "Inscripción eliminada",
+    "deleteFailedEvent": "Error al eliminar el participante",
+    "deleteFailedForm": "Error al eliminar la inscripción",
+    "loadFailedEvent": "Error al cargar los participantes",
+    "loadFailedForm": "Error al cargar las inscripciones",
+    "selectToPrint": "Por favor, selecciona elementos para imprimir"
+  },
+  "badgePrinter": {
+    "documentTitle": "Credenciales",
+    "previewTitle": "{count, plural, one {Vista previa de impresión (# credencial)} other {Vista previa de impresión (# credenciales)}}",
+    "subtitleFrontBack": "A4 completo — 1 credencial por página (anverso + reverso)",
+    "subtitleFrontOnly": "A4 completo — 1 credencial por página (solo anverso)",
+    "printNow": "Imprimir ahora"
+  },
+  "formReport": {
+    "dialogTitle": "Informe del formulario",
+    "loading": "Cargando informe...",
+    "generatedOn": "Generado el",
+    "organizer": "Organizador",
+    "sections": {
+      "stats": "Estadísticas",
+      "trend": "Evolución de las inscripciones",
+      "breakdown": "Desglose por campo",
+      "participants": "Lista de inscritos"
+    },
+    "stats": {
+      "totalSubmissions": "Total de inscripciones",
+      "invitedCount": "Correos invitados",
+      "fieldsCount": "Campos del formulario"
+    },
+    "trendEmpty": "Aún no hay inscripciones.",
+    "tableHeaders": {
+      "fullName": "Nombre completo",
+      "email": "Email",
+      "responses": "Respuestas",
+      "registrationDate": "Fecha de inscripción"
+    },
+    "noData": "No hay datos disponibles",
+    "footer": "Informe generado automáticamente",
+    "shareSubject": "Informe del formulario",
+    "shareTotal": "Total de inscripciones",
+    "shareInvited": "Correos invitados",
+    "shareLink": "Enlace del formulario"
   }
 }

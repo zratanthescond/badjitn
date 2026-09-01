@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/actions/user.actions";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,7 @@ type FormBadgePageProps = {
 
 export default async function FormBadgePage(props: FormBadgePageProps) {
     const params = await props.params;
+    const t = await getTranslations("badgePage");
 
     const user = await useUser();
     if (!user) {
@@ -38,15 +40,15 @@ export default async function FormBadgePage(props: FormBadgePageProps) {
                 <Button variant="ghost" size="sm" asChild>
                     <Link href="/profile">
                         <ArrowLeft className="w-4 h-4 mr-2" />
-                        Retour
+                        {t("backToProfile")}
                     </Link>
                 </Button>
             </div>
 
             <header className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight">Gestion des badges</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t("formTitle")}</h1>
                 <p className="text-muted-foreground">
-                    Concevez un badge et imprimez-le pour les inscrits via ce formulaire.
+                    {t("formDescription")}
                 </p>
             </header>
 
