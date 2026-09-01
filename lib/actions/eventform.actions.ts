@@ -435,7 +435,9 @@ export async function sendFormInvitations(params: SendInvitationsParams) {
     try {
         await connectToDatabase();
 
-        const form = await EventForm.findById(params.formId);
+        const form = await EventForm.findById(params.formId)
+            .populate({ path: "creator", model: "User", select: "firstName lastName" })
+            .populate({ path: "organisation", model: "Organisation", select: "name" });
 
         if (!form) {
             return { success: false, message: "Form not found" };
@@ -443,7 +445,11 @@ export async function sendFormInvitations(params: SendInvitationsParams) {
 
         const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
         const formUrl = `${baseUrl}/forms/${form.slug}`;
-        const formTitle = form.title || "Custom Event";
+        const formTitle = form.title || "Événement";
+        const organizerName =
+            (form.organisation as any)?.name ||
+            (form.creator ? `${(form.creator as any).firstName || ""} ${(form.creator as any).lastName || ""}`.trim() : "") ||
+            "";
 
         // Add emails to invitedEmails list (merge, avoid duplicates)
         const existingEmails = new Set(form.invitedEmails.map((e: string) => e.toLowerCase()));
@@ -465,32 +471,33 @@ export async function sendFormInvitations(params: SendInvitationsParams) {
                 await transporter.sendMail({
                     from: process.env.SMTP_FROM?.replace(/^["']|["']$/g, "") || '"badgiTn" <mail@badgi.tn>',
                     to: email,
-                    subject: `You're invited to register for: ${formTitle}`,
+                    subject: `Vous êtes invité(e) à vous inscrire : ${formTitle}`,
                     html: `
             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;">
               <div style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); padding: 40px 30px; border-radius: 16px 16px 0 0; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">You're Invited! 🎉</h1>
+                <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">Vous êtes invité(e) ! 🎉</h1>
                 <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0; font-size: 16px;">${formTitle}</p>
+                ${organizerName ? `<p style="color: rgba(255,255,255,0.75); margin: 4px 0 0; font-size: 13px;">Organisé par ${organizerName}</p>` : ""}
               </div>
               <div style="background: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-top: none;">
                 <p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
-                  Hello,<br><br>
-                  You have been invited to register for <strong>${formTitle}</strong>. 
-                  Please fill out the registration form by clicking the button below.
+                  Bonjour,<br><br>
+                  Vous avez été invité(e) à vous inscrire à <strong>${formTitle}</strong>${organizerName ? `, organisé par <strong>${organizerName}</strong>` : ""}.
+                  Merci de remplir le formulaire d'inscription en cliquant sur le bouton ci-dessous.
                 </p>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="${formUrl}" 
+                  <a href="${formUrl}"
                      style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; padding: 14px 40px; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 16px; display: inline-block;">
-                    Register Now
+                    S'inscrire maintenant
                   </a>
                 </div>
                 <p style="color: #6b7280; font-size: 13px; line-height: 1.5; margin: 20px 0 0;">
-                  Or copy this link: <a href="${formUrl}" style="color: #6366f1;">${formUrl}</a>
+                  Ou copiez ce lien : <a href="${formUrl}" style="color: #6366f1;">${formUrl}</a>
                 </p>
               </div>
               <div style="background: #f9fafb; padding: 20px 30px; border-radius: 0 0 16px 16px; border: 1px solid #e5e7eb; border-top: none; text-align: center;">
                 <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                  Sent via <strong>badgi.tn</strong> — Event Management Platform
+                  Envoyé via <strong>badgi.tn</strong> — Plateforme de gestion d'événements
                 </p>
               </div>
             </div>
