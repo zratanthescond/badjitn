@@ -1761,6 +1761,7 @@
     "submitErrorGeneric": "Une erreur est survenue",
     "submitFailed": "Échec de l'envoi. Veuillez réessayer.",
     "registrationCompleteTitle": "Inscription terminée !",
+    "confirmationSent": "Une confirmation sera envoyée à <b>{email}</b>.",
     "thankYou": "Merci, <b>{name}</b> ! Votre inscription pour <b>{title}</b> a bien été envoyée.",
     "formClosedTitle": "Formulaire fermé",
     "formClosedDescription": "Ce formulaire d'inscription n'accepte plus de réponses.",

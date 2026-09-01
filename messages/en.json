@@ -1761,6 +1761,7 @@
     "submitErrorGeneric": "Something went wrong",
     "submitFailed": "Failed to submit. Please try again.",
     "registrationCompleteTitle": "Registration Complete!",
+    "confirmationSent": "A confirmation will be sent to <b>{email}</b>.",
     "thankYou": "Thank you, <b>{name}</b>! Your registration for <b>{title}</b> has been submitted successfully.",
     "formClosedTitle": "Form Closed",
     "formClosedDescription": "This registration form is no longer accepting responses.",

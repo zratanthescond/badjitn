@@ -228,6 +228,37 @@ export async function submitEventForm(params: SubmitFormParams) {
             responses: params.responses,
         });
 
+        // Best-effort confirmation email: never let a mail failure fail the
+        // registration itself (mirrors sendFormInvitations' per-email error handling).
+        try {
+            await transporter.sendMail({
+                from: process.env.SMTP_FROM?.replace(/^["']|["']$/g, "") || '"badgiTn" <mail@badgi.tn>',
+                to: params.email,
+                subject: `Confirmation d'inscription — ${form.title}`,
+                html: `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;">
+            <div style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); padding: 40px 30px; border-radius: 16px 16px 0 0; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">Inscription confirmée ✅</h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0; font-size: 16px;">${form.title}</p>
+            </div>
+            <div style="background: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-top: none;">
+              <p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
+                Bonjour ${params.name},<br><br>
+                Merci ! Votre inscription pour <strong>${form.title}</strong> a bien été enregistrée.
+              </p>
+            </div>
+            <div style="background: #f9fafb; padding: 20px 30px; border-radius: 0 0 16px 16px; border: 1px solid #e5e7eb; border-top: none; text-align: center;">
+              <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+                Envoyé via <strong>badgi.tn</strong> — Plateforme de gestion d'événements
+              </p>
+            </div>
+          </div>
+        `,
+            });
+        } catch (mailError) {
+            console.error("Error sending form submission confirmation email:", mailError);
+        }
+
         return {
             success: true,
             data: JSON.parse(JSON.stringify(submission)),

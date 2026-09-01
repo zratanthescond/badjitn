@@ -1761,6 +1761,7 @@
     "submitErrorGeneric": "حدث خطأ ما",
     "submitFailed": "فشل الإرسال. يرجى المحاولة مرة أخرى.",
     "registrationCompleteTitle": "اكتمل التسجيل!",
+    "confirmationSent": "سيتم إرسال تأكيد إلى <b>{email}</b>.",
     "thankYou": "شكرًا لك، <b>{name}</b>! تم إرسال تسجيلك في <b>{title}</b> بنجاح.",
     "formClosedTitle": "النموذج مغلق",
     "formClosedDescription": "لم يعد هذا النموذج يقبل الردود.",
