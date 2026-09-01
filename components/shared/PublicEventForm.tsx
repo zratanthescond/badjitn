@@ -170,17 +170,11 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                             <CheckCircle className="h-10 w-10 text-white" />
                         </div>
                         <h2 className="text-2xl font-bold mb-2">{t("registrationCompleteTitle")}</h2>
-                        <p className="text-muted-foreground mb-4">
+                        <p className="text-muted-foreground">
                             {t.rich("thankYou", {
                                 b: (chunks) => <strong>{chunks}</strong>,
                                 name: attendeeName,
                                 title: formData.title,
-                            })}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                            {t.rich("confirmationSent", {
-                                b: (chunks) => <strong>{chunks}</strong>,
-                                email: attendeeEmail,
                             })}
                         </p>
                     </CardContent>

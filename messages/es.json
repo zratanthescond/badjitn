@@ -1762,7 +1762,6 @@
     "submitFailed": "Error al enviar. Por favor, inténtalo de nuevo.",
     "registrationCompleteTitle": "¡Inscripción completada!",
     "thankYou": "Gracias, <b>{name}</b>. Tu inscripción para <b>{title}</b> se ha enviado correctamente.",
-    "confirmationSent": "Se enviará una confirmación a <b>{email}</b>.",
     "formClosedTitle": "Formulario cerrado",
     "formClosedDescription": "Este formulario de inscripción ya no acepta respuestas.",
     "eventOrganizer": "Organizador del evento",

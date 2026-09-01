@@ -1762,7 +1762,6 @@
     "submitFailed": "فشل الإرسال. يرجى المحاولة مرة أخرى.",
     "registrationCompleteTitle": "اكتمل التسجيل!",
     "thankYou": "شكرًا لك، <b>{name}</b>! تم إرسال تسجيلك في <b>{title}</b> بنجاح.",
-    "confirmationSent": "سيتم إرسال تأكيد إلى <b>{email}</b>.",
     "formClosedTitle": "النموذج مغلق",
     "formClosedDescription": "لم يعد هذا النموذج يقبل الردود.",
     "eventOrganizer": "منظم الفعالية",

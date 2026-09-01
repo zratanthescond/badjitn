@@ -1762,7 +1762,6 @@
     "submitFailed": "Failed to submit. Please try again.",
     "registrationCompleteTitle": "Registration Complete!",
     "thankYou": "Thank you, <b>{name}</b>! Your registration for <b>{title}</b> has been submitted successfully.",
-    "confirmationSent": "A confirmation will be sent to <b>{email}</b>.",
     "formClosedTitle": "Form Closed",
     "formClosedDescription": "This registration form is no longer accepting responses.",
     "eventOrganizer": "Event Organizer",
