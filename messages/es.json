@@ -1676,7 +1676,11 @@
     "descriptionLabel": "Descripción (opcional)",
     "descriptionPlaceholder": "Describe tu evento y la información que necesitas de los asistentes...",
     "coverPhotoLabel": "Foto de portada (opcional)",
+    "coverPhotoHint": "Banner ancho mostrado en la parte superior del formulario (formato horizontal).",
     "coverPhotoPlaceholder": "Sube una foto de portada para tu formulario...",
+    "posterLabel": "Cartel (opcional)",
+    "posterHint": "Cartel completo del evento (formato vertical), mostrado sin recortar.",
+    "posterPlaceholder": "Sube el cartel de tu evento...",
     "addFieldsTitle": "Añadir campos",
     "fieldTypes": {
       "text": "Texto",

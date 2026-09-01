@@ -43,6 +43,7 @@ interface FormData {
     title: string;
     description?: string;
     coverImage?: string;
+    posterImage?: string;
     slug: string;
     isActive: boolean;
     fields: FormField[];
@@ -210,7 +211,19 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-slate-950 dark:via-indigo-950/10 dark:to-purple-950/10 py-8 px-4">
             <div className="max-w-2xl mx-auto space-y-6">
-                {/* Event Banner or Form Title Banner */}
+                {/* Poster (full, uncropped) */}
+                {formData.posterImage && (
+                    <div className="rounded-2xl overflow-hidden shadow-2xl bg-white/50 dark:bg-slate-900/50">
+                        <img
+                            src={formData.posterImage}
+                            alt={formData.title}
+                            className="w-full h-auto object-contain"
+                        />
+                    </div>
+                )}
+
+                {/* Event Banner or Form Title Banner (skipped when a poster already carries the title and no photo is set) */}
+                {(formData.coverImage || formData.event?.imageUrl || !formData.posterImage) && (
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                     {formData.coverImage ? (
                         <div className="relative h-48 sm:h-64">
@@ -272,6 +285,7 @@ export default function PublicEventForm({ formData }: PublicEventFormProps) {
                         </div>
                     )}
                 </div>
+                )}
 
                 {/* Organisation / Organizer */}
                 <div className="flex items-center gap-3 px-1">

@@ -1676,7 +1676,11 @@
     "descriptionLabel": "الوصف (اختياري)",
     "descriptionPlaceholder": "صف فعاليتك والمعلومات التي تحتاجها من المشاركين...",
     "coverPhotoLabel": "صورة الغلاف (اختياري)",
+    "coverPhotoHint": "شريط عريض يظهر أعلى النموذج (بالعرض).",
     "coverPhotoPlaceholder": "قم بتحميل صورة غلاف لنموذج فعاليتك المخصص...",
+    "posterLabel": "الملصق (اختياري)",
+    "posterHint": "ملصق الفعالية كاملاً (بالطول)، يُعرض دون قص.",
+    "posterPlaceholder": "قم بتحميل ملصق فعاليتك...",
     "addFieldsTitle": "إضافة حقول",
     "fieldTypes": {
       "text": "نص",

@@ -1676,7 +1676,11 @@
     "descriptionLabel": "Description (facultatif)",
     "descriptionPlaceholder": "Décrivez votre événement et les informations dont vous avez besoin de la part des participants...",
     "coverPhotoLabel": "Photo de couverture (facultatif)",
+    "coverPhotoHint": "Bannière large affichée en haut du formulaire (format paysage).",
     "coverPhotoPlaceholder": "Téléversez une photo de couverture pour votre formulaire...",
+    "posterLabel": "Affiche (facultatif)",
+    "posterHint": "Affiche complète de l'événement (format portrait), affichée sans recadrage.",
+    "posterPlaceholder": "Téléversez l'affiche de votre événement...",
     "addFieldsTitle": "Ajouter des champs",
     "fieldTypes": {
       "text": "Texte",

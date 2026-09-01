@@ -83,6 +83,7 @@ interface EditFormData {
     title: string;
     description?: string;
     coverImage?: string;
+    posterImage?: string;
     organisation?: { _id: string; name: string };
     fields: {
         _id?: string;
@@ -120,6 +121,7 @@ export default function EventFormBuilder({
     const [formTitle, setFormTitle] = useState(editForm?.title || "");
     const [formDescription, setFormDescription] = useState(editForm?.description || "");
     const [coverImage, setCoverImage] = useState(editForm?.coverImage || "");
+    const [posterImage, setPosterImage] = useState(editForm?.posterImage || "");
     const [selectedOrgId, setSelectedOrgId] = useState(editForm?.organisation?._id || organisationId || "");
     const [fields, setFields] = useState<FormField[]>(
         editForm?.fields?.map((f, i) => ({
@@ -211,6 +213,7 @@ export default function EventFormBuilder({
                     title: formTitle,
                     description: formDescription,
                     coverImage: coverImage,
+                    posterImage: posterImage,
                     fields: fields.map((f) => ({
                         type: f.type,
                         label: f.label,
@@ -233,6 +236,7 @@ export default function EventFormBuilder({
                     title: formTitle,
                     description: formDescription,
                     coverImage: coverImage,
+                    posterImage: posterImage,
                     organisationId: selectedOrgId,
                     creatorId: userId,
                     fields: fields.map((f) => ({
@@ -460,12 +464,25 @@ export default function EventFormBuilder({
                     </div>
                     <div>
                         <Label className="text-sm font-medium">{t("coverPhotoLabel")}</Label>
-                        <div className="mt-1.5 bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                        <p className="text-xs text-muted-foreground mt-0.5 mb-1.5">{t("coverPhotoHint")}</p>
+                        <div className="bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
                             <ImageUploader
                                 value={coverImage}
                                 onChange={setCoverImage}
                                 aspectRatio="wide"
                                 placeholder={t("coverPhotoPlaceholder")}
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <Label className="text-sm font-medium">{t("posterLabel")}</Label>
+                        <p className="text-xs text-muted-foreground mt-0.5 mb-1.5">{t("posterHint")}</p>
+                        <div className="bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                            <ImageUploader
+                                value={posterImage}
+                                onChange={setPosterImage}
+                                aspectRatio="portrait"
+                                placeholder={t("posterPlaceholder")}
                             />
                         </div>
                     </div>

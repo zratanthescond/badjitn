@@ -15,6 +15,7 @@ export interface IEventForm extends Document {
     title: string;
     description?: string;
     coverImage?: string;
+    posterImage?: string;
     event?: mongoose.Types.ObjectId;
     organisation?: mongoose.Types.ObjectId;
     creator: mongoose.Types.ObjectId;
@@ -44,6 +45,7 @@ const EventFormSchema = new Schema<IEventForm>(
         title: { type: String, required: true },
         description: { type: String, default: "" },
         coverImage: { type: String, default: "" },
+        posterImage: { type: String, default: "" },
         event: { type: Schema.Types.ObjectId, ref: "Event" },
         organisation: { type: Schema.Types.ObjectId, ref: "Organisation" },
         creator: { type: Schema.Types.ObjectId, ref: "User", required: true },

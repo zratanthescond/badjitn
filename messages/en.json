@@ -1676,7 +1676,11 @@
     "descriptionLabel": "Description (optional)",
     "descriptionPlaceholder": "Describe your event and what information you need from attendees...",
     "coverPhotoLabel": "Cover Photo (optional)",
+    "coverPhotoHint": "Wide banner shown at the top of the form (landscape format).",
     "coverPhotoPlaceholder": "Upload a cover photo for your custom event form...",
+    "posterLabel": "Poster (optional)",
+    "posterHint": "Full event poster (portrait format), displayed uncropped.",
+    "posterPlaceholder": "Upload your event poster...",
     "addFieldsTitle": "Add Fields",
     "fieldTypes": {
       "text": "Text",

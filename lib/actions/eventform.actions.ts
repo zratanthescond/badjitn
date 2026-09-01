@@ -13,6 +13,7 @@ interface CreateEventFormParams {
     title: string;
     description?: string;
     coverImage?: string;
+    posterImage?: string;
     eventId?: string;
     organisationId: string;
     creatorId: string;
@@ -24,6 +25,7 @@ interface UpdateEventFormParams {
     title?: string;
     description?: string;
     coverImage?: string;
+    posterImage?: string;
     fields?: Omit<IFormField, "_id">[];
     isActive?: boolean;
 }
@@ -56,6 +58,7 @@ export async function createEventForm(params: CreateEventFormParams) {
             title: params.title,
             description: params.description || "",
             coverImage: params.coverImage || "",
+            posterImage: params.posterImage || "",
             event: params.eventId || undefined,
             organisation: params.organisationId || undefined,
             creator: params.creatorId,
@@ -152,6 +155,7 @@ export async function updateEventForm(params: UpdateEventFormParams) {
         if (params.title !== undefined) updateData.title = params.title;
         if (params.description !== undefined) updateData.description = params.description;
         if (params.coverImage !== undefined) updateData.coverImage = params.coverImage;
+        if (params.posterImage !== undefined) updateData.posterImage = params.posterImage;
         if (params.fields !== undefined)
             updateData.fields = params.fields.map((f, i) => ({ ...f, order: i }));
         if (params.isActive !== undefined) updateData.isActive = params.isActive;
