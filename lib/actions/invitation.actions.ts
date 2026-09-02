@@ -265,6 +265,60 @@ export async function retryFailedInvitations({ eventId }: { eventId: string }) {
   }
 }
 
+// ====== RE-QUEUE ALREADY-SENT INVITATIONS FOR A RESEND
+//
+// Unlike enqueueEventInvitations/retryFailedInvitations, this deliberately does NOT
+// exclude emails already in invitedEmails — it's for re-sending to people who were
+// already successfully invited (e.g. a reminder, or "I never got it").
+
+export async function resendInvitations({
+  eventId,
+  recipients,
+}: {
+  eventId: string;
+  recipients: InvitationRecipient[];
+}) {
+  try {
+    await verifyOrganizerOrAdmin(eventId);
+    await connectToDatabase();
+
+    const event = await Event.findById(eventId).select("invitationQueue");
+    if (!event) {
+      return { success: false, message: "Event not found" };
+    }
+
+    const alreadyQueued = new Set(
+      (event.invitationQueue || []).map((r: any) => r.email.toLowerCase())
+    );
+    const toQueue = normalizeRecipients(recipients, alreadyQueued);
+
+    if (toQueue.length > 0) {
+      await Event.findByIdAndUpdate(eventId, {
+        $push: {
+          invitationQueue: {
+            $each: toQueue.map((r) => ({
+              email: r.email,
+              firstName: r.firstName || "",
+              lastName: r.lastName || "",
+            })),
+          },
+        },
+      });
+    }
+
+    revalidatePath(`/cockpit`);
+
+    return {
+      success: true,
+      message: `${toQueue.length} invitation(s) remise(s) en file pour renvoi.`,
+      data: { queued: toQueue.length },
+    };
+  } catch (error) {
+    console.error("Error resending invitations:", error);
+    return { success: false, message: (error as Error).message };
+  }
+}
+
 // ====== SEND A SINGLE TEST INVITATION (DOES NOT AFFECT invitedEmails)
 
 export async function sendTestInvitationEmail({

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Search, History, CheckCircle2, XCircle, RefreshCw, RotateCcw, Clock } from "lucide-react";
+import { Loader2, Search, History, CheckCircle2, XCircle, RefreshCw, RotateCcw, Clock, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import {
   getInvitationSettings,
   retryFailedInvitations,
+  resendInvitations,
   type InvitationLogEntry,
 } from "@/lib/actions/invitation.actions";
 
@@ -33,6 +34,8 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
   const [queueLength, setQueueLength] = useState(0);
   const [search, setSearch] = useState("");
   const [retrying, setRetrying] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState<string | null>(null);
+  const [resendingAll, setResendingAll] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -70,6 +73,55 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
       }
     } finally {
       setRetrying(false);
+    }
+  };
+
+  const handleResendOne = async (entry: InvitationLogEntry) => {
+    setResendingEmail(entry.email);
+    try {
+      const res = await resendInvitations({
+        eventId,
+        recipients: [
+          { email: entry.email, firstName: entry.firstName, lastName: entry.lastName },
+        ],
+      });
+      if (res.success) {
+        toast({ title: "Renvoi programmé", description: res.message });
+        await load();
+      } else {
+        toast({ title: "Erreur", description: res.message, variant: "destructive" });
+      }
+    } finally {
+      setResendingEmail(null);
+    }
+  };
+
+  const handleResendAll = async () => {
+    const sentEntries = log.filter((entry) => entry.status === "sent");
+    if (sentEntries.length === 0) return;
+    const confirmed = window.confirm(
+      `Renvoyer l'invitation à ${sentEntries.length} destinataire${sentEntries.length > 1 ? "s" : ""} déjà invité${sentEntries.length > 1 ? "s" : ""} avec succès ?`
+    );
+    if (!confirmed) return;
+
+    setResendingAll(true);
+    try {
+      const res = await resendInvitations({
+        eventId,
+        recipients: sentEntries.map((entry) => ({
+          email: entry.email,
+          firstName: entry.firstName,
+          lastName: entry.lastName,
+        })),
+      });
+      if (res.success) {
+        toast({ title: "Renvoi programmé", description: res.message });
+        await load();
+      } else {
+        toast({ title: "Erreur", description: res.message, variant: "destructive" });
+      }
+    } finally {
+      setResendingAll(false);
     }
   };
 
@@ -117,6 +169,22 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
                 <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
               )}
               Réessayer les échoués ({failedCount})
+            </Button>
+          )}
+          {sentCount > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 rounded-full text-xs"
+              onClick={handleResendAll}
+              disabled={resendingAll}
+            >
+              {resendingAll ? (
+                <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+              ) : (
+                <Send className="h-3.5 w-3.5 mr-1.5" />
+              )}
+              Renvoyer à tous ({sentCount})
             </Button>
           )}
           <div className="relative">
@@ -179,10 +247,26 @@ export default function InvitationHistoryPanel({ eventId }: { eventId: string })
                 )}
               </div>
               {entry.status === "sent" ? (
-                <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 hover:bg-emerald-100 gap-1 shrink-0">
-                  <CheckCircle2 className="h-3 w-3" />
-                  Envoyé
-                </Badge>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 hover:bg-emerald-100 gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Envoyé
+                  </Badge>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 rounded-full"
+                    title="Renvoyer à ce destinataire"
+                    onClick={() => handleResendOne(entry)}
+                    disabled={resendingEmail === entry.email}
+                  >
+                    {resendingEmail === entry.email ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Send className="h-3 w-3" />
+                    )}
+                  </Button>
+                </div>
               ) : (
                 <Badge
                   className="bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400 hover:bg-red-100 gap-1 shrink-0"
