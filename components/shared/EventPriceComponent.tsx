@@ -1326,6 +1326,98 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       </div>
     ) : null;
 
+  // Lab contact-details card ("Coordonnées du laboratoire preneur en charge").
+  // Rendered in two places, same reason as labProofCard above: a
+  // `registrationRequestOnly` option (e.g. "Paiement par le laboratoire") swaps
+  // the whole payment area for the single "send request" button, so without a
+  // second render site here the form asking for these details would never be
+  // shown even though validateLabFields still requires them before submit.
+  const labContactCard = isLabOptionSelected ? (
+    <div className="space-y-3 rounded-2xl border border-amber-300/50 bg-amber-50/50 dark:bg-amber-900/10 p-4">
+      <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">
+        Coordonnées du laboratoire preneur en charge
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-xs">Nom du laboratoire</Label>
+          <Input
+            value={labName}
+            onChange={(e) => {
+              setLabName(e.target.value);
+              setLabFieldErrors((prev) => ({ ...prev, labName: "" }));
+            }}
+            className="rounded-xl h-10"
+          />
+          {labFieldErrors.labName && (
+            <p className="text-xs text-destructive">{labFieldErrors.labName}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Nom du contact</Label>
+          <Input
+            value={labContactName}
+            onChange={(e) => {
+              setLabContactName(e.target.value);
+              setLabFieldErrors((prev) => ({ ...prev, labContactName: "" }));
+            }}
+            className="rounded-xl h-10"
+          />
+          {labFieldErrors.labContactName && (
+            <p className="text-xs text-destructive">{labFieldErrors.labContactName}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Email du contact</Label>
+          <Input
+            type="email"
+            value={labContactEmail}
+            onChange={(e) => {
+              setLabContactEmail(e.target.value);
+              setLabFieldErrors((prev) => ({ ...prev, labContactEmail: "" }));
+            }}
+            className="rounded-xl h-10"
+          />
+          {labFieldErrors.labContactEmail && (
+            <p className="text-xs text-destructive">{labFieldErrors.labContactEmail}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Téléphone du contact</Label>
+          <Input
+            value={labContactPhone}
+            onChange={(e) => setLabContactPhone(e.target.value)}
+            className="rounded-xl h-10"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-1">
+        <Label className="text-xs">Bon de commande ou justificatif (optionnel)</Label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <div className={`flex flex-1 items-center justify-center gap-2 h-10 rounded-xl border-2 border-dashed text-xs font-medium transition-all ${
+            labProofUrl
+              ? "border-green-400 bg-green-50 text-green-700"
+              : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
+          }`}>
+            {isUploadingLabProof ? (
+              <span className="animate-pulse">Téléchargement...</span>
+            ) : labProofUrl ? (
+              <><CheckCircle className="h-3.5 w-3.5" /> {labProofName || "Fichier téléchargé"}</>
+            ) : (
+              <><FileText className="h-3.5 w-3.5" /> Télécharger le fichier</>
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*,.heic,.heif,.pdf,.doc,.docx"
+            className="hidden"
+            onChange={(e) => e.target.files?.[0] && handleLabProofUpload(e.target.files[0])}
+          />
+        </label>
+      </div>
+    </div>
+  ) : null;
+
   return (
     <div className="relative mx-auto w-full max-w-full">
       <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
@@ -2280,6 +2372,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 // must therefore be rendered here too, right above it.
                 <div className="space-y-3">
                   {labProofCard}
+                  {labContactCard}
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button
                       onClick={() => void handleGetPreorder(true)}
@@ -2629,91 +2722,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             to the request button above. */}
                         {labProofCard}
 
-                        {isLabOptionSelected && (
-                          <div className="space-y-3 rounded-2xl border border-amber-300/50 bg-amber-50/50 dark:bg-amber-900/10 p-4">
-                            <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">
-                              Coordonnées du laboratoire preneur en charge
-                            </p>
-                            <div className="grid gap-3 sm:grid-cols-2">
-                              <div className="space-y-1">
-                                <Label className="text-xs">Nom du laboratoire</Label>
-                                <Input
-                                  value={labName}
-                                  onChange={(e) => {
-                                    setLabName(e.target.value);
-                                    setLabFieldErrors((prev) => ({ ...prev, labName: "" }));
-                                  }}
-                                  className="rounded-xl h-10"
-                                />
-                                {labFieldErrors.labName && (
-                                  <p className="text-xs text-destructive">{labFieldErrors.labName}</p>
-                                )}
-                              </div>
-                              <div className="space-y-1">
-                                <Label className="text-xs">Nom du contact</Label>
-                                <Input
-                                  value={labContactName}
-                                  onChange={(e) => {
-                                    setLabContactName(e.target.value);
-                                    setLabFieldErrors((prev) => ({ ...prev, labContactName: "" }));
-                                  }}
-                                  className="rounded-xl h-10"
-                                />
-                                {labFieldErrors.labContactName && (
-                                  <p className="text-xs text-destructive">{labFieldErrors.labContactName}</p>
-                                )}
-                              </div>
-                              <div className="space-y-1">
-                                <Label className="text-xs">Email du contact</Label>
-                                <Input
-                                  type="email"
-                                  value={labContactEmail}
-                                  onChange={(e) => {
-                                    setLabContactEmail(e.target.value);
-                                    setLabFieldErrors((prev) => ({ ...prev, labContactEmail: "" }));
-                                  }}
-                                  className="rounded-xl h-10"
-                                />
-                                {labFieldErrors.labContactEmail && (
-                                  <p className="text-xs text-destructive">{labFieldErrors.labContactEmail}</p>
-                                )}
-                              </div>
-                              <div className="space-y-1">
-                                <Label className="text-xs">Téléphone du contact</Label>
-                                <Input
-                                  value={labContactPhone}
-                                  onChange={(e) => setLabContactPhone(e.target.value)}
-                                  className="rounded-xl h-10"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="space-y-1">
-                              <Label className="text-xs">Bon de commande ou justificatif (optionnel)</Label>
-                              <label className="flex items-center gap-2 cursor-pointer">
-                                <div className={`flex flex-1 items-center justify-center gap-2 h-10 rounded-xl border-2 border-dashed text-xs font-medium transition-all ${
-                                  labProofUrl
-                                    ? "border-green-400 bg-green-50 text-green-700"
-                                    : "border-amber-300 bg-white/50 text-amber-700 hover:border-amber-500"
-                                }`}>
-                                  {isUploadingLabProof ? (
-                                    <span className="animate-pulse">Téléchargement...</span>
-                                  ) : labProofUrl ? (
-                                    <><CheckCircle className="h-3.5 w-3.5" /> {labProofName || "Fichier téléchargé"}</>
-                                  ) : (
-                                    <><FileText className="h-3.5 w-3.5" /> Télécharger le fichier</>
-                                  )}
-                                </div>
-                                <input
-                                  type="file"
-                                  accept="image/*,.heic,.heif,.pdf,.doc,.docx"
-                                  className="hidden"
-                                  onChange={(e) => e.target.files?.[0] && handleLabProofUpload(e.target.files[0])}
-                                />
-                              </label>
-                            </div>
-                          </div>
-                        )}
+                        {labContactCard}
                       </motion.div>
                     )}
                   </div>
