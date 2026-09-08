@@ -4461,6 +4461,9 @@
     },
     "banner": {
       "heading": "Banner deslizante",
+      "itemsLabel": "Fotos + títulos mostrados debajo del banner deslizante",
+      "itemAdd": "Añadir un banner",
+      "itemsEmpty": "Ningún banner aún · Haz clic en \"Añadir un banner\" para agregar uno",
       "imageLabel": "Imagen del banner",
       "imagePlaceholder": "Suba una imagen promocional para su banner",
       "imageTitleLabel": "Título mostrado sobre la foto",

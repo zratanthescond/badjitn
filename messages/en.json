@@ -4461,6 +4461,9 @@
     },
     "banner": {
       "heading": "Rolling banner",
+      "itemsLabel": "Photos + titles displayed below the ticker",
+      "itemAdd": "Add a banner",
+      "itemsEmpty": "No banners yet · Click \"Add a banner\" to add one",
       "imageLabel": "Banner image",
       "imagePlaceholder": "Upload a promotional image for your banner",
       "imageTitleLabel": "Title displayed above the photo",

@@ -118,6 +118,14 @@ export default async function OrgPage({
   const { org, events } = data;
   const domain = org.subdomain ? `${org.subdomain}.badgi.net` : `${org.slug}.badgi.net`;
   const hasPartners = org.partners && org.partners.length > 0;
+  // Falls back to the legacy single bannerImage/bannerImageTitle for
+  // organisations that haven't re-saved their settings since bannerItems shipped.
+  const bannerItems: { image: string; title?: string }[] =
+    org.bannerItems && org.bannerItems.length > 0
+      ? org.bannerItems
+      : org.bannerImage
+      ? [{ image: org.bannerImage, title: org.bannerImageTitle }]
+      : [];
 
   const now = Date.now();
   const nextEvent =
@@ -390,30 +398,34 @@ export default async function OrgPage({
         <OrgRollingBanner title={org.bannerTitle} content={org.bannerContent} />
       )}
 
-      {/* ── Banner image + title ── */}
-      {(org.bannerImage || org.bannerImageTitle) && (
+      {/* ── Banner images + titles ── */}
+      {bannerItems.length > 0 && (
         <section className="w-full bg-white dark:bg-elite-charcoal overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-            {org.bannerImageTitle && (
-              <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-900 dark:text-white mb-6">
-                {org.bannerImageTitle}
-              </h2>
-            )}
-            {org.bannerImage && (
-              <div
-                className="relative w-full rounded-2xl overflow-hidden"
-                style={{
-                  boxShadow: "0 8px 40px rgba(98,76,245,0.12), 0 0 0 1px rgba(98,76,245,0.08)",
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={org.bannerImage}
-                  alt={`${org.name} – bannière`}
-                  className="w-full h-auto max-h-[400px] object-cover"
-                />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">
+            {bannerItems.map((item, index) => (
+              <div key={index}>
+                {item.title && (
+                  <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-900 dark:text-white mb-6">
+                    {item.title}
+                  </h2>
+                )}
+                {item.image && (
+                  <div
+                    className="relative w-full rounded-2xl overflow-hidden"
+                    style={{
+                      boxShadow: "0 8px 40px rgba(98,76,245,0.12), 0 0 0 1px rgba(98,76,245,0.08)",
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.image}
+                      alt={item.title || `${org.name} – bannière`}
+                      className="w-full h-auto max-h-[400px] object-cover"
+                    />
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
         </section>
       )}

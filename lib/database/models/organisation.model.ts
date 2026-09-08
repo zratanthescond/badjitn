@@ -12,6 +12,7 @@ export interface IOrganisation extends Document {
     bannerContent?: string;
     bannerImage?: string;
     bannerImageTitle?: string;
+    bannerItems?: { image: string; title?: string }[];
     partners?: { name: string; logo?: string; website?: string }[];
     socialLinks: {
         facebook?: string;
@@ -37,6 +38,10 @@ const OrganisationSchema = new Schema<IOrganisation>({
     bannerContent: { type: String },
     bannerImage: { type: String },
     bannerImageTitle: { type: String },
+    bannerItems: [{
+        image: { type: String, required: true },
+        title: { type: String },
+    }],
     partners: [{
         name: { type: String },
         logo: { type: String },

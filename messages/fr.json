@@ -4461,6 +4461,9 @@
     },
     "banner": {
       "heading": "Bannière roulante",
+      "itemsLabel": "Photos + titres affichés sous le bandeau",
+      "itemAdd": "Ajouter une bannière",
+      "itemsEmpty": "Aucune bannière · Cliquez sur \"Ajouter une bannière\" pour en ajouter une",
       "imageLabel": "Image de bannière",
       "imagePlaceholder": "Téléchargez une image promotionnelle pour votre bannière",
       "imageTitleLabel": "Titre affiché au-dessus de la photo",

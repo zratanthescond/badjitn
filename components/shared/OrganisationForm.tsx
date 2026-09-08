@@ -54,6 +54,10 @@ const organisationSchema = z.object({
     bannerContent: z.string().max(400, "Maximum 400 caractères").optional(),
     bannerImage: z.string().optional(),
     bannerImageTitle: z.string().max(120, "Maximum 120 caractères").optional(),
+    bannerItems: z.array(z.object({
+        image: z.string().min(1, "Image requise"),
+        title: z.string().max(120, "Maximum 120 caractères").optional(),
+    })).optional(),
     partners: z.array(z.object({
         name: z.string().min(1, "Nom requis"),
         logo: z.string().optional(),
@@ -82,6 +86,7 @@ interface OrganisationFormProps {
         bannerContent?: string;
         bannerImage?: string;
         bannerImageTitle?: string;
+        bannerItems?: { image: string; title?: string }[];
         partners?: { name: string; logo?: string; website?: string }[];
         logo?: string;
         coverImage?: string;
@@ -115,6 +120,13 @@ export default function OrganisationForm({
             bannerContent: organisation?.bannerContent || "",
             bannerImage: organisation?.bannerImage || "",
             bannerImageTitle: organisation?.bannerImageTitle || "",
+            // Migrate the old single image+title into the new list on first edit.
+            bannerItems:
+                organisation?.bannerItems && organisation.bannerItems.length > 0
+                    ? organisation.bannerItems
+                    : organisation?.bannerImage
+                        ? [{ image: organisation.bannerImage, title: organisation?.bannerImageTitle || "" }]
+                        : [],
             partners: organisation?.partners || [],
             logo: organisation?.logo || "",
             coverImage: organisation?.coverImage || "",
@@ -131,6 +143,12 @@ export default function OrganisationForm({
         name: "partners",
     });
 
+    const { fields: bannerItemFields, append: appendBannerItem, remove: removeBannerItem } = useFieldArray({
+        // @ts-ignore
+        control: form.control,
+        name: "bannerItems",
+    });
+
     const onSubmit = async (values: OrganisationFormValues) => {
         setIsSubmitting(true);
         try {
@@ -143,8 +161,7 @@ export default function OrganisationForm({
                     subdomain: values.subdomain || undefined,
                     bannerTitle: values.bannerTitle || undefined,
                     bannerContent: values.bannerContent || undefined,
-                    bannerImage: values.bannerImage || undefined,
-                    bannerImageTitle: values.bannerImageTitle || undefined,
+                    bannerItems: (values.bannerItems || []).filter((item) => item.image),
                     partners: values.partners || [],
                     logo: values.logo,
                     coverImage: values.coverImage,
@@ -174,8 +191,7 @@ export default function OrganisationForm({
                         subdomain: values.subdomain || undefined,
                         bannerTitle: values.bannerTitle || undefined,
                         bannerContent: values.bannerContent || undefined,
-                        bannerImage: values.bannerImage || undefined,
-                        bannerImageTitle: values.bannerImageTitle || undefined,
+                        bannerItems: (values.bannerItems || []).filter((item) => item.image),
                         partners: values.partners || [],
                         logo: values.logo,
                         coverImage: values.coverImage,
@@ -477,35 +493,71 @@ export default function OrganisationForm({
                                 {tx("banner.heading", "Bannière roulante")}
                                 <span className="text-muted-foreground font-normal">{tx("common.optional", "(optionnel)")}</span>
                             </h3>
-                            <FormField
-                                control={form.control}
-                                name="bannerImage"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <ImageUploader
-                                                value={field.value || ""}
-                                                onChange={field.onChange}
-                                                aspectRatio="wide"
-                                                label={tx("banner.imageLabel", "Image de bannière")}
-                                                placeholder={tx("banner.imagePlaceholder", "Téléchargez une image promotionnelle pour votre bannière")}
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <FormLabel className="text-xs text-muted-foreground">
+                                        {tx("banner.itemsLabel", "Photos + titres affichés sous le bandeau")}
+                                    </FormLabel>
+                                    <button
+                                        type="button"
+                                        onClick={() => appendBannerItem({ image: "", title: "" })}
+                                        className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-700 rounded-full px-3 py-1 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
+                                    >
+                                        <Plus className="h-3 w-3" />
+                                        {tx("banner.itemAdd", "Ajouter une bannière")}
+                                    </button>
+                                </div>
+
+                                {bannerItemFields.length === 0 && (
+                                    <p className="text-xs text-muted-foreground text-center py-4 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl">
+                                        {tx("banner.itemsEmpty", "Aucune bannière · Cliquez sur \"Ajouter une bannière\" pour en ajouter une")}
+                                    </p>
+                                )}
+
+                                <div className="flex flex-col gap-4">
+                                    {bannerItemFields.map((field, index) => (
+                                        <div key={field.id} className="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <span className="text-xs font-semibold text-muted-foreground pt-1">#{index + 1}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeBannerItem(index)}
+                                                    className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                            <FormField control={form.control} name={`bannerItems.${index}.image`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <ImageUploader
+                                                                value={field.value || ""}
+                                                                onChange={field.onChange}
+                                                                aspectRatio="wide"
+                                                                label={tx("banner.imageLabel", "Image de bannière")}
+                                                                placeholder={tx("banner.imagePlaceholder", "Téléchargez une image promotionnelle pour votre bannière")}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
                                             />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField control={form.control} name="bannerImageTitle"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-xs text-muted-foreground">{tx("banner.imageTitleLabel", "Titre affiché au-dessus de la photo")}</FormLabel>
-                                        <FormControl>
-                                            <Input className="input-field glass rounded-xl" placeholder={tx("banner.imageTitlePlaceholder", "ex: Notre dernier événement en images")} {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                            <FormField control={form.control} name={`bannerItems.${index}.title`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-xs text-muted-foreground">{tx("banner.imageTitleLabel", "Titre affiché au-dessus de la photo")}</FormLabel>
+                                                        <FormControl>
+                                                            <Input className="input-field glass rounded-xl" placeholder={tx("banner.imageTitlePlaceholder", "ex: Notre dernier événement en images")} {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                             <FormField control={form.control} name="bannerTitle"
                                 render={({ field }) => (
                                     <FormItem>
