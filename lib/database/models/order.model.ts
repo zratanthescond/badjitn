@@ -73,7 +73,12 @@ const RequiredUserInfoSchema = new Schema<RequiredUserInfoType>({
   label: { type: String, required: true },
   field: { type: String, required: true },
   type: { type: String, required: true },
-  value: { type: String, required: true },
+  // Not required: many registration fields are optional (e.g. custom fields
+  // marked isRequired: false, an unanswered work-summary section), and the
+  // form legitimately submits an empty string for those — Mongoose's
+  // `required` validator rejects "" for String paths, which used to throw
+  // and surface as a generic "unexpected error" on submit.
+  value: { type: String, default: "" },
 });
 
 // Main schema for `Order`
