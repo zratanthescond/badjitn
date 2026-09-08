@@ -4463,7 +4463,9 @@
       "heading": "Rolling banner",
       "imageLabel": "Banner image",
       "imagePlaceholder": "Upload a promotional image for your banner",
-      "titleLabel": "Banner title",
+      "imageTitleLabel": "Title displayed above the photo",
+      "imageTitlePlaceholder": "e.g.: Our latest event in pictures",
+      "titleLabel": "Scrolling banner tag",
       "titlePlaceholder": "e.g.: NEWS, INFO, ANNOUNCEMENT…",
       "contentLabel": "Scrolling text",
       "contentPlaceholder": "This text will scroll in a loop on your page. E.g.: Registration open for the 2026 congress · New date announced…"

@@ -30,6 +30,7 @@ export async function createOrganisation({
     bannerTitle,
     bannerContent,
     bannerImage,
+    bannerImageTitle,
     partners,
     coverImage,
     socialLinks,
@@ -43,6 +44,7 @@ export async function createOrganisation({
     bannerTitle?: string;
     bannerContent?: string;
     bannerImage?: string;
+    bannerImageTitle?: string;
     partners?: { name: string; logo?: string; website?: string }[];
     coverImage?: string;
     socialLinks?: {
@@ -83,6 +85,7 @@ export async function createOrganisation({
             ...(bannerTitle ? { bannerTitle } : {}),
             ...(bannerContent ? { bannerContent } : {}),
             ...(bannerImage ? { bannerImage } : {}),
+            ...(bannerImageTitle ? { bannerImageTitle } : {}),
             ...(partners?.length ? { partners } : {}),
             socialLinks: socialLinks || {},
             creator: userId,
@@ -195,6 +198,7 @@ export async function updateOrganisation({
         bannerTitle?: string;
         bannerContent?: string;
         bannerImage?: string;
+        bannerImageTitle?: string;
         partners?: { name: string; logo?: string; website?: string }[];
         socialLinks?: {
             facebook?: string;

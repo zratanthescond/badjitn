@@ -53,6 +53,7 @@ const organisationSchema = z.object({
     bannerTitle: z.string().max(80, "Maximum 80 caractères").optional(),
     bannerContent: z.string().max(400, "Maximum 400 caractères").optional(),
     bannerImage: z.string().optional(),
+    bannerImageTitle: z.string().max(120, "Maximum 120 caractères").optional(),
     partners: z.array(z.object({
         name: z.string().min(1, "Nom requis"),
         logo: z.string().optional(),
@@ -80,6 +81,7 @@ interface OrganisationFormProps {
         bannerTitle?: string;
         bannerContent?: string;
         bannerImage?: string;
+        bannerImageTitle?: string;
         partners?: { name: string; logo?: string; website?: string }[];
         logo?: string;
         coverImage?: string;
@@ -112,6 +114,7 @@ export default function OrganisationForm({
             bannerTitle: organisation?.bannerTitle || "",
             bannerContent: organisation?.bannerContent || "",
             bannerImage: organisation?.bannerImage || "",
+            bannerImageTitle: organisation?.bannerImageTitle || "",
             partners: organisation?.partners || [],
             logo: organisation?.logo || "",
             coverImage: organisation?.coverImage || "",
@@ -141,6 +144,7 @@ export default function OrganisationForm({
                     bannerTitle: values.bannerTitle || undefined,
                     bannerContent: values.bannerContent || undefined,
                     bannerImage: values.bannerImage || undefined,
+                    bannerImageTitle: values.bannerImageTitle || undefined,
                     partners: values.partners || [],
                     logo: values.logo,
                     coverImage: values.coverImage,
@@ -171,6 +175,7 @@ export default function OrganisationForm({
                         bannerTitle: values.bannerTitle || undefined,
                         bannerContent: values.bannerContent || undefined,
                         bannerImage: values.bannerImage || undefined,
+                        bannerImageTitle: values.bannerImageTitle || undefined,
                         partners: values.partners || [],
                         logo: values.logo,
                         coverImage: values.coverImage,
@@ -490,10 +495,21 @@ export default function OrganisationForm({
                                     </FormItem>
                                 )}
                             />
+                            <FormField control={form.control} name="bannerImageTitle"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-xs text-muted-foreground">{tx("banner.imageTitleLabel", "Titre affiché au-dessus de la photo")}</FormLabel>
+                                        <FormControl>
+                                            <Input className="input-field glass rounded-xl" placeholder={tx("banner.imageTitlePlaceholder", "ex: Notre dernier événement en images")} {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <FormField control={form.control} name="bannerTitle"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-xs text-muted-foreground">{tx("banner.titleLabel", "Titre de la bannière")}</FormLabel>
+                                        <FormLabel className="text-xs text-muted-foreground">{tx("banner.titleLabel", "Étiquette du bandeau défilant")}</FormLabel>
                                         <FormControl>
                                             <Input className="input-field glass rounded-xl" placeholder={tx("banner.titlePlaceholder", "ex: ACTUALITÉS, INFO, ANNONCE…")} {...field} />
                                         </FormControl>

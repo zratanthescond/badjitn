@@ -4463,7 +4463,9 @@
       "heading": "Bannière roulante",
       "imageLabel": "Image de bannière",
       "imagePlaceholder": "Téléchargez une image promotionnelle pour votre bannière",
-      "titleLabel": "Titre de la bannière",
+      "imageTitleLabel": "Titre affiché au-dessus de la photo",
+      "imageTitlePlaceholder": "ex: Notre dernier événement en images",
+      "titleLabel": "Étiquette du bandeau défilant",
       "titlePlaceholder": "ex: ACTUALITÉS, INFO, ANNONCE…",
       "contentLabel": "Texte défilant",
       "contentPlaceholder": "Ce texte défilera en boucle sur votre page. Ex: Inscriptions ouvertes pour le congrès 2026 · Nouvelle date annoncée…"

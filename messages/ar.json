@@ -4463,7 +4463,9 @@
       "heading": "شريط متحرك",
       "imageLabel": "صورة الشريط",
       "imagePlaceholder": "حمّل صورة ترويجية لشريطك",
-      "titleLabel": "عنوان الشريط",
+      "imageTitleLabel": "العنوان المعروض فوق الصورة",
+      "imageTitlePlaceholder": "مثال: آخر فعالياتنا بالصور",
+      "titleLabel": "وسم الشريط المتحرك",
       "titlePlaceholder": "مثال: أخبار، معلومة، إعلان…",
       "contentLabel": "نص متحرك",
       "contentPlaceholder": "سيتحرك هذا النص بشكل متكرر على صفحتك. مثال: التسجيل مفتوح لمؤتمر 2026 · تم الإعلان عن تاريخ جديد…"

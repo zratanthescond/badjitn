@@ -390,23 +390,30 @@ export default async function OrgPage({
         <OrgRollingBanner title={org.bannerTitle} content={org.bannerContent} />
       )}
 
-      {/* ── Banner image ── */}
-      {org.bannerImage && (
+      {/* ── Banner image + title ── */}
+      {(org.bannerImage || org.bannerImageTitle) && (
         <section className="w-full bg-white dark:bg-elite-charcoal overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-            <div
-              className="relative w-full rounded-2xl overflow-hidden"
-              style={{
-                boxShadow: "0 8px 40px rgba(98,76,245,0.12), 0 0 0 1px rgba(98,76,245,0.08)",
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={org.bannerImage}
-                alt={`${org.name} – bannière`}
-                className="w-full h-auto max-h-[400px] object-cover"
-              />
-            </div>
+            {org.bannerImageTitle && (
+              <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-900 dark:text-white mb-6">
+                {org.bannerImageTitle}
+              </h2>
+            )}
+            {org.bannerImage && (
+              <div
+                className="relative w-full rounded-2xl overflow-hidden"
+                style={{
+                  boxShadow: "0 8px 40px rgba(98,76,245,0.12), 0 0 0 1px rgba(98,76,245,0.08)",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={org.bannerImage}
+                  alt={`${org.name} – bannière`}
+                  className="w-full h-auto max-h-[400px] object-cover"
+                />
+              </div>
+            )}
           </div>
         </section>
       )}

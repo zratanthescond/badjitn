@@ -4463,7 +4463,9 @@
       "heading": "Banner deslizante",
       "imageLabel": "Imagen del banner",
       "imagePlaceholder": "Suba una imagen promocional para su banner",
-      "titleLabel": "Título del banner",
+      "imageTitleLabel": "Título mostrado sobre la foto",
+      "imageTitlePlaceholder": "ej.: Nuestro último evento en imágenes",
+      "titleLabel": "Etiqueta del banner deslizante",
       "titlePlaceholder": "ej.: NOTICIAS, INFO, ANUNCIO…",
       "contentLabel": "Texto desplazante",
       "contentPlaceholder": "Este texto se desplazará en bucle en su página. Ej.: Inscripciones abiertas para el congreso 2026 · Nueva fecha anunciada…"
