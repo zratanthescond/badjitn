@@ -12,7 +12,7 @@ export interface IOrganisation extends Document {
     bannerContent?: string;
     bannerImage?: string;
     bannerImageTitle?: string;
-    bannerItems?: { image: string; title?: string }[];
+    bannerItems?: { image: string; title?: string; displayMode?: "cover" | "contain" }[];
     partners?: { name: string; logo?: string; website?: string }[];
     socialLinks: {
         facebook?: string;
@@ -41,6 +41,7 @@ const OrganisationSchema = new Schema<IOrganisation>({
     bannerItems: [{
         image: { type: String, required: true },
         title: { type: String },
+        displayMode: { type: String, enum: ["cover", "contain"], default: "cover" },
     }],
     partners: [{
         name: { type: String },

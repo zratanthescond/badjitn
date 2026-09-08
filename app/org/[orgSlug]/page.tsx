@@ -120,11 +120,11 @@ export default async function OrgPage({
   const hasPartners = org.partners && org.partners.length > 0;
   // Falls back to the legacy single bannerImage/bannerImageTitle for
   // organisations that haven't re-saved their settings since bannerItems shipped.
-  const bannerItems: { image: string; title?: string }[] =
+  const bannerItems: { image: string; title?: string; displayMode?: "cover" | "contain" }[] =
     org.bannerItems && org.bannerItems.length > 0
       ? org.bannerItems
       : org.bannerImage
-      ? [{ image: org.bannerImage, title: org.bannerImageTitle }]
+      ? [{ image: org.bannerImage, title: org.bannerImageTitle, displayMode: "cover" }]
       : [];
 
   const now = Date.now();
@@ -420,7 +420,11 @@ export default async function OrgPage({
                     <img
                       src={item.image}
                       alt={item.title || `${org.name} – bannière`}
-                      className="w-full h-auto max-h-[400px] object-cover"
+                      className={
+                        item.displayMode === "contain"
+                          ? "w-full h-auto object-contain"
+                          : "w-full h-auto max-h-[400px] object-cover"
+                      }
                     />
                   </div>
                 )}

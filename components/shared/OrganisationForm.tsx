@@ -57,6 +57,7 @@ const organisationSchema = z.object({
     bannerItems: z.array(z.object({
         image: z.string().min(1, "Image requise"),
         title: z.string().max(120, "Maximum 120 caractères").optional(),
+        displayMode: z.enum(["cover", "contain"]).optional(),
     })).optional(),
     partners: z.array(z.object({
         name: z.string().min(1, "Nom requis"),
@@ -86,7 +87,7 @@ interface OrganisationFormProps {
         bannerContent?: string;
         bannerImage?: string;
         bannerImageTitle?: string;
-        bannerItems?: { image: string; title?: string }[];
+        bannerItems?: { image: string; title?: string; displayMode?: "cover" | "contain" }[];
         partners?: { name: string; logo?: string; website?: string }[];
         logo?: string;
         coverImage?: string;
@@ -125,7 +126,7 @@ export default function OrganisationForm({
                 organisation?.bannerItems && organisation.bannerItems.length > 0
                     ? organisation.bannerItems
                     : organisation?.bannerImage
-                        ? [{ image: organisation.bannerImage, title: organisation?.bannerImageTitle || "" }]
+                        ? [{ image: organisation.bannerImage, title: organisation?.bannerImageTitle || "", displayMode: "cover" as const }]
                         : [],
             partners: organisation?.partners || [],
             logo: organisation?.logo || "",
@@ -500,7 +501,7 @@ export default function OrganisationForm({
                                     </FormLabel>
                                     <button
                                         type="button"
-                                        onClick={() => appendBannerItem({ image: "", title: "" })}
+                                        onClick={() => appendBannerItem({ image: "", title: "", displayMode: "cover" })}
                                         className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-700 rounded-full px-3 py-1 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
                                     >
                                         <Plus className="h-3 w-3" />
@@ -551,6 +552,44 @@ export default function OrganisationForm({
                                                             <Input className="input-field glass rounded-xl" placeholder={tx("banner.imageTitlePlaceholder", "ex: Notre dernier événement en images")} {...field} />
                                                         </FormControl>
                                                         <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField control={form.control} name={`bannerItems.${index}.displayMode`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-xs text-muted-foreground">{tx("banner.displayModeLabel", "Affichage de l'image")}</FormLabel>
+                                                        <FormControl>
+                                                            <div className="flex gap-2">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => field.onChange("cover")}
+                                                                    className={`flex-1 text-xs font-medium rounded-lg px-3 py-2 border transition-colors ${
+                                                                        (field.value || "cover") === "cover"
+                                                                            ? "bg-indigo-600 text-white border-indigo-600"
+                                                                            : "bg-white dark:bg-slate-800 text-muted-foreground border-slate-200 dark:border-slate-700 hover:border-indigo-300"
+                                                                    }`}
+                                                                >
+                                                                    {tx("banner.displayModeCover", "Recadrée (bannière)")}
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => field.onChange("contain")}
+                                                                    className={`flex-1 text-xs font-medium rounded-lg px-3 py-2 border transition-colors ${
+                                                                        field.value === "contain"
+                                                                            ? "bg-indigo-600 text-white border-indigo-600"
+                                                                            : "bg-white dark:bg-slate-800 text-muted-foreground border-slate-200 dark:border-slate-700 hover:border-indigo-300"
+                                                                    }`}
+                                                                >
+                                                                    {tx("banner.displayModeContain", "Complète (sans recadrage)")}
+                                                                </button>
+                                                            </div>
+                                                        </FormControl>
+                                                        <p className="text-[11px] text-muted-foreground">
+                                                            {(field.value || "cover") === "cover"
+                                                                ? tx("banner.displayModeCoverHint", "L'image remplit la largeur, quitte à en recadrer le haut/bas (idéal pour une photo).")
+                                                                : tx("banner.displayModeContainHint", "L'image s'affiche entièrement sans recadrage (idéal pour un programme ou une affiche avec du texte).")}
+                                                        </p>
                                                     </FormItem>
                                                 )}
                                             />

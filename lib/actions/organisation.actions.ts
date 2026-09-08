@@ -46,7 +46,7 @@ export async function createOrganisation({
     bannerContent?: string;
     bannerImage?: string;
     bannerImageTitle?: string;
-    bannerItems?: { image: string; title?: string }[];
+    bannerItems?: { image: string; title?: string; displayMode?: "cover" | "contain" }[];
     partners?: { name: string; logo?: string; website?: string }[];
     coverImage?: string;
     socialLinks?: {
@@ -202,7 +202,7 @@ export async function updateOrganisation({
         bannerContent?: string;
         bannerImage?: string;
         bannerImageTitle?: string;
-        bannerItems?: { image: string; title?: string }[];
+        bannerItems?: { image: string; title?: string; displayMode?: "cover" | "contain" }[];
         partners?: { name: string; logo?: string; website?: string }[];
         socialLinks?: {
             facebook?: string;
