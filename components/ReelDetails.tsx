@@ -417,12 +417,12 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
   const tabItems = useMemo(
     () => [
       { value: "details", label: t("tabs.details"), icon: Menu },
-      { value: "date", label: t("tabs.date"), icon: CalendarDays },
-      { value: "location", label: t("tabs.location"), icon: MapPin },
-      ...(!event.url ? [{ value: "registration", label: registrationTabLabel, icon: Wallet }] : []),
       ...(event.programme && event.programme.length > 0
         ? [{ value: "programme", label: t("tabs.programme"), icon: LayoutList }]
         : []),
+      { value: "date", label: t("tabs.date"), icon: CalendarDays },
+      { value: "location", label: t("tabs.location"), icon: MapPin },
+      ...(!event.url ? [{ value: "registration", label: registrationTabLabel, icon: Wallet }] : []),
       { value: "feedback", label: t("tabs.feedback"), icon: MessageSquareIcon },
     ],
     [registrationTabLabel, t, event.url, event.programme]
