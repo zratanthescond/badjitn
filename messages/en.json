@@ -1854,6 +1854,7 @@
     "workTitlePlaceholder": "Your summary title",
     "workSummaryLabel": "Summary",
     "workSummaryPlaceholder": "Add your work summary here",
+    "workAddAnother": "Add another summary",
     "errorTitle": "Error",
     "completeInfoBeforeContinue": "Please complete the registration information before continuing.",
     "registrationConfirmedTitle": "Registration confirmed",

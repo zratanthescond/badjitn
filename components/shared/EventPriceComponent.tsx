@@ -64,6 +64,18 @@ type RegistrationInfoItem = {
 
 type WorkChoice = "yes" | "no";
 
+// One résumé being drafted at registration time. Events can allow more than
+// one submission per participant (event.maxWorkSubmissions), in which case
+// the participant can add several of these before submitting registration.
+type WorkDraft = {
+  key: string;
+  workId: string;
+  title: string;
+  note: string;
+  sectionValues: Record<string, string>;
+  coAuthors: { firstName: string; lastName: string; affiliation: string }[];
+};
+
 const baseRegistrationFields = [
   {
     _id: "firstName",
@@ -136,16 +148,19 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [registrationValues, setRegistrationValues] = useState<Record<string, string>>({});
   const [registrationErrors, setRegistrationErrors] = useState<Record<string, string>>({});
   const [workChoice, setWorkChoice] = useState<WorkChoice>("no");
-  const [workSummaryTitle, setWorkSummaryTitle] = useState("");
-  const [workSummaryNote, setWorkSummaryNote] = useState("");
-  // Structured abstract content, keyed by section label, when the event
-  // configures workAbstractConfig.sections instead of a single free-text résumé.
-  const [workSectionValues, setWorkSectionValues] = useState<Record<string, string>>({});
-  const [workCoAuthors, setWorkCoAuthors] = useState<
-    { firstName: string; lastName: string; affiliation: string }[]
-  >([]);
+  const makeEmptyWorkDraft = (): WorkDraft => ({
+    key: uuidv4(),
+    workId: "",
+    title: "",
+    note: "",
+    sectionValues: {},
+    coAuthors: [],
+  });
+  // One or more résumés drafted for this registration. Most events only allow
+  // one (the array stays length 1), but event.maxWorkSubmissions can raise
+  // that cap — see workAllowMultipleSubmissions below.
+  const [workDrafts, setWorkDrafts] = useState<WorkDraft[]>(() => [makeEmptyWorkDraft()]);
   const [workSummaryError, setWorkSummaryError] = useState("");
-  const [workSummaryId, setWorkSummaryId] = useState("");
   const [successOpen, setSuccessOpen] = useState(false);
   const [emailAlreadyRegistered, setEmailAlreadyRegistered] = useState(false);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
@@ -581,6 +596,19 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     }
   };
 
+  const updateWorkDraft = (index: number, updates: Partial<WorkDraft>) => {
+    setWorkDrafts((prev) => prev.map((d, i) => (i === index ? { ...d, ...updates } : d)));
+    setWorkSummaryError("");
+  };
+
+  const addWorkDraft = () => {
+    setWorkDrafts((prev) => [...prev, makeEmptyWorkDraft()]);
+  };
+
+  const removeWorkDraft = (index: number) => {
+    setWorkDrafts((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== index) : prev));
+  };
+
   const handleEmailBlur = async (email: string) => {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
 
@@ -718,10 +746,16 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const workAbstractSections = event.workAbstractConfig?.sections;
   const workTotalWordLimit = event.workAbstractConfig?.totalWordLimit;
   const workAllowCoAuthors = event.workAbstractConfig?.allowCoAuthors === true;
+  // Events accept several résumés per participant when maxWorkSubmissions is
+  // left unset (unlimited) or set above 1; exactly 1 keeps the single-résumé flow.
+  const workAllowMultipleSubmissions = !event.maxWorkSubmissions || event.maxWorkSubmissions > 1;
+  const workMaxSubmissionsReached =
+    !!event.maxWorkSubmissions && workDrafts.length >= event.maxWorkSubmissions;
   const countWords = (text: string) => (text.trim() ? text.trim().split(/\s+/).length : 0);
-  const workTotalWordCount = workAbstractSections?.length
-    ? workAbstractSections.reduce((sum, s) => sum + countWords(workSectionValues[s.label] || ""), 0)
-    : countWords(workSummaryNote);
+  const getWorkDraftWordCount = (draft: WorkDraft) =>
+    workAbstractSections?.length
+      ? workAbstractSections.reduce((sum, s) => sum + countWords(draft.sectionValues[s.label] || ""), 0)
+      : countWords(draft.note);
   const workSummaryClientInfo = {
     firstName: registrationValues.firstName || "",
     lastName: registrationValues.lastName || "",
@@ -750,42 +784,51 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       });
 
       if (workChoice === "yes") {
-        items.push({
-          field: "workSummaryTitle",
-          label: "Titre du resume",
-          type: "text",
-          value: workSummaryTitle.trim(),
-        });
+        // Field names stay unsuffixed for the first résumé (workSummaryTitle,
+        // workSummaryNote, ...) so the guest order-fallback lookup in
+        // resolveWorkFromOrder (lib/actions/user.actions.ts) keeps working
+        // unchanged. Additional résumés (index > 0) get a numbered suffix.
+        workDrafts.forEach((draft, index) => {
+          const suffix = index === 0 ? "" : `_${index + 1}`;
+          const resumeLabel = index === 0 ? "" : ` (résumé ${index + 1})`;
 
-        if (workAbstractSections?.length) {
-          workAbstractSections.forEach((s) => {
-            items.push({
-              field: `workSection_${s.label}`,
-              label: s.label,
-              type: "text",
-              value: (workSectionValues[s.label] || "").trim(),
+          items.push({
+            field: `workSummaryTitle${suffix}`,
+            label: `Titre du resume${resumeLabel}`,
+            type: "text",
+            value: draft.title.trim(),
+          });
+
+          if (workAbstractSections?.length) {
+            workAbstractSections.forEach((s) => {
+              items.push({
+                field: `workSection_${s.label}${suffix}`,
+                label: `${s.label}${resumeLabel}`,
+                type: "text",
+                value: (draft.sectionValues[s.label] || "").trim(),
+              });
             });
-          });
-        } else {
-          items.push({
-            field: "workSummaryNote",
-            label: "Resume",
-            type: "text",
-            value: workSummaryNote.trim(),
-          });
-        }
+          } else {
+            items.push({
+              field: `workSummaryNote${suffix}`,
+              label: `Resume${resumeLabel}`,
+              type: "text",
+              value: draft.note.trim(),
+            });
+          }
 
-        if (workAllowCoAuthors && workCoAuthors.length > 0) {
-          items.push({
-            field: "workCoAuthors",
-            label: "Co-auteurs",
-            type: "text",
-            value: workCoAuthors
-              .map((c) => [c.firstName, c.lastName, c.affiliation ? `(${c.affiliation})` : ""].filter(Boolean).join(" "))
-              .filter(Boolean)
-              .join("; "),
-          });
-        }
+          if (workAllowCoAuthors && draft.coAuthors.length > 0) {
+            items.push({
+              field: `workCoAuthors${suffix}`,
+              label: `Co-auteurs${resumeLabel}`,
+              type: "text",
+              value: draft.coAuthors
+                .map((c) => [c.firstName, c.lastName, c.affiliation ? `(${c.affiliation})` : ""].filter(Boolean).join(" "))
+                .filter(Boolean)
+                .join("; "),
+            });
+          }
+        });
       }
     }
 
@@ -831,12 +874,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     registrationValues,
     shouldShowWorkSubmission,
     workChoice,
-    workSummaryNote,
-    workSummaryTitle,
+    workDrafts,
     workAbstractSections,
-    workSectionValues,
     workAllowCoAuthors,
-    workCoAuthors,
     checkPlan,
     selectedOptions,
     optionEmails,
@@ -964,34 +1004,40 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       return true;
     }
 
-    const hasContent = workAbstractSections?.length
-      ? workAbstractSections.some((s) => (workSectionValues[s.label] || "").trim())
-      : workSummaryNote.trim();
+    for (let index = 0; index < workDrafts.length; index++) {
+      const draft = workDrafts[index];
+      const prefix = workDrafts.length > 1 ? `Résumé ${index + 1} : ` : "";
 
-    if (!workSummaryTitle.trim() && !hasContent) {
-      setWorkSummaryError(
-        "Veuillez renseigner au moins un titre ou un resume pour la soumission."
-      );
-      return false;
-    }
+      const hasContent = workAbstractSections?.length
+        ? workAbstractSections.some((s) => (draft.sectionValues[s.label] || "").trim())
+        : draft.note.trim();
 
-    if (workAbstractSections?.length) {
-      for (const s of workAbstractSections) {
-        const words = countWords(workSectionValues[s.label] || "");
-        if (s.wordLimit && words > s.wordLimit) {
-          setWorkSummaryError(
-            `La section « ${s.label} » dépasse la limite de ${s.wordLimit} mots (${words} mots).`
-          );
-          return false;
+      if (!draft.title.trim() && !hasContent) {
+        setWorkSummaryError(
+          `${prefix}Veuillez renseigner au moins un titre ou un resume pour la soumission.`
+        );
+        return false;
+      }
+
+      if (workAbstractSections?.length) {
+        for (const s of workAbstractSections) {
+          const words = countWords(draft.sectionValues[s.label] || "");
+          if (s.wordLimit && words > s.wordLimit) {
+            setWorkSummaryError(
+              `${prefix}La section « ${s.label} » dépasse la limite de ${s.wordLimit} mots (${words} mots).`
+            );
+            return false;
+          }
         }
       }
-    }
 
-    if (workTotalWordLimit && workTotalWordCount > workTotalWordLimit) {
-      setWorkSummaryError(
-        `Le résumé dépasse la limite de ${workTotalWordLimit} mots (${workTotalWordCount} mots).`
-      );
-      return false;
+      const totalWords = getWorkDraftWordCount(draft);
+      if (workTotalWordLimit && totalWords > workTotalWordLimit) {
+        setWorkSummaryError(
+          `${prefix}Le résumé dépasse la limite de ${workTotalWordLimit} mots (${totalWords} mots).`
+        );
+        return false;
+      }
     }
 
     setWorkSummaryError("");
@@ -1169,24 +1215,31 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       return false;
     }
 
-    await submitWorkSummary.mutateAsync({
-      ...(workSummaryId ? { workId: workSummaryId } : {}),
-      eventId: event._id,
-      userId: mongoUserId,
-      title: workSummaryTitle.trim() || "Sans titre",
-      clientInfo: workSummaryClientInfo,
-      note: workSummaryNote.trim(),
-      ...(workAbstractSections?.length
-        ? { sections: workAbstractSections.map((s) => ({ label: s.label, content: (workSectionValues[s.label] || "").trim() })) }
-        : {}),
-      ...(workAllowCoAuthors && workCoAuthors.length > 0
-        ? { coAuthors: workCoAuthors.filter((c) => c.firstName.trim() || c.lastName.trim() || c.affiliation.trim()) }
-        : {}),
-    }).then((response) => {
+    // Persist every drafted résumé (usually just one). Each call creates or
+    // updates its own EventWork document — reusing draft.workId on a retry
+    // updates the same document instead of duplicating it.
+    const persistedDrafts = [...workDrafts];
+    for (let index = 0; index < persistedDrafts.length; index++) {
+      const draft = persistedDrafts[index];
+      const response = await submitWorkSummary.mutateAsync({
+        ...(draft.workId ? { workId: draft.workId } : {}),
+        eventId: event._id,
+        userId: mongoUserId,
+        title: draft.title.trim() || "Sans titre",
+        clientInfo: workSummaryClientInfo,
+        note: draft.note.trim(),
+        ...(workAbstractSections?.length
+          ? { sections: workAbstractSections.map((s) => ({ label: s.label, content: (draft.sectionValues[s.label] || "").trim() })) }
+          : {}),
+        ...(workAllowCoAuthors && draft.coAuthors.length > 0
+          ? { coAuthors: draft.coAuthors.filter((c) => c.firstName.trim() || c.lastName.trim() || c.affiliation.trim()) }
+          : {}),
+      });
       if (response?.work?._id) {
-        setWorkSummaryId(response.work._id);
+        persistedDrafts[index] = { ...draft, workId: response.work._id };
       }
-    });
+    }
+    setWorkDrafts(persistedDrafts);
 
     return true;
   };
@@ -1707,150 +1760,194 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   </div>
 
                   {workChoice === "yes" && (
-                    <div className="space-y-4 rounded-3xl border border-primary/20 bg-primary/5 p-5">
-                      <div className="flex items-start gap-3">
-                        <div className="rounded-2xl bg-primary/10 p-2">
-                          <FileText className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="space-y-1">
-                          <h5 className="font-semibold text-foreground">{text("workSummaryHeading", "Résumé de soumission")}</h5>
-                          <p className="text-sm text-muted-foreground">
-                            {text("workSummaryHelp", "Renseignez ici le résumé à associer à votre inscription.")}
-                          </p>
-                        </div>
-                      </div>
-
+                    <div className="space-y-4">
                       {!userId && (
                         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
                           {text("workGuestNote", "Votre choix sera enregistré avec l'inscription. Vous serez notifié(e) par email en cas d'approbation, afin de compléter votre soumission.")}
                         </div>
                       )}
 
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-foreground">
-                          {text("workTitleLabel", "Titre du résumé")}
-                        </Label>
-                        <Input
-                          value={workSummaryTitle}
-                          onChange={(e) => {
-                            setWorkSummaryTitle(e.target.value);
-                            setWorkSummaryError("");
-                          }}
-                          placeholder={text("workTitlePlaceholder", "Titre de votre résumé")}
-                          className="rounded-2xl"
-                        />
-                      </div>
+                      {workDrafts.map((draft, index) => {
+                        const draftWordCount = getWorkDraftWordCount(draft);
+                        return (
+                          <div key={draft.key} className="space-y-4 rounded-3xl border border-primary/20 bg-primary/5 p-5">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-3">
+                                <div className="rounded-2xl bg-primary/10 p-2">
+                                  <FileText className="h-5 w-5 text-primary" />
+                                </div>
+                                <div className="space-y-1">
+                                  <h5 className="font-semibold text-foreground">
+                                    {text("workSummaryHeading", "Résumé de soumission")}
+                                    {workDrafts.length > 1 && ` #${index + 1}`}
+                                  </h5>
+                                  <p className="text-sm text-muted-foreground">
+                                    {text("workSummaryHelp", "Renseignez ici le résumé à associer à votre inscription.")}
+                                  </p>
+                                </div>
+                              </div>
+                              {workDrafts.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeWorkDraft(index)}
+                                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-white transition-colors"
+                                  aria-label="Retirer ce résumé"
+                                >
+                                  <X size={14} />
+                                </button>
+                              )}
+                            </div>
 
-                      {workAbstractSections?.length ? (
-                        <div className="space-y-4">
-                          {workAbstractSections.map((s) => {
-                            const value = workSectionValues[s.label] || "";
-                            const words = countWords(value);
-                            const overLimit = !!s.wordLimit && words > s.wordLimit;
-                            return (
-                              <div key={s.label} className="space-y-2">
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium text-foreground">
+                                {text("workTitleLabel", "Titre du résumé")}
+                              </Label>
+                              <Input
+                                value={draft.title}
+                                onChange={(e) => updateWorkDraft(index, { title: e.target.value })}
+                                placeholder={text("workTitlePlaceholder", "Titre de votre résumé")}
+                                className="rounded-2xl"
+                              />
+                            </div>
+
+                            {workAbstractSections?.length ? (
+                              <div className="space-y-4">
+                                {workAbstractSections.map((s) => {
+                                  const value = draft.sectionValues[s.label] || "";
+                                  const words = countWords(value);
+                                  const overLimit = !!s.wordLimit && words > s.wordLimit;
+                                  return (
+                                    <div key={s.label} className="space-y-2">
+                                      <div className="flex items-center justify-between gap-2">
+                                        <Label className="text-sm font-medium text-foreground">{s.label}</Label>
+                                        {s.wordLimit && (
+                                          <span className={`text-xs shrink-0 ${overLimit ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                                            {words} / {s.wordLimit} mots
+                                          </span>
+                                        )}
+                                      </div>
+                                      <Textarea
+                                        value={value}
+                                        onChange={(e) =>
+                                          updateWorkDraft(index, {
+                                            sectionValues: { ...draft.sectionValues, [s.label]: e.target.value },
+                                          })
+                                        }
+                                        placeholder={`Rédigez la section « ${s.label} »`}
+                                        className={`min-h-[110px] rounded-2xl ${overLimit ? "border-destructive" : ""}`}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                                {workTotalWordLimit && (
+                                  <p className={`text-xs text-right font-semibold ${draftWordCount > workTotalWordLimit ? "text-destructive" : "text-muted-foreground"}`}>
+                                    Total : {draftWordCount} / {workTotalWordLimit} mots
+                                  </p>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="space-y-2">
                                 <div className="flex items-center justify-between gap-2">
-                                  <Label className="text-sm font-medium text-foreground">{s.label}</Label>
-                                  {s.wordLimit && (
-                                    <span className={`text-xs shrink-0 ${overLimit ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
-                                      {words} / {s.wordLimit} mots
+                                  <Label className="text-sm font-medium text-foreground">{text("workSummaryLabel", "Résumé")}</Label>
+                                  {workTotalWordLimit && (
+                                    <span className={`text-xs shrink-0 ${draftWordCount > workTotalWordLimit ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                                      {draftWordCount} / {workTotalWordLimit} mots
                                     </span>
                                   )}
                                 </div>
                                 <Textarea
-                                  value={value}
-                                  onChange={(e) => {
-                                    setWorkSectionValues((prev) => ({ ...prev, [s.label]: e.target.value }));
-                                    setWorkSummaryError("");
-                                  }}
-                                  placeholder={`Rédigez la section « ${s.label} »`}
-                                  className={`min-h-[110px] rounded-2xl ${overLimit ? "border-destructive" : ""}`}
+                                  value={draft.note}
+                                  onChange={(e) => updateWorkDraft(index, { note: e.target.value })}
+                                  placeholder={text("workSummaryPlaceholder", "Ajoutez ici le résumé de votre travail")}
+                                  className="min-h-[180px] rounded-2xl"
                                 />
                               </div>
-                            );
-                          })}
-                          {workTotalWordLimit && (
-                            <p className={`text-xs text-right font-semibold ${workTotalWordCount > workTotalWordLimit ? "text-destructive" : "text-muted-foreground"}`}>
-                              Total : {workTotalWordCount} / {workTotalWordLimit} mots
-                            </p>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <Label className="text-sm font-medium text-foreground">{text("workSummaryLabel", "Résumé")}</Label>
-                            {workTotalWordLimit && (
-                              <span className={`text-xs shrink-0 ${workTotalWordCount > workTotalWordLimit ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
-                                {workTotalWordCount} / {workTotalWordLimit} mots
-                              </span>
+                            )}
+
+                            {workAllowCoAuthors && (
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between gap-2">
+                                  <Label className="text-sm font-medium text-foreground">Co-auteurs</Label>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="rounded-full h-8"
+                                    onClick={() =>
+                                      updateWorkDraft(index, {
+                                        coAuthors: [...draft.coAuthors, { firstName: "", lastName: "", affiliation: "" }],
+                                      })
+                                    }
+                                  >
+                                    <Plus className="h-3.5 w-3.5 mr-1" />
+                                    Ajouter un co-auteur
+                                  </Button>
+                                </div>
+                                {draft.coAuthors.map((co, idx) => (
+                                  <div key={idx} className="relative grid gap-2 sm:grid-cols-3 rounded-2xl border border-border/50 bg-background/40 p-3">
+                                    <Input
+                                      placeholder="Prénom"
+                                      value={co.firstName}
+                                      onChange={(e) =>
+                                        updateWorkDraft(index, {
+                                          coAuthors: draft.coAuthors.map((c, i) => (i === idx ? { ...c, firstName: e.target.value } : c)),
+                                        })
+                                      }
+                                      className="rounded-xl h-9"
+                                    />
+                                    <Input
+                                      placeholder="Nom"
+                                      value={co.lastName}
+                                      onChange={(e) =>
+                                        updateWorkDraft(index, {
+                                          coAuthors: draft.coAuthors.map((c, i) => (i === idx ? { ...c, lastName: e.target.value } : c)),
+                                        })
+                                      }
+                                      className="rounded-xl h-9"
+                                    />
+                                    <Input
+                                      placeholder="Affiliation"
+                                      value={co.affiliation}
+                                      onChange={(e) =>
+                                        updateWorkDraft(index, {
+                                          coAuthors: draft.coAuthors.map((c, i) => (i === idx ? { ...c, affiliation: e.target.value } : c)),
+                                        })
+                                      }
+                                      className="rounded-xl h-9"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        updateWorkDraft(index, {
+                                          coAuthors: draft.coAuthors.filter((_, i) => i !== idx),
+                                        })
+                                      }
+                                      className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-white transition-colors"
+                                      aria-label="Retirer ce co-auteur"
+                                    >
+                                      <X size={11} />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
                             )}
                           </div>
-                          <Textarea
-                            value={workSummaryNote}
-                            onChange={(e) => {
-                              setWorkSummaryNote(e.target.value);
-                              setWorkSummaryError("");
-                            }}
-                            placeholder={text("workSummaryPlaceholder", "Ajoutez ici le résumé de votre travail")}
-                            className="min-h-[180px] rounded-2xl"
-                          />
-                        </div>
-                      )}
+                        );
+                      })}
 
-                      {workAllowCoAuthors && (
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between gap-2">
-                            <Label className="text-sm font-medium text-foreground">Co-auteurs</Label>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="rounded-full h-8"
-                              onClick={() =>
-                                setWorkCoAuthors((prev) => [...prev, { firstName: "", lastName: "", affiliation: "" }])
-                              }
-                            >
-                              <Plus className="h-3.5 w-3.5 mr-1" />
-                              Ajouter un co-auteur
-                            </Button>
-                          </div>
-                          {workCoAuthors.map((co, idx) => (
-                            <div key={idx} className="relative grid gap-2 sm:grid-cols-3 rounded-2xl border border-border/50 bg-background/40 p-3">
-                              <Input
-                                placeholder="Prénom"
-                                value={co.firstName}
-                                onChange={(e) =>
-                                  setWorkCoAuthors((prev) => prev.map((c, i) => (i === idx ? { ...c, firstName: e.target.value } : c)))
-                                }
-                                className="rounded-xl h-9"
-                              />
-                              <Input
-                                placeholder="Nom"
-                                value={co.lastName}
-                                onChange={(e) =>
-                                  setWorkCoAuthors((prev) => prev.map((c, i) => (i === idx ? { ...c, lastName: e.target.value } : c)))
-                                }
-                                className="rounded-xl h-9"
-                              />
-                              <Input
-                                placeholder="Affiliation"
-                                value={co.affiliation}
-                                onChange={(e) =>
-                                  setWorkCoAuthors((prev) => prev.map((c, i) => (i === idx ? { ...c, affiliation: e.target.value } : c)))
-                                }
-                                className="rounded-xl h-9"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setWorkCoAuthors((prev) => prev.filter((_, i) => i !== idx))}
-                                className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-white transition-colors"
-                                aria-label="Retirer ce co-auteur"
-                              >
-                                <X size={11} />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
+                      {/* "Add another résumé" — only for events that allow more than
+                          one submission per participant (event.maxWorkSubmissions
+                          unset or > 1), and only up to that cap when set. */}
+                      {workAllowMultipleSubmissions && !workMaxSubmissionsReached && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full rounded-2xl border-dashed h-12"
+                          onClick={addWorkDraft}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          {text("workAddAnother", "Ajouter un autre résumé")}
+                        </Button>
                       )}
 
                       {workSummaryError && (
