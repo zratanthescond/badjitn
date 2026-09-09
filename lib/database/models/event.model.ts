@@ -15,7 +15,7 @@ export interface IEvent extends Document {
   jobTitleLabel?: string;
   selectedRepublic?: string;
   customRegistrationFields?: { label: string; isRequired: boolean }[];
-  programme?: { title: string; text?: string; imageUrl?: string }[];
+  programme?: { title?: string; text?: string; imageUrl?: string }[];
   pricePlan?: {
     _id?: string;
     name: string;
@@ -112,7 +112,7 @@ const planOptionSchema = new mongoose.Schema({
 });
 
 const programmeItemSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title: { type: String },
   text: { type: String },
   imageUrl: { type: String },
 });

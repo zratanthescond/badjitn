@@ -111,7 +111,7 @@ export const eventFormSchema = z
       isRequired: z.boolean().default(false)
     })).optional().default([]),
     programme: z.array(z.object({
-      title: z.string().min(1, "Title is required"),
+      title: z.string().optional(),
       text: z.string().optional(),
       imageUrl: z.string().optional(),
     })).optional().default([]),

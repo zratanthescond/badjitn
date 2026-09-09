@@ -40,6 +40,7 @@ import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
 import FeedBackComponent from "./shared/FeedBackComponent";
 import { TiptapRenderer } from "./shared/TiptapRenderer";
+import { ImagePreviewDialog } from "./shared/ImagePreviewDialog";
 
 interface ReelDetailsProps {
   event: Event;
@@ -76,6 +77,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
   const pathname = usePathname();
   const [section, setSection] = useState<SectionType>("details");
   const [isJoining, setIsJoining] = useState(false);
+  const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
   const isPast = new Date(event.endDateTime) < new Date();
   const rootRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -356,29 +358,42 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
                 className="glass-control rounded-2xl overflow-hidden group hover:border-primary/50 transition-all duration-300"
               >
                 {item.imageUrl && (
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="w-full max-h-72 object-cover"
-                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPreviewImage({ src: item.imageUrl as string, alt: item.title || "" })
+                    }
+                    className="block w-full cursor-zoom-in"
+                    aria-label={tx("zoomImage", "Agrandir l'image")}
+                  >
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title || ""}
+                      className="w-full h-auto object-contain"
+                    />
+                  </button>
                 )}
-                <div className="p-5 space-y-2">
-                  <h4 className="font-syne font-bold text-lg text-slate-900 dark:text-white">
-                    {item.title}
-                  </h4>
-                  {item.text && (
-                    <p className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
-                      {item.text}
-                    </p>
-                  )}
-                </div>
+                {(item.title || item.text) && (
+                  <div className="p-5 space-y-2">
+                    {item.title && (
+                      <h4 className="font-syne font-bold text-lg text-slate-900 dark:text-white">
+                        {item.title}
+                      </h4>
+                    )}
+                    {item.text && (
+                      <p className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+                        {item.text}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </div>
     );
-  }, [event, t]);
+  }, [event, t, tx]);
 
   const RenderComponent = useMemo(() => {
     switch (section) {
@@ -452,6 +467,15 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
           {RenderComponent}
         </div>
       </div>
+
+      {previewImage && (
+        <ImagePreviewDialog
+          src={previewImage.src}
+          alt={previewImage.alt}
+          isOpen={!!previewImage}
+          onClose={() => setPreviewImage(null)}
+        />
+      )}
 
       {mounted && createPortal(
         <AnimatePresence>

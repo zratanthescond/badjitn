@@ -107,7 +107,7 @@ export type CreateEventParams = {
     jobTitleLabel?: string;
     selectedRepublic?: string;
     customRegistrationFields?: { label: string; isRequired: boolean }[];
-    programme?: { title: string; text?: string; imageUrl?: string }[];
+    programme?: { title?: string; text?: string; imageUrl?: string }[];
     pricePlanNote?: string;
     registrationFeeNote?: string;
     paymentMethods?: PaymentMethods;
@@ -156,7 +156,7 @@ export type UpdateEventParams = {
     jobTitleLabel?: string;
     selectedRepublic?: string;
     customRegistrationFields?: { label: string; isRequired: boolean }[];
-    programme?: { title: string; text?: string; imageUrl?: string }[];
+    programme?: { title?: string; text?: string; imageUrl?: string }[];
     pricePlanNote?: string;
     registrationFeeNote?: string;
     paymentMethods?: PaymentMethods;
