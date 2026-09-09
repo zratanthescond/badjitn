@@ -40,7 +40,8 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import GoogleMapComponent from "./GoogleMap";
-import { CalendarIcon, Disc, Landmark, LinkIcon, ListChecks, MapPin, Plus, StickyNote, Trash2 } from "lucide-react";
+import { CalendarIcon, Disc, Landmark, LayoutList, LinkIcon, ListChecks, MapPin, Plus, StickyNote, Trash2 } from "lucide-react";
+import { ImageUploader } from "./ImageUploader";
 import PricePlanComponent from "./PricePlanComponent";
 import { pricePlan } from "@/types";
 import FormBuilder from "./FormBuilder";
@@ -1022,6 +1023,109 @@ const EventForm = ({
                       )}
                     />
                   </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="w-full">
+              <Card className="w-full mt-5 flex flex-col items-center justify-center pt-4 backdrop-blur bg-white/30 rounded-3xl backdrop-brightness-100">
+                <CardContent className="bg-transparent w-full">
+                  <FormField
+                    control={form.control}
+                    name="programme"
+                    render={({ field }) => (
+                      <FormItem className="space-y-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <FormLabel className="text-base flex items-center gap-2">
+                              <LayoutList className="h-4 w-4" />
+                              {t("programme.title")}
+                            </FormLabel>
+                            <FormDescription>{t("programme.description")}</FormDescription>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="rounded-xl border-dashed shrink-0"
+                            onClick={() => {
+                              const current = field.value || [];
+                              field.onChange([...current, { title: "", text: "", imageUrl: "" }]);
+                            }}
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            {t("programme.addItem")}
+                          </Button>
+                        </div>
+
+                        {(!field.value || field.value.length === 0) && (
+                          <p className="text-sm text-muted-foreground text-center py-6 border border-dashed border-border/60 rounded-2xl">
+                            {t("programme.empty")}
+                          </p>
+                        )}
+
+                        <div className="space-y-4">
+                          {(field.value || []).map((item: any, index: number) => (
+                            <div key={index} className="bg-background/20 p-4 rounded-2xl border border-border/20 space-y-3">
+                              <div className="flex items-start justify-between gap-3">
+                                <span className="text-xs font-semibold text-muted-foreground pt-2">#{index + 1}</span>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full"
+                                  onClick={() => {
+                                    const newList = (field.value || []).filter((_: any, i: number) => i !== index);
+                                    field.onChange(newList);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              <div className="space-y-1.5">
+                                <Label className="text-xs text-muted-foreground">{t("programme.itemTitleLabel")}</Label>
+                                <Input
+                                  placeholder={t("programme.itemTitlePlaceholder")}
+                                  value={item.title}
+                                  onChange={(e) => {
+                                    const newList = [...(field.value || [])];
+                                    newList[index] = { ...newList[index], title: e.target.value };
+                                    field.onChange(newList);
+                                  }}
+                                  className="bg-background/40 rounded-xl border-border/40"
+                                />
+                              </div>
+                              <div className="space-y-1.5">
+                                <Label className="text-xs text-muted-foreground">{t("programme.itemTextLabel")}</Label>
+                                <Textarea
+                                  placeholder={t("programme.itemTextPlaceholder")}
+                                  value={item.text || ""}
+                                  onChange={(e) => {
+                                    const newList = [...(field.value || [])];
+                                    newList[index] = { ...newList[index], text: e.target.value };
+                                    field.onChange(newList);
+                                  }}
+                                  className="bg-background/40 rounded-xl border-border/40 min-h-[80px]"
+                                />
+                              </div>
+                              <ImageUploader
+                                value={item.imageUrl || ""}
+                                onChange={(url) => {
+                                  const newList = [...(field.value || [])];
+                                  newList[index] = { ...newList[index], imageUrl: url };
+                                  field.onChange(newList);
+                                }}
+                                aspectRatio="wide"
+                                label={t("programme.itemImageLabel")}
+                                placeholder={t("programme.itemImagePlaceholder")}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </CardContent>
               </Card>
             </div>

@@ -1473,9 +1473,11 @@
       "feedback": "التعليقات",
       "location": "الموقع",
       "price": "السعر",
+      "programme": "البرنامج",
       "registration": "التسجيل"
     },
     "title": "تفاصيل الحدث",
+    "viewProgramme": "الاطلاع على البرنامج",
     "viewPricing": "عرض الأسعار",
     "hostedBy": "بتنظيم",
     "organizer": "المنظم",
@@ -1661,6 +1663,18 @@
           "isRequired": "مطلوب"
         }
       }
+    },
+    "programme": {
+      "title": "برنامج الحدث",
+      "description": "أضف أبرز محطات البرنامج (عنوان، وصف، صورة). سيظهر تبويب \"البرنامج\" تلقائيًا في صفحة الحدث.",
+      "addItem": "إضافة عنصر",
+      "empty": "لا توجد عناصر في البرنامج بعد. انقر على \"إضافة عنصر\" للبدء.",
+      "itemTitleLabel": "العنوان",
+      "itemTitlePlaceholder": "مثال: افتتاح المؤتمر",
+      "itemTextLabel": "الوصف",
+      "itemTextPlaceholder": "التفاصيل، التوقيت، المتحدثون...",
+      "itemImageLabel": "صورة (اختياري)",
+      "itemImagePlaceholder": "قم برفع صورة لهذا العنصر"
     }
   },
   "eventFormBuilder": {

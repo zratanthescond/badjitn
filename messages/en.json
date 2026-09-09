@@ -1473,9 +1473,11 @@
       "feedback": "Feedback",
       "location": "Location",
       "price": "Price",
+      "programme": "Programme",
       "registration": "Registration"
     },
     "title": "Event Details",
+    "viewProgramme": "View programme",
     "viewPricing": "View Pricing",
     "hostedBy": "Hosted by",
     "organizer": "Organizer",
@@ -1661,6 +1663,18 @@
           "isRequired": "Required"
         }
       }
+    },
+    "programme": {
+      "title": "Event programme",
+      "description": "Add the programme highlights (title, description, image). A \"Programme\" tab will automatically appear on the event page.",
+      "addItem": "Add an item",
+      "empty": "No programme items yet. Click \"Add an item\" to get started.",
+      "itemTitleLabel": "Title",
+      "itemTitlePlaceholder": "e.g. Congress opening",
+      "itemTextLabel": "Description",
+      "itemTextPlaceholder": "Details, schedule, speakers...",
+      "itemImageLabel": "Image (optional)",
+      "itemImagePlaceholder": "Upload an image for this item"
     }
   },
   "eventFormBuilder": {

@@ -49,6 +49,7 @@ export const eventDefaultValues = {
   jobTitleLabel: "",
   selectedRepublic: "",
   customRegistrationFields: [],
+  programme: [] as { title: string; text?: string; imageUrl?: string }[],
   showProfileButton: true,
   showReturnButton: true,
   bankInfo: undefined as { bankName?: string; accountHolder?: string; rib?: string } | undefined,

@@ -34,6 +34,7 @@ import {
   Loader2,
   Globe,
   ArrowUp,
+  LayoutList,
 } from "lucide-react";
 import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
@@ -44,7 +45,7 @@ interface ReelDetailsProps {
   event: Event;
 }
 
-type SectionType = "details" | "date" | "location" | "registration" | "feedback";
+type SectionType = "details" | "date" | "location" | "registration" | "programme" | "feedback";
 
 // Date locales mapping
 const dateLocales = {
@@ -233,6 +234,21 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
               </>
             )}
           </div>
+
+          {/* Programme Button — only shown when the organizer configured programme items */}
+          {event.programme && event.programme.length > 0 && (
+            <div className="pt-2">
+              <Button
+                onClick={() => setSection("programme")}
+                size="lg"
+                variant="outline"
+                className="rounded-2xl min-w-[200px] h-12 text-base glass-control border-primary/30"
+              >
+                <LayoutList className="w-4 h-4 mr-2" />
+                {tx("viewProgramme", "Consulter le programme")}
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Description */}
@@ -321,6 +337,49 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
     );
   }, [event, t, dateLocale]);
 
+  const ProgrammeComponent = useCallback(() => {
+    const items = event.programme || [];
+    return (
+      <div className="space-y-6 w-full animate-in fade-in slide-in-from-right-4 duration-500">
+        <div className="glass-panel p-6 md:p-8 rounded-3xl space-y-6">
+          <div className="text-center">
+            <h3 className="text-2xl font-syne font-bold text-slate-900 dark:text-white">
+              {t("tabs.programme")}
+            </h3>
+            <div className="h-1 w-12 bg-primary mx-auto mt-2 rounded-full" />
+          </div>
+
+          <div className="grid grid-cols-1 gap-4">
+            {items.map((item, index) => (
+              <div
+                key={index}
+                className="glass-control rounded-2xl overflow-hidden group hover:border-primary/50 transition-all duration-300"
+              >
+                {item.imageUrl && (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-full max-h-72 object-cover"
+                  />
+                )}
+                <div className="p-5 space-y-2">
+                  <h4 className="font-syne font-bold text-lg text-slate-900 dark:text-white">
+                    {item.title}
+                  </h4>
+                  {item.text && (
+                    <p className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+                      {item.text}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }, [event, t]);
+
   const RenderComponent = useMemo(() => {
     switch (section) {
       case "details":
@@ -331,12 +390,14 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
         return <EventLocationComponent event={event as any} />;
       case "registration":
         return <EventPriceComponent event={event as any} />;
+      case "programme":
+        return <ProgrammeComponent />;
       case "feedback":
         return <FeedBackComponent eventId={event._id.toString()} />;
       default:
         return <DetailComponent />;
     }
-  }, [section, event, DetailComponent, DateComponent]);
+  }, [section, event, DetailComponent, DateComponent, ProgrammeComponent]);
 
   const tabItems = useMemo(
     () => [
@@ -344,9 +405,12 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
       { value: "date", label: t("tabs.date"), icon: CalendarDays },
       { value: "location", label: t("tabs.location"), icon: MapPin },
       ...(!event.url ? [{ value: "registration", label: registrationTabLabel, icon: Wallet }] : []),
+      ...(event.programme && event.programme.length > 0
+        ? [{ value: "programme", label: t("tabs.programme"), icon: LayoutList }]
+        : []),
       { value: "feedback", label: t("tabs.feedback"), icon: MessageSquareIcon },
     ],
-    [registrationTabLabel, t, event.url]
+    [registrationTabLabel, t, event.url, event.programme]
   );
 
   return (

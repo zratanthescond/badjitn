@@ -110,6 +110,11 @@ export const eventFormSchema = z
       label: z.string(),
       isRequired: z.boolean().default(false)
     })).optional().default([]),
+    programme: z.array(z.object({
+      title: z.string().min(1, "Title is required"),
+      text: z.string().optional(),
+      imageUrl: z.string().optional(),
+    })).optional().default([]),
     showProfileButton: z.boolean().optional().default(true),
     showReturnButton: z.boolean().optional().default(true),
     organisationId: z.string().min(1, "Organisation is required"),

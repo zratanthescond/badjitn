@@ -15,6 +15,7 @@ export interface IEvent extends Document {
   jobTitleLabel?: string;
   selectedRepublic?: string;
   customRegistrationFields?: { label: string; isRequired: boolean }[];
+  programme?: { title: string; text?: string; imageUrl?: string }[];
   pricePlan?: {
     _id?: string;
     name: string;
@@ -110,6 +111,12 @@ const planOptionSchema = new mongoose.Schema({
   proofFallbackPrice: { type: Number },
 });
 
+const programmeItemSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  text: { type: String },
+  imageUrl: { type: String },
+});
+
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
   price: { type: Number },
@@ -146,6 +153,10 @@ const EventSchema = new Schema({
   requiredInfo: { type: [String], default: [] },
   sponsors: { type: [String], default: [] },
   scanPoints: { type: [String], default: [] },
+  // Configurable "Programme" tab: an ordered list of items (title, optional
+  // text and image) the organizer builds, shown via a dedicated tab/button
+  // on the event page next to Détails/Date/Lieu/Inscription/Commentaires.
+  programme: { type: [programmeItemSchema], default: [] },
   pricePlan: { type: [pricePlanSchema], default: [] },
   pricePlanNote: { type: String },
   registrationFeeNote: { type: String },

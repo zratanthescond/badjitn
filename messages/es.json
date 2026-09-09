@@ -1473,9 +1473,11 @@
       "feedback": "Comentarios",
       "location": "Ubicación",
       "price": "Precio",
+      "programme": "Programa",
       "registration": "Inscripción"
     },
     "title": "Detalles del Evento",
+    "viewProgramme": "Ver el programa",
     "viewPricing": "Ver Precios",
     "hostedBy": "Organizado por",
     "organizer": "Organizador",
@@ -1661,6 +1663,18 @@
           "isRequired": "Obligatorio"
         }
       }
+    },
+    "programme": {
+      "title": "Programa del evento",
+      "description": "Agregue los momentos destacados del programa (título, descripción, imagen). Aparecerá automáticamente una pestaña \"Programa\" en la página del evento.",
+      "addItem": "Agregar un elemento",
+      "empty": "Aún no hay elementos del programa. Haga clic en \"Agregar un elemento\" para comenzar.",
+      "itemTitleLabel": "Título",
+      "itemTitlePlaceholder": "Ej: Apertura del congreso",
+      "itemTextLabel": "Descripción",
+      "itemTextPlaceholder": "Detalles, horarios, ponentes...",
+      "itemImageLabel": "Imagen (opcional)",
+      "itemImagePlaceholder": "Suba una imagen para este elemento"
     }
   },
   "eventFormBuilder": {
