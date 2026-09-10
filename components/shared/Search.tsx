@@ -69,7 +69,7 @@ const Search = ({
             <SearchIcon className="w-4 h-4 text-primary" />
             {query.length > 0 ? (
               <div className="flex items-center gap-2">
-                <span className="font-outfit font-semibold text-white">{query}</span>
+                <span className="font-outfit font-semibold text-slate-900 dark:text-white">{query}</span>
                 <div
                   role="button"
                   onClick={(e) => {
@@ -97,7 +97,7 @@ const Search = ({
             placeholder={t("searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="font-outfit text-sm border-0 w-full bg-transparent text-white placeholder:text-slate-500 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="font-outfit text-sm border-0 w-full bg-transparent text-slate-900 dark:text-white placeholder:text-slate-500 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
       </DropdownMenuContent>

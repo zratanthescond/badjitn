@@ -473,6 +473,11 @@ export async function getOrdersByEvent({
         },
       },
       {
+        // Kept as its own stage: a field added by $addFields cannot see a
+        // sibling field added in that *same* stage (MongoDB evaluates every
+        // expression in a stage against the input document, before any of
+        // that stage's own additions land) — participantFallbackFirst/Last
+        // must exist on the document before the next stage can read them.
         $addFields: {
           participantFallbackFirst: {
             $ifNull: [{ $arrayElemAt: ["$participantNonEmptyValues", 0] }, ""],
@@ -480,6 +485,12 @@ export async function getOrdersByEvent({
           participantFallbackLast: {
             $ifNull: [{ $arrayElemAt: ["$participantNonEmptyValues", 1] }, ""],
           },
+        },
+      },
+      {
+        // Same same-stage-reference constraint as above: buyerDisplayFromRequiredInfo
+        // must be materialized here so the next stage's buyerDisplay can read it.
+        $addFields: {
           buyerDisplayFromRequiredInfo: {
             $cond: [
               {
@@ -566,6 +577,12 @@ export async function getOrdersByEvent({
               },
             ],
           },
+        },
+      },
+      {
+        // buyerDisplay reads buyerDisplayFromRequiredInfo from the previous
+        // stage — computing it here (same-stage-reference constraint above).
+        $addFields: {
           buyerDisplay: {
             $cond: [
               {
