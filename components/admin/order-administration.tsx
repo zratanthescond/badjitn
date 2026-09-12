@@ -1,10 +1,16 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
-import DataTable from "@/components/shared/data-table";
 import { Badge } from "../ui/badge";
-import Search from "../shared/Search";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { getOrdersByEvent } from "@/lib/actions/order.actions";
 import { formatDateTime, formatPriceByCountry } from "@/lib/utils";
 import TableSkeleton from "../shared/table-skeleton";
@@ -20,15 +26,15 @@ import {
 import {
   ShoppingCart,
   Calendar,
-  User,
   CreditCard,
-  Filter,
   Download,
   Printer,
   QrCode,
   FileText,
   Upload,
   UserPlus,
+  Users,
+  Clock,
 } from "lucide-react";
 import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
@@ -36,8 +42,21 @@ import EventReportDialog from "./EventReportDialog";
 import ImportParticipantsDialog from "./ImportParticipantsDialog";
 import AddParticipantDialog from "./AddParticipantDialog";
 import { CardSkeleton } from "./CardSkeleton";
+import { AdminSectionHeader } from "./ui/AdminSectionHeader";
+import { StatCard } from "./ui/StatCard";
+import { AdminToolbar } from "./ui/AdminToolbar";
+import { AdminDataTable, type AdminColumn } from "./ui/AdminDataTable";
+import { AdminPagination } from "./ui/AdminPagination";
+import { AdminEmptyState } from "./ui/AdminEmptyState";
+import {
+  getOrderCategory,
+  getParticipantNameFromOrder,
+  getPaymentStatus,
+  getTicketTypeKey,
+  toneChipClass,
+  type OrderCategory,
+} from "./utils/order-helpers";
 import { useTranslations, useLocale } from "next-intl";
-import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -45,6 +64,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+const PLAN_BAR_COLORS = [
+  "bg-primary",
+  "bg-admin-success",
+  "bg-admin-warning",
+  "bg-destructive",
+  "bg-muted-foreground",
+];
+
+type SortKey = "id" | "name" | "plan" | "amount" | "createdAt";
+type SortDir = "asc" | "desc";
+const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
 export default function OrderAdministration({
   eventId,
@@ -81,7 +112,21 @@ export default function OrderAdministration({
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { toast } = useToast();
 
-  const { isPending, data, error } = useQuery({
+  // Real, working filters (replacing the previously decorative "Filter"
+  // button) — all client-side, since getOrdersByEvent already returns the
+  // full, unpaginated set for the event.
+  const [search, setSearch] = useState(searchString || "");
+  const [typeFilter, setTypeFilter] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [sort, setSort] = useState<{ key: SortKey; dir: SortDir }>({
+    key: "createdAt",
+    dir: "desc",
+  });
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
+
+  const { isPending, data } = useQuery({
     queryKey: ["orders", eventId, searchString],
     queryFn: async () => {
       const orders = await getOrdersByEvent({ eventId, searchString });
@@ -96,168 +141,244 @@ export default function OrderAdministration({
     doorpay: t("ticketTypes.doorpay"),
     bank_transfer: t("ticketTypes.bankTransfer"),
   };
-
   const getTicketTypeLabel = (value?: string, amount?: number) => {
     if (amount === 0) return t("ticketTypes.free");
     if (!value) return "";
     return ticketTypeLabels[value] || value;
   };
 
-  const getParticipantNameFromOrder = (order: any) => {
-    const buyerText = String(order?.buyer || "").trim();
-    if (buyerText && buyerText.toLowerCase() !== "guest registration") {
-      return buyerText;
-    }
-
-    const infoList = Array.isArray(order?.requiredUserInfo)
-      ? order.requiredUserInfo
-      : [];
-
-    const normalize = (value: unknown) =>
-      String(value ?? "")
-        .trim()
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9]+/g, "");
-
-    const findValue = (matcher: (field: string, label: string) => boolean) => {
-      const found = infoList.find((info: any) =>
-        matcher(normalize(info?.field), normalize(info?.label))
-      );
-      return String(found?.value || "").trim();
-    };
-
-    const firstName = findValue(
-      (field, label) =>
-        ["firstname", "first_name", "prenom"].includes(field) ||
-        ["firstname", "prenom"].includes(label)
-    );
-    const lastName = findValue(
-      (field, label) =>
-        ["lastname", "last_name", "nom", "familyname", "family_name"].includes(field) ||
-        ["lastname", "nom", "familyname"].includes(label)
-    );
-    const fullName = findValue(
-      (field, label) =>
-        ["name", "fullname", "full_name", "nomcomplet", "nom_complet"].includes(field) ||
-        ["name", "fullname", "nomcomplet"].includes(label)
-    );
-
-    const formatName = (str: string) => {
-      if (!str) return "";
-      return str
-        .toLowerCase()
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join('-');
-    };
-
-    const combined = `${firstName} ${lastName}`.trim();
-    if (combined) return formatName(combined);
-    if (fullName) return formatName(fullName);
-
-    const fallbackValues = infoList
-      .map((info: any) => String(info?.value || "").trim())
-      .filter(Boolean);
-    const fallbackCombined = `${fallbackValues[0] || ""} ${fallbackValues[1] || ""}`.trim();
-    if (fallbackCombined) return formatName(fallbackCombined);
-
-    return buyerText
-      ? formatName(buyerText)
-      : tx("guestRegistration", "Guest registration");
+  const categoryLabels: Record<OrderCategory, string> = {
+    attendee: tx("categories.attendee", "Participant"),
+    speaker: tx("categories.speaker", "Orateur"),
+    sponsor: tx("categories.sponsor", "Sponsor"),
+    staff: tx("categories.staff", "Staff"),
   };
 
-  const columns = [
+  const paymentStatusLabel = (status: ReturnType<typeof getPaymentStatus>) =>
+    tx(status.labelKey, status.fallback);
+
+  // ---- search / filter / sort -------------------------------------------------
+  const normalize = (value: unknown) =>
+    String(value ?? "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "");
+
+  const matchesSearch = (order: any, query: string) => {
+    if (!query) return true;
+    const q = normalize(query);
+    const haystack = [
+      getParticipantNameFromOrder(order, tx("guestRegistration", "Guest registration")),
+      order?.buyer,
+      order?._id,
+      ...(Array.isArray(order?.requiredUserInfo)
+        ? order.requiredUserInfo.map((info: any) => info?.value)
+        : []),
+      ...(Array.isArray(order?.details)
+        ? order.details.map((d: any) => `${d?.name || ""} ${d?.option || ""}`)
+        : []),
+    ]
+      .filter(Boolean)
+      .map(normalize)
+      .join(" ");
+    return haystack.includes(q);
+  };
+
+  const filteredData = useMemo(() => {
+    const base = data || [];
+    return base.filter((order: any) => {
+      if (typeFilter && getTicketTypeKey(order) !== typeFilter) return false;
+      if (categoryFilter && getOrderCategory(order) !== categoryFilter) return false;
+      if (statusFilter && getPaymentStatus(order).key !== statusFilter) return false;
+      return matchesSearch(order, search);
+    });
+  }, [data, typeFilter, categoryFilter, statusFilter, search]);
+
+  const sortedData = useMemo(() => {
+    const { key, dir } = sort;
+    const factor = dir === "asc" ? 1 : -1;
+    const accessor = (order: any): string | number => {
+      switch (key) {
+        case "id":
+          return String(order?._id || "");
+        case "name":
+          return getParticipantNameFromOrder(order, "");
+        case "plan":
+          return String(order?.details?.[0]?.name || "");
+        case "amount":
+          return Number(order?.totalAmount) || 0;
+        case "createdAt":
+        default:
+          return new Date(order?.createdAt || 0).getTime();
+      }
+    };
+    return [...filteredData].sort((a, b) => {
+      const av = accessor(a);
+      const bv = accessor(b);
+      if (av < bv) return -1 * factor;
+      if (av > bv) return 1 * factor;
+      return 0;
+    });
+  }, [filteredData, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedData.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const paginatedData = sortedData.slice((safePage - 1) * pageSize, safePage * pageSize);
+
+  const resetFilters = () => {
+    setSearch("");
+    setTypeFilter("");
+    setCategoryFilter("");
+    setStatusFilter("");
+    setPage(1);
+  };
+
+  const handleSortChange = (key: string) => {
+    setSort((prev) =>
+      prev.key === key
+        ? { key: key as SortKey, dir: prev.dir === "asc" ? "desc" : "asc" }
+        : { key: key as SortKey, dir: "asc" }
+    );
+  };
+
+  // ---- KPIs & plan breakdown, computed on the *filtered* set so they stay
+  // consistent with what's visible in the table -------------------------------
+  const totalRevenue = filteredData.reduce(
+    (sum: number, order: any) => sum + (Number(order.totalAmount) || 0),
+    0
+  );
+  const uniqueParticipants = new Set(
+    filteredData.map((order: any) => getParticipantNameFromOrder(order))
+  ).size;
+  const actionableCount = filteredData.filter((order: any) =>
+    ["amber"].includes(getPaymentStatus(order).tone)
+  ).length;
+
+  const planBreakdown = useMemo(() => {
+    const counts = new Map<string, number>();
+    filteredData.forEach((order: any) => {
+      const name = String(order?.details?.[0]?.name || "").trim();
+      if (!name) return;
+      counts.set(name, (counts.get(name) || 0) + 1);
+    });
+    const total = filteredData.length || 1;
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([name, count]) => ({ name, count, pct: Math.round((count / total) * 100) }));
+  }, [filteredData]);
+
+  // ---- table columns ----------------------------------------------------------
+  const columns: AdminColumn[] = [
     {
+      key: "id",
       header: t("table.headers.orderId"),
       accessor: "_id",
+      sortable: true,
       cell: (value: string) => (
-        <span className="font-mono text-sm bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-          {value.slice(-8)}
-        </span>
+        <div>
+          <span className="font-mono text-xs font-semibold text-primary">
+            #{value.slice(-8)}
+          </span>
+        </div>
       ),
     },
     {
-      header: t("table.headers.eventTitle"),
-      accessor: "eventTitle",
-      cell: (value: string) => (
-        <span className={`font-medium text-foreground ${isRTL ? "font-arabic" : ""}`}>
-          {value}
-        </span>
-      ),
-    },
-    {
+      key: "name",
       header: t("table.headers.buyer"),
       accessor: "root",
+      sortable: true,
       cell: (order: any) => {
-        const participantName = getParticipantNameFromOrder(order);
+        const participantName = getParticipantNameFromOrder(
+          order,
+          tx("guestRegistration", "Guest registration")
+        );
+        const email = Array.isArray(order?.requiredUserInfo)
+          ? order.requiredUserInfo.find((info: any) =>
+              String(info?.field || info?.label || "").toLowerCase().includes("email")
+            )?.value
+          : undefined;
         return (
-        <div
-          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
-            }`}
-        >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-medium">
-            {participantName.charAt(0).toUpperCase()}
+          <div className={`flex items-center gap-2.5 ${isRTL ? "flex-row-reverse" : ""}`}>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+              {participantName.charAt(0).toUpperCase()}
+            </div>
+            <div className="min-w-0">
+              <p className={`truncate text-sm font-semibold text-foreground ${isRTL ? "font-arabic" : ""}`}>
+                {participantName}
+              </p>
+              {email && (
+                <p className="truncate text-xs text-muted-foreground">{email}</p>
+              )}
+            </div>
           </div>
-          <span className={`${isRTL ? "font-arabic" : ""}`}>{participantName}</span>
-        </div>
-      )},
+        );
+      },
     },
     {
+      key: "plan",
+      header: tx("table.headers.plan", "Formule"),
+      accessor: "root",
+      sortable: true,
+      cell: (order: any) => (
+        <div>
+          <p className={`text-sm font-medium text-foreground ${isRTL ? "font-arabic" : ""}`}>
+            {order?.details?.[0]?.name || "—"}
+          </p>
+          {order?.details?.[0]?.option && (
+            <p className="text-xs text-muted-foreground">{order.details[0].option}</p>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: "type",
       header: t("table.headers.ticketType"),
       accessor: "root",
       cell: (order: any) => (
-        <Badge
-          variant="secondary"
-          className="glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300"
-        >
+        <Badge variant="secondary" className="bg-muted font-medium text-foreground">
           {getTicketTypeLabel(order.type, order.totalAmount)}
         </Badge>
       ),
     },
     {
-      header: t("table.headers.created"),
-      accessor: "createdAt",
-      cell: (value: Date) => (
-        <div
-          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
-            }`}
-        >
-          <Calendar className="h-4 w-4 text-muted-foreground" />
+      key: "paymentStatus",
+      header: tx("table.headers.paymentStatus", "Statut paiement"),
+      accessor: "root",
+      cell: (order: any) => {
+        const status = getPaymentStatus(order);
+        return (
           <span
-            className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
-              }`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${toneChipClass(status.tone)}`}
           >
-            {formatDateTime(value).dateTime}
+            {status.tone === "amber" && <Clock className="h-3 w-3" />}
+            {paymentStatusLabel(status)}
           </span>
-        </div>
+        );
+      },
+    },
+    {
+      key: "category",
+      header: tx("table.headers.category", "Catégorie"),
+      accessor: "root",
+      cell: (order: any) => (
+        <Badge variant="outline" className="font-medium text-muted-foreground">
+          {categoryLabels[getOrderCategory(order)]}
+        </Badge>
       ),
     },
     ...(!isFreeEvent
       ? [
           {
+            key: "amount",
             header: t("table.headers.amount"),
             accessor: "totalAmount",
             align: "right" as const,
+            sortable: true,
             cell: (value: number) => (
-              <div
-                className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
-                  }`}
-              >
-                <CreditCard className="h-4 w-4 text-green-600" />
-                <span className="font-semibold text-green-600 dark:text-green-400">
-                  {formatPriceByCountry(
-                    value,
-                    eventCountry || data?.[0]?.eventCountry,
-                    locale,
-                    eventLocation
-                  )}
-                </span>
-              </div>
+              <span className="font-semibold text-foreground">
+                {formatPriceByCountry(value, eventCountry || data?.[0]?.eventCountry, locale, eventLocation)}
+              </span>
             ),
           },
         ]
@@ -270,102 +391,45 @@ export default function OrderAdministration({
     },
   ];
 
-  const renderMobileCard = (item: any) => (
-    <Card
-      key={item.id}
-      className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/20 dark:border-slate-700/50 hover:scale-105 transition-all duration-300"
-    >
-      <CardHeader className="pb-3">
-        <div
-          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""
-            }`}
-        >
-          <CardTitle className={`text-lg text-foreground font-bold ${isRTL ? "font-arabic" : ""}`}>
-            {item.eventTitle}
-          </CardTitle>
-          <Badge
-            variant="secondary"
-            className="glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300"
-          >
-            {getTicketTypeLabel(item.type, item.totalAmount)}
-          </Badge>
-        </div>
-        <CardDescription
-          className={`font-mono text-sm ${isRTL ? "font-arabic text-right" : ""
-            }`}
-        >
-          {t("orderIdLabel")}: {item._id.slice(-8)}
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="space-y-3">
-        <div
-          className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
-            }`}
-        >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
-            {item.buyer.charAt(0).toUpperCase()}
+  const renderMobileCard = (item: any) => {
+    const status = getPaymentStatus(item);
+    return (
+      <Card key={item._id} className="border-border">
+        <CardHeader className="pb-3">
+          <div className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}>
+            <CardTitle className={`text-base font-semibold ${isRTL ? "font-arabic" : ""}`}>
+              {getParticipantNameFromOrder(item, tx("guestRegistration", "Guest registration"))}
+            </CardTitle>
+            <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${toneChipClass(status.tone)}`}>
+              {paymentStatusLabel(status)}
+            </span>
           </div>
-          <div className={isRTL ? "text-right" : ""}>
-            <p className={`font-semibold text-foreground ${isRTL ? "font-arabic" : ""}`}>
-              {getParticipantNameFromOrder(item)}
-            </p>
-            <p
-              className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
-                }`}
-            >
-              {t("buyer")}
-            </p>
-          </div>
-        </div>
-
-        <div
-          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""
-            }`}
-        >
-          {!isFreeEvent && (
-            <div
-              className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
-                }`}
-            >
-              <CreditCard className="h-4 w-4 text-green-600" />
-              <span
-                className={`font-semibold text-green-600 dark:text-green-400 ${isRTL ? "font-arabic" : ""
-                  }`}
-              >
-                {formatPriceByCountry(
-                  item.totalAmount,
-                  eventCountry || item.eventCountry,
-                  locale,
-                  eventLocation
-                )}
+          <CardDescription className={`font-mono text-xs ${isRTL ? "text-right font-arabic" : ""}`}>
+            #{item._id.slice(-8)} · {item?.details?.[0]?.name || "—"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2 pb-3">
+          <div className={`flex items-center justify-between text-sm ${isRTL ? "flex-row-reverse" : ""}`}>
+            {!isFreeEvent && (
+              <span className="flex items-center gap-1.5 font-semibold text-foreground">
+                <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
+                {formatPriceByCountry(item.totalAmount, eventCountry || item.eventCountry, locale, eventLocation)}
               </span>
-            </div>
-          )}
-
-          <div
-            className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""
-              }`}
-          >
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span
-              className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
-                }`}
-            >
+            )}
+            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Calendar className="h-3.5 w-3.5" />
               {formatDateTime(item.createdAt).dateTime}
             </span>
           </div>
-        </div>
-      </CardContent>
+        </CardContent>
+        <CardFooter className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""}`}>
+          <OrderDetailsDialog value={item} />
+        </CardFooter>
+      </Card>
+    );
+  };
 
-      <CardFooter
-        className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""}`}
-      >
-        <OrderDetailsDialog value={item} />
-      </CardFooter>
-    </Card>
-  );
-
+  // ---- export (unchanged logic, retargeted to the filtered set) --------------
   type ExportFormat = "csv" | "xlsx" | "word" | "pdf";
 
   const normalizeText = (value: unknown) =>
@@ -373,11 +437,11 @@ export default function OrderAdministration({
       .trim()
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[̀-ͯ]/g, "")
       .replace(/[^a-z0-9]+/g, "");
 
   const getExportEventMeta = () => {
-    const title = eventTitle || String(data?.[0]?.eventTitle || "");
+    const title = eventTitle || String(filteredData?.[0]?.eventTitle || "");
     const organisation = organisationName || "";
     const place = eventPlace || eventLocation?.name || "";
     const eventDate = eventStartDateTime
@@ -397,47 +461,8 @@ export default function OrderAdministration({
     };
   };
 
-  const getExportPayload = () => {
-    const headers = [
-      t("table.headers.orderId"),
-      t("table.headers.eventTitle"),
-      t("table.headers.buyer"),
-      t("table.headers.ticketType"),
-      t("table.headers.created"),
-    ];
-    if (!isFreeEvent) headers.push(t("table.headers.amount"));
-    headers.push(t("table.headers.details") || "Détails");
-
-    const rows = (data || []).map((order: any) => {
-      const row = [
-        order?._id ?? "",
-        order?.eventTitle ?? "",
-        order?.buyer ?? "",
-        getTicketTypeLabel(order?.type, order?.totalAmount),
-        order?.createdAt ? formatDateTime(order.createdAt).dateTime : "",
-      ];
-      
-      if (!isFreeEvent) {
-        row.push(
-          typeof order?.totalAmount === "number"
-            ? order.totalAmount.toFixed(2)
-            : "0.00"
-        );
-      }
-
-      const detailsStr = order?.details
-        ?.map((d: any) => `${d.name}${d.option ? ` (${d.option})` : ""}`)
-        .join(", ") || "";
-      row.push(detailsStr);
-
-      return row;
-    });
-
-    return { headers, rows };
-  };
-
   const getStructuredExportPayload = () => {
-    const hasFirstNameColumn = (data || []).some((order: any) =>
+    const hasFirstNameColumn = filteredData.some((order: any) =>
       (order?.requiredUserInfo || []).some((info: any) => {
         const field = normalizeText(info?.field);
         const label = normalizeText(info?.label);
@@ -448,7 +473,7 @@ export default function OrderAdministration({
       })
     );
 
-    const hasLastNameColumn = (data || []).some((order: any) =>
+    const hasLastNameColumn = filteredData.some((order: any) =>
       (order?.requiredUserInfo || []).some((info: any) => {
         const field = normalizeText(info?.field);
         const label = normalizeText(info?.label);
@@ -494,7 +519,7 @@ export default function OrderAdministration({
     const participantFieldToHeader = new Map<string, string>();
     const planNameToHeader = new Map<string, string>();
 
-    (data || []).forEach((order: any) => {
+    filteredData.forEach((order: any) => {
       (order?.requiredUserInfo || []).forEach((info: any) => {
         const fieldKey = String(info?.field || "").trim();
         if (!fieldKey || participantFieldToHeader.has(fieldKey)) return;
@@ -518,10 +543,10 @@ export default function OrderAdministration({
 
     const headers = [...baseHeaders, ...participantColumns, ...planColumns];
 
-    const rows = (data || []).map((order: any) => {
+    const rows = filteredData.map((order: any) => {
       const row: (string | number)[] = [order?._id ?? ""];
       if (!shouldHideParticipantColumn) {
-        row.push(getParticipantNameFromOrder(order));
+        row.push(getParticipantNameFromOrder(order, tx("guestRegistration", "Guest registration")));
       }
       row.push(
         getTicketTypeLabel(order?.type, order?.totalAmount),
@@ -563,10 +588,9 @@ export default function OrderAdministration({
 
     return { headers, rows };
   };
-  void getExportPayload;
 
   const handleExportOrders = async (format: ExportFormat) => {
-    if (!data || data.length === 0) {
+    if (filteredData.length === 0) {
       toast({
         title: tx("export.toastTitle", "Export"),
         description: tx("export.noOrders", "Aucune inscription à exporter."),
@@ -576,7 +600,7 @@ export default function OrderAdministration({
     }
 
     const safeDate = new Date().toISOString().slice(0, 10);
-    const safeEventTitle = String(data[0]?.eventTitle || "orders")
+    const safeEventTitle = String(filteredData[0]?.eventTitle || "orders")
       .trim()
       .replace(/[^a-zA-Z0-9-_ ]/g, "")
       .replace(/\s+/g, "_");
@@ -661,7 +685,7 @@ export default function OrderAdministration({
             }
           }
         } catch (_logoError) {
-          // Non-blocking
+          // Non-blocking: continue export even if logo cannot be loaded
         }
 
         worksheet.getRow(headerRowNumber).values = headers;
@@ -775,166 +799,6 @@ export default function OrderAdministration({
         downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
       }
 
-      if (false && format === "xlsx") {
-        const xlsxModule = await import("xlsx");
-        const XLSX: any = (xlsxModule as any).default ?? xlsxModule;
-
-        const metaTableRows: (string | number)[][] = [
-          ["BADGI - EXPORT INSCRIPTIONS"],
-          [""],
-          ["Événement", eventMeta.title || "-"],
-          ["Organisation", eventMeta.organisation || "-"],
-          ["Date début", eventMeta.eventDate || "-"],
-          ["Date fin", eventMeta.eventEndDate || "-"],
-          ["Lieu", eventMeta.place || "-"],
-          ["Exporté le", eventMeta.exportDate || "-"],
-          [""],
-        ];
-
-        const allRows: (string | number)[][] = [...metaTableRows, headers, ...rows];
-        const worksheet = XLSX.utils.aoa_to_sheet(allRows);
-
-        const totalColumns = Math.max(headers.length, 1);
-        const lastColIndex = totalColumns - 1;
-        const headerRowIndex = metaTableRows.length;
-        const dataStartRowIndex = headerRowIndex + 1;
-
-        worksheet["!merges"] = [
-          { s: { r: 0, c: 0 }, e: { r: 0, c: lastColIndex } },
-          { s: { r: 2, c: 1 }, e: { r: 2, c: lastColIndex } },
-          { s: { r: 3, c: 1 }, e: { r: 3, c: lastColIndex } },
-          { s: { r: 4, c: 1 }, e: { r: 4, c: lastColIndex } },
-          { s: { r: 5, c: 1 }, e: { r: 5, c: lastColIndex } },
-          { s: { r: 6, c: 1 }, e: { r: 6, c: lastColIndex } },
-          { s: { r: 7, c: 1 }, e: { r: 7, c: lastColIndex } },
-        ];
-
-        worksheet["!cols"] = headers.map((header: string, colIndex: number) => {
-          const values = [
-            String(header || ""),
-            ...rows.map((row: any[]) => String(row?.[colIndex] ?? "")),
-          ];
-          const maxLen = values.reduce((max, value) => Math.max(max, value.length), 8);
-          return { wch: Math.min(48, Math.max(12, maxLen + 2)) };
-        });
-
-        worksheet["!rows"] = allRows.map((_, rowIndex) => {
-          if (rowIndex === 0) return { hpx: 36 };
-          if (rowIndex >= 2 && rowIndex <= 7) return { hpx: 22 };
-          if (rowIndex === headerRowIndex) return { hpx: 24 };
-          return { hpx: 20 };
-        });
-
-        const borderThin = {
-          top: { style: "thin", color: { rgb: "D1D5DB" } },
-          bottom: { style: "thin", color: { rgb: "D1D5DB" } },
-          left: { style: "thin", color: { rgb: "D1D5DB" } },
-          right: { style: "thin", color: { rgb: "D1D5DB" } },
-        };
-
-        const titleCellRef = XLSX.utils.encode_cell({ r: 0, c: 0 });
-        if (worksheet[titleCellRef]) {
-          worksheet[titleCellRef].s = {
-            font: { bold: true, sz: 14, color: { rgb: "0F172A" } },
-            alignment: { horizontal: "center", vertical: "center" },
-            fill: { fgColor: { rgb: "DCEBFF" } },
-            border: borderThin,
-          };
-        }
-
-        headers.forEach((_, colIndex) => {
-          const cellRef = XLSX.utils.encode_cell({ r: headerRowIndex, c: colIndex });
-          if (!worksheet[cellRef]) return;
-          worksheet[cellRef].s = {
-            font: { bold: true, color: { rgb: "FFFFFF" } },
-            alignment: { horizontal: "center", vertical: "center" },
-            fill: { fgColor: { rgb: "2563EB" } },
-            border: borderThin,
-          };
-        });
-
-        for (let r = 2; r <= 7; r += 1) {
-          const metaLabelRef = XLSX.utils.encode_cell({ r, c: 0 });
-          const metaValueRef = XLSX.utils.encode_cell({ r, c: 1 });
-          if (worksheet[metaLabelRef]) {
-            worksheet[metaLabelRef].s = {
-              font: { bold: true, color: { rgb: "1F2937" } },
-              alignment: { horizontal: "left", vertical: "center" },
-              fill: { fgColor: { rgb: "E5E7EB" } },
-              border: borderThin,
-            };
-          }
-          if (worksheet[metaValueRef]) {
-            worksheet[metaValueRef].s = {
-              alignment: { horizontal: "left", vertical: "center" },
-              border: borderThin,
-            };
-          }
-        }
-
-        const numericKeywords = [
-          "amount",
-          "montant",
-          "price",
-          "prix",
-          "total",
-          "numero",
-          "telephone",
-          "phone",
-          "tel",
-        ];
-        const numericColIndexes = headers
-          .map((h, i) => ({ i, n: normalizeText(h) }))
-          .filter((x) => numericKeywords.some((key) => x.n.includes(key)))
-          .map((x) => x.i);
-
-        for (let r = dataStartRowIndex; r < allRows.length; r += 1) {
-          const isZebra = (r - dataStartRowIndex) % 2 === 1;
-          for (let c = 0; c <= lastColIndex; c += 1) {
-            const ref = XLSX.utils.encode_cell({ r, c });
-            if (!worksheet[ref]) continue;
-            const isNumericCol = numericColIndexes.includes(c);
-            worksheet[ref].s = {
-              border: borderThin,
-              alignment: {
-                horizontal: isNumericCol ? "right" : "left",
-                vertical: "center",
-              },
-              fill: isZebra ? { fgColor: { rgb: "F8FAFC" } } : undefined,
-            };
-          }
-        }
-
-        // NOTE: keep output compatible with broad Excel versions.
-        // Some freeze-pane extensions can produce corrupted files with xlsx CE.
-        worksheet["!autofilter"] = {
-          ref: `${XLSX.utils.encode_col(0)}${headerRowIndex + 1}:${XLSX.utils.encode_col(
-            lastColIndex
-          )}${headerRowIndex + 1}`,
-        };
-
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
-        const binary = XLSX.write(workbook, {
-          bookType: "xlsx",
-          type: "binary",
-        });
-
-        const toArrayBuffer = (s: string) => {
-          const buffer = new ArrayBuffer(s.length);
-          const view = new Uint8Array(buffer);
-          for (let i = 0; i < s.length; i += 1) {
-            view[i] = s.charCodeAt(i) & 0xff;
-          }
-          return buffer;
-        };
-
-        const xlsxBlob = new Blob([toArrayBuffer(binary)], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
-      }
-
       if (format === "csv") {
         const delimiter = locale === "fr" || locale === "ar" ? ";" : ",";
         const escapeCell = (value: unknown) => {
@@ -958,124 +822,10 @@ export default function OrderAdministration({
           headers.map(escapeCell).join(delimiter),
           ...rows.map((row: any) => row.map(escapeCell).join(delimiter)),
         ].join("\n");
-        const blob = new Blob(["\uFEFF" + csvContent], {
+        const blob = new Blob(["﻿" + csvContent], {
           type: "text/csv;charset=utf-8;",
         });
         downloadBlob(blob, `${baseFileName}.csv`);
-      }
-
-      if (false && format === "xlsx") {
-        const xlsxModule = await import("xlsx");
-        const XLSX: any = (xlsxModule as any).default ?? xlsxModule;
-        const metaTableRows: (string | number)[][] = [
-          ["BADGI - EXPORT INSCRIPTIONS"],
-          ["Événement", eventMeta.title || "-"],
-          ["Organisation", eventMeta.organisation || "-"],
-          ["Date début", eventMeta.eventDate || "-"],
-          ["Date fin", eventMeta.eventEndDate || "-"],
-          ["Lieu", eventMeta.place || "-"],
-          ["Exporté le", eventMeta.exportDate || "-"],
-          [""],
-        ];
-
-        const allRows: (string | number)[][] = [...metaTableRows, headers, ...rows];
-        const worksheet = XLSX.utils.aoa_to_sheet(allRows);
-
-        const totalColumns = Math.max(headers.length, 1);
-        const lastColIndex = totalColumns - 1;
-        const headerRowIndex = metaTableRows.length;
-
-        // Premium layout: merge title and meta values across the table width
-        worksheet["!merges"] = [
-          { s: { r: 0, c: 0 }, e: { r: 0, c: lastColIndex } },
-          { s: { r: 1, c: 1 }, e: { r: 1, c: lastColIndex } },
-          { s: { r: 2, c: 1 }, e: { r: 2, c: lastColIndex } },
-          { s: { r: 3, c: 1 }, e: { r: 3, c: lastColIndex } },
-          { s: { r: 4, c: 1 }, e: { r: 4, c: lastColIndex } },
-          { s: { r: 5, c: 1 }, e: { r: 5, c: lastColIndex } },
-          { s: { r: 6, c: 1 }, e: { r: 6, c: lastColIndex } },
-        ];
-
-        // Column widths auto-fit with sensible min/max
-        worksheet["!cols"] = headers.map((header: string, colIndex: number) => {
-          const values = [
-            String(header || ""),
-            ...rows.map((row: any[]) => String(row?.[colIndex] ?? "")),
-          ];
-          const maxLen = values.reduce(
-            (max, value) => Math.max(max, value.length),
-            8
-          );
-          return { wch: Math.min(48, Math.max(12, maxLen + 2)) };
-        });
-
-        // Row heights for a cleaner "report" look
-        worksheet["!rows"] = allRows.map((_, rowIndex) => {
-          if (rowIndex === 0) return { hpx: 28 };
-          if (rowIndex <= 6) return { hpx: 22 };
-          if (rowIndex === headerRowIndex) return { hpx: 24 };
-          return { hpx: 20 };
-        });
-
-        const titleCellRef = XLSX.utils.encode_cell({ r: 0, c: 0 });
-        const titleCell = worksheet[titleCellRef];
-        if (titleCell) {
-          titleCell.s = {
-            font: { bold: true, sz: 14, color: { rgb: "0F172A" } },
-            alignment: { horizontal: "center", vertical: "center" },
-            fill: { fgColor: { rgb: "DCEBFF" } },
-          };
-        }
-
-        // Header colors and bold text
-        headers.forEach((_, colIndex) => {
-          const cellRef = XLSX.utils.encode_cell({ r: headerRowIndex, c: colIndex });
-          if (!worksheet[cellRef]) return;
-          worksheet[cellRef].s = {
-            font: { bold: true, color: { rgb: "FFFFFF" } },
-            alignment: { horizontal: "center", vertical: "center" },
-            fill: { fgColor: { rgb: "2563EB" } },
-          };
-        });
-
-        // Meta labels styling (left column)
-        for (let r = 1; r <= 6; r += 1) {
-          const metaLabelRef = XLSX.utils.encode_cell({ r, c: 0 });
-          const metaValueRef = XLSX.utils.encode_cell({ r, c: 1 });
-          if (worksheet[metaLabelRef]) {
-            worksheet[metaLabelRef].s = {
-              font: { bold: true, color: { rgb: "1F2937" } },
-              alignment: { horizontal: "left", vertical: "center" },
-              fill: { fgColor: { rgb: "E5E7EB" } },
-            };
-          }
-          if (worksheet[metaValueRef]) {
-            worksheet[metaValueRef].s = {
-              alignment: { horizontal: "left", vertical: "center" },
-            };
-          }
-        }
-
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
-        const binary = XLSX.write(workbook, {
-          bookType: "xlsx",
-          type: "binary",
-        });
-
-        const toArrayBuffer = (s: string) => {
-          const buffer = new ArrayBuffer(s.length);
-          const view = new Uint8Array(buffer);
-          for (let i = 0; i < s.length; i += 1) {
-            view[i] = s.charCodeAt(i) & 0xff;
-          }
-          return buffer;
-        };
-
-        const xlsxBlob = new Blob([toArrayBuffer(binary)], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
       }
 
       if (format === "word") {
@@ -1106,7 +856,7 @@ export default function OrderAdministration({
         </div>
         <table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table>
         </body></html>`;
-        const blob = new Blob(["\uFEFF" + htmlDoc], {
+        const blob = new Blob(["﻿" + htmlDoc], {
           type: "application/msword;charset=utf-8",
         });
         downloadBlob(blob, `${baseFileName}.doc`);
@@ -1130,7 +880,7 @@ export default function OrderAdministration({
             }
           }
         } catch (_logoError) {
-          // Non-blocking: continue export even if logo cannot be loaded
+          // Non-blocking
         }
         doc.setFontSize(14);
         doc.text("BADGI - Export des inscriptions", 130, y + 10);
@@ -1168,7 +918,7 @@ export default function OrderAdministration({
 
       toast({
         title: tx("export.toastTitle", "Export"),
-        description: `${data.length} ${tx(
+        description: `${filteredData.length} ${tx(
           "export.successCountLabel",
           "inscription(s)"
         )} ${tx("export.successExportedIn", "exportée(s) en")} ${format.toUpperCase()}.`,
@@ -1177,10 +927,7 @@ export default function OrderAdministration({
       console.error("Export failed", exportError);
       toast({
         title: tx("export.toastTitle", "Export"),
-        description: tx(
-          "export.failed",
-          "Échec de l'export. Veuillez réessayer."
-        ),
+        description: tx("export.failed", "Échec de l'export. Veuillez réessayer."),
         variant: "destructive",
       });
     } finally {
@@ -1189,62 +936,208 @@ export default function OrderAdministration({
   };
 
   return (
-    <div className={`space-y-6 ${isRTL ? "rtl" : "ltr"}`}>
-      {/* Header Section */}
-      <div className="glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-6">
-        <div
-          className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 ${isRTL ? "lg:flex-row-reverse" : ""
-            }`}
-        >
-          <div
-            className={`flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""
-              }`}
-          >
-            <div className="p-3 rounded-xl bg-gradient-to-r from-green-500/20 to-emerald-500/20">
-              <ShoppingCart className="h-6 w-6 text-green-600 dark:text-green-400" />
-            </div>
-            <div className={isRTL ? "text-right" : ""}>
-              <h2
-                className={`text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent ${isRTL ? "font-arabic" : ""
-                  }`}
-              >
-                {t("title")}
-              </h2>
-              <p
-                className={`text-muted-foreground ${isRTL ? "font-arabic" : ""
-                  }`}
-              >
-                {t("subtitle")}
-              </p>
-            </div>
-          </div>
+    <div className={`flex flex-col gap-5 ${isRTL ? "rtl" : "ltr"}`}>
+      <AdminSectionHeader
+        icon={<ShoppingCart className="h-5 w-5" />}
+        title={t("title")}
+        subtitle={t("subtitle")}
+        isRTL={isRTL}
+      />
 
-          <div
-            className={`w-full lg:w-auto flex flex-wrap items-center gap-2 sm:gap-3 ${isRTL ? "flex-row-reverse" : ""
-              }`}
-          >
-            <Search
-              placeholder={t("searchPlaceholder")}
-              className="w-full sm:w-auto glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50"
-            />
-            <Button
-              variant="outline"
-              size="icon"
-              className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
-              title={t("actions.filter")}
+      {/* KPIs, computed on the filtered result set */}
+      <div className={`grid grid-cols-1 gap-3.5 sm:grid-cols-2 ${isFreeEvent ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
+        <StatCard
+          label={t("stats.totalOrders")}
+          value={filteredData.length}
+          icon={<ShoppingCart className="h-4 w-4" />}
+          accent="blue"
+          hint={
+            <>
+              <Users className="h-3.5 w-3.5" /> {uniqueParticipants} {tx("stats.uniqueParticipantsHint", "participants uniques")}
+            </>
+          }
+          isRTL={isRTL}
+        />
+        {!isFreeEvent && (
+          <StatCard
+            label={t("stats.totalRevenue")}
+            value={formatPriceByCountry(totalRevenue, eventCountry || data?.[0]?.eventCountry, locale, eventLocation)}
+            icon={<CreditCard className="h-4 w-4" />}
+            accent="green"
+            isRTL={isRTL}
+          />
+        )}
+        <StatCard
+          label={tx("stats.actionable", "À valider")}
+          value={actionableCount}
+          icon={<Clock className="h-4 w-4" />}
+          accent="amber"
+          hint={tx("stats.actionableHint", "virements et remises en attente")}
+          isRTL={isRTL}
+        />
+        <StatCard
+          label={t("stats.uniqueBuyers")}
+          value={uniqueParticipants}
+          icon={<Users className="h-4 w-4" />}
+          accent="neutral"
+          isRTL={isRTL}
+        />
+      </div>
+
+      {planBreakdown.length > 0 && (
+        <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
+          <p className="mb-3 text-sm font-semibold text-foreground">
+            {tx("planBreakdown.title", "Répartition des formules")}
+          </p>
+          <div className="flex flex-col gap-3">
+            {planBreakdown.map((plan, index) => (
+              <div key={plan.name}>
+                <div className="mb-1 flex items-center justify-between text-xs">
+                  <span className="text-foreground">{plan.name}</span>
+                  <span className="font-semibold tabular-nums text-muted-foreground">
+                    {plan.count} ({plan.pct}%)
+                  </span>
+                </div>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className={`h-full rounded-full ${PLAN_BAR_COLORS[index % PLAN_BAR_COLORS.length]}`}
+                    style={{ width: `${plan.pct}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <AdminToolbar
+        isRTL={isRTL}
+        search={search}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
+        searchPlaceholder={tx(
+          "filters.searchPlaceholder",
+          "Nom, e-mail, référence, formule…"
+        )}
+        resultLabel={`${filteredData.length} ${tx("filters.resultsLabel", "résultat(s)")}`}
+        onReset={resetFilters}
+        resetLabel={tx("filters.reset", "Réinitialiser les filtres")}
+        filters={
+          <>
+            <Select
+              value={typeFilter || "all"}
+              onValueChange={(v) => {
+                setTypeFilter(v === "all" ? "" : v);
+                setPage(1);
+              }}
             >
-              <Filter className="h-4 w-4" />
+              <SelectTrigger className="h-10 w-full sm:w-[190px]">
+                <SelectValue placeholder={tx("filters.type", "Type — Tous")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{tx("filters.typeAll", "Type — Tous")}</SelectItem>
+                <SelectItem value="paid">{t("ticketTypes.paid")}</SelectItem>
+                <SelectItem value="bank_transfer">{t("ticketTypes.bankTransfer")}</SelectItem>
+                <SelectItem value="doorpay">{t("ticketTypes.doorpay")}</SelectItem>
+                <SelectItem value="hosted">{t("ticketTypes.hosted")}</SelectItem>
+                <SelectItem value="free">{t("ticketTypes.free")}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={categoryFilter || "all"}
+              onValueChange={(v) => {
+                setCategoryFilter(v === "all" ? "" : v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="h-10 w-full sm:w-[190px]">
+                <SelectValue placeholder={tx("filters.categoryAll", "Catégorie — Toutes")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{tx("filters.categoryAll", "Catégorie — Toutes")}</SelectItem>
+                {(["attendee", "speaker", "sponsor", "staff"] as const).map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {categoryLabels[c]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={statusFilter || "all"}
+              onValueChange={(v) => {
+                setStatusFilter(v === "all" ? "" : v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="h-10 w-full sm:w-[210px]">
+                <SelectValue placeholder={tx("filters.statusAll", "Statut — Tous")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{tx("filters.statusAll", "Statut — Tous")}</SelectItem>
+                <SelectItem value="paid">{tx("paymentStatus.paid", "Payé")}</SelectItem>
+                <SelectItem value="pending-eligibility">
+                  {tx("paymentStatus.pendingEligibility", "En attente de validation")}
+                </SelectItem>
+                <SelectItem value="pending-transfer">
+                  {tx("paymentStatus.pendingTransfer", "Virement à vérifier")}
+                </SelectItem>
+                <SelectItem value="doorpay">{tx("paymentStatus.doorpay", "Paiement sur place")}</SelectItem>
+                <SelectItem value="hosted">{tx("paymentStatus.hosted", "Pris en charge")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </>
+        }
+        actions={
+          <>
+            <Button asChild variant="outline" size="sm" className="gap-2">
+              <Link href={`/events/${eventId}/scan`}>
+                <QrCode className="h-4 w-4" />
+                {tx("actions.scanAccess", "Scanner un accès")}
+              </Link>
             </Button>
+            {eventId && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => setIsAddParticipantOpen(true)}
+                >
+                  <UserPlus className="h-4 w-4" />
+                  {tx("actions.add", "Ajouter")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => setIsImportOpen(true)}
+                >
+                  <Upload className="h-4 w-4" />
+                  {tx("actions.import", "Importer")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => setIsReportOpen(true)}
+                >
+                  <FileText className="h-4 w-4" />
+                  {t("actions.rapport")}
+                </Button>
+              </>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  size="icon"
-                  disabled={isExporting || isPending || !data || data.length === 0}
-                  className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
-                  title={t("actions.export")}
+                  size="sm"
+                  disabled={isExporting || isPending || filteredData.length === 0}
+                  className="gap-2"
                 >
                   <Download className="h-4 w-4" />
+                  {t("actions.export")}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align={isRTL ? "start" : "end"}>
@@ -1262,198 +1155,72 @@ export default function OrderAdministration({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button
-              asChild
-              variant="outline"
-              className="w-full sm:w-auto justify-center glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 gap-2"
-            >
-              <Link href={`/events/${eventId}/scan`}>
-                <QrCode className="h-4 w-4" />
-                <span>{tx("actions.scanAccess", "Scanner un accès")}</span>
-              </Link>
-            </Button>
             {eventId && (
-              <>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAddParticipantOpen(true)}
-                  className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-blue-500/10 to-indigo-500/10 backdrop-blur-sm border-blue-300/50 dark:border-blue-700/50 hover:from-blue-500/20 hover:to-indigo-500/20 text-blue-700 dark:text-blue-400"
-                >
-                  <UserPlus className="h-4 w-4" />
-                  <span>{tx("actions.add", "Ajouter")}</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsImportOpen(true)}
-                  className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-emerald-500/10 to-teal-500/10 backdrop-blur-sm border-emerald-300/50 dark:border-emerald-700/50 hover:from-emerald-500/20 hover:to-teal-500/20 text-emerald-700 dark:text-emerald-400"
-                >
-                  <Upload className="h-4 w-4" />
-                  <span>{tx("actions.import", "Importer")}</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsReportOpen(true)}
-                  className="w-full sm:w-auto justify-center gap-2 glass bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border-amber-300/50 dark:border-amber-700/50 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-700 dark:text-amber-400"
-                >
-                  <FileText className="h-4 w-4" />
-                  <span>{t("actions.rapport")}</span>
-                </Button>
-                <Button
-                  asChild
-                  variant="default"
-                  className="w-full sm:w-auto justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md transition-all duration-300"
-                >
-                  <Link href={`/events/${eventId}/badge`}>
-                    <Printer className="w-4 h-4 mr-2" />
-                    {tx("actions.manageBadges", "Gérer les badges")}
-                  </Link>
-                </Button>
-              </>
+              <Button asChild size="sm" className="gap-2">
+                <Link href={`/events/${eventId}/badge`}>
+                  <Printer className="h-4 w-4" />
+                  {tx("actions.manageBadges", "Gérer les badges")}
+                </Link>
+              </Button>
             )}
-          </div>
-        </div>
+          </>
+        }
+      />
 
-        {/* Stats Row */}
-        {data && (
-          <div className={`grid grid-cols-1 ${!isFreeEvent ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-4 mt-6`}>
-            <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-4">
-              <div
-                className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
-                  }`}
-              >
-                <div className="p-2 rounded-lg bg-blue-500/20">
-                  <ShoppingCart className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div className={isRTL ? "text-right" : ""}>
-                  <p
-                    className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
-                      }`}
-                  >
-                    {data.length}
-                  </p>
-                  <p
-                    className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
-                      }`}
-                  >
-                    {t("stats.totalOrders")}
-                  </p>
-                </div>              </div>
-            </div>
-
-            {!isFreeEvent && (
-              <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-4">
-                <div
-                  className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
-                    }`}
-                >
-                  <div className="p-2 rounded-lg bg-green-500/20">
-                    <CreditCard className="h-5 w-5 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div className={isRTL ? "text-right" : ""}>
-                    <p
-                      className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
-                        }`}
-                    >
-                      {formatPriceByCountry(
-                        data.reduce(
-                          (sum: number, order: any) => sum + (order.totalAmount || 0),
-                          0
-                        ),
-                        eventCountry || data[0]?.eventCountry,
-                        locale,
-                        eventLocation
-                      )}
-                    </p>
-                    <p
-                      className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
-                        }`}
-                    >
-                      {t("stats.totalRevenue")}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="glass bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/20 rounded-xl p-4">
-              <div
-                className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
-                  }`}
-              >
-                <div className="p-2 rounded-lg bg-purple-500/20">
-                  <User className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div className={isRTL ? "text-right" : ""}>
-                  <p
-                    className={`text-2xl font-bold ${isRTL ? "font-arabic" : ""
-                      }`}
-                  >
-                    {new Set(data.map((order: any) => getParticipantNameFromOrder(order))).size}
-                  </p>
-                  <p
-                    className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""
-                      }`}
-                  >
-                    {t("stats.uniqueBuyers")}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Content Section */}
-      <div className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-6">
+      <div className="rounded-xl border border-border bg-card">
         {isMobile ? (
           isPending ? (
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col gap-3 p-4">
               {Array.from({ length: 3 }).map((_, index) => (
                 <CardSkeleton key={index} />
               ))}
             </div>
-          ) : data && data.length > 0 ? (
-            <div className="space-y-4">{data.map(renderMobileCard)}</div>
+          ) : paginatedData.length > 0 ? (
+            <div className="flex flex-col gap-3 p-4">{paginatedData.map(renderMobileCard)}</div>
           ) : (
-            <div className="text-center py-12">
-              <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3
-                className={`text-lg font-semibold mb-2 ${isRTL ? "font-arabic" : ""
-                  }`}
-              >
-                {t("emptyState.title")}
-              </h3>
-              <p
-                className={`text-muted-foreground ${isRTL ? "font-arabic" : ""
-                  }`}
-              >
-                {t("emptyState.description")}
-              </p>
-            </div>
+            <AdminEmptyState
+              icon={<ShoppingCart className="h-8 w-8" />}
+              title={t("emptyState.title")}
+              description={t("emptyState.description")}
+              isRTL={isRTL}
+            />
           )
         ) : isPending ? (
           <TableSkeleton />
-        ) : data && data.length > 0 ? (
-          <DataTable columns={columns} data={data} />
+        ) : paginatedData.length > 0 ? (
+          <AdminDataTable
+            columns={columns}
+            data={paginatedData}
+            sortKey={sort.key}
+            sortDir={sort.dir}
+            onSortChange={(key) => handleSortChange(key)}
+            getRowId={(row) => row._id}
+            isRTL={isRTL}
+          />
         ) : (
-          <div className="text-center py-12">
-            <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3
-              className={`text-lg font-semibold mb-2 ${isRTL ? "font-arabic" : ""
-                }`}
-            >
-              {t("emptyState.title")}
-            </h3>
-            <p
-              className={`text-muted-foreground ${isRTL ? "font-arabic" : ""}`}
-            >
-              {t("emptyState.description")}
-            </p>
-          </div>
+          <AdminEmptyState
+            icon={<ShoppingCart className="h-8 w-8" />}
+            title={t("emptyState.title")}
+            description={t("emptyState.description")}
+            isRTL={isRTL}
+          />
+        )}
+        {sortedData.length > 0 && (
+          <AdminPagination
+            page={safePage}
+            pageSize={pageSize}
+            total={sortedData.length}
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
+            isRTL={isRTL}
+          />
         )}
       </div>
 
-      {/* Event Report Dialog */}
       {eventId && (
         <EventReportDialog
           eventId={eventId}
@@ -1461,8 +1228,6 @@ export default function OrderAdministration({
           onClose={() => setIsReportOpen(false)}
         />
       )}
-
-      {/* Import Participants Dialog */}
       {eventId && (
         <ImportParticipantsDialog
           eventId={eventId}
@@ -1470,8 +1235,6 @@ export default function OrderAdministration({
           onClose={() => setIsImportOpen(false)}
         />
       )}
-
-      {/* Add Participant Dialog */}
       {eventId && (
         <AddParticipantDialog
           eventId={eventId}

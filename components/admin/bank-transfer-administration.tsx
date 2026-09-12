@@ -39,11 +39,9 @@ import {
   XCircle,
   Clock,
   Eye,
-  Filter,
   Download,
   CreditCard,
   Calendar,
-  User,
   FileText,
   Image as ImageIcon,
   ChevronLeft,
@@ -59,6 +57,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLocale, useTranslations } from "next-intl";
+import { AdminSectionHeader } from "./ui/AdminSectionHeader";
+import { StatCard } from "./ui/StatCard";
 
 interface BankTransferAdministrationProps {
     eventId?: string;
@@ -184,18 +184,15 @@ export default function BankTransferAdministration({
   const getStatusBadge = (status: string) => {
     const variants = {
       pending: {
-        className:
-          "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300",
+        className: "bg-admin-warning-soft text-admin-warning border-transparent",
         icon: Clock,
       },
       approved: {
-        className:
-          "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-300",
+        className: "bg-admin-success-soft text-admin-success border-transparent",
         icon: CheckCircle2,
       },
       rejected: {
-        className:
-          "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-300",
+        className: "bg-admin-critical-soft text-destructive border-transparent",
         icon: XCircle,
       },
     };
@@ -301,7 +298,7 @@ export default function BankTransferAdministration({
   const renderMobileCard = (item: any) => (
     <Card
       key={item._id}
-      className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/20 dark:border-slate-700/50"
+      className="border-border"
     >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
@@ -537,43 +534,24 @@ export default function BankTransferAdministration({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div className="glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-6">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-gradient-to-r from-pink-500/20 to-rose-500/20">
-              <Landmark className="h-6 w-6 text-pink-600 dark:text-pink-400" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                {t("title")}
-              </h2>
-              <p className="text-muted-foreground">
-                {t("subtitle")}
-              </p>
-            </div>
-          </div>
-
-          <div className="w-full lg:w-auto flex flex-wrap items-center gap-2 sm:gap-3">
-            <Search
-              placeholder={t("searchPlaceholder")}
-              className="w-full sm:w-auto"
-            />
-            <Button variant="outline" size="icon" title={t("actions.filter")}>
-              <Filter className="h-4 w-4" />
-            </Button>
+    <div className="flex flex-col gap-5">
+      <AdminSectionHeader
+        icon={<Landmark className="h-5 w-5" />}
+        title={t("title")}
+        subtitle={t("subtitle")}
+        actions={
+          <>
+            <Search placeholder={t("searchPlaceholder")} className="w-full sm:w-auto" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  size="icon"
-                  title={t("actions.export")}
-                  disabled={
-                    isExporting || isPending || !data || !data.totalCount
-                  }
+                  size="sm"
+                  className="gap-2"
+                  disabled={isExporting || isPending || !data || !data.totalCount}
                 >
                   <Download className="h-4 w-4" />
+                  {t("actions.export")}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -591,68 +569,39 @@ export default function BankTransferAdministration({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+          </>
+        }
+      />
+
+      {/* Stats Row */}
+      {data && (
+        <div className="grid grid-cols-2 gap-3.5 md:grid-cols-4">
+          <StatCard
+            label={t("stats.total")}
+            value={data.statusCounts?.total ?? data.totalCount}
+            icon={<Landmark className="h-4 w-4" />}
+            accent="blue"
+          />
+          <StatCard
+            label={t("stats.pending")}
+            value={data.statusCounts?.pending ?? 0}
+            icon={<Clock className="h-4 w-4" />}
+            accent="amber"
+          />
+          <StatCard
+            label={t("stats.approved")}
+            value={data.statusCounts?.approved ?? 0}
+            icon={<CheckCircle2 className="h-4 w-4" />}
+            accent="green"
+          />
+          <StatCard
+            label={t("stats.rejected")}
+            value={data.statusCounts?.rejected ?? 0}
+            icon={<XCircle className="h-4 w-4" />}
+            accent="red"
+          />
         </div>
-
-        {/* Stats Row */}
-        {data && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6">
-            <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-3 md:p-4">
-              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
-                <div className="p-2 rounded-lg bg-blue-500/20 shrink-0">
-                  <Landmark className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-xl md:text-2xl font-bold">{data.statusCounts?.total ?? data.totalCount}</p>
-                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.total")}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-xl p-3 md:p-4">
-              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
-                <div className="p-2 rounded-lg bg-yellow-500/20 shrink-0">
-                  <Clock className="h-5 w-5 text-yellow-600" />
-                </div>
-                <div>
-                  <p className="text-xl md:text-2xl font-bold">
-                    {data.statusCounts?.pending ?? 0}
-                  </p>
-                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.pending")}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-3 md:p-4">
-              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
-                <div className="p-2 rounded-lg bg-green-500/20 shrink-0">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-xl md:text-2xl font-bold">
-                    {data.statusCounts?.approved ?? 0}
-                  </p>
-                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.approved")}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass bg-gradient-to-r from-red-500/10 to-rose-500/10 backdrop-blur-sm border border-red-500/20 rounded-xl p-3 md:p-4">
-              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
-                <div className="p-2 rounded-lg bg-red-500/20 shrink-0">
-                  <XCircle className="h-5 w-5 text-red-600" />
-                </div>
-                <div>
-                  <p className="text-xl md:text-2xl font-bold">
-                    {data.statusCounts?.rejected ?? 0}
-                  </p>
-                  <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.rejected")}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Filter Tabs */}
       <Tabs value={statusFilter} onValueChange={(v: any) => handleStatusFilterChange(v)}>
@@ -665,7 +614,7 @@ export default function BankTransferAdministration({
       </Tabs>
 
       {/* Content Section */}
-      <div className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-6">
+      <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
         {isMobile ? (
           isPending ? (
             <div className="flex flex-col space-y-4">
@@ -703,7 +652,7 @@ export default function BankTransferAdministration({
         )}
 
         {data && data.totalPages > 1 && (
-          <div className="mt-6 flex items-center justify-between gap-3 border-t border-white/20 pt-4 dark:border-slate-700/50">
+          <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4">
             <Button
               variant="outline"
               size="sm"

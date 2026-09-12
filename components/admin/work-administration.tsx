@@ -1,23 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { Button } from "@/components/ui/button";
-import DataTable from "@/components/shared/data-table";
-import { Badge } from "../ui/badge";
 import Search from "../shared/Search";
 import { getUserWorkByEventId } from "@/lib/actions/user.actions";
 import { useQuery } from "@tanstack/react-query";
 import TableSkeleton from "../shared/table-skeleton";
 import { formatDateTime } from "@/lib/utils";
-import {
-  CheckCheck,
-  Download,
-  Briefcase,
-  Calendar,
-  FileText,
-  Filter,
-} from "lucide-react";
+import { CheckCheck, Download, Briefcase, Calendar, Clock } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -26,8 +16,22 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { WorkDetailsDialog } from "./WorkDetailsDialog";
 import { CardSkeleton } from "./CardSkeleton";
+import { AdminSectionHeader } from "./ui/AdminSectionHeader";
+import { StatCard } from "./ui/StatCard";
+import { AdminToolbar } from "./ui/AdminToolbar";
+import { AdminDataTable, type AdminColumn } from "./ui/AdminDataTable";
+import { AdminPagination } from "./ui/AdminPagination";
+import { AdminEmptyState } from "./ui/AdminEmptyState";
+import { Button } from "../ui/button";
 import { useTranslations, useLocale } from "next-intl";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -37,6 +41,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const PAGE_SIZE_OPTIONS = [10, 25, 50];
+
 export default function WorkAdministration({
   eventId,
   searchString,
@@ -45,64 +51,27 @@ export default function WorkAdministration({
   searchString: string;
 }) {
   const t = useTranslations("workAdministration");
+  const tx = (key: string, fallback: string) =>
+    t.has(key as any) ? t(key as any) : fallback;
   const locale = useLocale();
   const isRTL = locale === "ar";
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { toast } = useToast();
   const [isExporting, setIsExporting] = useState(false);
 
-  const { isPending, data, error } = useQuery({
+  // New: a client-side status filter (including the synthetic
+  // "pending-registration" works parsed out of orders) plus pagination.
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
+
+  const { isPending, data } = useQuery({
     queryKey: ["works", eventId, searchString],
     queryFn: async () => {
       const response = await getUserWorkByEventId({ eventId, searchString });
       return response;
     },
   });
-
-  const getStatusBadge = (status: string) => {
-    const statusConfig: Record<string, { className: string; label: string }> = {
-      submitted: {
-        className:
-          "glass bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300",
-        label: t("status.submitted"),
-      },
-      approved: {
-        className:
-          "glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300",
-        label: t("status.approved"),
-      },
-      reviewed: {
-        className:
-          "glass bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-700 dark:text-green-300",
-        label: t("status.reviewed"),
-      },
-      rejected: {
-        className:
-          "glass bg-gradient-to-r from-red-500/20 to-rose-500/20 border-red-500/30 text-red-700 dark:text-red-300",
-        label: t("status.rejected"),
-      },
-      draft: {
-        className:
-          "glass bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30 text-yellow-700 dark:text-yellow-300",
-        label: t("status.pending"),
-      },
-      pending: {
-        className:
-          "glass bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30 text-yellow-700 dark:text-yellow-300",
-        label: t("status.pending"),
-      },
-    };
-
-    const config =
-      statusConfig[status as keyof typeof statusConfig] ||
-      statusConfig.submitted;
-
-    return (
-      <Badge className={`${config.className} ${isRTL ? "font-arabic" : ""}`}>
-        {config.label}
-      </Badge>
-    );
-  };
 
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
@@ -113,42 +82,65 @@ export default function WorkAdministration({
       draft: t("status.pending"),
       pending: t("status.pending"),
     };
-
     return labels[status] || labels.submitted;
   };
 
-  const columns = [
+  const toneForStatus: Record<string, string> = {
+    submitted: "bg-admin-accent-soft text-admin-accent-soft-foreground",
+    approved: "bg-admin-success-soft text-admin-success",
+    reviewed: "bg-admin-success-soft text-admin-success",
+    rejected: "bg-admin-critical-soft text-destructive",
+    draft: "bg-admin-warning-soft text-admin-warning",
+    pending: "bg-admin-warning-soft text-admin-warning",
+  };
+
+  const getStatusBadge = (status: string) => (
+    <span
+      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+        toneForStatus[status] || toneForStatus.submitted
+      } ${isRTL ? "font-arabic" : ""}`}
+    >
+      {getStatusLabel(status)}
+    </span>
+  );
+
+  const filteredData = useMemo(() => {
+    const base = data || [];
+    if (!statusFilter) return base;
+    if (statusFilter === "pending-registration") {
+      return base.filter((item: any) => item.isPendingRegistration === true);
+    }
+    return base.filter((item: any) => (item.status || "submitted") === statusFilter);
+  }, [data, statusFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const paginatedData = filteredData.slice((safePage - 1) * pageSize, safePage * pageSize);
+
+  const columns: AdminColumn[] = [
     {
       header: t("table.headers.id"),
       accessor: "_id",
       cell: (value: string) => (
-        <span className="font-mono text-sm bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-          {value.slice(-8)}
-        </span>
+        <span className="font-mono text-xs font-semibold text-primary">#{String(value).slice(-8)}</span>
       ),
     },
     {
       header: t("table.headers.eventTitle"),
       accessor: "eventTitle",
       cell: (value: string) => (
-        <span className={`font-medium ${isRTL ? "font-arabic" : ""}`}>
-          {value}
-        </span>
+        <span className={`font-medium text-foreground ${isRTL ? "font-arabic" : ""}`}>{value}</span>
       ),
     },
     {
       header: t("table.headers.submitter"),
       accessor: "buyer",
       cell: (value: string) => (
-        <div
-          className={`flex items-center gap-2 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
-        >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white text-sm font-medium">
+        <div className={`flex items-center gap-2.5 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
             {value.charAt(0).toUpperCase()}
           </div>
-          <span className={`${isRTL ? "font-arabic" : ""}`}>{value}</span>
+          <span className={isRTL ? "font-arabic" : ""}>{value}</span>
         </div>
       ),
     },
@@ -161,17 +153,9 @@ export default function WorkAdministration({
       header: t("table.headers.submitted"),
       accessor: "createdAt",
       cell: (value: Date) => (
-        <div
-          className={`flex items-center gap-2 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
-        >
-          <Calendar className="h-4 w-4 text-muted-foreground" />
-          <span
-            className={`text-sm text-muted-foreground ${
-              isRTL ? "font-arabic" : ""
-            }`}
-          >
+        <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""}`}>
             {formatDateTime(value).dateTime}
           </span>
         </div>
@@ -186,78 +170,39 @@ export default function WorkAdministration({
   ];
 
   const renderMobileCard = (item: any) => (
-    <Card
-      key={item._id}
-      className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/20 dark:border-slate-700/50 hover:scale-105 transition-all duration-300"
-    >
+    <Card key={item._id} className="border-border">
       <CardHeader className="pb-3">
-        <div
-          className={`flex items-center justify-between ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
-        >
-          <CardTitle className={`text-lg ${isRTL ? "font-arabic" : ""}`}>
-            {item.eventTitle}
-          </CardTitle>
+        <div className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}>
+          <CardTitle className={`text-base ${isRTL ? "font-arabic" : ""}`}>{item.eventTitle}</CardTitle>
           {getStatusBadge(item.status || "submitted")}
         </div>
-        <CardDescription
-          className={`font-mono text-sm ${
-            isRTL ? "font-arabic text-right" : ""
-          }`}
-        >
-          {t("workIdLabel")}: {item._id.slice(-8)}
+        <CardDescription className={`font-mono text-xs ${isRTL ? "text-right font-arabic" : ""}`}>
+          {t("workIdLabel")}: {String(item._id).slice(-8)}
         </CardDescription>
       </CardHeader>
-
       <CardContent className="space-y-3">
-        <div
-          className={`flex items-center gap-3 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
-        >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white font-medium">
+        <div className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-medium text-primary-foreground">
             {item.buyer.charAt(0).toUpperCase()}
           </div>
           <div className={isRTL ? "text-right" : ""}>
-            <p className={`font-medium ${isRTL ? "font-arabic" : ""}`}>
-              {item.buyer}
-            </p>
-            <p
-              className={`text-sm text-muted-foreground ${
-                isRTL ? "font-arabic" : ""
-              }`}
-            >
-              {t("submitter")}
-            </p>
+            <p className={`font-medium ${isRTL ? "font-arabic" : ""}`}>{item.buyer}</p>
+            <p className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""}`}>{t("submitter")}</p>
           </div>
         </div>
-
-        <div
-          className={`flex items-center gap-2 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
-        >
+        <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
           <Calendar className="h-4 w-4 text-muted-foreground" />
-          <span
-            className={`text-sm text-muted-foreground ${
-              isRTL ? "font-arabic" : ""
-            }`}
-          >
+          <span className={`text-sm text-muted-foreground ${isRTL ? "font-arabic" : ""}`}>
             {formatDateTime(item.createdAt).dateTime}
           </span>
         </div>
       </CardContent>
-
-      <CardFooter
-        className={`flex justify-center w-full mt-2 pt-4 pb-4 border-t border-slate-100 dark:border-slate-800 ${isRTL ? "flex-row-reverse" : ""}`}
-      >
+      <CardFooter className={`flex justify-center border-t border-border pt-4 ${isRTL ? "flex-row-reverse" : ""}`}>
         <WorkDetailsDialog value={item} />
       </CardFooter>
     </Card>
   );
 
-  // Calculate stats
   const stats = data
     ? {
         total: data.length,
@@ -297,11 +242,7 @@ export default function WorkAdministration({
 
   const handleExportWorks = async (format: ExportFormat) => {
     if (!data || data.length === 0) {
-      toast({
-        title: "Export",
-        description: t("export.noData"),
-        variant: "destructive",
-      });
+      toast({ title: "Export", description: t("export.noData"), variant: "destructive" });
       return;
     }
 
@@ -337,9 +278,7 @@ export default function WorkAdministration({
           headers.map(escapeCell).join(delimiter),
           ...rows.map((row: any) => row.map(escapeCell).join(delimiter)),
         ].join("\n");
-        const blob = new Blob(["\uFEFF" + csvContent], {
-          type: "text/csv;charset=utf-8;",
-        });
+        const blob = new Blob(["﻿" + csvContent], { type: "text/csv;charset=utf-8;" });
         downloadBlob(blob, `${baseFileName}.csv`);
       }
 
@@ -349,17 +288,12 @@ export default function WorkAdministration({
         const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Works");
-        const binary = XLSX.write(workbook, {
-          bookType: "xlsx",
-          type: "binary",
-        });
+        const binary = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
 
         const toArrayBuffer = (s: string) => {
           const buffer = new ArrayBuffer(s.length);
           const view = new Uint8Array(buffer);
-          for (let i = 0; i < s.length; i += 1) {
-            view[i] = s.charCodeAt(i) & 0xff;
-          }
+          for (let i = 0; i < s.length; i += 1) view[i] = s.charCodeAt(i) & 0xff;
           return buffer;
         };
 
@@ -371,29 +305,17 @@ export default function WorkAdministration({
 
       if (format === "word") {
         const headerHtml = headers
-          .map(
-            (h) =>
-              `<th style="border:1px solid #ccc;padding:8px;background:#f5f5f5;">${h}</th>`
-          )
+          .map((h) => `<th style="border:1px solid #ccc;padding:8px;background:#f5f5f5;">${h}</th>`)
           .join("");
         const rowsHtml = rows
           .map(
             (row: any) =>
-              `<tr>${row
-                .map(
-                  (cell: any) =>
-                    `<td style="border:1px solid #ccc;padding:8px;">${String(
-                      cell
-                    )}</td>`
-                )
-                .join("")}</tr>`
+              `<tr>${row.map((cell: any) => `<td style="border:1px solid #ccc;padding:8px;">${String(cell)}</td>`).join("")}</tr>`
           )
           .join("");
 
         const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>Works Export</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
-        const blob = new Blob(["\uFEFF" + htmlDoc], {
-          type: "application/msword;charset=utf-8",
-        });
+        const blob = new Blob(["﻿" + htmlDoc], { type: "application/msword;charset=utf-8" });
         downloadBlob(blob, `${baseFileName}.doc`);
       }
 
@@ -422,262 +344,125 @@ export default function WorkAdministration({
         doc.save(`${baseFileName}.pdf`);
       }
 
-      toast({
-        title: "Export",
-        description: t("export.success", { count: data.length, format }),
-      });
+      toast({ title: "Export", description: t("export.success", { count: data.length, format }) });
     } catch (exportError) {
       console.error("Export failed", exportError);
-      toast({
-        title: "Export",
-        description: t("export.error"),
-        variant: "destructive",
-      });
+      toast({ title: "Export", description: t("export.error"), variant: "destructive" });
     } finally {
       setIsExporting(false);
     }
   };
 
   return (
-    <div className={`space-y-6 ${isRTL ? "rtl" : "ltr"}`}>
-      {/* Header Section */}
-      <div className="glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-6">
-        <div
-          className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 ${
-            isRTL ? "lg:flex-row-reverse" : ""
-          }`}
-        >
-          <div
-            className={`flex items-center gap-4 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
-          >
-            <div className="p-3 rounded-xl bg-gradient-to-r from-orange-500/20 to-red-500/20">
-              <Briefcase className="h-6 w-6 text-orange-600 dark:text-orange-400" />
-            </div>
-            <div className={isRTL ? "text-right" : ""}>
-              <h2
-                className={`text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent ${
-                  isRTL ? "font-arabic" : ""
-                }`}
-              >
-                {t("title")}
-              </h2>
-              <p
-                className={`text-muted-foreground ${
-                  isRTL ? "font-arabic" : ""
-                }`}
-              >
-                {t("subtitle")}
-              </p>
-            </div>
-          </div>
+    <div className={`flex flex-col gap-5 ${isRTL ? "rtl" : "ltr"}`}>
+      <AdminSectionHeader
+        icon={<Briefcase className="h-5 w-5" />}
+        title={t("title")}
+        subtitle={t("subtitle")}
+        isRTL={isRTL}
+      />
 
-        <div
-          className={`w-full lg:w-auto flex flex-wrap items-center gap-2 sm:gap-3 ${
-            isRTL ? "flex-row-reverse" : ""
-          }`}
-        >
-          <Search
-            placeholder={t("searchPlaceholder")}
-            className="w-full sm:w-auto glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50"
-          />
-          <Button
-            variant="outline"
-            size="icon"
-            className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
-            title={t("actions.filter")}
-          >
-            <Filter className="h-4 w-4" />
-          </Button>
+      <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
+        <StatCard label={t("stats.total")} value={stats.total} icon={<Briefcase className="h-4 w-4" />} accent="blue" isRTL={isRTL} />
+        <StatCard label={t("stats.submitted")} value={stats.submitted} icon={<Clock className="h-4 w-4" />} accent="amber" isRTL={isRTL} />
+        <StatCard label={t("stats.reviewed")} value={stats.reviewed} icon={<CheckCheck className="h-4 w-4" />} accent="green" isRTL={isRTL} />
+        <StatCard label={t("stats.pending")} value={stats.pending} icon={<Calendar className="h-4 w-4" />} accent="neutral" isRTL={isRTL} />
+      </div>
+
+      <AdminToolbar
+        isRTL={isRTL}
+        resultLabel={`${filteredData.length} ${tx("filters.resultsLabel", "résultat(s)")}`}
+        filters={
+          <>
+            <Search placeholder={t("searchPlaceholder")} className="w-full sm:w-auto" />
+            <Select
+              value={statusFilter || "all"}
+              onValueChange={(v) => {
+                setStatusFilter(v === "all" ? "" : v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="h-10 w-full sm:w-[210px]">
+                <SelectValue placeholder={tx("filters.statusAll", "Statut — Tous")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{tx("filters.statusAll", "Statut — Tous")}</SelectItem>
+                <SelectItem value="submitted">{t("status.submitted")}</SelectItem>
+                <SelectItem value="approved">{t("status.approved")}</SelectItem>
+                <SelectItem value="rejected">{t("status.rejected")}</SelectItem>
+                <SelectItem value="pending-registration">
+                  {tx("filters.pendingRegistration", "En attente d'inscription")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </>
+        }
+        actions={
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                size="icon"
+                size="sm"
                 disabled={isExporting || isPending || !data || data.length === 0}
-                className="shrink-0 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
-                title={t("actions.export")}
+                className="gap-2"
               >
                 <Download className="h-4 w-4" />
+                {t("actions.export")}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align={isRTL ? "start" : "end"}>
-              <DropdownMenuItem onClick={() => handleExportWorks("xlsx")}>
-                Export XLSX
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExportWorks("word")}>
-                Export Word
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExportWorks("pdf")}>
-                Export PDF
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExportWorks("csv")}>
-                Export CSV
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExportWorks("xlsx")}>Export XLSX</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExportWorks("word")}>Export Word</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExportWorks("pdf")}>Export PDF</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExportWorks("csv")}>Export CSV</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-        </div>
+        }
+      />
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6">
-          <div className="glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/20 rounded-xl p-3 md:p-4">
-            <div
-              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left ${
-                isRTL ? "sm:flex-row-reverse sm:text-right" : ""
-              }`}
-            >
-              <div className="p-2 rounded-lg bg-blue-500/20 shrink-0">
-                <Briefcase className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div>
-                <p
-                  className={`text-xl md:text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
-                >
-                  {stats.total}
-                </p>
-                <p
-                  className={`text-xs md:text-sm text-balance leading-tight text-muted-foreground ${
-                    isRTL ? "font-arabic" : ""
-                  }`}
-                >
-                  {t("stats.total")}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="glass bg-gradient-to-r from-orange-500/10 to-red-500/10 backdrop-blur-sm border border-orange-500/20 rounded-xl p-3 md:p-4">
-            <div
-              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left ${
-                isRTL ? "sm:flex-row-reverse sm:text-right" : ""
-              }`}
-            >
-              <div className="p-2 rounded-lg bg-orange-500/20 shrink-0">
-                <FileText className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-              </div>
-              <div>
-                <p
-                  className={`text-xl md:text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
-                >
-                  {stats.submitted}
-                </p>
-                <p
-                  className={`text-xs md:text-sm text-balance leading-tight text-muted-foreground ${
-                    isRTL ? "font-arabic" : ""
-                  }`}
-                >
-                  {t("stats.submitted")}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="glass bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-xl p-3 md:p-4">
-            <div
-              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left ${
-                isRTL ? "sm:flex-row-reverse sm:text-right" : ""
-              }`}
-            >
-              <div className="p-2 rounded-lg bg-green-500/20 shrink-0">
-                <CheckCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
-              </div>
-              <div>
-                <p
-                  className={`text-xl md:text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
-                >
-                  {stats.reviewed}
-                </p>
-                <p
-                  className={`text-xs md:text-sm text-balance leading-tight text-muted-foreground ${
-                    isRTL ? "font-arabic" : ""
-                  }`}
-                >
-                  {t("stats.reviewed")}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="glass bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-xl p-3 md:p-4">
-            <div
-              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left ${
-                isRTL ? "sm:flex-row-reverse sm:text-right" : ""
-              }`}
-            >
-              <div className="p-2 rounded-lg bg-yellow-500/20 shrink-0">
-                <Calendar className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-              </div>
-              <div>
-                <p
-                  className={`text-xl md:text-2xl font-bold ${isRTL ? "font-arabic" : ""}`}
-                >
-                  {stats.pending}
-                </p>
-                <p
-                  className={`text-xs md:text-sm text-balance leading-tight text-muted-foreground ${
-                    isRTL ? "font-arabic" : ""
-                  }`}
-                >
-                  {t("stats.pending")}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content Section */}
-      <div className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-6">
+      <div className="rounded-xl border border-border bg-card">
         {isMobile ? (
           isPending ? (
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col gap-3 p-4">
               {Array.from({ length: 3 }).map((_, index) => (
                 <CardSkeleton key={index} />
               ))}
             </div>
-          ) : data && data.length > 0 ? (
-            <div className="space-y-4">{data.map(renderMobileCard)}</div>
+          ) : paginatedData.length > 0 ? (
+            <div className="flex flex-col gap-3 p-4">{paginatedData.map(renderMobileCard)}</div>
           ) : (
-            <div className="text-center py-12">
-              <Briefcase className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3
-                className={`text-lg font-semibold mb-2 ${
-                  isRTL ? "font-arabic" : ""
-                }`}
-              >
-                {t("emptyState.title")}
-              </h3>
-              <p
-                className={`text-muted-foreground ${
-                  isRTL ? "font-arabic" : ""
-                }`}
-              >
-                {t("emptyState.description")}
-              </p>
-            </div>
+            <AdminEmptyState
+              icon={<Briefcase className="h-8 w-8" />}
+              title={t("emptyState.title")}
+              description={t("emptyState.description")}
+              isRTL={isRTL}
+            />
           )
         ) : isPending ? (
           <TableSkeleton />
-        ) : data && data.length > 0 ? (
-          <DataTable columns={columns} data={data} />
+        ) : paginatedData.length > 0 ? (
+          <AdminDataTable columns={columns} data={paginatedData} getRowId={(row) => row._id} isRTL={isRTL} />
         ) : (
-          <div className="text-center py-12">
-            <Briefcase className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3
-              className={`text-lg font-semibold mb-2 ${
-                isRTL ? "font-arabic" : ""
-              }`}
-            >
-              {t("emptyState.title")}
-            </h3>
-            <p
-              className={`text-muted-foreground ${isRTL ? "font-arabic" : ""}`}
-            >
-              {t("emptyState.description")}
-            </p>
-          </div>
+          <AdminEmptyState
+            icon={<Briefcase className="h-8 w-8" />}
+            title={t("emptyState.title")}
+            description={t("emptyState.description")}
+            isRTL={isRTL}
+          />
+        )}
+        {filteredData.length > 0 && (
+          <AdminPagination
+            page={safePage}
+            pageSize={pageSize}
+            total={filteredData.length}
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
+            isRTL={isRTL}
+          />
         )}
       </div>
     </div>

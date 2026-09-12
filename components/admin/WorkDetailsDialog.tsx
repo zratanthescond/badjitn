@@ -207,12 +207,12 @@ export function WorkDetailsDialog({ value }: { value: any }) {
             size="sm"
             onClick={handleApprove}
             disabled={isApproving || isRejecting}
-            className="bg-green-500/10 hover:bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 rounded-full transition-all duration-200 hover:scale-105"
+            className="rounded-full border-admin-success/30 bg-admin-success-soft text-admin-success hover:bg-admin-success-soft/70"
           >
             {isApproving ? (
-              <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mr-2" />
+              <div className="w-4 h-4 border-2 border-admin-success/30 border-t-admin-success rounded-full animate-spin mr-2" />
             ) : (
-              <ThumbsUp className="w-4 h-4 text-green-500 mr-2" />
+              <ThumbsUp className="w-4 h-4 mr-2" />
             )}
             <span className={isRTL ? "font-arabic" : ""}>{t("approve.button")}</span>
           </Button>
@@ -223,9 +223,9 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                 variant="outline"
                 size="sm"
                 disabled={isApproving || isRejecting}
-                className="bg-red-500/10 hover:bg-red-500/20 border-red-500/30 text-red-700 dark:text-red-300 rounded-full transition-all duration-200 hover:scale-105"
+                className="rounded-full border-destructive/30 bg-admin-critical-soft text-destructive hover:bg-admin-critical-soft/70"
               >
-                <ThumbsDown className="w-4 h-4 text-red-500 mr-2" />
+                <ThumbsDown className="w-4 h-4 mr-2" />
                 <span className={isRTL ? "font-arabic" : ""}>{t("reject.button")}</span>
               </Button>
             </DialogTrigger>
@@ -256,7 +256,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                 <Button
                   onClick={handleReject}
                   disabled={isRejecting}
-                  className="bg-red-600 hover:bg-red-700 text-white"
+                  variant="destructive"
                 >
                   {isRejecting ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
@@ -271,13 +271,13 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         </>
       )}
       {isApproved && (
-        <Badge className="bg-green-500/20 border border-green-500/30 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-semibold">
+        <Badge className="bg-admin-success-soft border border-admin-success/30 text-admin-success px-3 py-1.5 rounded-full text-xs font-semibold">
           <CheckCheck className="w-3.5 h-3.5 mr-1" />
           {t("status.approved")}
         </Badge>
       )}
       {isRejected && (
-        <Badge className="bg-red-500/20 border border-red-500/30 text-red-700 dark:text-red-400 px-3 py-1.5 rounded-full text-xs font-semibold">
+        <Badge className="bg-admin-critical-soft border border-destructive/30 text-destructive px-3 py-1.5 rounded-full text-xs font-semibold">
           <XCircle className="w-3.5 h-3.5 mr-1" />
           {t("status.rejected")}
         </Badge>
@@ -287,9 +287,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         <DialogTrigger asChild>
           <Button
             size="sm"
-            className={`bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md border-0 rounded-full py-1.5 px-4 transition-all duration-200 hover:scale-105 hover:shadow-lg ${
-              isRTL ? "font-arabic" : ""
-            }`}
+            className={`rounded-full py-1.5 px-4 ${isRTL ? "font-arabic" : ""}`}
           >
             <Eye className="w-4 h-4 mr-2" />
             {t("viewButton")}
@@ -297,7 +295,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         </DialogTrigger>
 
         <DialogContent
-          className={`glass bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-3xl w-full min-w-[90vw] max-w-[95vw] max-h-[95vh] m-4 shadow-2xl ${
+          className={`w-full min-w-[90vw] max-w-[95vw] max-h-[95vh] m-4 rounded-2xl border border-border bg-card shadow-2xl ${
             isRTL ? "rtl" : "ltr"
           }`}
         >
@@ -307,12 +305,12 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                 isRTL ? "flex-row-reverse" : ""
               }`}
             >
-              <div className="p-3 rounded-xl bg-gradient-to-r from-orange-500/20 to-red-500/20">
-                <FileText className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+              <div className="p-3 rounded-xl bg-admin-accent-soft">
+                <FileText className="h-8 w-8 text-primary" />
               </div>
               <div className={isRTL ? "text-right" : ""}>
                 <DialogTitle
-                  className={`text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent ${
+                  className={`text-2xl font-bold text-foreground ${
                     isRTL ? "font-arabic" : ""
                   }`}
                 >
@@ -338,10 +336,10 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                 variant="outline"
                 className={
                   isApproved
-                    ? "glass bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300"
+                    ? "bg-admin-success-soft border-admin-success/30 text-admin-success"
                     : isRejected
-                    ? "glass bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300"
-                    : "glass bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/30 text-blue-700 dark:text-blue-300"
+                    ? "bg-admin-critical-soft border-destructive/30 text-destructive"
+                    : "bg-admin-accent-soft border-primary/30 text-admin-accent-soft-foreground"
                 }
               >
                 <Sparkles className="h-3 w-3 mr-1" />
@@ -375,21 +373,21 @@ export function WorkDetailsDialog({ value }: { value: any }) {
               >
                 {/* Title & Client Info */}
                 {(value.title || value.clientInfo) && (
-                  <Card className="glass bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200/30 dark:border-slate-700/30">
+                  <Card className="border border-border bg-muted/40">
                     <CardHeader className="pb-2">
                       <div
                         className={`flex items-center gap-3 ${
                           isRTL ? "flex-row-reverse" : ""
                         }`}
                       >
-                        <div className="p-2 rounded-lg bg-slate-500/20">
-                          <User className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                        <div className="p-2 rounded-lg bg-muted">
+                          <User className="h-6 w-6 text-muted-foreground" />
                         </div>
                         <div className={isRTL ? "text-right" : ""}>
-                          <CardTitle className="text-lg text-slate-800 dark:text-slate-200">
+                          <CardTitle className="text-lg text-foreground">
                             {value.title || t("clientInfo.title")}
                           </CardTitle>
-                          <p className="text-sm text-slate-600 dark:text-slate-300">
+                          <p className="text-sm text-muted-foreground">
                             {t("clientInfo.description")}
                           </p>
                         </div>
@@ -434,19 +432,19 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
                 {/* Rejection Reason */}
                 {isRejected && value.rejectionReason && (
-                  <Card className="glass bg-gradient-to-br from-red-50/50 to-rose-50/50 dark:from-red-900/20 dark:to-rose-900/20 backdrop-blur-sm border border-red-200/30 dark:border-red-700/30">
+                  <Card className="border border-destructive/25 bg-admin-critical-soft/60">
                     <CardHeader className="pb-2">
                       <div
                         className={`flex items-center gap-3 ${
                           isRTL ? "flex-row-reverse" : ""
                         }`}
                       >
-                        <div className="p-2 rounded-lg bg-red-500/20">
-                          <XCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                        <div className="p-2 rounded-lg bg-admin-critical-soft">
+                          <XCircle className="h-6 w-6 text-destructive" />
                         </div>
                         <div className={isRTL ? "text-right" : ""}>
                           <CardTitle
-                            className={`text-lg text-red-800 dark:text-red-200 ${
+                            className={`text-lg text-destructive ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
@@ -457,7 +455,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                     </CardHeader>
                     <CardContent className="pt-0">
                       <p
-                        className={`text-sm text-red-700 dark:text-red-300 ${
+                        className={`text-sm text-destructive/90 ${
                           isRTL ? "font-arabic text-right" : ""
                         }`}
                       >
@@ -469,26 +467,26 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
                 {/* Structured abstract sections (Introduction, Résultats, ...) */}
                 {value.sections && value.sections.length > 0 && (
-                  <Card className="glass bg-gradient-to-br from-purple-50/50 to-indigo-50/50 dark:from-purple-900/20 dark:to-indigo-900/20 backdrop-blur-sm border border-purple-200/30 dark:border-purple-700/30 flex-1">
+                  <Card className="flex-1 border border-border bg-admin-accent-soft/40">
                     <CardHeader className="pb-4">
                       <div
                         className={`flex items-center gap-3 ${
                           isRTL ? "flex-row-reverse" : ""
                         }`}
                       >
-                        <div className="p-2 rounded-lg bg-purple-500/20">
-                          <FileText className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                        <div className="p-2 rounded-lg bg-admin-accent-soft">
+                          <FileText className="h-6 w-6 text-primary" />
                         </div>
                         <div className={isRTL ? "text-right" : ""}>
                           <CardTitle
-                            className={`text-xl text-purple-800 dark:text-purple-200 ${
+                            className={`text-xl text-foreground ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
                             {t("sections.title")}
                           </CardTitle>
                           <p
-                            className={`text-sm text-purple-600 dark:text-purple-300 ${
+                            className={`text-sm text-muted-foreground ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
@@ -501,10 +499,10 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                       {value.sections.map((section: { label: string; content: string }, index: number) => (
                         <div
                           key={index}
-                          className="glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 rounded-xl p-6"
+                          className="rounded-xl border border-border bg-card p-6"
                         >
                           <h4
-                            className={`text-sm font-semibold text-purple-700 dark:text-purple-300 mb-2 ${
+                            className={`text-sm font-semibold text-primary mb-2 ${
                               isRTL ? "font-arabic text-right" : ""
                             }`}
                           >
@@ -528,18 +526,18 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
                 {/* Co-authors */}
                 {((value.coAuthors && value.coAuthors.length > 0) || value.clientInfo?.coAuthors) && (
-                  <Card className="glass bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200/30 dark:border-slate-700/30">
+                  <Card className="border border-border bg-muted/40">
                     <CardHeader className="pb-2">
                       <div
                         className={`flex items-center gap-3 ${
                           isRTL ? "flex-row-reverse" : ""
                         }`}
                       >
-                        <div className="p-2 rounded-lg bg-slate-500/20">
-                          <Users className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                        <div className="p-2 rounded-lg bg-muted">
+                          <Users className="h-6 w-6 text-muted-foreground" />
                         </div>
                         <CardTitle
-                          className={`text-lg text-slate-800 dark:text-slate-200 ${
+                          className={`text-lg text-foreground ${
                             isRTL ? "font-arabic" : ""
                           }`}
                         >
@@ -569,26 +567,26 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                 {/* Written Note / Résumé Section — skipped when structured sections
                     above already show the same content in a clearer format. */}
                 {!(value.sections && value.sections.length > 0) && value.note && value.note.length > 0 && (
-                  <Card className="glass bg-gradient-to-br from-purple-50/50 to-indigo-50/50 dark:from-purple-900/20 dark:to-indigo-900/20 backdrop-blur-sm border border-purple-200/30 dark:border-purple-700/30 flex-1">
+                  <Card className="flex-1 border border-border bg-admin-accent-soft/40">
                     <CardHeader className="pb-4">
                       <div
                         className={`flex items-center gap-3 ${
                           isRTL ? "flex-row-reverse" : ""
                         }`}
                       >
-                        <div className="p-2 rounded-lg bg-purple-500/20">
-                          <FileText className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                        <div className="p-2 rounded-lg bg-admin-accent-soft">
+                          <FileText className="h-6 w-6 text-primary" />
                         </div>
                         <div className={isRTL ? "text-right" : ""}>
                           <CardTitle
-                            className={`text-xl text-purple-800 dark:text-purple-200 ${
+                            className={`text-xl text-foreground ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
                             {t("writtenNote.title")}
                           </CardTitle>
                           <p
-                            className={`text-sm text-purple-600 dark:text-purple-300 ${
+                            className={`text-sm text-muted-foreground ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
@@ -598,7 +596,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 rounded-xl p-6">
+                      <div className="rounded-xl border border-border bg-card p-6">
                         <ScrollArea className="max-h-96">
                           <div
                             className={`prose prose-sm dark:prose-invert max-w-none ${
@@ -616,26 +614,26 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                 {/* Abstract document(s) — uploaded alongside the résumé, available
                     before approval (distinct from the final e-poster below). */}
                 {value.abstractFileUrls && value.abstractFileUrls.length > 0 && (
-                  <Card className="glass bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-900/20 dark:to-orange-900/20 backdrop-blur-sm border border-amber-200/30 dark:border-amber-700/30 flex-1">
+                  <Card className="flex-1 border border-admin-warning/20 bg-admin-warning-soft/50">
                     <CardHeader className="pb-4">
                       <div
                         className={`flex items-center gap-3 ${
                           isRTL ? "flex-row-reverse" : ""
                         }`}
                       >
-                        <div className="p-2 rounded-lg bg-amber-500/20">
-                          <FileText className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                        <div className="p-2 rounded-lg bg-admin-warning-soft">
+                          <FileText className="h-6 w-6 text-admin-warning" />
                         </div>
                         <div className={isRTL ? "text-right" : ""}>
                           <CardTitle
-                            className={`text-xl text-amber-800 dark:text-amber-200 ${
+                            className={`text-xl text-foreground ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
                             {t("abstractFiles.title")}
                           </CardTitle>
                           <p
-                            className={`text-sm text-amber-600 dark:text-amber-300 ${
+                            className={`text-sm text-muted-foreground ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
@@ -652,7 +650,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                         return (
                           <div
                             key={index}
-                            className={`flex items-center justify-between gap-3 glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 rounded-xl p-3 ${
+                            className={`flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-3 ${
                               isRTL ? "flex-row-reverse" : ""
                             }`}
                           >
@@ -669,7 +667,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 rounded-full transition-all duration-200 hover:scale-105 shrink-0"
+                              className="rounded-full shrink-0"
                               asChild
                             >
                               <Link href={file} rel="preload" target="_blank">
@@ -688,26 +686,26 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
                 {/* Uploaded Files Section */}
                 {value.fileUrls && value.fileUrls.length > 0 && (
-                  <Card className="glass md:max-w-screen-md bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-900/20 dark:to-emerald-900/20 backdrop-blur-sm border border-green-200/30 dark:border-green-700/30 flex-1">
+                  <Card className="md:max-w-screen-md flex-1 border border-admin-success/20 bg-admin-success-soft/50">
                     <CardHeader className="pb-4">
                       <div
                         className={`flex items-center gap-3 ${
                           isRTL ? "flex-row-reverse" : ""
                         }`}
                       >
-                        <div className="p-2 rounded-lg bg-green-500/20">
-                          <Upload className="h-6 w-6 text-green-600 dark:text-green-400" />
+                        <div className="p-2 rounded-lg bg-admin-success-soft">
+                          <Upload className="h-6 w-6 text-admin-success" />
                         </div>
                         <div className={isRTL ? "text-right" : ""}>
                           <CardTitle
-                            className={`text-xl text-green-800 dark:text-green-200 ${
+                            className={`text-xl text-foreground ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
                             {t("uploadedFiles.title")}
                           </CardTitle>
                           <p
-                            className={`text-sm text-green-600 dark:text-green-300 ${
+                            className={`text-sm text-muted-foreground ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
@@ -722,7 +720,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                       <Tabs defaultValue={value.fileUrls[0]} className="w-full">
                         <ScrollArea className="w-full">
                           <TabsList
-                            className={`glass bg-slate-100/80 dark:bg-slate-700/80 backdrop-blur-sm border border-white/20 dark:border-slate-600/50 rounded-2xl p-2 flex w-max gap-2 ${
+                            className={`bg-muted border border-border rounded-2xl p-2 flex w-max gap-2 ${
                               isRTL ? "flex-row-reverse" : ""
                             }`}
                           >
@@ -733,7 +731,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                                   <TabsTrigger
                                     key={index}
                                     value={file}
-                                    className={`glass bg-white/60 dark:bg-slate-600/60 backdrop-blur-sm border border-white/30 dark:border-slate-500/50 rounded-xl transition-all duration-200 hover:scale-105 data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-500/90 data-[state=active]:shadow-lg ${
+                                    className={`rounded-xl border border-transparent data-[state=active]:border-border data-[state=active]:bg-card data-[state=active]:shadow-sm ${
                                       isRTL
                                         ? "flex-row-reverse font-arabic"
                                         : ""
@@ -757,7 +755,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                             value={file}
                             className="mt-6 space-y-4"
                           >
-                            <div className="glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 rounded-xl p-4">
+                            <div className="rounded-xl border border-border bg-card p-4">
                               {/* Container for FileViewer to enforce height and overflow */}
                               <div
                                 ref={fileViewerRef}
@@ -821,7 +819,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 rounded-full transition-all duration-200 hover:scale-105"
+                                  className="rounded-full"
                                   asChild
                                 >
                                   <Link

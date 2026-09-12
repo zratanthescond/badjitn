@@ -640,6 +640,12 @@ export async function getOrdersByEvent({
           originalAmount: 1,
           discountProofUrl: 1,
           discountRequireProof: "$event.discount.requireProof",
+          // Surfaced for the backoffice's category filter/column and the
+          // badge-print indicator — both fields already exist on the Order
+          // model and are written by bulkImportParticipants/addManualParticipant,
+          // they just weren't projected out until now.
+          category: 1,
+          badgePrinted: 1,
         },
       },
       {

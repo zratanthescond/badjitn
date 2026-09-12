@@ -673,6 +673,10 @@
       "title": "Aucune Certification Trouvée"
     },
     "searchPlaceholder": "Rechercher par ID, demandeur ou événement...",
+    "filters": {
+      "resultsLabel": "résultat(s)",
+      "statusAll": "Statut — Tous"
+    },
     "stats": {
       "approved": "Approuvés",
       "pending": "En Attente",
@@ -2782,7 +2786,10 @@
     "stats": {
       "totalOrders": "Total des inscriptions",
       "totalRevenue": "Chiffre d'Affaires Total",
-      "uniqueBuyers": "Participants Uniques"
+      "uniqueBuyers": "Participants Uniques",
+      "actionable": "À valider",
+      "actionableHint": "virements et remises en attente",
+      "uniqueParticipantsHint": "participants uniques"
     },
     "subtitle": "Suivre et gerer toutes les inscriptions de l'evenement",
     "table": {
@@ -2793,8 +2800,37 @@
         "details": "Détails",
         "eventTitle": "Titre de l'Événement",
         "orderId": "Reference",
-        "ticketType": "Modalite d'acces"
+        "ticketType": "Modalite d'acces",
+        "plan": "Formule",
+        "paymentStatus": "Statut paiement",
+        "category": "Catégorie"
       }
+    },
+    "filters": {
+      "searchPlaceholder": "Nom, e-mail, référence, formule…",
+      "resultsLabel": "résultat(s)",
+      "reset": "Réinitialiser les filtres",
+      "typeAll": "Type — Tous",
+      "categoryAll": "Catégorie — Toutes",
+      "statusAll": "Statut — Tous"
+    },
+    "paymentStatus": {
+      "paid": "Payé",
+      "pendingEligibility": "En attente de validation",
+      "rejectedEligibility": "Remise refusée",
+      "pendingTransfer": "Virement à vérifier",
+      "doorpay": "Paiement sur place",
+      "hosted": "Pris en charge",
+      "free": "Gratuit"
+    },
+    "categories": {
+      "attendee": "Participant",
+      "speaker": "Orateur",
+      "sponsor": "Sponsor",
+      "staff": "Staff"
+    },
+    "planBreakdown": {
+      "title": "Répartition des formules"
     },
     "ticketTypes": {
       "doorpay": "Inscription sur place",
@@ -2890,8 +2926,10 @@
     "stats": {
       "certifications": "Certifications",
       "totalOrders": "Total des inscriptions",
-      "works": "Éléments de Travail"
+      "works": "Éléments de Travail",
+      "pendingTransfers": "Virements à valider"
     },
+    "backToProfile": "Mon profil",
     "subtitle": "Gerer les inscriptions, certifications et affectations de travail",
     "tabs": {
       "certificationAdministration": "Administration des Certifications",
@@ -3707,6 +3745,11 @@
       "filterWorks": "Filter Works",
       "reviewWork": "Review Work",
       "viewDetails": "Voir les Détails"
+    },
+    "filters": {
+      "resultsLabel": "résultat(s)",
+      "statusAll": "Statut — Tous",
+      "pendingRegistration": "En attente d'inscription"
     },
     "categories": {
       "add": "Ajouter une nouvelle catégorie",
