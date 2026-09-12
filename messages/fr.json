@@ -3790,6 +3790,17 @@
     "workIdLabel": "ID de Travail"
   },
   "workDetailsDialog": {
+    "sections": {
+      "title": "Résumé structuré",
+      "description": "Sections rédigées par le participant"
+    },
+    "coAuthors": {
+      "title": "Co-auteurs"
+    },
+    "abstractFiles": {
+      "title": "Documents d'abstract",
+      "description": "{count, plural, =1 {# document téléchargé} other {# documents téléchargés}}"
+    },
     "approve": {
       "button": "Approuver",
       "toastTitle": "Résumé approuvé",
@@ -3807,7 +3818,7 @@
     "description": "Examiner la soumission complète du travail incluant les notes et fichiers téléchargés",
     "downloadButton": "Télécharger",
     "emptyState": {
-      "description": "Cette soumission de travail ne contient aucune note écrite ni fichier téléchargé.",
+      "description": "Cette soumission de travail ne contient aucun résumé, aucune note écrite ni fichier téléchargé.",
       "title": "Aucun Contenu Disponible"
     },
     "filePreview": {

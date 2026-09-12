@@ -21,9 +21,9 @@ export async function useUser() {
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-   const clerkId = clerkUser?.id;
+  //  const clerkId = clerkUser?.id;
   // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-//  const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+ const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
     if (!clerkId) return null;
     const user = await User.findOne({ clerkId: clerkId });
     return JSON.parse(JSON.stringify(user)) || null;
@@ -96,9 +96,9 @@ export async function updateCurrentUserProfile(
   try {
     await connectToDatabase();
     const clerkUser = await currentUser();
-    const clerkId = clerkUser?.id;
+    // const clerkId = clerkUser?.id;
     // const clerkId="user_3FVsPlKSzqlFAAPj2PfVwdw2Rvu";
-    // const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
+    const clerkId="user_3FVszcx7LLBxT5DaPmHVnWGRxL9"; // Ayoub clirck_Id
 
     if (!clerkId) throw new Error("Not authenticated");
 
@@ -819,7 +819,10 @@ export async function getUserWorkByEventId({
           title: 1,
           clientInfo: 1,
           fileUrls: 1,
+          abstractFileUrls: 1,
           note: 1,
+          sections: 1,
+          coAuthors: 1,
           summaryStatus: 1,
           submittedAt: 1,
           approvedAt: 1,
@@ -845,7 +848,12 @@ export async function getUserWorkByEventId({
         .filter(Boolean)
     );
 
-    const event = await Event.findById(eventObjectId).select("title");
+    const event = await Event.findById(eventObjectId).select(
+      "title workAbstractConfig"
+    );
+    const sectionLabels = (event?.workAbstractConfig?.sections || []).map(
+      (s: any) => s.label
+    );
     const ordersWithWorkIntent = await Order.find({
       event: eventObjectId,
       requiredUserInfo: {
@@ -853,32 +861,72 @@ export async function getUserWorkByEventId({
       },
     }).populate({ path: "buyer", model: User, select: "firstName lastName" });
 
-    const pendingWorks = ordersWithWorkIntent
+    // A guest registration can carry more than one résumé — EventPriceComponent
+    // stores résumé #1 under unsuffixed fields (workSummaryTitle, workSummaryNote,
+    // workSection_<label>) and every résumé after that under a "_N" suffix. Since
+    // these registrations never went through the separate work-upload flow, no
+    // EventWork document exists yet for any of them — surface one pending row per
+    // résumé here, otherwise only the title/status is visible (the actual
+    // content only showed up in the order's own detail view).
+    const pendingWorks: any[] = [];
+    ordersWithWorkIntent
       .filter(
         (order: any) =>
           !order.buyer || !existingWorkUserIds.has(String(order.buyer._id))
       )
-      .map((order: any) => {
+      .forEach((order: any) => {
+        const info: any[] = order.requiredUserInfo || [];
         const getInfo = (field: string) =>
-          (order.requiredUserInfo || []).find((i: any) => i.field === field)
-            ?.value || "";
+          info.find((i: any) => i.field === field)?.value || "";
 
-        return {
-          _id: String(order._id),
-          createdAt: order.createdAt,
-          eventTitle: event?.title || "",
-          eventId,
-          buyer: getOrderParticipantName(order),
-          title: getInfo("workSummaryTitle") || "Sans titre",
-          note: getInfo("workSummaryNote") || "",
-          clientInfo: undefined,
-          fileUrls: [],
-          summaryStatus: "draft",
-          submittedAt: undefined,
-          approvedAt: undefined,
-          status: "pending",
-          isPendingRegistration: true,
-        };
+        const indices = new Set<number>([1]);
+        info.forEach((item: any) => {
+          const match = /^workSummaryTitle_(\d+)$/.exec(String(item?.field || ""));
+          if (match) indices.add(Number(match[1]));
+        });
+
+        Array.from(indices)
+          .sort((a, b) => a - b)
+          .forEach((index) => {
+            const suffix = index === 1 ? "" : `_${index}`;
+            const title = getInfo(`workSummaryTitle${suffix}`);
+            const note = getInfo(`workSummaryNote${suffix}`);
+            const sections: IWorkSection[] = sectionLabels
+              .map((label: string) => ({
+                label,
+                content: getInfo(`workSection_${label}${suffix}`),
+              }))
+              .filter((s: IWorkSection) => s.content);
+            const coAuthorsText = getInfo(`workCoAuthors${suffix}`);
+
+            if (!title && !note && sections.length === 0) return;
+
+            pendingWorks.push({
+              _id: index === 1 ? String(order._id) : `${order._id}_${index}`,
+              orderId: String(order._id),
+              resumeIndex: index,
+              createdAt: order.createdAt,
+              eventTitle: event?.title || "",
+              eventId,
+              buyer: getOrderParticipantName(order),
+              title: title || "Sans titre",
+              note,
+              sections: sections.length ? sections : undefined,
+              clientInfo: coAuthorsText ? { coAuthors: coAuthorsText } : undefined,
+              fileUrls: [],
+              summaryStatus: "draft",
+              submittedAt: undefined,
+              approvedAt: undefined,
+              status: "pending",
+              isPendingRegistration: true,
+              // Approving/rejecting a pending (order-only) work materializes a
+              // single EventWork from the order's unsuffixed fields — only
+              // meaningful for the first résumé. Later résumés on the same
+              // order are shown for visibility but reviewed once the
+              // participant goes through the real work-upload flow.
+              canReview: index === 1,
+            });
+          });
       });
 
     const combined = [...works, ...pendingWorks];

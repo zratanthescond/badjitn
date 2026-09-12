@@ -3790,6 +3790,17 @@
     "workIdLabel": "ID del trabajo"
   },
   "workDetailsDialog": {
+    "sections": {
+      "title": "Resumen estructurado",
+      "description": "Secciones redactadas por el participante"
+    },
+    "coAuthors": {
+      "title": "Coautores"
+    },
+    "abstractFiles": {
+      "title": "Documentos del resumen",
+      "description": "{count, plural, =1 {# documento subido} other {# documentos subidos}}"
+    },
     "approve": {
       "button": "Aprobar",
       "toastTitle": "Resumen aprobado",
@@ -3807,7 +3818,7 @@
     "description": "Revise la entrega completa del trabajo, incluyendo notas y archivos subidos",
     "downloadButton": "Descargar",
     "emptyState": {
-      "description": "Esta entrega de trabajo no contiene notas escritas ni archivos subidos.",
+      "description": "Esta entrega de trabajo no contiene resumen, notas escritas ni archivos subidos.",
       "title": "No hay contenido disponible"
     },
     "filePreview": {

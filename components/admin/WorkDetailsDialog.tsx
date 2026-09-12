@@ -8,6 +8,7 @@ import {
   Upload,
   Sparkles,
   User,
+  Users,
   ThumbsUp,
   ThumbsDown,
   XCircle,
@@ -192,9 +193,14 @@ export function WorkDetailsDialog({ value }: { value: any }) {
     return () => clearTimeout(timer);
   }, [value.fileUrls]); // Re-run effect when fileUrls (and thus selected file) changes
 
+  // Order-only pending entries beyond the first résumé have no independent
+  // EventWork document to review yet — approving/rejecting would act on the
+  // order's first résumé instead. Keep them visible for content, not review.
+  const canReview = value?.canReview !== false;
+
   return (
     <div className={`flex w-full items-center justify-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
-      {!isApproved && !isRejected && (
+      {canReview && !isApproved && !isRejected && (
         <>
           <Button
             variant="outline"
@@ -461,8 +467,108 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                   </Card>
                 )}
 
-                {/* Written Note / Résumé Section */}
-                {value.note && value.note.length > 0 && (
+                {/* Structured abstract sections (Introduction, Résultats, ...) */}
+                {value.sections && value.sections.length > 0 && (
+                  <Card className="glass bg-gradient-to-br from-purple-50/50 to-indigo-50/50 dark:from-purple-900/20 dark:to-indigo-900/20 backdrop-blur-sm border border-purple-200/30 dark:border-purple-700/30 flex-1">
+                    <CardHeader className="pb-4">
+                      <div
+                        className={`flex items-center gap-3 ${
+                          isRTL ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        <div className="p-2 rounded-lg bg-purple-500/20">
+                          <FileText className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div className={isRTL ? "text-right" : ""}>
+                          <CardTitle
+                            className={`text-xl text-purple-800 dark:text-purple-200 ${
+                              isRTL ? "font-arabic" : ""
+                            }`}
+                          >
+                            {t("sections.title")}
+                          </CardTitle>
+                          <p
+                            className={`text-sm text-purple-600 dark:text-purple-300 ${
+                              isRTL ? "font-arabic" : ""
+                            }`}
+                          >
+                            {t("sections.description")}
+                          </p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {value.sections.map((section: { label: string; content: string }, index: number) => (
+                        <div
+                          key={index}
+                          className="glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 rounded-xl p-6"
+                        >
+                          <h4
+                            className={`text-sm font-semibold text-purple-700 dark:text-purple-300 mb-2 ${
+                              isRTL ? "font-arabic text-right" : ""
+                            }`}
+                          >
+                            {section.label}
+                          </h4>
+                          <ScrollArea className="max-h-72">
+                            <p
+                              className={`text-sm whitespace-pre-line leading-relaxed ${
+                                isRTL ? "font-arabic text-right" : ""
+                              }`}
+                            >
+                              {section.content}
+                            </p>
+                            <ScrollBar orientation="vertical" />
+                          </ScrollArea>
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Co-authors */}
+                {((value.coAuthors && value.coAuthors.length > 0) || value.clientInfo?.coAuthors) && (
+                  <Card className="glass bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200/30 dark:border-slate-700/30">
+                    <CardHeader className="pb-2">
+                      <div
+                        className={`flex items-center gap-3 ${
+                          isRTL ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        <div className="p-2 rounded-lg bg-slate-500/20">
+                          <Users className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                        </div>
+                        <CardTitle
+                          className={`text-lg text-slate-800 dark:text-slate-200 ${
+                            isRTL ? "font-arabic" : ""
+                          }`}
+                        >
+                          {t("coAuthors.title")}
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <p className={`text-sm ${isRTL ? "font-arabic text-right" : ""}`}>
+                        {value.coAuthors && value.coAuthors.length > 0
+                          ? value.coAuthors
+                              .map((c: { firstName?: string; lastName?: string; affiliation?: string }) =>
+                                [
+                                  [c.firstName, c.lastName].filter(Boolean).join(" "),
+                                  c.affiliation ? `(${c.affiliation})` : "",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")
+                              )
+                              .join(", ")
+                          : value.clientInfo?.coAuthors}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Written Note / Résumé Section — skipped when structured sections
+                    above already show the same content in a clearer format. */}
+                {!(value.sections && value.sections.length > 0) && value.note && value.note.length > 0 && (
                   <Card className="glass bg-gradient-to-br from-purple-50/50 to-indigo-50/50 dark:from-purple-900/20 dark:to-indigo-900/20 backdrop-blur-sm border border-purple-200/30 dark:border-purple-700/30 flex-1">
                     <CardHeader className="pb-4">
                       <div
@@ -503,6 +609,79 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                           <ScrollBar orientation="vertical" />
                         </ScrollArea>
                       </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Abstract document(s) — uploaded alongside the résumé, available
+                    before approval (distinct from the final e-poster below). */}
+                {value.abstractFileUrls && value.abstractFileUrls.length > 0 && (
+                  <Card className="glass bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-900/20 dark:to-orange-900/20 backdrop-blur-sm border border-amber-200/30 dark:border-amber-700/30 flex-1">
+                    <CardHeader className="pb-4">
+                      <div
+                        className={`flex items-center gap-3 ${
+                          isRTL ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        <div className="p-2 rounded-lg bg-amber-500/20">
+                          <FileText className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                        </div>
+                        <div className={isRTL ? "text-right" : ""}>
+                          <CardTitle
+                            className={`text-xl text-amber-800 dark:text-amber-200 ${
+                              isRTL ? "font-arabic" : ""
+                            }`}
+                          >
+                            {t("abstractFiles.title")}
+                          </CardTitle>
+                          <p
+                            className={`text-sm text-amber-600 dark:text-amber-300 ${
+                              isRTL ? "font-arabic" : ""
+                            }`}
+                          >
+                            {t("abstractFiles.description", {
+                              count: value.abstractFileUrls.length,
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {value.abstractFileUrls.map((file: string, index: number) => {
+                        const fileDetails = extractFileDetails(file);
+                        return (
+                          <div
+                            key={index}
+                            className={`flex items-center justify-between gap-3 glass bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 rounded-xl p-3 ${
+                              isRTL ? "flex-row-reverse" : ""
+                            }`}
+                          >
+                            <div
+                              className={`flex items-center gap-2 min-w-0 ${
+                                isRTL ? "flex-row-reverse" : ""
+                              }`}
+                            >
+                              {getFileIcon(fileDetails?.extension)}
+                              <span className="text-sm font-medium truncate">
+                                {fileDetails?.name}
+                              </span>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80 rounded-full transition-all duration-200 hover:scale-105 shrink-0"
+                              asChild
+                            >
+                              <Link href={file} rel="preload" target="_blank">
+                                <Download className="w-4 h-4 mr-2" />
+                                <span className={isRTL ? "font-arabic" : ""}>
+                                  {t("downloadButton")}
+                                </span>
+                              </Link>
+                            </Button>
+                          </div>
+                        );
+                      })}
                     </CardContent>
                   </Card>
                 )}
@@ -670,7 +849,9 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
               {/* Empty State */}
               {(!value.note || value.note.length === 0) &&
-                (!value.fileUrls || value.fileUrls.length === 0) && (
+                (!value.sections || value.sections.length === 0) &&
+                (!value.fileUrls || value.fileUrls.length === 0) &&
+                (!value.abstractFileUrls || value.abstractFileUrls.length === 0) && (
                   <div className="flex flex-col items-center justify-center py-16 text-center">
                     <div className="p-4 rounded-full bg-muted/20 mb-4">
                       <FileText className="h-12 w-12 text-muted-foreground" />

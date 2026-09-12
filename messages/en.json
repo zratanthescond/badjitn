@@ -3790,6 +3790,17 @@
     "workIdLabel": "Work ID"
   },
   "workDetailsDialog": {
+    "sections": {
+      "title": "Structured abstract",
+      "description": "Sections written by the participant"
+    },
+    "coAuthors": {
+      "title": "Co-authors"
+    },
+    "abstractFiles": {
+      "title": "Abstract documents",
+      "description": "{count, plural, =1 {# document uploaded} other {# documents uploaded}}"
+    },
     "approve": {
       "button": "Approve",
       "toastTitle": "Summary approved",
@@ -3807,7 +3818,7 @@
     "description": "Review the complete work submission including notes and uploaded files",
     "downloadButton": "Download",
     "emptyState": {
-      "description": "This work submission doesn't contain any written notes or uploaded files.",
+      "description": "This work submission doesn't contain any abstract, written notes, or uploaded files.",
       "title": "No Content Available"
     },
     "filePreview": {
