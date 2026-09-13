@@ -22,6 +22,7 @@ const nextConfig = {
     ];
   },
   trailingSlash: true,
+  output: "standalone",
   typescript: {
     ignoreBuildErrors: true, // Skip TypeScript checks during the build
   },

@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+mobile/node_modules
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js build output & cache
+.next
+out
+build
+
+# Git & IDE
+.git
+.gitignore
+.agents
+.vscode
+.idea
+.DS_Store
+
+# Local environment variables
+.env*.local
+.env
+
+# Logs and debug output
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary & diagnostic text files
+*.txt
+tmp*
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
