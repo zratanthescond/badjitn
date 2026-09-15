@@ -51,7 +51,7 @@ import {
 } from "../ui/dialog";
 import { countries } from "country-data-list";
 import { countryGovernorates } from "@/constants/country-governorates";
-import { calcFinalPrice, formatPriceByCountry, getCurrencyCodeByCountry } from "@/lib/utils";
+import { calcFinalPrice, formatPriceByCountry, getCurrencyCodeByCountry, getOptionChargePrice, isDoubleRoomOption } from "@/lib/utils";
 import { TUNISIAN_BANKS } from "@/constants/tunisian-banks";
 import { useSubmitWorkSummary, type ClientInfo } from "@/hooks/useUploadWork";
 
@@ -636,7 +636,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           if (!checkPlan?.includes(item._id!)) return sum;
           const selectedOptName = selectedOptions[item._id!];
           const optionExtra = selectedOptName
-            ? (item.options?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName)?.price || 0)
+            ? getOptionChargePrice(item.options?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName))
             : 0;
           return sum + item.price + optionExtra;
         }, 0)
@@ -1270,7 +1270,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
           .map((item) => {
             const selectedOptName = selectedOptions[item._id!];
             const optExtra = selectedOptName
-              ? ((item.options as any[])?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName)?.price || 0)
+              ? getOptionChargePrice((item.options as any[])?.find((o: any) => (typeof o === "object" ? o.name : o) === selectedOptName))
               : 0;
             return {
               name: item.name,
@@ -2111,6 +2111,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                           <div className="grid grid-cols-3 gap-1.5 sm:gap-3">
                             {(plan.options || []).map((opt: any, idx: number) => {
                               const optName = typeof opt === "object" ? opt.name : opt;
+                              const optDisplayName = isDoubleRoomOption(optName) && !/personne/i.test(optName) ? `${optName} (par personne)` : optName;
                               const optPrice = typeof opt === "object" ? (opt.price || 0) : 0;
                               const optDescription = typeof opt === "object" ? opt.description : undefined;
                               const isOptSelected = checkPlan.includes(plan._id) && selectedOptions[plan._id] === optName;
@@ -2137,7 +2138,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                     <div className={`flex h-3 w-3 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full border-2 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/30"}`}>
                                       {isOptSelected && <CheckCircle size={9} className="text-primary-foreground" />}
                                     </div>
-                                    <span className="font-semibold text-center flex-1 text-[10px] leading-tight sm:text-sm">{optName}</span>
+                                    <span className="font-semibold text-center flex-1 text-[10px] leading-tight sm:text-sm">{optDisplayName}</span>
                                   </div>
                                   <p className="text-center font-bold text-primary text-[11px] sm:text-base">
                                     {formatPriceByCountry(optPrice, event.country, "en-US", event.location)}
@@ -2331,6 +2332,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                             <div className="flex flex-col gap-2">
                               {plan.options.map((opt: any, idx: number) => {
                                 const optName = typeof opt === "object" ? opt.name : opt;
+                                const optDisplayName = isDoubleRoomOption(optName) && !/personne/i.test(optName) ? `${optName} (par personne)` : optName;
                                 const optPrice = typeof opt === "object" ? (opt.price || 0) : 0;
                                 const optPlaces = typeof opt === "object" ? opt.places : undefined;
                                 const optDescription = typeof opt === "object" ? opt.description : undefined;
@@ -2349,7 +2351,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                                     <div className="flex items-center justify-between gap-2 w-full">
                                       <div className="flex items-center gap-2">
                                         <div className={`w-3 h-3 rounded-full border-2 shrink-0 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
-                                        <span>{optName}</span>
+                                        <span>{optDisplayName}</span>
                                       </div>
                                       <div className="flex items-center gap-1.5 shrink-0">
                                         {optPrice > 0 && (

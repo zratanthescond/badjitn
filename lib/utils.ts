@@ -37,6 +37,18 @@ export function applyDiscount(
   return amount - (amount * discountValue) / 100;
 }
 
+// "Chambre double" room options are priced per person: the stored price is
+// per-occupant, so the double-room option charges twice that amount.
+export function isDoubleRoomOption(name?: string): boolean {
+  return /double/i.test(name || "");
+}
+
+export function getOptionChargePrice(option: any): number {
+  if (!option || typeof option === "string") return 0;
+  const price = Number(option.price) || 0;
+  return isDoubleRoomOption(option.name) ? price * 2 : price;
+}
+
 export function calcFinalPrice(
   baseFee: number,
   planSum: number,
@@ -76,7 +88,7 @@ export function calcFinalPrice(
       if (!planItem) return;
       const optionName = selectedOptions?.[planId];
       const optionExtra = optionName
-        ? (planItem.options?.find((o: any) => (typeof o === "object" ? o.name : o) === optionName)?.price || 0)
+        ? getOptionChargePrice(planItem.options?.find((o: any) => (typeof o === "object" ? o.name : o) === optionName))
         : 0;
       const planCost = planItem.price + optionExtra;
       saving += planCost - applyDiscount(planCost, v, type);
