@@ -176,6 +176,10 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [labProofName, setLabProofName] = useState("");
   const [isUploadingLabProof, setIsUploadingLabProof] = useState(false);
   const [labFieldErrors, setLabFieldErrors] = useState<Record<string, string>>({});
+  // Roommate details required when a "chambre double" (double room) option is selected
+  const [roommateName, setRoommateName] = useState("");
+  const [roommateEmail, setRoommateEmail] = useState("");
+  const [roommateFieldErrors, setRoommateFieldErrors] = useState<Record<string, string>>({});
   // Proof of eligibility (e.g. student/resident card) required by some plan options
   const [optionProofUrls, setOptionProofUrls] = useState<Record<string, string>>({});
   const [optionProofNames, setOptionProofNames] = useState<Record<string, string>>({});
@@ -723,6 +727,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     String(selectedOptions[labPlan._id ?? ""] || "").toLowerCase().includes("laboratoire")
   );
 
+  // Whether the participant picked a "chambre double" (double room) option on any
+  // selected plan — that room is shared, so we need the roommate's identity.
+  const isDoubleRoomOptionSelected = checkPlan.some((planId) =>
+    isDoubleRoomOption(selectedOptions[planId])
+  );
+
   // After state update from "Paiement par bénéficiaire" click, open bank transfer
   useEffect(() => {
     if (!labPendingBankOpen) return;
@@ -867,6 +877,23 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       );
     }
 
+    if (isDoubleRoomOptionSelected) {
+      items.push(
+        {
+          field: "roommateName",
+          label: "Nom et prénom de la deuxième personne (chambre double)",
+          type: "text",
+          value: roommateName.trim(),
+        },
+        {
+          field: "roommateEmail",
+          label: "Email de la deuxième personne (chambre double)",
+          type: "email",
+          value: roommateEmail.trim(),
+        }
+      );
+    }
+
     return items;
   }, [
     getFieldLabel,
@@ -888,6 +915,9 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     labContactEmail,
     labContactPhone,
     labProofUrl,
+    isDoubleRoomOptionSelected,
+    roommateName,
+    roommateEmail,
   ]);
 
   const discountInfo = useMemo(() => {
@@ -1125,6 +1155,22 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return Object.keys(nextErrors).length === 0;
   };
 
+  const validateRoommateField = () => {
+    if (!isDoubleRoomOptionSelected) {
+      setRoommateFieldErrors({});
+      return true;
+    }
+    const nextErrors: Record<string, string> = {};
+    if (!roommateName.trim()) {
+      nextErrors.roommateName = text("requiredField", "Ce champ est obligatoire.");
+    }
+    if (roommateEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(roommateEmail.trim())) {
+      nextErrors.roommateEmail = text("invalidEmail", "Veuillez saisir une adresse email valide.");
+    }
+    setRoommateFieldErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const validateAll = async () => {
     const registrationIsValid = await validateRegistration();
     const workIsValid = validateWorkSubmission();
@@ -1133,11 +1179,21 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     const optionProofsAreValid = validateOptionProofs();
     const discountProofIsValid = validateDiscountProof();
     const labFieldsAreValid = validateLabFields();
+    const roommateFieldIsValid = validateRoommateField();
 
     if (!labFieldsAreValid) {
       toast({
         title: "Champ requis",
         description: "Veuillez renseigner les coordonnées du laboratoire preneur en charge.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!roommateFieldIsValid) {
+      toast({
+        title: "Champ requis",
+        description: "Veuillez indiquer le nom et le prénom de la deuxième personne qui partagera la chambre double.",
         variant: "destructive",
       });
       return false;
@@ -1467,6 +1523,59 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
             onChange={(e) => e.target.files?.[0] && handleLabProofUpload(e.target.files[0])}
           />
         </label>
+      </div>
+    </div>
+  ) : null;
+
+  // Shown whenever a "chambre double" option is selected — the room is shared,
+  // so we need the roommate's name (mandatory) and, optionally, their email.
+  const roommateCard = isDoubleRoomOptionSelected ? (
+    <div className="space-y-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+      <p className="text-sm text-foreground">
+        Pour toute réservation en <strong>chambre double</strong>, merci d'indiquer obligatoirement{" "}
+        <strong>le nom et le prénom de la deuxième personne</strong> qui partagera la chambre.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-xs">Nom et prénom de la deuxième personne</Label>
+          <Input
+            value={roommateName}
+            onChange={(e) => {
+              setRoommateName(e.target.value);
+              setRoommateFieldErrors((prev) => ({ ...prev, roommateName: "" }));
+            }}
+            placeholder="Nom et prénom de la deuxième personne"
+            className="rounded-xl h-10"
+          />
+          {roommateFieldErrors.roommateName && (
+            <p className="text-xs text-destructive">{roommateFieldErrors.roommateName}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Email de la deuxième personne (optionnel)</Label>
+          <Input
+            type="email"
+            value={roommateEmail}
+            onChange={(e) => {
+              setRoommateEmail(e.target.value);
+              setRoommateFieldErrors((prev) => ({ ...prev, roommateEmail: "" }));
+            }}
+            placeholder="email@example.com"
+            className="rounded-xl h-10"
+          />
+          {roommateFieldErrors.roommateEmail && (
+            <p className="text-xs text-destructive">{roommateFieldErrors.roommateEmail}</p>
+          )}
+        </div>
+      </div>
+      <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-3 text-xs text-blue-700 dark:text-blue-400">
+        <p className="font-semibold mb-1">
+          Action à effectuer par la deuxième personne si elle participe au congrès :
+        </p>
+        <p>
+          Si elle participe également au congrès en tant que congressiste, elle doit{" "}
+          <strong>effectuer sa propre inscription sur la plateforme sans hébergement</strong>.
+        </p>
       </div>
     </div>
   ) : null;
@@ -2463,6 +2572,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                 </div>
               </div>
             )}
+
+            {roommateCard}
 
             {isAvailable() && (
               isRegistrationRequest ? (
