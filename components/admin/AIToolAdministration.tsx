@@ -31,6 +31,7 @@ const ALL_TOOLS = [
   { id: "claude", name: "Claude (Anthropic)" },
   { id: "xmind", name: "Xmind" },
   { id: "capcut", name: "CapCut" },
+  { id: "canva", name: "Canva" },
   { id: "deepl", name: "DeepL" },
   { id: "genspark", name: "Genspark" },
   { id: "mentimeter", name: "Mentimeter" },

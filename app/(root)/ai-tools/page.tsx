@@ -75,6 +75,12 @@ const aiTools = [
     url: "https://www.capcut.com/",
   },
   {
+    id: "canva",
+    domain: "canva.com",
+    color: "from-cyan-500 to-blue-600",
+    url: "https://www.canva.com/",
+  },
+  {
     id: "deepl",
     domain: "deepl.com",
     color: "from-blue-600 to-indigo-600",

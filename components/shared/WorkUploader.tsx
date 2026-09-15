@@ -232,9 +232,15 @@ export default function WorkUploader({
   const handleSubmitSummary = () => {
     setError(null);
     const noteStr = getNoteAsString().trim() || "";
+    // Use selectedWorkId (local state, set synchronously in onSuccess below)
+    // rather than selectedWork?._id (derived from the `works` query cache).
+    // The cache only reflects the newly-created work after `refetch()` resolves,
+    // so a second click right after a successful create — before that refetch
+    // lands — would still see selectedWork as undefined and create a duplicate
+    // EventWork instead of updating the one just saved.
     submitSummaryMutation.mutate(
       {
-        workId: selectedWork?._id,
+        workId: selectedWorkId ?? undefined,
         eventId,
         userId,
         title: title.trim() || tx("untitled", "Sans titre"),
