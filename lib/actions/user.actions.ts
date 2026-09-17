@@ -737,25 +737,30 @@ export async function getUserWorkByEvent({
     handleError(error);
   }
 }
-/** Best-effort display name for a registration, falling back to its free-form custom fields. */
-function getOrderParticipantName(order: any) {
+function findOrderInfo(order: any, fieldKeys: string[], labelKeys: string[]) {
   const info: any[] = order.requiredUserInfo || [];
-  const findByKeys = (fieldKeys: string[], labelKeys: string[]) =>
+  return (
     info.find((i: any) => {
       const field = String(i?.field || "").toLowerCase();
       const label = String(i?.label || "").toLowerCase();
       return fieldKeys.includes(field) || labelKeys.includes(label);
-    })?.value || "";
+    })?.value || ""
+  );
+}
 
+/** Best-effort display name for a registration, falling back to its free-form custom fields. */
+function getOrderParticipantName(order: any) {
   const firstName =
     order.buyer?.firstName ||
-    findByKeys(
+    findOrderInfo(
+      order,
       ["firstname", "first_name", "prenom", "prénom"],
       ["first name", "firstname", "prenom", "prénom"]
     );
   const lastName =
     order.buyer?.lastName ||
-    findByKeys(
+    findOrderInfo(
+      order,
       ["lastname", "last_name", "nom", "familyname", "family_name"],
       ["last name", "lastname", "nom", "family name"]
     );
@@ -763,8 +768,16 @@ function getOrderParticipantName(order: any) {
   const fullName = `${firstName} ${lastName}`.trim();
   if (fullName) return fullName;
 
-  const email = findByKeys(["email"], ["email", "e-mail", "courriel"]);
+  const email = findOrderInfo(order, ["email"], ["email", "e-mail", "courriel"]);
   return email || "Participant";
+}
+
+/** Best-effort email for a registration, falling back to its free-form custom fields. */
+function getOrderParticipantEmail(order: any) {
+  return (
+    order.buyer?.email ||
+    findOrderInfo(order, ["email"], ["email", "e-mail", "courriel"])
+  );
 }
 
 export async function getUserWorkByEventId({
@@ -809,6 +822,7 @@ export async function getUserWorkByEventId({
           eventTitle: "$event.title",
           eventId: "$event._id",
           userId: 1,
+          buyerEmail: "$buyer.email",
           buyer: {
             $concat: [
               { $ifNull: ["$buyer.firstName", ""] },
@@ -859,7 +873,7 @@ export async function getUserWorkByEventId({
       requiredUserInfo: {
         $elemMatch: { field: "wantsToSubmitWork", value: "yes" },
       },
-    }).populate({ path: "buyer", model: User, select: "firstName lastName" });
+    }).populate({ path: "buyer", model: User, select: "firstName lastName email" });
 
     // A guest registration can carry more than one résumé — EventPriceComponent
     // stores résumé #1 under unsuffixed fields (workSummaryTitle, workSummaryNote,
@@ -909,6 +923,7 @@ export async function getUserWorkByEventId({
               eventTitle: event?.title || "",
               eventId,
               buyer: getOrderParticipantName(order),
+              buyerEmail: getOrderParticipantEmail(order),
               title: title || "Sans titre",
               note,
               sections: sections.length ? sections : undefined,

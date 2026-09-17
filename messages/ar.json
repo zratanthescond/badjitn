@@ -3758,12 +3758,16 @@
     "table": {
       "headers": {
         "actions": "الإجراءات",
+        "coAuthors": "المؤلفون المشاركون",
+        "email": "البريد الإلكتروني",
         "eventTitle": "عنوان الفعالية",
         "id": "الرقم",
         "participant": "Participant",
         "status": "الحالة",
         "submitted": "تاريخ التقديم",
-        "submitter": "المقدم"
+        "submitter": "المقدم",
+        "summary": "الملخص",
+        "title": "عنوان العمل"
       }
     },
     "title": "إدارة الأعمال",

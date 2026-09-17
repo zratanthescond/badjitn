@@ -3758,12 +3758,16 @@
     "table": {
       "headers": {
         "actions": "Actions",
+        "coAuthors": "Co-auteurs",
+        "email": "Email",
         "eventTitle": "Titre de l'Événement",
         "id": "ID",
         "participant": "Participant",
         "status": "Statut",
         "submitted": "Soumis",
-        "submitter": "Soumissionnaire"
+        "submitter": "Soumissionnaire",
+        "summary": "Résumé",
+        "title": "Titre du travail"
       }
     },
     "title": "Gestion des Travaux",

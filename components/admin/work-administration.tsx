@@ -276,21 +276,62 @@ export default function WorkAdministration({
   type ExportFormat = "csv" | "xlsx" | "word" | "pdf";
 
   const getExportPayload = () => {
+    const works = data || [];
+
+    // One column per configured abstract section label (e.g. "Introduction",
+    // "Méthodes"...), gathered across all works so the export stays complete
+    // even if only some rows have that section filled in.
+    const sectionLabels: string[] = Array.from(
+      new Set(
+        works.flatMap((w: any) => (w.sections || []).map((s: any) => s.label))
+      )
+    );
+    const hasNote = sectionLabels.length === 0 && works.some((w: any) => w.note);
+    const hasCoAuthors = works.some(
+      (w: any) => (w.coAuthors || []).length > 0 || w.clientInfo?.coAuthors
+    );
+
     const headers = [
       t("table.headers.id"),
       t("table.headers.eventTitle"),
       t("table.headers.submitter"),
+      t("table.headers.email"),
       t("table.headers.status"),
       t("table.headers.submitted"),
+      t("table.headers.title"),
+      ...sectionLabels,
+      ...(hasNote ? [t("table.headers.summary")] : []),
+      ...(hasCoAuthors ? [t("table.headers.coAuthors")] : []),
     ];
 
-    const rows = (data || []).map((work: any) => [
-      work?._id ?? "",
-      work?.eventTitle ?? "",
-      work?.buyer ?? "",
-      getStatusLabel(work?.status || "submitted"),
-      work?.createdAt ? formatDateTime(work.createdAt).dateTime : "",
-    ]);
+    const rows = works.map((work: any) => {
+      const contentByLabel: Record<string, string> = {};
+      (work.sections || []).forEach((s: any) => {
+        contentByLabel[s.label] = s.content || "";
+      });
+      const coAuthorsText = (work.coAuthors || []).length
+        ? work.coAuthors
+            .map((c: any) =>
+              [c.firstName, c.lastName, c.affiliation ? `(${c.affiliation})` : ""]
+                .filter(Boolean)
+                .join(" ")
+            )
+            .join("; ")
+        : work.clientInfo?.coAuthors || "";
+
+      return [
+        work?._id ?? "",
+        work?.eventTitle ?? "",
+        work?.buyer ?? "",
+        work?.buyerEmail ?? "",
+        getStatusLabel(work?.status || "submitted"),
+        work?.createdAt ? formatDateTime(work.createdAt).dateTime : "",
+        work?.title ?? "",
+        ...sectionLabels.map((label) => contentByLabel[label] || ""),
+        ...(hasNote ? [work?.note || ""] : []),
+        ...(hasCoAuthors ? [coAuthorsText] : []),
+      ];
+    });
 
     return { headers, rows };
   };

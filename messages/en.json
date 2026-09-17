@@ -3758,12 +3758,16 @@
     "table": {
       "headers": {
         "actions": "Actions",
+        "coAuthors": "Co-authors",
+        "email": "Email",
         "eventTitle": "Event Title",
         "id": "ID",
         "participant": "Participant",
         "status": "Status",
         "submitted": "Submitted",
-        "submitter": "Submitter"
+        "submitter": "Submitter",
+        "summary": "Summary",
+        "title": "Work Title"
       }
     },
     "title": "Work Management",

@@ -3758,12 +3758,16 @@
     "table": {
       "headers": {
         "actions": "Acciones",
+        "coAuthors": "Coautores",
+        "email": "Correo electrónico",
         "eventTitle": "Título del evento",
         "id": "ID",
         "participant": "Participante",
         "status": "Estado",
         "submitted": "Enviado",
-        "submitter": "Remitente"
+        "submitter": "Remitente",
+        "summary": "Resumen",
+        "title": "Título del trabajo"
       }
     },
     "title": "Gestión de trabajos",
