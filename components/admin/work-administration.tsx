@@ -385,26 +385,155 @@ export default function WorkAdministration({
       }
 
       if (format === "xlsx") {
-        const xlsxModule = await import("xlsx");
-        const XLSX: any = (xlsxModule as any).default ?? xlsxModule;
-        const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Works");
-        const binary = XLSX.write(workbook, {
-          bookType: "xlsx",
-          type: "binary",
+        const exceljsModule = await import("exceljs");
+        const ExcelJS: any = (exceljsModule as any).default ?? exceljsModule;
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Travaux");
+
+        const totalColumns = Math.max(headers.length, 1);
+        const headerRowNumber = 10;
+        const dataStartRowNumber = headerRowNumber + 1;
+        const platformLogoUrl = `${
+          (process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net").replace(/\/$/, "")
+        }/assets/images/logoDark.png`;
+
+        if (totalColumns >= 2) {
+          worksheet.getCell("B1").value = "BADGI - EXPORT TRAVAUX";
+          worksheet.mergeCells(1, 2, 1, totalColumns);
+          worksheet.mergeCells(3, 2, 3, totalColumns);
+          worksheet.mergeCells(4, 2, 4, totalColumns);
+          worksheet.mergeCells(5, 2, 5, totalColumns);
+          worksheet.mergeCells(6, 2, 6, totalColumns);
+          worksheet.mergeCells(7, 2, 7, totalColumns);
+          worksheet.mergeCells(8, 2, 8, totalColumns);
+        } else {
+          worksheet.getCell("A1").value = "BADGI - EXPORT TRAVAUX";
+        }
+
+        worksheet.getCell("A3").value = "Événement";
+        worksheet.getCell("B3").value = data[0]?.eventTitle || "-";
+        worksheet.getCell("A4").value = "Total des travaux";
+        worksheet.getCell("B4").value = stats.total;
+        worksheet.getCell("A5").value = "Soumis";
+        worksheet.getCell("B5").value = stats.submitted;
+        worksheet.getCell("A6").value = "Examinés";
+        worksheet.getCell("B6").value = stats.reviewed;
+        worksheet.getCell("A7").value = "En attente";
+        worksheet.getCell("B7").value = stats.pending;
+        worksheet.getCell("A8").value = "Exporté le";
+        worksheet.getCell("B8").value = new Date().toLocaleString();
+
+        try {
+          const logoResp = await fetch(platformLogoUrl);
+          if (logoResp.ok) {
+            const logoBlob = await logoResp.blob();
+            const logoBase64: string = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(String(reader.result || ""));
+              reader.readAsDataURL(logoBlob);
+            });
+            if (logoBase64.startsWith("data:image")) {
+              const logoImageId = workbook.addImage({
+                base64: logoBase64,
+                extension: "png",
+              });
+              worksheet.addImage(logoImageId, {
+                tl: { col: 0, row: 0 },
+                ext: { width: 165, height: 50 },
+              });
+            }
+          }
+        } catch (_logoError) {
+          // Non-blocking
+        }
+
+        worksheet.getRow(headerRowNumber).values = headers;
+        rows.forEach((row: any, idx: number) => {
+          worksheet.getRow(dataStartRowNumber + idx).values = row as any;
         });
 
-        const toArrayBuffer = (s: string) => {
-          const buffer = new ArrayBuffer(s.length);
-          const view = new Uint8Array(buffer);
-          for (let i = 0; i < s.length; i += 1) {
-            view[i] = s.charCodeAt(i) & 0xff;
-          }
-          return buffer;
+        for (let c = 1; c <= totalColumns; c += 1) {
+          const header = String(headers[c - 1] || "");
+          const values = rows.map((r: any[]) => String(r?.[c - 1] ?? ""));
+          const maxLen = [header, ...values].reduce((max, v) => Math.max(max, v.length), 8);
+          worksheet.getColumn(c).width = Math.min(48, Math.max(12, maxLen + 2));
+        }
+
+        worksheet.views = [{ state: "frozen", ySplit: headerRowNumber }];
+        worksheet.autoFilter = {
+          from: { row: headerRowNumber, column: 1 },
+          to: { row: headerRowNumber, column: totalColumns },
         };
 
-        const xlsxBlob = new Blob([toArrayBuffer(binary)], {
+        const borderThin = {
+          top: { style: "thin", color: { argb: "FFD1D5DB" } },
+          bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+          left: { style: "thin", color: { argb: "FFD1D5DB" } },
+          right: { style: "thin", color: { argb: "FFD1D5DB" } },
+        };
+
+        const titleCell = worksheet.getCell(totalColumns >= 2 ? "B1" : "A1");
+        titleCell.font = { bold: true, size: 14, color: { argb: "FF0F172A" } };
+        titleCell.alignment = { horizontal: "left", vertical: "middle" };
+        titleCell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFDCEBFF" },
+        };
+        titleCell.border = borderThin as any;
+        worksheet.getRow(1).height = 36;
+
+        for (let r = 3; r <= 8; r += 1) {
+          const labelCell = worksheet.getCell(r, 1);
+          const valueCell = worksheet.getCell(r, 2);
+          labelCell.font = { bold: true, color: { argb: "FF1F2937" } };
+          labelCell.alignment = { horizontal: "left", vertical: "middle" };
+          labelCell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFE5E7EB" },
+          };
+          labelCell.border = borderThin as any;
+
+          valueCell.alignment = { horizontal: "left", vertical: "middle" };
+          valueCell.border = borderThin as any;
+          worksheet.getRow(r).height = 22;
+        }
+
+        const headerRow = worksheet.getRow(headerRowNumber);
+        headerRow.height = 24;
+        headerRow.eachCell((cell: any) => {
+          cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+          cell.alignment = { horizontal: "center", vertical: "middle" };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF2563EB" },
+          };
+          cell.border = borderThin as any;
+        });
+
+        rows.forEach((_row: any, rowIndex: number) => {
+          const rowNumber = dataStartRowNumber + rowIndex;
+          const excelRow = worksheet.getRow(rowNumber);
+          const isZebra = rowIndex % 2 === 1;
+          excelRow.height = 20;
+          for (let c = 1; c <= totalColumns; c += 1) {
+            const cell = excelRow.getCell(c);
+            cell.border = borderThin as any;
+            cell.alignment = { horizontal: "left", vertical: "middle" } as any;
+            if (isZebra) {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFF8FAFC" },
+              };
+            }
+          }
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const xlsxBlob = new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
         downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
