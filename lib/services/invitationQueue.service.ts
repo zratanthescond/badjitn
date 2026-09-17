@@ -80,8 +80,10 @@ export async function processInvitationQueueBatch({
     for (const recipient of batch) {
       remainingBudget--;
 
-      if (invitedSet.has(recipient.email.toLowerCase())) {
+      if (!recipient.isResend && invitedSet.has(recipient.email.toLowerCase())) {
         // Already sent through another path since being queued — just drop it.
+        // Deliberate resends (isResend) must go through even though the
+        // recipient is already in invitedEmails — that's the whole point.
         await Event.findByIdAndUpdate(event._id, {
           $pull: { invitationQueue: { email: recipient.email } },
         });

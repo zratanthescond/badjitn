@@ -94,6 +94,7 @@ export interface IEvent extends Document {
     firstName?: string;
     lastName?: string;
     queuedAt: Date;
+    isResend?: boolean;
   }[];
 }
 const planOptionSchema = new mongoose.Schema({
@@ -258,6 +259,7 @@ const EventSchema = new Schema({
         firstName: { type: String },
         lastName: { type: String },
         queuedAt: { type: Date, default: Date.now },
+        isResend: { type: Boolean, default: false },
       },
     ],
     default: [],

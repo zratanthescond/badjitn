@@ -300,6 +300,10 @@ export async function resendInvitations({
               email: r.email,
               firstName: r.firstName || "",
               lastName: r.lastName || "",
+              // Lets the queue processor's already-invited dedup guard (meant to
+              // skip duplicates queued via the normal invite flow) know this entry
+              // is a deliberate resend and must not be silently dropped.
+              isResend: true,
             })),
           },
         },
