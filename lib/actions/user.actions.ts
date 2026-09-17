@@ -453,18 +453,30 @@ export async function submitWorkSummary({
   }
 }
 
+// The email on the user's account can be stale or missing (guest checkout,
+// account created after registering); the email the participant actually
+// gave when registering for this event, captured on their Order, is the one
+// they can be reached at — prefer it, falling back to the account email.
+async function resolveWorkParticipantEmail(eventId: string, userId: string) {
+  const [order, user] = await Promise.all([
+    Order.findOne({ event: eventId, buyer: userId }).sort({ createdAt: -1 }),
+    User.findById(userId).select("email"),
+  ]);
+  return (order && getOrderParticipantEmail(order)) || user?.email;
+}
+
 async function applyWorkApproval(work: InstanceType<typeof EventWork>) {
   work.summaryStatus = "approved";
   work.approvedAt = new Date();
   await work.save();
 
-  const [event, user] = await Promise.all([
+  const [event, userEmail] = await Promise.all([
     Event.findById(work.eventId),
-    User.findById(work.userId),
+    resolveWorkParticipantEmail(String(work.eventId), String(work.userId)),
   ]);
 
   await sendWorkNotificationEmail({
-    userEmail: user?.email,
+    userEmail,
     subject: "Resume approuve",
     title: "Votre resume a ete approuve",
     intro:
@@ -488,13 +500,13 @@ async function applyWorkRejection(
   work.rejectionReason = reason?.trim() || undefined;
   await work.save();
 
-  const [event, user] = await Promise.all([
+  const [event, userEmail] = await Promise.all([
     Event.findById(work.eventId),
-    User.findById(work.userId),
+    resolveWorkParticipantEmail(String(work.eventId), String(work.userId)),
   ]);
 
   await sendWorkNotificationEmail({
-    userEmail: user?.email,
+    userEmail,
     subject: "Resume refuse",
     title: "Votre resume a ete refuse",
     intro:
@@ -627,8 +639,7 @@ export async function resendWorkSubmissionEmail({
       userId = String(work.userId);
       title = work.title || "Sans titre";
       await verifyOrganizerOrAdmin(eventId);
-      const user = await User.findById(userId);
-      userEmail = user?.email;
+      userEmail = await resolveWorkParticipantEmail(eventId, userId);
     } else if (orderId) {
       const order = await Order.findById(orderId).populate({
         path: "buyer",
@@ -638,7 +649,7 @@ export async function resendWorkSubmissionEmail({
       eventId = String(order.event);
       await verifyOrganizerOrAdmin(eventId);
       userId = order.buyer ? String(order.buyer._id) : undefined;
-      userEmail = order.buyer?.email;
+      userEmail = getOrderParticipantEmail(order);
       const getInfo = (field: string) =>
         (order.requiredUserInfo || []).find((i: any) => i.field === field)
           ?.value || "";
