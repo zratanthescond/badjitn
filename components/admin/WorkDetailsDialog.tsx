@@ -162,7 +162,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   };
 
   const handleSendEmail = async () => {
-    if (!value.eventId) return;
+    if (!value._id) return;
     setIsSendingEmail(true);
     try {
       const res = await fetch(
@@ -170,11 +170,11 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            eventId: value.eventId,
-            userId: value.userId,
-            orderId: value.orderId,
-          }),
+          body: JSON.stringify(
+            isPendingRegistration
+              ? { orderId: value._id }
+              : { workId: value._id }
+          ),
         }
       );
       const data = await res.json();
@@ -326,21 +326,23 @@ export function WorkDetailsDialog({ value }: { value: any }) {
         </Badge>
       )}
 
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={handleSendEmail}
-        disabled={isSendingEmail}
-        title={t("sendEmail.button")}
-        className="h-9 w-9 shrink-0 bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300 rounded-full transition-all duration-200 hover:scale-105"
-      >
-        {isSendingEmail ? (
-          <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-        ) : (
-          <Mail className="w-4 h-4 text-blue-500" />
-        )}
-        <span className="sr-only">{t("sendEmail.button")}</span>
-      </Button>
+      {canReview && (
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleSendEmail}
+          disabled={isSendingEmail}
+          title={t("sendEmail.button")}
+          className="h-9 w-9 shrink-0 bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300 rounded-full transition-all duration-200 hover:scale-105"
+        >
+          {isSendingEmail ? (
+            <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+          ) : (
+            <Mail className="w-4 h-4 text-blue-500" />
+          )}
+          <span className="sr-only">{t("sendEmail.button")}</span>
+        </Button>
+      )}
 
       <Dialog>
         <DialogTrigger asChild>

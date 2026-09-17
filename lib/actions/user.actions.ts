@@ -16,7 +16,6 @@ import { ObjectId } from "mongodb";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { sendWorkStatusEmail } from "../mail";
 import { verifyAdmin, verifyOrganizerOrAdmin } from "./auth.actions";
-import { sendRegistrationStatusEmail } from "./order.actions";
 
 export async function useUser() {
   try {
@@ -600,54 +599,83 @@ export async function rejectOrderWork(orderId: string, reason?: string) {
 }
 
 /**
- * Resends the same registration confirmation email the participant received
- * when they registered for the event. Used from the works admin table, where
- * a row is either an order-only pending registration (orderId known directly)
- * or a materialized EventWork (linked to its order via eventId + userId,
- * since EventWork itself doesn't store the orderId).
+ * Resends the same "Resume soumis" confirmation email the participant received
+ * when they submitted their resume. Used from the works admin table, where a
+ * row is either a materialized EventWork (workId) or an order-only pending
+ * registration that never went through the separate work-upload flow (orderId,
+ * with the resume title/note still only captured on the Order).
  */
-export async function resendRegistrationEmail({
-  eventId,
-  userId,
+export async function resendWorkSubmissionEmail({
+  workId,
   orderId,
 }: {
-  eventId: string;
-  userId?: string;
+  workId?: string;
   orderId?: string;
 }) {
   try {
     await connectToDatabase();
-    await verifyOrganizerOrAdmin(eventId);
 
-    const order = orderId
-      ? await Order.findById(orderId)
-      : await Order.findOne({ event: eventId, buyer: userId }).sort({
-          createdAt: -1,
-        });
-    if (!order) throw new Error("Aucune inscription trouvée pour ce soumissionnaire");
+    let eventId: string;
+    let userId: string | undefined;
+    let title: string;
+    let userEmail: string | undefined;
 
-    const emailInfo = (order.requiredUserInfo || []).find(
-      (info: any) => String(info.field).toLowerCase() === "email"
+    if (workId) {
+      const work = await EventWork.findById(workId);
+      if (!work) throw new Error("Travail introuvable");
+      eventId = String(work.eventId);
+      userId = String(work.userId);
+      title = work.title || "Sans titre";
+      await verifyOrganizerOrAdmin(eventId);
+      const user = await User.findById(userId);
+      userEmail = user?.email;
+    } else if (orderId) {
+      const order = await Order.findById(orderId).populate({
+        path: "buyer",
+        model: User,
+      });
+      if (!order) throw new Error("Commande introuvable");
+      eventId = String(order.event);
+      await verifyOrganizerOrAdmin(eventId);
+      userId = order.buyer ? String(order.buyer._id) : undefined;
+      userEmail = order.buyer?.email;
+      const getInfo = (field: string) =>
+        (order.requiredUserInfo || []).find((i: any) => i.field === field)
+          ?.value || "";
+      title = getInfo("workSummaryTitle") || "Sans titre";
+    } else {
+      throw new Error("workId ou orderId requis");
+    }
+
+    if (!userEmail) throw new Error("Aucune adresse email trouvée pour ce soumissionnaire");
+
+    const event = await Event.findById(eventId).select(
+      "title maxWorkSubmissions"
     );
-    const participantEmail = emailInfo?.value?.trim();
-    if (!participantEmail) throw new Error("Aucune adresse email trouvée pour ce soumissionnaire");
 
-    const event = await Event.findById(order.event).select(
-      "title country location"
-    );
+    const progressHtml = userId
+      ? await buildWorkSummaryProgressHtml({
+          eventId,
+          userId,
+          maxWorkSubmissions: event?.maxWorkSubmissions,
+        })
+      : "";
 
-    await sendRegistrationStatusEmail({
+    await sendWorkNotificationEmail({
+      userEmail,
+      subject: "Resume soumis",
+      title: "Votre resume a ete soumis",
+      intro:
+        "Nous avons bien recu votre resume. Vous pourrez deposer votre travail une fois l'approbation effectuee par le createur de l'evenement.",
       eventTitle: event?.title || "",
-      country: event?.country,
-      location: event?.location,
-      requiredUserInfo: order.requiredUserInfo,
-      details: order.details,
-      totalAmount: order.totalAmount,
-      type: order.type,
-      eligibilityStatus: order.eligibilityStatus,
+      summaryTitle: title,
+      eventId,
+      extra: progressHtml,
+      ctaLabel: "Consulter mes resumes",
+      ctaUrl: buildSubmitWorkUrl(eventId),
     });
 
-    return { success: true, email: participantEmail };
+    return { success: true, email: userEmail };
   } catch (error) {
     handleError(error);
     throw error;

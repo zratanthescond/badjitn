@@ -3847,7 +3847,7 @@
     "sendEmail": {
       "button": "إرسال بريد إلكتروني",
       "toastTitle": "تم إرسال البريد الإلكتروني",
-      "toastDescription": "تم إعادة إرسال بريد تأكيد التسجيل إلى {email}.",
+      "toastDescription": "تم إعادة إرسال بريد تأكيد تقديم الملخص إلى {email}.",
       "toastErrorTitle": "فشل إرسال البريد الإلكتروني"
     },
     "status": {

@@ -3847,7 +3847,7 @@
     "sendEmail": {
       "button": "Envoyer un email",
       "toastTitle": "Email envoyé",
-      "toastDescription": "L'email de confirmation d'inscription a été renvoyé à {email}.",
+      "toastDescription": "L'email de confirmation de soumission du résumé a été renvoyé à {email}.",
       "toastErrorTitle": "Échec de l'envoi de l'email"
     },
     "status": {

@@ -3847,7 +3847,7 @@
     "sendEmail": {
       "button": "Send email",
       "toastTitle": "Email sent",
-      "toastDescription": "The registration confirmation email was resent to {email}.",
+      "toastDescription": "The resume submission confirmation email was resent to {email}.",
       "toastErrorTitle": "Failed to send email"
     },
     "status": {
