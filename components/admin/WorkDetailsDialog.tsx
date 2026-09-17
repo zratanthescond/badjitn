@@ -240,34 +240,36 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   const canReview = value?.canReview !== false;
 
   return (
-    <div className={`flex w-full items-center justify-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
+    <div className={`flex w-full flex-wrap items-center justify-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
       {canReview && !isApproved && !isRejected && (
         <>
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={handleApprove}
             disabled={isApproving || isRejecting}
-            className="bg-green-500/10 hover:bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 rounded-full transition-all duration-200 hover:scale-105"
+            title={t("approve.button")}
+            className="h-9 w-9 shrink-0 bg-green-500/10 hover:bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 rounded-full transition-all duration-200 hover:scale-105"
           >
             {isApproving ? (
-              <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mr-2" />
+              <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
             ) : (
-              <ThumbsUp className="w-4 h-4 text-green-500 mr-2" />
+              <ThumbsUp className="w-4 h-4 text-green-500" />
             )}
-            <span className={isRTL ? "font-arabic" : ""}>{t("approve.button")}</span>
+            <span className="sr-only">{t("approve.button")}</span>
           </Button>
 
           <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
-                size="sm"
+                size="icon"
                 disabled={isApproving || isRejecting}
-                className="bg-red-500/10 hover:bg-red-500/20 border-red-500/30 text-red-700 dark:text-red-300 rounded-full transition-all duration-200 hover:scale-105"
+                title={t("reject.button")}
+                className="h-9 w-9 shrink-0 bg-red-500/10 hover:bg-red-500/20 border-red-500/30 text-red-700 dark:text-red-300 rounded-full transition-all duration-200 hover:scale-105"
               >
-                <ThumbsDown className="w-4 h-4 text-red-500 mr-2" />
-                <span className={isRTL ? "font-arabic" : ""}>{t("reject.button")}</span>
+                <ThumbsDown className="w-4 h-4 text-red-500" />
+                <span className="sr-only">{t("reject.button")}</span>
               </Button>
             </DialogTrigger>
             <DialogContent className={isRTL ? "rtl text-right" : ""}>
@@ -326,24 +328,25 @@ export function WorkDetailsDialog({ value }: { value: any }) {
 
       <Button
         variant="outline"
-        size="sm"
+        size="icon"
         onClick={handleSendEmail}
         disabled={isSendingEmail}
-        className="bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300 rounded-full transition-all duration-200 hover:scale-105"
+        title={t("sendEmail.button")}
+        className="h-9 w-9 shrink-0 bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300 rounded-full transition-all duration-200 hover:scale-105"
       >
         {isSendingEmail ? (
-          <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mr-2" />
+          <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
         ) : (
-          <Mail className="w-4 h-4 text-blue-500 mr-2" />
+          <Mail className="w-4 h-4 text-blue-500" />
         )}
-        <span className={isRTL ? "font-arabic" : ""}>{t("sendEmail.button")}</span>
+        <span className="sr-only">{t("sendEmail.button")}</span>
       </Button>
 
       <Dialog>
         <DialogTrigger asChild>
           <Button
             size="sm"
-            className={`bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md border-0 rounded-full py-1.5 px-4 transition-all duration-200 hover:scale-105 hover:shadow-lg ${
+            className={`shrink-0 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md border-0 rounded-full py-1.5 px-4 transition-all duration-200 hover:scale-105 hover:shadow-lg ${
               isRTL ? "font-arabic" : ""
             }`}
           >
