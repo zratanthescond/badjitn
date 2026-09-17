@@ -5,6 +5,7 @@ import {
   Download,
   Eye,
   FileText,
+  Mail,
   Upload,
   Sparkles,
   User,
@@ -49,6 +50,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   const [isRejecting, setIsRejecting] = useState(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const fileViewerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const summaryStatus = value?.summaryStatus ?? value?.status ?? "submitted";
@@ -156,6 +158,45 @@ export function WorkDetailsDialog({ value }: { value: any }) {
       });
     } finally {
       setIsRejecting(false);
+    }
+  };
+
+  const handleSendEmail = async () => {
+    if (!value.eventId) return;
+    setIsSendingEmail(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/work/send-email`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            eventId: value.eventId,
+            userId: value.userId,
+            orderId: value.orderId,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        toast({
+          title: t("sendEmail.toastTitle"),
+          description: t("sendEmail.toastDescription", { email: data.email || "" }),
+        });
+      } else {
+        toast({
+          title: t("sendEmail.toastErrorTitle"),
+          description: data.error || "",
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({
+        title: t("sendEmail.toastErrorTitle"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingEmail(false);
     }
   };
 
@@ -282,6 +323,21 @@ export function WorkDetailsDialog({ value }: { value: any }) {
           {t("status.rejected")}
         </Badge>
       )}
+
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleSendEmail}
+        disabled={isSendingEmail}
+        className="bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300 rounded-full transition-all duration-200 hover:scale-105"
+      >
+        {isSendingEmail ? (
+          <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mr-2" />
+        ) : (
+          <Mail className="w-4 h-4 text-blue-500 mr-2" />
+        )}
+        <span className={isRTL ? "font-arabic" : ""}>{t("sendEmail.button")}</span>
+      </Button>
 
       <Dialog>
         <DialogTrigger asChild>

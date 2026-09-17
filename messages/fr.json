@@ -3844,6 +3844,12 @@
       "toastDescription": "Le client a été informé du refus par email.",
       "toastErrorTitle": "Échec du refus"
     },
+    "sendEmail": {
+      "button": "Envoyer un email",
+      "toastTitle": "Email envoyé",
+      "toastDescription": "L'email de confirmation d'inscription a été renvoyé à {email}.",
+      "toastErrorTitle": "Échec de l'envoi de l'email"
+    },
     "status": {
       "pending": "En Attente d'Examen",
       "reviewed": "Examiné",

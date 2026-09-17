@@ -16,6 +16,7 @@ import { ObjectId } from "mongodb";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { sendWorkStatusEmail } from "../mail";
 import { verifyAdmin, verifyOrganizerOrAdmin } from "./auth.actions";
+import { sendRegistrationStatusEmail } from "./order.actions";
 
 export async function useUser() {
   try {
@@ -592,6 +593,61 @@ export async function rejectOrderWork(orderId: string, reason?: string) {
     const work = await resolveWorkFromOrder(orderId);
     await verifyOrganizerOrAdmin(String(work.eventId));
     return await applyWorkRejection(work, reason);
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
+
+/**
+ * Resends the same registration confirmation email the participant received
+ * when they registered for the event. Used from the works admin table, where
+ * a row is either an order-only pending registration (orderId known directly)
+ * or a materialized EventWork (linked to its order via eventId + userId,
+ * since EventWork itself doesn't store the orderId).
+ */
+export async function resendRegistrationEmail({
+  eventId,
+  userId,
+  orderId,
+}: {
+  eventId: string;
+  userId?: string;
+  orderId?: string;
+}) {
+  try {
+    await connectToDatabase();
+    await verifyOrganizerOrAdmin(eventId);
+
+    const order = orderId
+      ? await Order.findById(orderId)
+      : await Order.findOne({ event: eventId, buyer: userId }).sort({
+          createdAt: -1,
+        });
+    if (!order) throw new Error("Aucune inscription trouvée pour ce soumissionnaire");
+
+    const emailInfo = (order.requiredUserInfo || []).find(
+      (info: any) => String(info.field).toLowerCase() === "email"
+    );
+    const participantEmail = emailInfo?.value?.trim();
+    if (!participantEmail) throw new Error("Aucune adresse email trouvée pour ce soumissionnaire");
+
+    const event = await Event.findById(order.event).select(
+      "title country location"
+    );
+
+    await sendRegistrationStatusEmail({
+      eventTitle: event?.title || "",
+      country: event?.country,
+      location: event?.location,
+      requiredUserInfo: order.requiredUserInfo,
+      details: order.details,
+      totalAmount: order.totalAmount,
+      type: order.type,
+      eligibilityStatus: order.eligibilityStatus,
+    });
+
+    return { success: true, email: participantEmail };
   } catch (error) {
     handleError(error);
     throw error;
