@@ -537,7 +537,26 @@ async function resolveWorkFromOrder(orderId: string, resumeIndex: number = 1) {
     model: User,
   });
   if (!order) throw new Error("Order not found");
-  if (!order.buyer) throw new Error("Buyer not found for this order");
+
+  // Guest checkout (no Clerk-linked account at registration time) leaves
+  // order.buyer unset — this is common, not an edge case, so fall back to
+  // matching an existing User by the email given at registration before
+  // giving up. Never create one: clerkId/username are required+unique on
+  // User and synthesizing them would risk colliding with a real account.
+  let buyer = order.buyer;
+  if (!buyer) {
+    const email = getOrderParticipantEmail(order);
+    if (email) {
+      buyer = await User.findOne({
+        email: new RegExp(`^${email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i"),
+      });
+    }
+  }
+  if (!buyer) {
+    throw new Error(
+      "Aucun compte utilisateur lié à cette inscription — impossible d'enregistrer l'approbation/le refus."
+    );
+  }
 
   const eventId = String(order.event);
   const suffix = resumeIndex === 1 ? "" : `_${resumeIndex}`;
@@ -551,16 +570,16 @@ async function resolveWorkFromOrder(orderId: string, resumeIndex: number = 1) {
     resumeIndex === 1
       ? {
           eventId,
-          userId: order.buyer._id,
+          userId: buyer._id,
           $or: [{ resumeIndex: 1 }, { resumeIndex: { $exists: false } }],
         }
-      : { eventId, userId: order.buyer._id, resumeIndex };
+      : { eventId, userId: buyer._id, resumeIndex };
 
   let work = await EventWork.findOne(query);
   if (!work) {
     work = new EventWork({
       eventId,
-      userId: order.buyer._id,
+      userId: buyer._id,
       resumeIndex,
       title: getInfo(`workSummaryTitle${suffix}`) || "Sans titre",
       note: getInfo(`workSummaryNote${suffix}`) || "",
@@ -1061,9 +1080,12 @@ export async function getUserWorkByEventId({
               isPendingRegistration: true,
               // Approving/rejecting a pending (order-only) résumé materializes
               // its own EventWork from the order's suffixed fields — each
-              // résumé on the order is reviewed independently. Only needs a
-              // resolved buyer, same requirement as resolveWorkFromOrder.
-              canReview: !!order.buyer,
+              // résumé on the order is reviewed independently. Always shown:
+              // resolveWorkFromOrder resolves the buyer (falling back to an
+              // email match for guest checkouts with no linked account) and
+              // surfaces a clear error itself if that still fails, rather
+              // than this list silently guessing and hiding the controls.
+              canReview: true,
             });
           });
       });
