@@ -29,6 +29,13 @@ interface IEventWork extends mongoose.Document {
   _id: any;
   eventId: mongoose.Schema.Types.ObjectId;
   userId: mongoose.Schema.Types.ObjectId;
+  // Which résumé slot this is for a registrant allowed to submit more than
+  // one (event.maxWorkSubmissions > 1). Only meaningful for works
+  // materialized from an order-only pending résumé (see resolveWorkFromOrder);
+  // works created directly through the submit-work flow don't need it since
+  // each is already its own document. Absent on documents created before this
+  // field existed — those are always résumé #1.
+  resumeIndex?: number;
   title?: string;
   clientInfo?: IClientInfo;
   note?: string;
@@ -65,6 +72,7 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
     ref: "User",
     required: true,
   },
+  resumeIndex: { type: Number, required: false, default: 1 },
   title: { type: String, required: false },
   clientInfo: {
     type: {

@@ -525,11 +525,13 @@ async function applyWorkRejection(
 /**
  * Registrations that answered "yes" to "Soumettre un travail" at checkout but
  * never went through the separate work-upload flow have no EventWork document
- * yet — only the title/note captured at checkout, on the Order. Approving or
- * rejecting one of these from the admin table must materialize that EventWork
- * document first so it can carry a real status/history.
+ * yet — only the title/note captured at checkout, on the Order (one résumé
+ * per unsuffixed/`_N`-suffixed field set, up to event.maxWorkSubmissions).
+ * Approving or rejecting one of these from the admin table must materialize
+ * the EventWork document for that specific résumé first so it can carry a
+ * real status/history, independently of its siblings.
  */
-async function resolveWorkFromOrder(orderId: string) {
+async function resolveWorkFromOrder(orderId: string, resumeIndex: number = 1) {
   const order = await Order.findById(orderId).populate({
     path: "buyer",
     model: User,
@@ -538,17 +540,30 @@ async function resolveWorkFromOrder(orderId: string) {
   if (!order.buyer) throw new Error("Buyer not found for this order");
 
   const eventId = String(order.event);
+  const suffix = resumeIndex === 1 ? "" : `_${resumeIndex}`;
   const getInfo = (field: string) =>
     (order.requiredUserInfo || []).find((i: any) => i.field === field)
       ?.value || "";
 
-  let work = await EventWork.findOne({ eventId, userId: order.buyer._id });
+  // Résumé #1 predates the resumeIndex field, so a document materialized
+  // before this change has no resumeIndex stored — match those too.
+  const query =
+    resumeIndex === 1
+      ? {
+          eventId,
+          userId: order.buyer._id,
+          $or: [{ resumeIndex: 1 }, { resumeIndex: { $exists: false } }],
+        }
+      : { eventId, userId: order.buyer._id, resumeIndex };
+
+  let work = await EventWork.findOne(query);
   if (!work) {
     work = new EventWork({
       eventId,
       userId: order.buyer._id,
-      title: getInfo("workSummaryTitle") || "Sans titre",
-      note: getInfo("workSummaryNote") || "",
+      resumeIndex,
+      title: getInfo(`workSummaryTitle${suffix}`) || "Sans titre",
+      note: getInfo(`workSummaryNote${suffix}`) || "",
       summaryStatus: "submitted",
       submittedAt: order.createdAt || new Date(),
       fileUrls: [],
@@ -585,10 +600,10 @@ export async function rejectWork(workId: string, reason?: string) {
 }
 
 /** Approve a work summary still only captured on the order (no EventWork yet). */
-export async function approveOrderWork(orderId: string) {
+export async function approveOrderWork(orderId: string, resumeIndex: number = 1) {
   try {
     await connectToDatabase();
-    const work = await resolveWorkFromOrder(orderId);
+    const work = await resolveWorkFromOrder(orderId, resumeIndex);
     await verifyOrganizerOrAdmin(String(work.eventId));
     return await applyWorkApproval(work);
   } catch (error) {
@@ -598,10 +613,14 @@ export async function approveOrderWork(orderId: string) {
 }
 
 /** Reject a work summary still only captured on the order (no EventWork yet). */
-export async function rejectOrderWork(orderId: string, reason?: string) {
+export async function rejectOrderWork(
+  orderId: string,
+  reason?: string,
+  resumeIndex: number = 1
+) {
   try {
     await connectToDatabase();
-    const work = await resolveWorkFromOrder(orderId);
+    const work = await resolveWorkFromOrder(orderId, resumeIndex);
     await verifyOrganizerOrAdmin(String(work.eventId));
     return await applyWorkRejection(work, reason);
   } catch (error) {
@@ -620,9 +639,11 @@ export async function rejectOrderWork(orderId: string, reason?: string) {
 export async function resendWorkSubmissionEmail({
   workId,
   orderId,
+  resumeIndex = 1,
 }: {
   workId?: string;
   orderId?: string;
+  resumeIndex?: number;
 }) {
   try {
     await connectToDatabase();
@@ -650,10 +671,11 @@ export async function resendWorkSubmissionEmail({
       await verifyOrganizerOrAdmin(eventId);
       userId = order.buyer ? String(order.buyer._id) : undefined;
       userEmail = getOrderParticipantEmail(order);
+      const suffix = resumeIndex === 1 ? "" : `_${resumeIndex}`;
       const getInfo = (field: string) =>
         (order.requiredUserInfo || []).find((i: any) => i.field === field)
           ?.value || "";
-      title = getInfo("workSummaryTitle") || "Sans titre";
+      title = getInfo(`workSummaryTitle${suffix}`) || "Sans titre";
     } else {
       throw new Error("workId ou orderId requis");
     }
@@ -917,6 +939,7 @@ export async function getUserWorkByEventId({
           eventTitle: "$event.title",
           eventId: "$event._id",
           userId: 1,
+          resumeIndex: { $ifNull: ["$resumeIndex", 1] },
           buyerEmail: "$buyer.email",
           buyer: {
             $concat: [
@@ -950,10 +973,12 @@ export async function getUserWorkByEventId({
     // Registrations that answered "yes" to "Soumettre un travail" at checkout
     // but never went through the separate work-upload flow (so no EventWork
     // document exists yet) — surface them here too, otherwise they never
-    // show up in this admin view even though the intent was captured.
-    const existingWorkUserIds = new Set(
+    // show up in this admin view even though the intent was captured. Keyed
+    // by userId+résumé index since one registration can carry several
+    // independent résumés, each materialized (or not) on its own.
+    const existingWorkKeys = new Set(
       works
-        .map((w: any) => w.userId && String(w.userId))
+        .map((w: any) => w.userId && `${String(w.userId)}_${w.resumeIndex ?? 1}`)
         .filter(Boolean)
     );
 
@@ -978,12 +1003,7 @@ export async function getUserWorkByEventId({
     // résumé here, otherwise only the title/status is visible (the actual
     // content only showed up in the order's own detail view).
     const pendingWorks: any[] = [];
-    ordersWithWorkIntent
-      .filter(
-        (order: any) =>
-          !order.buyer || !existingWorkUserIds.has(String(order.buyer._id))
-      )
-      .forEach((order: any) => {
+    ordersWithWorkIntent.forEach((order: any) => {
         const info: any[] = order.requiredUserInfo || [];
         const getInfo = (field: string) =>
           info.find((i: any) => i.field === field)?.value || "";
@@ -1010,6 +1030,16 @@ export async function getUserWorkByEventId({
 
             if (!title && !note && sections.length === 0) return;
 
+            // Skip only this specific résumé if it's already been
+            // materialized into its own EventWork — its siblings on the
+            // same order may still be order-only and need to stay visible.
+            if (
+              order.buyer &&
+              existingWorkKeys.has(`${String(order.buyer._id)}_${index}`)
+            ) {
+              return;
+            }
+
             pendingWorks.push({
               _id: index === 1 ? String(order._id) : `${order._id}_${index}`,
               orderId: String(order._id),
@@ -1029,12 +1059,11 @@ export async function getUserWorkByEventId({
               approvedAt: undefined,
               status: "pending",
               isPendingRegistration: true,
-              // Approving/rejecting a pending (order-only) work materializes a
-              // single EventWork from the order's unsuffixed fields — only
-              // meaningful for the first résumé. Later résumés on the same
-              // order are shown for visibility but reviewed once the
-              // participant goes through the real work-upload flow.
-              canReview: index === 1,
+              // Approving/rejecting a pending (order-only) résumé materializes
+              // its own EventWork from the order's suffixed fields — each
+              // résumé on the order is reviewed independently. Only needs a
+              // resolved buyer, same requirement as resolveWorkFromOrder.
+              canReview: !!order.buyer,
             });
           });
       });

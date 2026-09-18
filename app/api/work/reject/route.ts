@@ -7,6 +7,7 @@ export async function POST(req: Request) {
     const workId = body.workId as string | undefined;
     const orderId = body.orderId as string | undefined;
     const reason = body.reason as string | undefined;
+    const resumeIndex = body.resumeIndex as number | undefined;
     if (!workId && !orderId) {
       return NextResponse.json(
         { success: false, error: "workId or orderId is required" },
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
     if (workId) {
       await rejectWork(workId, reason);
     } else {
-      await rejectOrderWork(orderId as string, reason);
+      await rejectOrderWork(orderId as string, reason, resumeIndex);
     }
     return NextResponse.json({ success: true });
   } catch (err: unknown) {

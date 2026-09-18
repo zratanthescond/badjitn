@@ -90,7 +90,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(
             isPendingRegistration
-              ? { orderId: value._id }
+              ? { orderId: value.orderId, resumeIndex: value.resumeIndex }
               : { workId: value._id }
           ),
         }
@@ -130,7 +130,11 @@ export function WorkDetailsDialog({ value }: { value: any }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(
             isPendingRegistration
-              ? { orderId: value._id, reason: rejectionReason }
+              ? {
+                  orderId: value.orderId,
+                  resumeIndex: value.resumeIndex,
+                  reason: rejectionReason,
+                }
               : { workId: value._id, reason: rejectionReason }
           ),
         }
@@ -172,7 +176,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(
             isPendingRegistration
-              ? { orderId: value._id }
+              ? { orderId: value.orderId, resumeIndex: value.resumeIndex }
               : { workId: value._id }
           ),
         }
@@ -234,9 +238,9 @@ export function WorkDetailsDialog({ value }: { value: any }) {
     return () => clearTimeout(timer);
   }, [value.fileUrls]); // Re-run effect when fileUrls (and thus selected file) changes
 
-  // Order-only pending entries beyond the first résumé have no independent
-  // EventWork document to review yet — approving/rejecting would act on the
-  // order's first résumé instead. Keep them visible for content, not review.
+  // False only for order-only pending entries with no resolvable buyer
+  // (approving/rejecting/emailing needs a User to materialize the EventWork
+  // against or to find their email) — set server-side in getUserWorkByEventId.
   const canReview = value?.canReview !== false;
 
   return (
