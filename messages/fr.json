@@ -144,6 +144,13 @@
     "stopScanning": "Arrêter",
     "subtitle": "Scannage et contrôle d'accès en temps réel",
     "ticketType": "Modalite d'acces",
+    "ticketTypes": {
+      "paid": "Payant",
+      "free": "Gratuit",
+      "hosted": "Hébergé",
+      "doorpay": "Paiement à la Porte",
+      "bank_transfer": "Virement Bancaire"
+    },
     "unknown": "Inconnu",
     "verifying": "Verification de l'acces...",
     "success": "Succès",

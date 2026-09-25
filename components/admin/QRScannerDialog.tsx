@@ -16,10 +16,12 @@ import { formatDateTime } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function QRScannerDialog() {
   const t = useTranslations("QRScanner");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
+  const locale = useLocale();
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [orderData, setOrderData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -86,6 +88,61 @@ export default function QRScannerDialog() {
     setError(null);
   };
 
+  const normalizeInfoKey = (value: unknown) =>
+    String(value ?? "")
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "");
+
+  const capitalize = (str: string) =>
+    str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : word))
+      .join(" ");
+
+  const getParticipantName = (order: any) => {
+    const buyerName = `${order?.buyer?.firstName || ""} ${order?.buyer?.lastName || ""}`.trim();
+    if (buyerName) return buyerName;
+
+    const infoList = Array.isArray(order?.requiredUserInfo) ? order.requiredUserInfo : [];
+    const findValue = (matcher: (field: string, label: string) => boolean) => {
+      const found = infoList.find((info: any) =>
+        matcher(normalizeInfoKey(info?.field), normalizeInfoKey(info?.label))
+      );
+      return String(found?.value || "").trim();
+    };
+
+    const firstName = findValue(
+      (field, label) =>
+        ["firstname", "first_name", "prenom"].includes(field) ||
+        ["firstname", "prenom"].includes(label)
+    );
+    const lastName = findValue(
+      (field, label) =>
+        ["lastname", "last_name", "nom", "familyname", "family_name"].includes(field) ||
+        ["lastname", "nom", "familyname"].includes(label)
+    );
+    const fullName = findValue(
+      (field, label) =>
+        ["name", "fullname", "full_name", "nomcomplet", "nom_complet"].includes(field) ||
+        ["name", "fullname", "nomcomplet"].includes(label)
+    );
+
+    const combined = `${firstName} ${lastName}`.trim();
+    if (combined) return capitalize(combined);
+    if (fullName) return capitalize(fullName);
+
+    return t("unknown");
+  };
+
+  const getTicketTypeLabel = (type?: string) => {
+    if (!type) return t("unknown");
+    return tx(`ticketTypes.${type}`, type);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {
       setIsOpen(open);
@@ -132,7 +189,7 @@ export default function QRScannerDialog() {
               <div className="flex flex-col items-center text-center">
                 <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
                 <h3 className="text-2xl font-bold text-green-600 dark:text-green-400">{t("accessGranted")}</h3>
-                <p className="text-sm text-muted-foreground">{t("scannedAt")} {formatDateTime(new Date()).dateTime}</p>
+                <p className="text-sm text-muted-foreground">{t("scannedAt")} {formatDateTime(new Date(), locale).dateTime}</p>
               </div>
 
               <div className="glass bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 space-y-4 border border-white/20">
@@ -147,14 +204,14 @@ export default function QRScannerDialog() {
                   <div>
                     <label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">{t("participant")}</label>
                     <p className="font-medium">
-                      {orderData.buyer ? `${orderData.buyer.firstName} ${orderData.buyer.lastName}` : t("unknown")}
+                      {getParticipantName(orderData)}
                     </p>
                   </div>
                   <div>
                     <label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">{t("ticketType")}</label>
                     <div>
                       <Badge variant="secondary" className="glass bg-blue-500/10 text-blue-600 border-blue-200/50">
-                        {orderData.type}
+                        {getTicketTypeLabel(orderData.type)}
                       </Badge>
                     </div>
                   </div>
@@ -164,7 +221,7 @@ export default function QRScannerDialog() {
 
                 <div>
                   <label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Purchase Date</label>
-                  <p className="text-sm">{orderData.createdAt ? formatDateTime(new Date(orderData.createdAt)).dateTime : "N/A"}</p>
+                  <p className="text-sm">{orderData.createdAt ? formatDateTime(new Date(orderData.createdAt), locale).dateTime : "N/A"}</p>
                 </div>
 
                 {orderData.requiredUserInfo && orderData.requiredUserInfo.length > 0 && (

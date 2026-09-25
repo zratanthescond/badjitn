@@ -144,6 +144,13 @@
     "stopScanning": "إيقاف",
     "subtitle": "مسح ومراقبة الدخول في الوقت الحقيقي",
     "ticketType": "نوع التذكرة",
+    "ticketTypes": {
+      "paid": "مدفوع",
+      "free": "مجاني",
+      "hosted": "مستضاف",
+      "doorpay": "الدفع عند الباب",
+      "bank_transfer": "تحويل بنكي"
+    },
     "unknown": "غير معروف",
     "verifying": "جاري التحقق من التذكرة...",
     "success": "نجاح",

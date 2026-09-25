@@ -464,6 +464,61 @@ export default function QRScannerPage({
     }
   };
 
+  const normalizeInfoKey = (value: unknown) =>
+    String(value ?? "")
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "");
+
+  const capitalize = (str: string) =>
+    str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : word))
+      .join(" ");
+
+  const getParticipantName = (order: any) => {
+    const buyerName = `${order?.buyer?.firstName || ""} ${order?.buyer?.lastName || ""}`.trim();
+    if (buyerName) return buyerName;
+
+    const infoList = Array.isArray(order?.requiredUserInfo) ? order.requiredUserInfo : [];
+    const findValue = (matcher: (field: string, label: string) => boolean) => {
+      const found = infoList.find((info: any) =>
+        matcher(normalizeInfoKey(info?.field), normalizeInfoKey(info?.label))
+      );
+      return String(found?.value || "").trim();
+    };
+
+    const firstName = findValue(
+      (field, label) =>
+        ["firstname", "first_name", "prenom"].includes(field) ||
+        ["firstname", "prenom"].includes(label)
+    );
+    const lastName = findValue(
+      (field, label) =>
+        ["lastname", "last_name", "nom", "familyname", "family_name"].includes(field) ||
+        ["lastname", "nom", "familyname"].includes(label)
+    );
+    const fullName = findValue(
+      (field, label) =>
+        ["name", "fullname", "full_name", "nomcomplet", "nom_complet"].includes(field) ||
+        ["name", "fullname", "nomcomplet"].includes(label)
+    );
+
+    const combined = `${firstName} ${lastName}`.trim();
+    if (combined) return capitalize(combined);
+    if (fullName) return capitalize(fullName);
+
+    return t("unknown");
+  };
+
+  const getTicketTypeLabel = (type?: string) => {
+    if (!type) return t("unknown");
+    return tx(`ticketTypes.${type}`, type);
+  };
+
   return (
     <div 
       className={`max-w-4xl mx-auto p-4 md:p-10 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ${isRTL ? "rtl" : "ltr"}`}
@@ -737,25 +792,25 @@ export default function QRScannerPage({
                     <div className="space-y-1">
                       <label className={`text-[10px] uppercase font-black tracking-[0.2em] text-slate-400 dark:text-slate-500 ${isRTL ? "font-arabic" : ""}`}>{t('participant')}</label>
                       <p className={`text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-none ${isRTL ? "font-arabic" : ""}`}>
-                        {orderData.buyer ? `${orderData.buyer.firstName} ${orderData.buyer.lastName}` : t('unknown')}
+                        {getParticipantName(orderData)}
                       </p>
                     </div>
                     <div className="space-y-1">
                       <label className={`text-[10px] uppercase font-black tracking-[0.2em] text-slate-400 dark:text-slate-500 ${isRTL ? "font-arabic" : ""}`}>{t('ticketType')}</label>
                       <div>
                         <Badge className={`bg-blue-600 hover:bg-blue-600 text-white border-transparent py-1.5 px-4 font-black rounded-full text-[10px] uppercase tracking-wider ${isRTL ? "font-arabic" : ""}`}>
-                          {orderData.type}
+                          {getTicketTypeLabel(orderData.type)}
                         </Badge>
                       </div>
                     </div>
                   </div>
-                  
+
                   <Separator className="bg-slate-200 dark:bg-slate-700/30" />
-                  
+
                   <div className={`flex justify-between items-center ${isRTL ? "flex-row-reverse" : ""}`}>
                     <span className={`text-[11px] font-black uppercase tracking-widest text-slate-400 ${isRTL ? "font-arabic" : ""}`}>{t('scannedAt')}</span>
                     <span className={`font-black text-sm text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-900 px-3 py-1 rounded-lg ${isRTL ? "font-arabic" : ""}`}>
-                        {formatDateTime(new Date()).dateTime}
+                        {formatDateTime(new Date(), locale).dateTime}
                     </span>
                   </div>
                 </div>
