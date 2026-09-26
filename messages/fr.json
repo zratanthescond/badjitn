@@ -2837,6 +2837,7 @@
     "lastNameLabel": "Nom *",
     "lastNamePlaceholder": "Ex: Dupont",
     "emailLabel": "Email *",
+    "emailLabelOptional": "Email",
     "emailPlaceholder": "Ex: jean.dupont@example.com",
     "ticketTypeLabel": "Type de billet",
     "ticketTypePlaceholder": "Sélectionnez un type",

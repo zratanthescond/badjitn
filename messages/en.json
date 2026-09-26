@@ -2837,6 +2837,7 @@
     "lastNameLabel": "Last name *",
     "lastNamePlaceholder": "E.g.: Doe",
     "emailLabel": "Email *",
+    "emailLabelOptional": "Email",
     "emailPlaceholder": "E.g.: john.doe@example.com",
     "ticketTypeLabel": "Ticket type",
     "ticketTypePlaceholder": "Select a type",

@@ -2837,6 +2837,7 @@
     "lastNameLabel": "اللقب *",
     "lastNamePlaceholder": "مثال: محمد",
     "emailLabel": "البريد الإلكتروني *",
+    "emailLabelOptional": "البريد الإلكتروني",
     "emailPlaceholder": "مثال: ahmed@example.com",
     "ticketTypeLabel": "نوع التذكرة",
     "ticketTypePlaceholder": "اختر نوعًا",

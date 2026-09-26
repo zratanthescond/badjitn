@@ -878,7 +878,7 @@ export const addManualParticipant = async ({
   eventId: string;
   firstName: string;
   lastName: string;
-  email: string;
+  email?: string;
   planName?: string;
   planPrice?: string;
   category?: string;
@@ -896,7 +896,7 @@ export const addManualParticipant = async ({
     const requiredUserInfo = [
       { label: "Prénom", field: "firstname", type: "text", value: firstName },
       { label: "Nom", field: "lastname", type: "text", value: lastName },
-      { label: "Email", field: "email", type: "email", value: email },
+      { label: "Email", field: "email", type: "email", value: email || "" },
     ];
 
     const newOrder = await Order.create({

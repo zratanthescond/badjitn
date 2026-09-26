@@ -64,7 +64,7 @@ export default function AddParticipantDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.firstName || !formData.lastName || !formData.email) {
+    if (!formData.firstName || !formData.lastName) {
       toast({
         title: tx("errorTitle", "Erreur"),
         description: tx("requiredFieldsError", "Veuillez remplir tous les champs obligatoires."),
@@ -149,7 +149,7 @@ export default function AddParticipantDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className={isRTL ? "font-arabic" : ""}>{tx("emailLabel", "Email *")}</Label>
+            <Label htmlFor="email" className={isRTL ? "font-arabic" : ""}>{tx("emailLabelOptional", "Email")}</Label>
             <Input
               id="email"
               name="email"
@@ -157,7 +157,6 @@ export default function AddParticipantDialog({
               placeholder={tx("emailPlaceholder", "Ex: jean.dupont@example.com")}
               value={formData.email}
               onChange={handleChange}
-              required
               className={isRTL ? "text-right" : ""}
             />
           </div>

@@ -2837,6 +2837,7 @@
     "lastNameLabel": "Apellido *",
     "lastNamePlaceholder": "Ej.: Pérez",
     "emailLabel": "Correo electrónico *",
+    "emailLabelOptional": "Correo electrónico",
     "emailPlaceholder": "Ej.: juan.perez@example.com",
     "ticketTypeLabel": "Tipo de entrada",
     "ticketTypePlaceholder": "Seleccione un tipo",
