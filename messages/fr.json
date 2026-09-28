@@ -4680,7 +4680,12 @@
     "previewTitle": "{count, plural, one {Aperçu avant impression (# badge)} other {Aperçu avant impression (# badges)}}",
     "subtitleFrontBack": "A4 complet — 1 badge par page (recto + verso)",
     "subtitleFrontOnly": "A4 complet — 1 badge par page (recto uniquement)",
-    "printNow": "Imprimer maintenant"
+    "printNow": "Imprimer maintenant",
+    "recordAsEntry": "Compter comme entrée à « Entrée principale »",
+    "recordedTitle": "Impression enregistrée",
+    "recordedPrinted": "{printed, plural, one {# badge marqué comme imprimé.} other {# badges marqués comme imprimés.}}",
+    "recordedWithEntries": "{printed, plural, one {# badge marqué comme imprimé} other {# badges marqués comme imprimés}}, {entries, plural, =0 {aucune nouvelle entrée (déjà enregistrées).} one {# entrée enregistrée à « Entrée principale ».} other {# entrées enregistrées à « Entrée principale ».}}",
+    "recordFailed": "Impossible d'enregistrer l'impression des badges."
   },
   "formReport": {
     "dialogTitle": "Rapport du formulaire",

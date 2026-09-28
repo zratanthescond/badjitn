@@ -4680,7 +4680,12 @@
     "previewTitle": "{count, plural, one {Vista previa de impresión (# credencial)} other {Vista previa de impresión (# credenciales)}}",
     "subtitleFrontBack": "A4 completo — 1 credencial por página (anverso + reverso)",
     "subtitleFrontOnly": "A4 completo — 1 credencial por página (solo anverso)",
-    "printNow": "Imprimir ahora"
+    "printNow": "Imprimir ahora",
+    "recordAsEntry": "Contar como entrada en «Entrée principale»",
+    "recordedTitle": "Impresión registrada",
+    "recordedPrinted": "{printed, plural, one {# credencial marcada como impresa.} other {# credenciales marcadas como impresas.}}",
+    "recordedWithEntries": "{printed, plural, one {# credencial marcada como impresa} other {# credenciales marcadas como impresas}}, {entries, plural, =0 {ninguna entrada nueva (ya registradas).} one {# entrada registrada en «Entrée principale».} other {# entradas registradas en «Entrée principale».}}",
+    "recordFailed": "No se pudo registrar la impresión de las credenciales."
   },
   "formReport": {
     "dialogTitle": "Informe del formulario",

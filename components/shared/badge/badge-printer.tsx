@@ -1,11 +1,15 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { useReactToPrint } from "react-to-print"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 import { Printer, X } from "lucide-react"
 import QRCode from "react-qr-code"
+import { markBadgesPrinted } from "@/lib/actions/badge.actions"
+import { useToast } from "@/hooks/use-toast"
 
 interface BadgeElement {
     id: string
@@ -47,6 +51,8 @@ interface BadgePrinterProps {
         end?: Date
     }
     onClose: () => void
+    // Only event badges (backed by orders) can be tracked; form badges omit it.
+    eventId?: string
 }
 
 export function BadgePrinter({
@@ -59,14 +65,37 @@ export function BadgePrinter({
     width,
     height,
     eventDetails,
-    onClose
+    onClose,
+    eventId,
 }: BadgePrinterProps) {
     const t = useTranslations("badgePrinter")
     const componentRef = useRef<HTMLDivElement>(null)
+    const { toast } = useToast()
+    const [recordEntry, setRecordEntry] = useState(false)
+
+    const recordPrint = async () => {
+        if (!eventId) return
+        const orderIds = attendees.map((a) => a.orderId || a._id).filter(Boolean)
+        if (orderIds.length === 0) return
+        try {
+            const result = await markBadgesPrinted({ eventId, orderIds, recordEntry })
+            if (!result) throw new Error("markBadgesPrinted failed")
+            toast({
+                title: t("recordedTitle"),
+                description: recordEntry
+                    ? t("recordedWithEntries", { printed: result.printed, entries: result.entriesCreated })
+                    : t("recordedPrinted", { printed: result.printed }),
+            })
+        } catch (error) {
+            console.error("Failed to record badge print", error)
+            toast({ title: t("recordFailed"), variant: "destructive" })
+        }
+    }
 
     const handlePrint = useReactToPrint({
         contentRef: componentRef,
         documentTitle: t("documentTitle"),
+        onAfterPrint: recordPrint,
     })
 
     const replacePlaceholders = (text: string, attendee: any) => {
@@ -193,7 +222,19 @@ export function BadgePrinter({
                         {hasBackContent ? t("subtitleFrontBack") : t("subtitleFrontOnly")}
                     </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
+                    {eventId && (
+                        <div className="flex items-center gap-2">
+                            <Checkbox
+                                id="record-entry"
+                                checked={recordEntry}
+                                onCheckedChange={(checked) => setRecordEntry(checked === true)}
+                            />
+                            <Label htmlFor="record-entry" className="text-sm cursor-pointer">
+                                {t("recordAsEntry")}
+                            </Label>
+                        </div>
+                    )}
                     <Button onClick={() => handlePrint()}>
                         <Printer className="w-4 h-4 mr-2" />
                         {t("printNow")}

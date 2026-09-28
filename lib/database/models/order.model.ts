@@ -47,6 +47,7 @@ export interface IOrder extends Document {
   requiredUserInfo: RequiredUserInfoType[];
   category: "speaker" | "sponsor" | "staff" | "attendee";
   badgePrinted: boolean;
+  badgePrintedAt?: Date;
   eligibilityStatus?: "pending" | "approved" | "rejected";
   originalAmount?: number;
   discountProofUrl?: string;
@@ -134,6 +135,10 @@ const OrderSchema = new Schema<IOrder>({
   badgePrinted: {
     type: Boolean,
     default: false,
+  },
+  badgePrintedAt: {
+    type: Date,
+    required: false,
   },
   // Discount eligibility review (set when a discount requiring proof is applied)
   eligibilityStatus: {

@@ -4680,7 +4680,12 @@
     "previewTitle": "{count, plural, one {Print Preview (# badge)} other {Print Preview (# badges)}}",
     "subtitleFrontBack": "Full A4 — 1 badge per page (front + back)",
     "subtitleFrontOnly": "Full A4 — 1 badge per page (front only)",
-    "printNow": "Print Now"
+    "printNow": "Print Now",
+    "recordAsEntry": "Count as entry at “Entrée principale”",
+    "recordedTitle": "Print recorded",
+    "recordedPrinted": "{printed, plural, one {# badge marked as printed.} other {# badges marked as printed.}}",
+    "recordedWithEntries": "{printed, plural, one {# badge marked as printed} other {# badges marked as printed}}, {entries, plural, =0 {no new entries (already recorded).} one {# entry recorded at “Entrée principale”.} other {# entries recorded at “Entrée principale”.}}",
+    "recordFailed": "Could not record the badge print."
   },
   "formReport": {
     "dialogTitle": "Form Report",

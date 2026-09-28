@@ -51,9 +51,10 @@ interface AttendeeManagerProps {
     eventId: string
     onPrintBadges: (attendees: Attendee[]) => void
     onPrintSingle: (attendee: Attendee) => void
+    refreshKey?: number
 }
 
-export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: AttendeeManagerProps) {
+export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refreshKey }: AttendeeManagerProps) {
     const t = useTranslations("attendeeManager")
     const [attendees, setAttendees] = useState<Attendee[]>([])
     const [searchTerm, setSearchTerm] = useState("")
@@ -74,7 +75,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle }: Atten
 
     useEffect(() => {
         fetchAttendees()
-    }, [eventId])
+    }, [eventId, refreshKey])
 
     const handleDelete = async (id: string) => {
         if (!confirm(t("deleteConfirmEvent"))) return

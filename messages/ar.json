@@ -4680,7 +4680,12 @@
     "previewTitle": "{count, plural, one {معاينة الطباعة (شارة واحدة)} other {معاينة الطباعة (# شارات)}}",
     "subtitleFrontBack": "صفحة A4 كاملة — شارة واحدة لكل صفحة (أمامي + خلفي)",
     "subtitleFrontOnly": "صفحة A4 كاملة — شارة واحدة لكل صفحة (أمامي فقط)",
-    "printNow": "طباعة الآن"
+    "printNow": "طباعة الآن",
+    "recordAsEntry": "احتسابها كدخول عند «Entrée principale»",
+    "recordedTitle": "تم تسجيل الطباعة",
+    "recordedPrinted": "{printed, plural, one {تم تعليم شارة واحدة كمطبوعة.} other {تم تعليم # شارات كمطبوعة.}}",
+    "recordedWithEntries": "{printed, plural, one {تم تعليم شارة واحدة كمطبوعة} other {تم تعليم # شارات كمطبوعة}}، {entries, plural, =0 {لا دخول جديد (مسجل مسبقاً).} one {تم تسجيل دخول واحد عند «Entrée principale».} other {تم تسجيل # دخول عند «Entrée principale».}}",
+    "recordFailed": "تعذّر تسجيل طباعة الشارات."
   },
   "formReport": {
     "dialogTitle": "تقرير النموذج",

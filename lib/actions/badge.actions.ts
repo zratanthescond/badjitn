@@ -4,9 +4,13 @@ import { revalidatePath } from "next/cache"
 import { connectToDatabase } from "@/lib/database"
 import BadgeDesign from "@/lib/database/models/badge-design.model"
 import Order from "@/lib/database/models/order.model"
+import Attendance from "@/lib/database/models/attendance.model"
 import EventWork from "@/lib/database/models/work.model"
 import { handleError } from "@/lib/utils"
+import { verifyOrganizerOrAdmin } from "@/lib/actions/auth.actions"
 import { ObjectId } from "mongodb"
+
+const BADGE_PRINT_ENTRY_POINT = "Entrée principale"
 
 // BADGE DESIGN ACTIONS
 export async function createBadgeDesign(params: any) {
@@ -100,6 +104,7 @@ export async function getAttendeesByEvent(eventId: string) {
                 title: order.requiredUserInfo?.find((f: any) => f.label?.toLowerCase().includes("title") || f.label?.toLowerCase().includes("poste") || f.field?.toLowerCase().includes("title"))?.value || "",
                 category: order.category || "attendee",
                 badgePrinted: order.badgePrinted || false,
+                badgePrintedAt: order.badgePrintedAt || null,
                 orderId: order._id.toString(),
             }
         })
@@ -119,6 +124,61 @@ export async function updateAttendee(id: string, params: any) {
             revalidatePath(`/events/${updatedOrder.event}/badge`)
         }
         return JSON.parse(JSON.stringify(updatedOrder))
+    } catch (error) {
+        handleError(error)
+    }
+}
+
+export async function markBadgesPrinted({
+    eventId,
+    orderIds,
+    recordEntry,
+}: {
+    eventId: string
+    orderIds: string[]
+    recordEntry: boolean
+}) {
+    try {
+        const user = await verifyOrganizerOrAdmin(eventId)
+        await connectToDatabase()
+
+        const printedAt = new Date()
+        const eventObjectId = new ObjectId(eventId)
+        const ids = orderIds.map((id) => new ObjectId(id))
+
+        const { modifiedCount } = await Order.updateMany(
+            { _id: { $in: ids }, event: eventObjectId },
+            { $set: { badgePrinted: true, badgePrintedAt: printedAt } }
+        )
+
+        let entriesCreated = 0
+        if (recordEntry) {
+            // A reprint must not count the same person as entering twice.
+            const alreadyEntered = await Attendance.find(
+                { event: eventObjectId, order: { $in: ids }, scanPoint: BADGE_PRINT_ENTRY_POINT },
+                { order: 1 }
+            ).lean()
+            const enteredSet = new Set(alreadyEntered.map((a: any) => a.order.toString()))
+            const eventOrders = await Order.find({ _id: { $in: ids }, event: eventObjectId }, { _id: 1 }).lean()
+
+            const newEntries = eventOrders
+                .filter((o: any) => !enteredSet.has(o._id.toString()))
+                .map((o: any) => ({
+                    order: o._id,
+                    event: eventObjectId,
+                    scanPoint: BADGE_PRINT_ENTRY_POINT,
+                    scannedAt: printedAt,
+                    scannedBy: user._id,
+                }))
+
+            if (newEntries.length > 0) {
+                await Attendance.insertMany(newEntries)
+                entriesCreated = newEntries.length
+            }
+        }
+
+        revalidatePath(`/events/${eventId}/badge`)
+        return { printed: modifiedCount, entriesCreated }
     } catch (error) {
         handleError(error)
     }

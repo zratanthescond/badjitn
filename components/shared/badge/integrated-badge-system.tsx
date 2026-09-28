@@ -26,6 +26,7 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
     const [loading, setLoading] = useState(true)
     const [printingAttendees, setPrintingAttendees] = useState<any[]>([])
     const [showPrintPreview, setShowPrintPreview] = useState(false)
+    const [attendeesRefreshKey, setAttendeesRefreshKey] = useState(0)
 
     const fetchDesign = async () => {
         try {
@@ -55,6 +56,7 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
     const closePrintPreview = () => {
         setShowPrintPreview(false)
         setPrintingAttendees([])
+        setAttendeesRefreshKey((k) => k + 1)
     }
 
     if (loading) {
@@ -111,6 +113,7 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
                             eventId={eventId}
                             onPrintBadges={handlePrintBadges}
                             onPrintSingle={handlePrintSingle}
+                            refreshKey={attendeesRefreshKey}
                         />
                     </TabsContent>
 
@@ -148,6 +151,7 @@ export function IntegratedBadgeSystem({ eventId, eventTitle, eventStart, eventEn
                     orientation={badgeDesign?.orientation || "portrait"}
                     eventDetails={{ title: eventTitle, start: eventStart, end: eventEnd }}
                     onClose={closePrintPreview}
+                    eventId={eventId}
                 />
             )}
         </div>
