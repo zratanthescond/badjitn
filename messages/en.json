@@ -3836,6 +3836,7 @@
       "title": "Client information",
       "description": "Filled from profile, editable by the client.",
       "name": "Name",
+      "email": "Email",
       "jobTitle": "Role",
       "republic": "Republic",
       "location": "Location"

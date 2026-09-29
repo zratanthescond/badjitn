@@ -438,64 +438,80 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                   isRTL ? "lg:flex-row-reverse" : ""
                 }`}
               >
-                {/* Title & Client Info */}
-                {(value.title || value.clientInfo) && (
-                  <Card className="glass bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200/30 dark:border-slate-700/30">
-                    <CardHeader className="pb-2">
-                      <div
-                        className={`flex items-center gap-3 ${
-                          isRTL ? "flex-row-reverse" : ""
-                        }`}
-                      >
-                        <div className="p-2 rounded-lg bg-slate-500/20">
-                          <User className="h-6 w-6 text-slate-600 dark:text-slate-400" />
-                        </div>
-                        <div className={isRTL ? "text-right" : ""}>
-                          <CardTitle className="text-lg text-slate-800 dark:text-slate-200">
-                            {value.title || t("clientInfo.title")}
-                          </CardTitle>
-                          <p className="text-sm text-slate-600 dark:text-slate-300">
-                            {t("clientInfo.description")}
-                          </p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    {value.clientInfo && (
-                      <CardContent className="pt-0">
-                        <div
-                          className={`grid grid-cols-2 gap-2 text-sm ${
-                            isRTL ? "text-right" : ""
-                          }`}
-                        >
-                          {(value.clientInfo.firstName || value.clientInfo.lastName) && (
-                            <p>
-                              <span className="text-muted-foreground">{t("clientInfo.name")}: </span>
-                              {[value.clientInfo.firstName, value.clientInfo.lastName].filter(Boolean).join(" ").trim()}
-                            </p>
-                          )}
-                          {value.clientInfo.jobTitle && (
-                            <p>
-                              <span className="text-muted-foreground">{t("clientInfo.jobTitle")}: </span>
-                              {value.clientInfo.jobTitle}
-                            </p>
-                          )}
-                          {value.clientInfo.republic && (
-                            <p>
-                              <span className="text-muted-foreground">{t("clientInfo.republic")}: </span>
-                              {value.clientInfo.republic}
-                            </p>
-                          )}
-                          {(value.clientInfo.city || value.clientInfo.village) && (
-                            <p>
-                              <span className="text-muted-foreground">{t("clientInfo.location")}: </span>
-                              {[value.clientInfo.city, value.clientInfo.village].filter(Boolean).join(", ")}
-                            </p>
-                          )}
-                        </div>
-                      </CardContent>
-                    )}
-                  </Card>
-                )}
+                {/* Title & Client Info — the submitter's name/email always come from
+                    the account (value.buyer/value.buyerEmail), since value.clientInfo
+                    is only populated for some submissions; clientInfo, when present,
+                    only adds extra fields (job title, location) on top. */}
+                {(() => {
+                  const clientName = [value.clientInfo?.firstName, value.clientInfo?.lastName]
+                    .filter(Boolean)
+                    .join(" ")
+                    .trim();
+                  const displayName = clientName || value.buyer;
+                  return (
+                    (value.title || displayName || value.buyerEmail || value.clientInfo) && (
+                      <Card className="glass bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200/30 dark:border-slate-700/30">
+                        <CardHeader className="pb-2">
+                          <div
+                            className={`flex items-center gap-3 ${
+                              isRTL ? "flex-row-reverse" : ""
+                            }`}
+                          >
+                            <div className="p-2 rounded-lg bg-slate-500/20">
+                              <User className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                            </div>
+                            <div className={isRTL ? "text-right" : ""}>
+                              <CardTitle className="text-lg text-slate-800 dark:text-slate-200">
+                                {value.title || t("clientInfo.title")}
+                              </CardTitle>
+                              <p className="text-sm text-slate-600 dark:text-slate-300">
+                                {t("clientInfo.description")}
+                              </p>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div
+                            className={`grid grid-cols-2 gap-2 text-sm ${
+                              isRTL ? "text-right" : ""
+                            }`}
+                          >
+                            {displayName && (
+                              <p>
+                                <span className="text-muted-foreground">{t("clientInfo.name")}: </span>
+                                {displayName}
+                              </p>
+                            )}
+                            {value.buyerEmail && (
+                              <p>
+                                <span className="text-muted-foreground">{t("clientInfo.email")}: </span>
+                                {value.buyerEmail}
+                              </p>
+                            )}
+                            {value.clientInfo?.jobTitle && (
+                              <p>
+                                <span className="text-muted-foreground">{t("clientInfo.jobTitle")}: </span>
+                                {value.clientInfo.jobTitle}
+                              </p>
+                            )}
+                            {value.clientInfo?.republic && (
+                              <p>
+                                <span className="text-muted-foreground">{t("clientInfo.republic")}: </span>
+                                {value.clientInfo.republic}
+                              </p>
+                            )}
+                            {(value.clientInfo?.city || value.clientInfo?.village) && (
+                              <p>
+                                <span className="text-muted-foreground">{t("clientInfo.location")}: </span>
+                                {[value.clientInfo.city, value.clientInfo.village].filter(Boolean).join(", ")}
+                              </p>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  );
+                })()}
 
                 {/* Co-authors — always placed right after title/client info so its
                     position stays consistent whether the submission uses a plain
