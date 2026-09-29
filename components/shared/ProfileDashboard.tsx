@@ -25,7 +25,10 @@ import {
     Eye,
     IdCard,
     FileBarChart,
+    Award,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { MyCertificates } from "@/components/shared/certificates/my-certificates";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,7 +68,7 @@ import FormReportDialog from "@/components/shared/FormReportDialog";
 import InviteDialog from "@/components/shared/InviteDialog";
 import { getFormsByCreator, deleteEventForm } from "@/lib/actions/eventform.actions";
 
-type TabKey = "overview" | "profileSettings" | "tickets" | "events" | "organisations" | "sponsors" | "fields" | "forms";
+type TabKey = "overview" | "profileSettings" | "tickets" | "certificates" | "events" | "organisations" | "sponsors" | "fields" | "forms";
 
 interface TranslationStrings {
     myTickets: string;
@@ -234,10 +237,12 @@ export default function ProfileDashboard({
     organisations,
     translations,
 }: ProfileDashboardProps) {
+    const tCertificates = useTranslations("certificates");
     const sidebarItems: { key: TabKey; icon: any; label: string }[] = [
         { key: "overview", icon: LayoutDashboard, label: translations.sidebar.overview },
         { key: "profileSettings", icon: CheckCircle, label: translations.sidebar.profileSettings },
         { key: "tickets", icon: Ticket, label: translations.sidebar.myTickets },
+        { key: "certificates", icon: Award, label: tCertificates("profile.sidebar") },
         { key: "events", icon: CalendarDays, label: translations.sidebar.eventsOrganized },
         { key: "organisations", icon: Building2, label: translations.sidebar.organisations },
         { key: "forms", icon: FileText, label: translations.sidebar.customForms },
@@ -1253,6 +1258,8 @@ export default function ProfileDashboard({
                             />
                         </div>
                     )}
+
+                    {activeTab === "certificates" && <MyCertificates />}
 
                     {/* Custom Fields Tab */}
                     {activeTab === "fields" && (

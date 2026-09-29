@@ -18,6 +18,7 @@ export async function createCertification(
     const certificate = await Certificate.findOne({
       userId: certification.userId,
       eventId: certification.eventId,
+      source: { $ne: "issued" },
     });
     if (certificate) return JSON.parse(JSON.stringify(certification));
     const newCertification = await Certificate.create(certification);
@@ -39,6 +40,7 @@ export async function getCertificationByUseridAndEventId({
     const certificate = await Certificate.findOne({
       userId: userId,
       eventId: eventId,
+      source: { $ne: "issued" },
     });
     return JSON.parse(JSON.stringify(certificate));
   } catch (error) {
@@ -61,6 +63,7 @@ export async function getCertificationByEventId({
     const eventObjectId = new ObjectId(eventId);
 
     const orders = await Certificate.aggregate([
+      { $match: { eventId: eventObjectId, source: { $ne: "issued" } } },
       {
         $lookup: {
           from: "users",

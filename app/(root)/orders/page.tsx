@@ -1,7 +1,7 @@
 import type { SearchParamProps } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Award, Briefcase, Ticket, Settings, Landmark } from "lucide-react";
-import CertificationAdministration from "@/components/admin/certification-administration";
+import CertificateManager from "@/components/admin/certificates/CertificateManager";
 import OrderAdministration from "@/components/admin/order-administration";
 import WorkAdministration from "@/components/admin/work-administration";
 import BankTransferAdministration from "@/components/admin/bank-transfer-administration";
@@ -261,9 +261,14 @@ const Orders = async (props: SearchParamProps) => {
                     {t("sections.certificationManagement")}
                   </h2>
                 </div>
-                <CertificationAdministration
+                <CertificateManager
                   eventId={eventId}
                   searchString={searchText}
+                  event={{
+                    title: eventData?.title || "",
+                    start: eventData?.startDateTime,
+                    end: eventData?.endDateTime,
+                  }}
                 />
               </div>
             </TabsContent>

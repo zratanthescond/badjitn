@@ -225,6 +225,12 @@ export default function CertificationComponent({
               >
                 {t("status.approved")}
               </Badge>
+              <Button variant={"default"} asChild title={t("actions.viewCertificate")}>
+                <a href={`/certificates/${certification._id}`}>
+                  <Award className="w-4 h-4 mr-2" />
+                  {t("actions.viewCertificate")}
+                </a>
+              </Button>
               <Button
                 variant={"ghost"}
                 className="glass"

@@ -292,3 +292,58 @@ export async function sendInvitationEmail({
     html: buildInvitationEmailHtml(template),
   });
 }
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+export async function sendCertificateEmail({
+  to,
+  recipientName,
+  eventTitle,
+  certificateTypeName,
+  certificateUrl,
+}: {
+  to: string;
+  recipientName: string;
+  eventTitle: string;
+  certificateTypeName: string;
+  certificateUrl: string;
+}) {
+  const name = escapeHtml(recipientName);
+  const title = escapeHtml(eventTitle);
+  const type = escapeHtml(certificateTypeName);
+  const url = escapeHtml(certificateUrl);
+  const signUpUrl = escapeHtml(`${(process.env.NEXT_PUBLIC_SERVER_URL || "https://badgi.net").replace(/\/$/, "")}/sign-up`);
+
+  await transporter.sendMail({
+    from: cleanEnvVar(process.env.SMTP_FROM) || '"badgiTn" <mail@badgi.tn>',
+    to,
+    subject: `Votre certificat — ${eventTitle}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111827;">
+        <h2 style="margin:0 0 16px;color:#4f46e5;">Votre certificat est disponible 🎓</h2>
+        <p style="margin:0 0 16px;">Bonjour ${name},</p>
+        <p style="margin:0 0 16px;">Nous avons le plaisir de vous transmettre votre certificat pour l'événement suivant :</p>
+        <div style="border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#eef2ff;">
+          <p style="margin:0 0 8px;"><strong>Événement :</strong> ${title}</p>
+          <p style="margin:0;"><strong>Certificat :</strong> ${type}</p>
+        </div>
+        <p style="margin:24px 0;text-align:center;">
+          <a href="${url}" style="display:inline-block;background:#4f46e5;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:bold;">
+            Voir et télécharger mon certificat
+          </a>
+        </p>
+        <p style="margin:0 0 8px;font-size:13px;color:#6b7280;">Depuis cette page, vous pouvez l'imprimer ou l'enregistrer en PDF.</p>
+        <p style="margin:0;font-size:13px;color:#6b7280;">
+          Créez votre compte Badgi avec cette adresse email pour retrouver tous vos certificats dans votre profil :
+          <a href="${signUpUrl}" style="color:#4f46e5;">${signUpUrl}</a>
+        </p>
+      </div>
+    `,
+  });
+}

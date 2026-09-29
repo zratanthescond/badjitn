@@ -49,6 +49,7 @@ const isPublicRoute = createRouteMatcher([
   /^\/(?:[a-z]{2}\/)?banned(.*)/,
   /^\/(?:[a-z]{2}\/)?organisations(.*)/,
   /^\/(?:[a-z]{2}\/)?forms(.*)/,
+  /^\/(?:[a-z]{2}\/)?certificates\/[^/]+\/?$/,
   "/api/users(.*)",
   "/api/events(.*)",
   /^\/(?:[a-z]{2}\/)?sign-in(.*)/,
