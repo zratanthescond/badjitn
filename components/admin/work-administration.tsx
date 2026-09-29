@@ -37,6 +37,58 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const escapeHtml = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+const KEPT_TAGS = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "UL", "OL", "LI", "SUB", "SUP"]);
+const BLOCK_TAGS = new Set(["P", "DIV", "LI", "UL", "OL", "H1", "H2", "H3", "H4", "H5", "H6", "BLOCKQUOTE", "TR"]);
+
+// Submission fields come either as plain text or as rich-text-editor HTML; exports need
+// readable text (PDF) and a whitelisted HTML subset (Word), never the raw markup.
+const richTextToExport = (raw: string): { text: string; html: string } => {
+  const value = String(raw || "");
+  const isHtml = /<\/?[a-z][^>]*>/i.test(value);
+  const body = new DOMParser().parseFromString(`<body>${value}</body>`, "text/html").body;
+
+  if (!isHtml) {
+    const text = (body.textContent || "").trim();
+    return { text, html: escapeHtml(text).replace(/\r?\n/g, "<br/>") };
+  }
+
+  let text = "";
+  let html = "";
+  const walk = (node: Node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const chunk = (node.textContent || "").replace(/\s+/g, " ");
+      text += chunk;
+      html += escapeHtml(chunk);
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    const tag = (node as Element).tagName;
+    if (tag === "SCRIPT" || tag === "STYLE") return;
+    if (tag === "BR") {
+      text += "\n";
+      html += "<br/>";
+      return;
+    }
+    if (tag === "LI") text += "• ";
+    const kept = KEPT_TAGS.has(tag);
+    if (kept) html += `<${tag.toLowerCase()}>`;
+    node.childNodes.forEach(walk);
+    if (kept) html += `</${tag.toLowerCase()}>`;
+    if (BLOCK_TAGS.has(tag)) text += "\n";
+  };
+  body.childNodes.forEach(walk);
+
+  text = text
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+  return { text, html };
+};
+
 export default function WorkAdministration({
   eventId,
   searchString,
@@ -342,17 +394,18 @@ export default function WorkAdministration({
     email: string;
     date: string;
     title: string;
-    sections: { label: string; content: string }[];
+    sections: { label: string; text: string; html: string }[];
     coAuthors: string;
   };
 
   const getExportDocuments = (): ExportDocument[] =>
     (data || []).map((work: any): ExportDocument => {
       const sections = (work.sections || [])
-        .filter((s: any) => String(s.content || "").trim())
-        .map((s: any) => ({ label: String(s.label || ""), content: String(s.content) }));
+        .map((s: any) => ({ label: String(s.label || ""), ...richTextToExport(s.content) }))
+        .filter((s: { text: string }) => s.text);
       if (sections.length === 0 && work.note) {
-        sections.push({ label: t("table.headers.summary"), content: String(work.note) });
+        const note = richTextToExport(work.note);
+        if (note.text) sections.push({ label: t("table.headers.summary"), ...note });
       }
       const coAuthors = (work.coAuthors || []).length
         ? work.coAuthors
@@ -362,12 +415,14 @@ export default function WorkAdministration({
             .join(" ; ")
         : String(work.clientInfo?.coAuthors || "");
       return {
-        name: String(work.buyer || "").trim(),
+        name: richTextToExport(work.buyer).text,
         email: String(work.buyerEmail || "").trim(),
-        date: work.createdAt ? formatDateTime(work.createdAt, locale).dateTime : "",
-        title: String(work.title || "").trim(),
+        date: work.createdAt
+          ? new Date(work.createdAt).toLocaleString(locale, { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })
+          : "",
+        title: richTextToExport(work.title).text,
         sections,
-        coAuthors: coAuthors.trim(),
+        coAuthors: richTextToExport(coAuthors).text.replace(/\s*\n\s*/g, " "),
       };
     });
 
@@ -603,7 +658,7 @@ export default function WorkAdministration({
               .map(
                 (s) =>
                   `<h3 style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#1e3a8a;margin:14pt 0 4pt 0;">${esc(s.label)}</h3>` +
-                  `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.4;text-align:justify;margin:0;">${esc(s.content)}</p>`
+                  `<div class="content">${s.html}</div>`
               )
               .join("");
             const coAuthors = d.coAuthors
@@ -625,7 +680,7 @@ export default function WorkAdministration({
           `<h1 style="font-family:Calibri,Arial,sans-serif;font-size:20pt;color:#1e3a8a;margin:0 0 4pt 0;">${esc(eventTitle)}</h1>` +
           `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#475569;margin:0 0 24pt 0;">${esc(t("export.docSubtitle", { count: documents.length, date: exportedOn }))}</p>`;
 
-        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(eventTitle)}</title><style>@page{size:21cm 29.7cm;margin:2cm;}</style></head><body>${cover}${body}</body></html>`;
+        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(eventTitle)}</title><style>@page{size:21cm 29.7cm;margin:2cm;} .content, .content p, .content li{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.4;text-align:justify;color:#1e293b;} .content p{margin:0 0 6pt 0;}</style></head><body>${cover}${body}</body></html>`;
         const blob = new Blob(["\uFEFF" + htmlDoc], {
           type: "application/msword;charset=utf-8",
         });
@@ -704,7 +759,12 @@ export default function WorkAdministration({
             ensureSpace(40);
             writeParagraph(s.label, 10.5, "bold", [30, 58, 138]);
             y += 2;
-            writeParagraph(s.content, 10, "normal", [30, 41, 59]);
+            // Short lines ending with ":" are inline sub-headings (e.g. "Background:").
+            s.text.split("\n").forEach((line) => {
+              const trimmed = line.trim();
+              const isSubheading = trimmed.length > 0 && trimmed.length <= 60 && trimmed.endsWith(":");
+              writeParagraph(line, 10, isSubheading ? "bold" : "normal", [30, 41, 59]);
+            });
             y += 10;
           });
 
