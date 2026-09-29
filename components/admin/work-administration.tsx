@@ -336,6 +336,41 @@ export default function WorkAdministration({
     return { headers, rows };
   };
 
+  // Word/PDF are read as documents: one sheet per submission instead of a wide table.
+  type ExportDocument = {
+    name: string;
+    email: string;
+    date: string;
+    title: string;
+    sections: { label: string; content: string }[];
+    coAuthors: string;
+  };
+
+  const getExportDocuments = (): ExportDocument[] =>
+    (data || []).map((work: any): ExportDocument => {
+      const sections = (work.sections || [])
+        .filter((s: any) => String(s.content || "").trim())
+        .map((s: any) => ({ label: String(s.label || ""), content: String(s.content) }));
+      if (sections.length === 0 && work.note) {
+        sections.push({ label: t("table.headers.summary"), content: String(work.note) });
+      }
+      const coAuthors = (work.coAuthors || []).length
+        ? work.coAuthors
+            .map((c: any) =>
+              [c.firstName, c.lastName].filter(Boolean).join(" ") + (c.affiliation ? ` (${c.affiliation})` : "")
+            )
+            .join(" ; ")
+        : String(work.clientInfo?.coAuthors || "");
+      return {
+        name: String(work.buyer || "").trim(),
+        email: String(work.buyerEmail || "").trim(),
+        date: work.createdAt ? formatDateTime(work.createdAt, locale).dateTime : "",
+        title: String(work.title || "").trim(),
+        sections,
+        coAuthors: coAuthors.trim(),
+      };
+    });
+
   const handleExportWorks = async (format: ExportFormat) => {
     if (!data || data.length === 0) {
       toast({
@@ -539,28 +574,58 @@ export default function WorkAdministration({
         downloadBlob(xlsxBlob, `${baseFileName}.xlsx`);
       }
 
+      const documents = getExportDocuments();
+      const eventTitle = String(data[0]?.eventTitle || "");
+      const exportedOn = formatDateTime(new Date(), locale).dateOnly;
+      const noName = t("export.noName");
+      const untitled = t("export.untitled");
+      const coAuthorsLabel = t("table.headers.coAuthors");
+
       if (format === "word") {
-        const headerHtml = headers
-          .map(
-            (h) =>
-              `<th style="border:1px solid #ccc;padding:8px;background:#f5f5f5;">${h}</th>`
-          )
-          .join("");
-        const rowsHtml = rows
-          .map(
-            (row: any) =>
-              `<tr>${row
-                .map(
-                  (cell: any) =>
-                    `<td style="border:1px solid #ccc;padding:8px;">${String(
-                      cell
-                    )}</td>`
-                )
-                .join("")}</tr>`
-          )
+        const esc = (value: string) =>
+          value
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/\r?\n/g, "<br/>");
+
+        const body = documents
+          .map((d, index) => {
+            const meta = [
+              `<b>${esc(d.name || noName)}</b>`,
+              d.email ? `<a href="mailto:${esc(d.email)}" style="color:#2563eb;text-decoration:none;">${esc(d.email)}</a>` : "",
+              d.date ? `${esc(t("export.submittedOn"))} ${esc(d.date)}` : "",
+            ]
+              .filter(Boolean)
+              .join(" &nbsp;\u00B7&nbsp; ");
+            const sections = d.sections
+              .map(
+                (s) =>
+                  `<h3 style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#1e3a8a;margin:14pt 0 4pt 0;">${esc(s.label)}</h3>` +
+                  `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.4;text-align:justify;margin:0;">${esc(s.content)}</p>`
+              )
+              .join("");
+            const coAuthors = d.coAuthors
+              ? `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#475569;margin:16pt 0 0 0;"><b>${esc(coAuthorsLabel)} :</b> <i>${esc(d.coAuthors)}</i></p>`
+              : "";
+            return (
+              `<div${index > 0 ? ' style="page-break-before:always;"' : ""}>` +
+              `<p style="font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#64748b;margin:0 0 6pt 0;">${esc(t("export.submissionNumber", { number: index + 1, total: documents.length }))}</p>` +
+              `<h2 style="font-family:Calibri,Arial,sans-serif;font-size:15pt;color:#0f172a;margin:0 0 6pt 0;">${esc(d.title || untitled)}</h2>` +
+              `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#334155;margin:0 0 4pt 0;padding-bottom:8pt;border-bottom:1.5pt solid #2563eb;">${meta}</p>` +
+              sections +
+              coAuthors +
+              `</div>`
+            );
+          })
           .join("");
 
-        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h2>Works Export</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`;
+        const cover =
+          `<h1 style="font-family:Calibri,Arial,sans-serif;font-size:20pt;color:#1e3a8a;margin:0 0 4pt 0;">${esc(eventTitle)}</h1>` +
+          `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#475569;margin:0 0 24pt 0;">${esc(t("export.docSubtitle", { count: documents.length, date: exportedOn }))}</p>`;
+
+        const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(eventTitle)}</title><style>@page{size:21cm 29.7cm;margin:2cm;}</style></head><body>${cover}${body}</body></html>`;
         const blob = new Blob(["\uFEFF" + htmlDoc], {
           type: "application/msword;charset=utf-8",
         });
@@ -570,24 +635,94 @@ export default function WorkAdministration({
       if (format === "pdf") {
         const { jsPDF } = await import("jspdf");
         const doc = new jsPDF({ unit: "pt", format: "a4" });
-        let y = 40;
-        doc.setFontSize(14);
-        doc.text("Works Export", 40, y);
-        y += 22;
-        doc.setFontSize(9);
-        doc.text(headers.join(" | "), 40, y);
-        y += 16;
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 50;
+        const contentWidth = pageWidth - margin * 2;
+        const bottomLimit = pageHeight - 50;
+        // Built-in PDF fonts are WinAnsi only: decode stray entities and replace unsupported symbols.
+        const clean = (value: string) =>
+          value
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&amp;/g, "&")
+            .replace(/\u2265/g, ">=")
+            .replace(/\u2264/g, "<=")
+            .replace(/[\u2010-\u2012]/g, "-")
+            .replace(/\u00A0/g, " ")
+            .replace(/[^\u0000-\u00FF\u0152\u0153\u0160\u0161\u0178\u017D\u017E\u2013\u2014\u2018\u2019\u201C\u201D\u2022\u2026\u20AC]/g, "");
 
-        rows.forEach((row: any) => {
-          const line = row.join(" | ");
-          const wrapped = doc.splitTextToSize(line, 515);
-          if (y > 780) {
+        let y = margin;
+        const ensureSpace = (height: number) => {
+          if (y + height > bottomLimit) {
             doc.addPage();
-            y = 40;
+            y = margin;
           }
-          doc.text(wrapped, 40, y);
-          y += wrapped.length * 12 + 4;
+        };
+        const writeParagraph = (text: string, size: number, style: "normal" | "bold" | "italic", color: [number, number, number], lineGap = 1.35) => {
+          doc.setFont("helvetica", style);
+          doc.setFontSize(size);
+          doc.setTextColor(...color);
+          const lineHeight = size * lineGap;
+          const paragraphs = clean(text).split(/\r?\n/);
+          paragraphs.forEach((paragraph) => {
+            const lines: string[] = paragraph.trim() ? doc.splitTextToSize(paragraph.trim(), contentWidth) : [""];
+            lines.forEach((line) => {
+              ensureSpace(lineHeight);
+              doc.text(line, margin, y + size);
+              y += lineHeight;
+            });
+          });
+        };
+
+        writeParagraph(eventTitle, 18, "bold", [30, 58, 138]);
+        y += 4;
+        writeParagraph(t("export.docSubtitle", { count: documents.length, date: exportedOn }), 10, "normal", [71, 85, 105]);
+
+        documents.forEach((d, index) => {
+          if (index > 0) {
+            doc.addPage();
+            y = margin;
+          } else {
+            y += 24;
+          }
+          writeParagraph(t("export.submissionNumber", { number: index + 1, total: documents.length }), 8, "normal", [100, 116, 139]);
+          y += 2;
+          writeParagraph(d.title || untitled, 14, "bold", [15, 23, 42], 1.3);
+          y += 4;
+          writeParagraph(d.name || noName, 10, "bold", [51, 65, 85]);
+          const metaLine = [d.email, d.date ? `${t("export.submittedOn")} ${d.date}` : ""].filter(Boolean).join("   \u00B7   ");
+          if (metaLine) writeParagraph(metaLine, 9, "normal", [100, 116, 139]);
+          y += 6;
+          ensureSpace(10);
+          doc.setDrawColor(37, 99, 235);
+          doc.setLineWidth(1.2);
+          doc.line(margin, y, pageWidth - margin, y);
+          y += 12;
+
+          d.sections.forEach((s) => {
+            ensureSpace(40);
+            writeParagraph(s.label, 10.5, "bold", [30, 58, 138]);
+            y += 2;
+            writeParagraph(s.content, 10, "normal", [30, 41, 59]);
+            y += 10;
+          });
+
+          if (d.coAuthors) {
+            y += 4;
+            writeParagraph(`${coAuthorsLabel} : ${d.coAuthors}`, 9, "italic", [71, 85, 105]);
+          }
         });
+
+        const pageCount = doc.getNumberOfPages();
+        for (let page = 1; page <= pageCount; page += 1) {
+          doc.setPage(page);
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8);
+          doc.setTextColor(148, 163, 184);
+          doc.text(clean(eventTitle), margin, pageHeight - 25, { maxWidth: contentWidth - 60 });
+          doc.text(`${page} / ${pageCount}`, pageWidth - margin, pageHeight - 25, { align: "right" });
+        }
 
         doc.save(`${baseFileName}.pdf`);
       }

@@ -3802,7 +3802,17 @@
       },
       "title": "Administration des Utilisateurs"
     },
-    "workIdLabel": "ID de Travail"
+    "workIdLabel": "ID de Travail",
+    "export": {
+      "noData": "Aucun travail à exporter.",
+      "success": "{count} travaux exportés ({format}).",
+      "error": "L'export a échoué.",
+      "noName": "Soumissionnaire non renseigné",
+      "untitled": "Sans titre",
+      "submittedOn": "Soumis le",
+      "submissionNumber": "Soumission {number} / {total}",
+      "docSubtitle": "{count, plural, one {# soumission} other {# soumissions}} — exporté le {date}"
+    }
   },
   "workDetailsDialog": {
     "sections": {

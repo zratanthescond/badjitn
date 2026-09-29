@@ -3802,7 +3802,17 @@
       },
       "title": "Administración de usuarios"
     },
-    "workIdLabel": "ID del trabajo"
+    "workIdLabel": "ID del trabajo",
+    "export": {
+      "noData": "No hay trabajos para exportar.",
+      "success": "{count} trabajos exportados ({format}).",
+      "error": "La exportación falló.",
+      "noName": "Autor no indicado",
+      "untitled": "Sin título",
+      "submittedOn": "Enviado el",
+      "submissionNumber": "Envío {number} / {total}",
+      "docSubtitle": "{count, plural, one {# envío} other {# envíos}} — exportado el {date}"
+    }
   },
   "workDetailsDialog": {
     "sections": {

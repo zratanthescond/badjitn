@@ -3802,7 +3802,17 @@
       },
       "title": "Administration des Utilisateurs"
     },
-    "workIdLabel": "رقم العمل"
+    "workIdLabel": "رقم العمل",
+    "export": {
+      "noData": "لا توجد أعمال للتصدير.",
+      "success": "تم تصدير {count} عمل ({format}).",
+      "error": "فشل التصدير.",
+      "noName": "صاحب العمل غير محدد",
+      "untitled": "بدون عنوان",
+      "submittedOn": "أُرسل في",
+      "submissionNumber": "العمل {number} / {total}",
+      "docSubtitle": "{count, plural, one {عمل واحد} other {# أعمال}} — صُدّر في {date}"
+    }
   },
   "workDetailsDialog": {
     "sections": {

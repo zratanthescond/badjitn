@@ -3802,7 +3802,17 @@
       },
       "title": "User Administration"
     },
-    "workIdLabel": "Work ID"
+    "workIdLabel": "Work ID",
+    "export": {
+      "noData": "No works to export.",
+      "success": "{count} works exported ({format}).",
+      "error": "Export failed.",
+      "noName": "Submitter not provided",
+      "untitled": "Untitled",
+      "submittedOn": "Submitted on",
+      "submissionNumber": "Submission {number} / {total}",
+      "docSubtitle": "{count, plural, one {# submission} other {# submissions}} — exported on {date}"
+    }
   },
   "workDetailsDialog": {
     "sections": {
