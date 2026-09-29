@@ -497,6 +497,48 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                   </Card>
                 )}
 
+                {/* Co-authors — always placed right after title/client info so its
+                    position stays consistent whether the submission uses a plain
+                    note or structured sections below. */}
+                {((value.coAuthors && value.coAuthors.length > 0) || value.clientInfo?.coAuthors) && (
+                  <Card className="glass bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200/30 dark:border-slate-700/30">
+                    <CardHeader className="pb-2">
+                      <div
+                        className={`flex items-center gap-3 ${
+                          isRTL ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        <div className="p-2 rounded-lg bg-slate-500/20">
+                          <Users className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                        </div>
+                        <CardTitle
+                          className={`text-lg text-slate-800 dark:text-slate-200 ${
+                            isRTL ? "font-arabic" : ""
+                          }`}
+                        >
+                          {t("coAuthors.title")}
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <p className={`text-sm ${isRTL ? "font-arabic text-right" : ""}`}>
+                        {value.coAuthors && value.coAuthors.length > 0
+                          ? value.coAuthors
+                              .map((c: { firstName?: string; lastName?: string; affiliation?: string }) =>
+                                [
+                                  [c.firstName, c.lastName].filter(Boolean).join(" "),
+                                  c.affiliation ? `(${c.affiliation})` : "",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")
+                              )
+                              .join(", ")
+                          : value.clientInfo?.coAuthors}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* Rejection Reason */}
                 {isRejected && value.rejectionReason && (
                   <Card className="glass bg-gradient-to-br from-red-50/50 to-rose-50/50 dark:from-red-900/20 dark:to-rose-900/20 backdrop-blur-sm border border-red-200/30 dark:border-red-700/30">
@@ -587,46 +629,6 @@ export function WorkDetailsDialog({ value }: { value: any }) {
                           </ScrollArea>
                         </div>
                       ))}
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Co-authors */}
-                {((value.coAuthors && value.coAuthors.length > 0) || value.clientInfo?.coAuthors) && (
-                  <Card className="glass bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200/30 dark:border-slate-700/30">
-                    <CardHeader className="pb-2">
-                      <div
-                        className={`flex items-center gap-3 ${
-                          isRTL ? "flex-row-reverse" : ""
-                        }`}
-                      >
-                        <div className="p-2 rounded-lg bg-slate-500/20">
-                          <Users className="h-6 w-6 text-slate-600 dark:text-slate-400" />
-                        </div>
-                        <CardTitle
-                          className={`text-lg text-slate-800 dark:text-slate-200 ${
-                            isRTL ? "font-arabic" : ""
-                          }`}
-                        >
-                          {t("coAuthors.title")}
-                        </CardTitle>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <p className={`text-sm ${isRTL ? "font-arabic text-right" : ""}`}>
-                        {value.coAuthors && value.coAuthors.length > 0
-                          ? value.coAuthors
-                              .map((c: { firstName?: string; lastName?: string; affiliation?: string }) =>
-                                [
-                                  [c.firstName, c.lastName].filter(Boolean).join(" "),
-                                  c.affiliation ? `(${c.affiliation})` : "",
-                                ]
-                                  .filter(Boolean)
-                                  .join(" ")
-                              )
-                              .join(", ")
-                          : value.clientInfo?.coAuthors}
-                      </p>
                     </CardContent>
                   </Card>
                 )}
