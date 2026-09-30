@@ -927,16 +927,27 @@ export async function getUserWorkByEvent({
       : null;
 
     if (cleanEmail && emailRegex) {
+      // 1. Find users by email (case-insensitive)
       const users = await User.find({ email: emailRegex }).select("_id");
       users.forEach((u) => userIds.push(String(u._id)));
 
-      // Also check orders for this event with this email to get buyer userId
+      // 2. Find orders for this event with this email in requiredUserInfo
       const orders = await Order.find({
         event: eventId,
         "requiredUserInfo.value": emailRegex,
       }).select("buyer");
       orders.forEach((o) => {
         if (o.buyer) userIds.push(String(o.buyer));
+      });
+
+      // 3. Also search orders where buyer email matches (populate buyer to get email)
+      const allOrdersForEvent = await Order.find({ event: eventId })
+        .populate("buyer", "email")
+        .select("buyer");
+      allOrdersForEvent.forEach((o: any) => {
+        if (o.buyer?.email && o.buyer.email.toLowerCase().trim() === cleanEmail) {
+          userIds.push(String(o.buyer._id));
+        }
       });
     }
 
