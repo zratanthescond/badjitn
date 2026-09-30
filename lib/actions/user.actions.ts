@@ -901,6 +901,112 @@ export async function uploadWork({
   }
 }
 
+/**
+ * Creates the EventWork documents for résumés a registrant typed into the
+ * checkout form (stored only on the Order, see resolveWorkFromOrder). Guest
+ * checkouts have no linked account, so the User is resolved/created by email
+ * exactly like submitWorkSummary does. Returns the resolved userId, if any.
+ */
+async function materializeOrderWorksForEmail({
+  eventId,
+  cleanEmail,
+  emailRegex,
+}: {
+  eventId: string;
+  cleanEmail: string;
+  emailRegex: RegExp;
+}): Promise<string | undefined> {
+  const orders = await Order.find({
+    event: eventId,
+    "requiredUserInfo.value": emailRegex,
+  });
+  const withIntent = orders.filter((o: any) =>
+    (o.requiredUserInfo || []).some(
+      (i: any) => i.field === "wantsToSubmitWork" && i.value === "yes"
+    )
+  );
+  if (withIntent.length === 0) return undefined;
+
+  const event = await Event.findById(eventId).select("workAbstractConfig");
+  const sectionLabels: string[] = (event?.workAbstractConfig?.sections || []).map(
+    (s: any) => s.label
+  );
+
+  let resolvedUserId: string | undefined;
+  for (const order of withIntent as any[]) {
+    const info: any[] = order.requiredUserInfo || [];
+    const getInfo = (field: string) =>
+      info.find((i: any) => i.field === field)?.value || "";
+
+    const indices = new Set<number>([1]);
+    info.forEach((item: any) => {
+      const match = /^workSummaryTitle_(\d+)$/.exec(String(item?.field || ""));
+      if (match) indices.add(Number(match[1]));
+    });
+
+    let userId: string | undefined = order.buyer ? String(order.buyer) : undefined;
+    if (!userId) {
+      let user = await User.findOne({ email: emailRegex });
+      if (!user) {
+        user = await User.create({
+          email: cleanEmail,
+          firstName: getInfo("firstName") || "Participant",
+          lastName: getInfo("lastName") || "",
+          clerkId: `guest_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+        });
+      }
+      userId = String(user._id);
+    }
+    resolvedUserId = userId;
+
+    for (const index of Array.from(indices).sort((a, b) => a - b)) {
+      const suffix = index === 1 ? "" : `_${index}`;
+      const title = getInfo(`workSummaryTitle${suffix}`);
+      const note = getInfo(`workSummaryNote${suffix}`);
+      const sections: IWorkSection[] = sectionLabels
+        .map((label) => ({
+          label,
+          content: getInfo(`workSection_${label}${suffix}`),
+        }))
+        .filter((s) => s.content);
+      if (!title && !note && sections.length === 0) continue;
+
+      const exists = await EventWork.exists(
+        index === 1
+          ? {
+              eventId,
+              userId,
+              $or: [{ resumeIndex: 1 }, { resumeIndex: { $exists: false } }],
+            }
+          : { eventId, userId, resumeIndex: index }
+      );
+      if (exists) continue;
+
+      await EventWork.create({
+        eventId,
+        userId,
+        resumeIndex: index,
+        title: title || "Sans titre",
+        note: sections.length ? composeNoteFromSections(sections, note) : note,
+        sections: sections.length ? sections : undefined,
+        clientInfo: {
+          firstName: getInfo("firstName"),
+          lastName: getInfo("lastName"),
+          jobTitle: getInfo("jobTitle"),
+          republic: getInfo("republic"),
+          city: getInfo("city"),
+          coAuthors: getInfo(`workCoAuthors${suffix}`) || undefined,
+          correspondenceEmail: cleanEmail,
+        },
+        summaryStatus: "submitted",
+        submittedAt: order.createdAt || new Date(),
+        fileUrls: [],
+      });
+    }
+  }
+  return resolvedUserId;
+}
+
 export async function getUserWorkByEvent({
   eventId,
   userId,
@@ -949,6 +1055,16 @@ export async function getUserWorkByEvent({
           userIds.push(String(o.buyer._id));
         }
       });
+
+      // 4. Résumés entered at checkout only live on the Order until something
+      // materializes them into EventWork documents. Do it now so the portal
+      // can list and edit them (idempotent per user + résumé index).
+      const materializedUserId = await materializeOrderWorksForEmail({
+        eventId,
+        cleanEmail,
+        emailRegex,
+      });
+      if (materializedUserId) userIds.push(materializedUserId);
     }
 
     const orConditions: any[] = [];
@@ -1104,6 +1220,17 @@ export async function getUserWorkByEventId({
         .map((w: any) => w.userId && `${String(w.userId)}_${w.resumeIndex ?? 1}`)
         .filter(Boolean)
     );
+    // Guest registrations have no order.buyer, so also match materialized works
+    // by the participant's email.
+    const existingEmailKeys = new Set(
+      works
+        .map(
+          (w: any) =>
+            w.buyerEmail &&
+            `${String(w.buyerEmail).toLowerCase().trim()}_${w.resumeIndex ?? 1}`
+        )
+        .filter(Boolean)
+    );
 
     const event = await Event.findById(eventObjectId).select(
       "title workAbstractConfig"
@@ -1156,9 +1283,13 @@ export async function getUserWorkByEventId({
             // Skip only this specific résumé if it's already been
             // materialized into its own EventWork — its siblings on the
             // same order may still be order-only and need to stay visible.
+            const orderEmail = String(getOrderParticipantEmail(order) || "")
+              .toLowerCase()
+              .trim();
             if (
-              order.buyer &&
-              existingWorkKeys.has(`${String(order.buyer._id)}_${index}`)
+              (order.buyer &&
+                existingWorkKeys.has(`${String(order.buyer._id)}_${index}`)) ||
+              (orderEmail && existingEmailKeys.has(`${orderEmail}_${index}`))
             ) {
               return;
             }
