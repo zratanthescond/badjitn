@@ -87,7 +87,7 @@ export default function WorkUploader({
 
   const [activeEmail, setActiveEmail] = useState<string>(email || "");
   const [emailInput, setEmailInput] = useState<string>(email || "");
-  const [isEditingEmail, setIsEditingEmail] = useState<boolean>(false);
+
 
   useEffect(() => {
     if (email) {
@@ -105,7 +105,6 @@ export default function WorkUploader({
   const handleSetEmail = (newEmail: string) => {
     const trimmed = newEmail.trim();
     setActiveEmail(trimmed);
-    setIsEditingEmail(false);
     if (typeof window !== "undefined" && trimmed) {
       localStorage.setItem(`badgi_work_email_${eventId}`, trimmed);
     }
@@ -410,7 +409,7 @@ export default function WorkUploader({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {!activeEmail || isEditingEmail ? (
+                {!activeEmail ? (
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
@@ -429,29 +428,9 @@ export default function WorkUploader({
                     <Button type="submit" size="sm" className="h-9 text-xs rounded-xl shrink-0">
                       Consulter
                     </Button>
-                    {activeEmail && isEditingEmail && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-9 text-xs rounded-xl"
-                        onClick={() => setIsEditingEmail(false)}
-                      >
-                        Annuler
-                      </Button>
-                    )}
+
                   </form>
-                ) : (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-8 text-xs rounded-xl"
-                    onClick={() => setIsEditingEmail(true)}
-                  >
-                    Changer d'email
-                  </Button>
-                )}
+                ) : null}
               </div>
             </div>
           </Card>
