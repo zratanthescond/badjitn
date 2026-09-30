@@ -21,6 +21,7 @@ import {
   sendEligibilityApprovedEmail,
   sendEligibilityRejectedEmail,
   sendRegistrationConfirmationEmail,
+  sendWorkStatusEmail,
 } from "../mail";
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -139,6 +140,7 @@ export const createOrder = async (order: CreateOrderParams) => {
 
     // Confirmation email with chosen plans + registration status (best-effort).
     await sendRegistrationStatusEmail({
+      eventId: String(order.eventId),
       eventTitle: event?.title || "",
       country: event?.country,
       location: event?.location,
@@ -159,6 +161,7 @@ export const createOrder = async (order: CreateOrderParams) => {
 // plans and the current status. Best-effort: swallows errors so it never blocks
 // the registration. Reused by every path that creates a registration order.
 export const sendRegistrationStatusEmail = async ({
+  eventId,
   eventTitle,
   country,
   location,
@@ -168,6 +171,7 @@ export const sendRegistrationStatusEmail = async ({
   type,
   eligibilityStatus,
 }: {
+  eventId?: string;
   eventTitle: string;
   country?: string | null;
   location?: any;
@@ -217,6 +221,60 @@ export const sendRegistrationStatusEmail = async ({
     });
   } catch (mailError) {
     console.error("Registration confirmation email failed:", mailError);
+  }
+
+  await sendCheckoutWorkSubmissionEmail({ eventId, eventTitle, requiredUserInfo });
+};
+
+// Résumés typed into the checkout form only live on the Order, so the
+// "Resume soumis" email sent by the submit-work flow never fires for them —
+// notably for guests with no account. Send it here, with the portal link.
+// Best-effort: never blocks the registration.
+const sendCheckoutWorkSubmissionEmail = async ({
+  eventId,
+  eventTitle,
+  requiredUserInfo,
+}: {
+  eventId?: string;
+  eventTitle: string;
+  requiredUserInfo?: any[];
+}) => {
+  try {
+    const info = requiredUserInfo || [];
+    const wantsWork = info.some(
+      (i: any) => i.field === "wantsToSubmitWork" && i.value === "yes"
+    );
+    if (!wantsWork || !eventId) return;
+
+    const participantEmail = info
+      .find((i: any) => String(i.field).toLowerCase() === "email")
+      ?.value?.trim();
+    if (!participantEmail) return;
+
+    const titles = info
+      .filter((i: any) => /^workSummaryTitle(_\d+)?$/.test(String(i.field)) && i.value)
+      .map((i: any) => String(i.value).trim());
+    if (titles.length === 0) return;
+
+    const serverUrl = (
+      process.env.NEXT_PUBLIC_SERVER_URL ||
+      process.env.NEXTAUTH_URL ||
+      "http://localhost:3000"
+    ).replace(/\/$/, "");
+
+    await sendWorkStatusEmail({
+      to: participantEmail,
+      subject: titles.length > 1 ? "Resumes soumis" : "Resume soumis",
+      title: titles.length > 1 ? "Vos resumes ont ete soumis" : "Votre resume a ete soumis",
+      intro:
+        "Nous avons bien recu votre soumission lors de votre inscription. Vous pourrez deposer votre travail une fois l'approbation effectuee par le createur de l'evenement.",
+      eventTitle,
+      summaryTitle: titles.join(" ; "),
+      ctaLabel: "Consulter mes resumes",
+      ctaUrl: `${serverUrl}/events/${eventId}/submit-work?email=${encodeURIComponent(participantEmail)}`,
+    });
+  } catch (mailError) {
+    console.error("Checkout work submission email failed:", mailError);
   }
 };
 

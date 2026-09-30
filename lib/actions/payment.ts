@@ -163,6 +163,7 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
 
     // Confirmation email with chosen plans + status (best-effort)
     await sendRegistrationStatusEmail({
+      eventId: String(eventId),
       eventTitle: event.title,
       country: event.country,
       location: event.location,
