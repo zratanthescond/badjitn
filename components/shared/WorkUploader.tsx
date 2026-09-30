@@ -21,6 +21,7 @@ import {
   ImageIcon,
   PlusCircle,
   Clock3,
+  Mail,
 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
@@ -58,6 +59,7 @@ function isClientInfoEmpty(info: ClientInfo) {
 
 type WorkRecord = {
   _id: string;
+  userId?: string;
   title?: string;
   clientInfo?: ClientInfo;
   note?: string;
@@ -72,16 +74,44 @@ type WorkRecord = {
 export default function WorkUploader({
   eventId,
   userId,
+  email,
 }: {
   eventId: string;
-  userId: string;
+  userId?: string;
+  email?: string;
 }) {
   const t = useTranslations("WorkUploader");
   const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const locale = useLocale();
   const isRTL = locale === "ar";
 
-  const { data, isLoading, refetch } = useGetWork(eventId, userId);
+  const [activeEmail, setActiveEmail] = useState<string>(email || "");
+  const [emailInput, setEmailInput] = useState<string>(email || "");
+  const [isEditingEmail, setIsEditingEmail] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (email) {
+      setActiveEmail(email);
+      setEmailInput(email);
+    } else if (!userId && typeof window !== "undefined") {
+      const stored = localStorage.getItem(`badgi_work_email_${eventId}`);
+      if (stored) {
+        setActiveEmail(stored);
+        setEmailInput(stored);
+      }
+    }
+  }, [email, userId, eventId]);
+
+  const handleSetEmail = (newEmail: string) => {
+    const trimmed = newEmail.trim();
+    setActiveEmail(trimmed);
+    setIsEditingEmail(false);
+    if (typeof window !== "undefined" && trimmed) {
+      localStorage.setItem(`badgi_work_email_${eventId}`, trimmed);
+    }
+  };
+
+  const { data, isLoading, refetch } = useGetWork(eventId, userId, activeEmail);
   const works: WorkRecord[] =
     data?.success && Array.isArray(data.works) ? data.works : [];
 
@@ -242,7 +272,8 @@ export default function WorkUploader({
       {
         workId: selectedWorkId ?? undefined,
         eventId,
-        userId,
+        userId: userId || selectedWork?.userId,
+        email: activeEmail || clientInfo.correspondenceEmail,
         title: title.trim() || tx("untitled", "Sans titre"),
         clientInfo,
         note: noteStr,
@@ -275,7 +306,14 @@ export default function WorkUploader({
     if (!file || !selectedWork?._id) return;
     setError(null);
     uploadImageMutation.mutate(
-      { workId: selectedWork._id, file, eventId, userId, kind: "poster" },
+      {
+        workId: selectedWork._id,
+        file,
+        eventId,
+        userId: userId || selectedWork.userId,
+        email: activeEmail || clientInfo.correspondenceEmail,
+        kind: "poster",
+      },
       {
         onSuccess: () => {
           setFile(null);
@@ -350,6 +388,74 @@ export default function WorkUploader({
             </div>
           </div>
         </div>
+
+        {!userId && (
+          <Card className="border border-primary/20 bg-card/90 backdrop-blur-sm rounded-2xl p-4 shadow-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {activeEmail
+                      ? `Consultation pour : ${activeEmail}`
+                      : "Consulter vos résumés soumis"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {activeEmail
+                      ? "Vous pouvez consulter, modifier vos résumés et soumettre vos documents sans compte."
+                      : "Entrez l'adresse email utilisée pour votre inscription ou soumission pour charger vos résumés."}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {!activeEmail || isEditingEmail ? (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSetEmail(emailInput);
+                    }}
+                    className="flex items-center gap-2 w-full sm:w-auto"
+                  >
+                    <Input
+                      type="email"
+                      required
+                      placeholder="votre.email@exemple.com"
+                      value={emailInput}
+                      onChange={(e) => setEmailInput(e.target.value)}
+                      className="h-9 text-xs sm:w-64 bg-background rounded-xl"
+                    />
+                    <Button type="submit" size="sm" className="h-9 text-xs rounded-xl shrink-0">
+                      Consulter
+                    </Button>
+                    {activeEmail && isEditingEmail && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-9 text-xs rounded-xl"
+                        onClick={() => setIsEditingEmail(false)}
+                      >
+                        Annuler
+                      </Button>
+                    )}
+                  </form>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs rounded-xl"
+                    onClick={() => setIsEditingEmail(true)}
+                  >
+                    Changer d'email
+                  </Button>
+                )}
+              </div>
+            </div>
+          </Card>
+        )}
 
         {isLoading ? (
           <Skeleton className="w-full h-64 rounded-xl" />
@@ -686,7 +792,14 @@ export default function WorkUploader({
                           if (!abstractFile || !selectedWork?._id) return;
                           setAbstractError(null);
                           uploadAbstractMutation.mutate(
-                            { workId: selectedWork._id, file: abstractFile, eventId, userId, kind: "abstract" },
+                            {
+                              workId: selectedWork._id,
+                              file: abstractFile,
+                              eventId,
+                              userId: userId || selectedWork.userId,
+                              email: activeEmail || clientInfo.correspondenceEmail,
+                              kind: "abstract",
+                            },
                             {
                               onSuccess: () => {
                                 setAbstractFile(null);

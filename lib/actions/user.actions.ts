@@ -215,12 +215,16 @@ function buildEventPortalUrl(eventId: string) {
   return `${serverUrl.replace(/\/$/, "")}/events/${eventId}`;
 }
 
-function buildSubmitWorkUrl(eventId: string) {
+function buildSubmitWorkUrl(eventId: string, email?: string) {
   const serverUrl =
     process.env.NEXT_PUBLIC_SERVER_URL ||
     process.env.NEXTAUTH_URL ||
     "http://localhost:3000";
-  return `${serverUrl.replace(/\/$/, "")}/events/${eventId}/submit-work`;
+  const base = `${serverUrl.replace(/\/$/, "")}/events/${eventId}/submit-work`;
+  if (email) {
+    return `${base}?email=${encodeURIComponent(email)}`;
+  }
+  return base;
 }
 
 const WORK_STATUS_LABELS_FR: Record<string, string> = {
@@ -333,6 +337,7 @@ export async function submitWorkSummary({
   workId,
   eventId,
   userId,
+  email,
   title,
   clientInfo,
   note,
@@ -341,7 +346,8 @@ export async function submitWorkSummary({
 }: {
   workId?: string;
   eventId: string;
-  userId: string;
+  userId?: string;
+  email?: string;
   title: string;
   clientInfo: IClientInfo;
   note: string;
@@ -352,8 +358,15 @@ export async function submitWorkSummary({
     await connectToDatabase();
     const event = await Event.findById(eventId);
     if (!event) throw new Error("Event not found");
-    const user = await User.findById(userId);
-    if (!user) throw new Error("User not found");
+
+    let resolvedUserId = userId;
+    let user = resolvedUserId ? await User.findById(resolvedUserId) : null;
+
+    const candidateEmail = (email || clientInfo?.correspondenceEmail || "").toLowerCase().trim();
+    if (!user && candidateEmail) {
+      user = await User.findOne({ email: candidateEmail });
+      if (user) resolvedUserId = String(user._id);
+    }
 
     const normalizedTitle = title?.trim() || "Sans titre";
     const submittedAt = new Date();
@@ -364,8 +377,15 @@ export async function submitWorkSummary({
       : clientInfo;
 
     if (workId) {
-      const work = await EventWork.findOne({ _id: workId, eventId, userId });
+      const query: any = { _id: workId, eventId };
+      if (resolvedUserId) query.userId = resolvedUserId;
+      const work = await EventWork.findOne(query);
       if (!work) throw new Error("Work not found");
+
+      if (!user && work.userId) {
+        resolvedUserId = String(work.userId);
+        user = await User.findById(resolvedUserId);
+      }
 
       work.title = normalizedTitle;
       work.clientInfo = normalizedClientInfo;
@@ -394,15 +414,32 @@ export async function submitWorkSummary({
         eventId,
         extra: progressHtml,
         ctaLabel: "Consulter mes resumes",
-        ctaUrl: buildSubmitWorkUrl(eventId),
+        ctaUrl: buildSubmitWorkUrl(eventId, user.email),
       });
 
       return JSON.parse(JSON.stringify(work));
     } else {
+      if (!resolvedUserId || !user) {
+        const targetEmail = (candidateEmail || clientInfo?.correspondenceEmail || "").toLowerCase().trim();
+        if (!targetEmail) {
+          throw new Error("Une adresse email est requise pour soumettre un résumé.");
+        }
+        user = await User.findOne({ email: targetEmail });
+        if (!user) {
+          user = await User.create({
+            email: targetEmail,
+            firstName: clientInfo?.firstName || "Participant",
+            lastName: clientInfo?.lastName || "",
+            clerkId: `guest_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+          });
+        }
+        resolvedUserId = String(user._id);
+      }
+
       if (event.maxWorkSubmissions) {
         const acceptedCount = await EventWork.countDocuments({
           eventId,
-          userId,
+          userId: resolvedUserId,
           summaryStatus: { $ne: "rejected" },
         });
         if (acceptedCount >= event.maxWorkSubmissions) {
@@ -414,7 +451,7 @@ export async function submitWorkSummary({
 
       const newWork = await EventWork.create({
         eventId,
-        userId,
+        userId: resolvedUserId,
         title: normalizedTitle,
         clientInfo: normalizedClientInfo,
         note: composedNote,
@@ -427,12 +464,14 @@ export async function submitWorkSummary({
 
       const progressHtml = await buildWorkSummaryProgressHtml({
         eventId,
-        userId,
+        userId: resolvedUserId,
         maxWorkSubmissions: event.maxWorkSubmissions,
       });
 
+      const notificationEmail = user?.email || candidateEmail;
+
       await sendWorkNotificationEmail({
-        userEmail: user.email,
+        userEmail: notificationEmail,
         subject: "Resume soumis",
         title: "Votre resume a ete soumis",
         intro:
@@ -442,7 +481,7 @@ export async function submitWorkSummary({
         eventId,
         extra: progressHtml,
         ctaLabel: "Consulter mes resumes",
-        ctaUrl: buildSubmitWorkUrl(eventId),
+        ctaUrl: buildSubmitWorkUrl(eventId, notificationEmail),
       });
 
       return JSON.parse(JSON.stringify(newWork));
@@ -485,7 +524,7 @@ async function applyWorkApproval(work: InstanceType<typeof EventWork>) {
     summaryTitle: work.title,
     eventId: String(work.eventId),
     ctaLabel: "Soumettre mon travail",
-    ctaUrl: buildSubmitWorkUrl(String(work.eventId)),
+    ctaUrl: buildSubmitWorkUrl(String(work.eventId), userEmail),
   });
 
   return JSON.parse(JSON.stringify(work));
@@ -724,7 +763,7 @@ export async function resendWorkSubmissionEmail({
       eventId,
       extra: progressHtml,
       ctaLabel: "Consulter mes resumes",
-      ctaUrl: buildSubmitWorkUrl(eventId),
+      ctaUrl: buildSubmitWorkUrl(eventId, userEmail),
     });
 
     return { success: true, email: userEmail };
@@ -743,12 +782,14 @@ export async function appendAbstractFile({
 }: {
   workId: string;
   eventId: string;
-  userId: string;
+  userId?: string;
   fileUrl: string;
 }) {
   try {
     await connectToDatabase();
-    const work = await EventWork.findOne({ _id: workId, eventId, userId });
+    const query: any = { _id: workId, eventId };
+    if (userId) query.userId = userId;
+    const work = await EventWork.findOne(query);
     if (!work) throw new Error("Work not found");
     work.abstractFileUrls = work.abstractFileUrls || [];
     work.abstractFileUrls.push(fileUrl);
@@ -769,12 +810,14 @@ export async function appendWorkSubmissionImage({
 }: {
   workId: string;
   eventId: string;
-  userId: string;
+  userId?: string;
   fileUrl: string;
 }) {
   try {
     await connectToDatabase();
-    const work = await EventWork.findOne({ _id: workId, eventId, userId });
+    const query: any = { _id: workId, eventId };
+    if (userId) query.userId = userId;
+    const work = await EventWork.findOne(query);
     if (!work) throw new Error("Work not found");
     if (work.summaryStatus && work.summaryStatus !== "approved") {
       throw new Error("Work summary must be approved before uploading submission image");
@@ -785,11 +828,13 @@ export async function appendWorkSubmissionImage({
 
     const [event, user] = await Promise.all([
       Event.findById(eventId),
-      User.findById(userId),
+      work.userId ? User.findById(work.userId) : (userId ? User.findById(userId) : null),
     ]);
 
+    const recipientEmail = user?.email || work.clientInfo?.correspondenceEmail;
+
     await sendWorkNotificationEmail({
-      userEmail: user?.email,
+      userEmail: recipientEmail,
       subject: "Travail soumis",
       title: "Votre travail a ete soumis",
       intro:
@@ -798,6 +843,8 @@ export async function appendWorkSubmissionImage({
       summaryTitle: work.title,
       eventId,
       extra: "Le travail reste rattache au resume approuve selectionne.",
+      ctaLabel: "Consulter mes resumes",
+      ctaUrl: buildSubmitWorkUrl(eventId, recipientEmail),
     });
   } catch (error) {
     handleError(error);
@@ -857,13 +904,55 @@ export async function uploadWork({
 export async function getUserWorkByEvent({
   eventId,
   userId,
+  email,
 }: {
   eventId: string;
-  userId: string;
+  userId?: string;
+  email?: string;
 }) {
   try {
     await connectToDatabase();
-    const works = await EventWork.find({ eventId, userId }).sort({
+
+    const userIds: string[] = [];
+    if (userId) {
+      userIds.push(String(userId));
+    }
+
+    const cleanEmail = email?.toLowerCase().trim();
+    if (cleanEmail) {
+      const users = await User.find({ email: cleanEmail }).select("_id");
+      users.forEach((u) => userIds.push(String(u._id)));
+
+      // Also check orders for this event with this email to get buyer userId
+      const orders = await Order.find({
+        event: eventId,
+        $or: [
+          { buyerEmail: cleanEmail },
+          { "requiredUserInfo.value": cleanEmail },
+        ],
+      }).select("buyer");
+      orders.forEach((o) => {
+        if (o.buyer) userIds.push(String(o.buyer));
+      });
+    }
+
+    const orConditions: any[] = [];
+    const uniqueUserIds = Array.from(new Set(userIds.filter(Boolean)));
+    if (uniqueUserIds.length > 0) {
+      orConditions.push({ userId: { $in: uniqueUserIds } });
+    }
+    if (cleanEmail) {
+      orConditions.push({
+        "clientInfo.correspondenceEmail": { $regex: `^${cleanEmail}$`, $options: "i" },
+      });
+    }
+
+    if (orConditions.length === 0) return [];
+
+    const works = await EventWork.find({
+      eventId,
+      $or: orConditions,
+    }).sort({
       approvedAt: -1,
       submittedAt: -1,
       createdAt: -1,

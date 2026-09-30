@@ -20,6 +20,7 @@ const isPublicRoute = createRouteMatcher([
   /^\/(?:[a-z]{2}\/)?$/,
   /^\/(?:[a-z]{2}\/)?events\/?$/,
   /^\/(?:[a-z]{2}\/)?events\/(?!create|update$)[^/]+\/?$/,
+  /^\/(?:[a-z]{2}\/)?events\/[^/]+\/submit-work\/?$/,
   "/sitemap.xml",
   "/robots.txt",
   "/manifest.webmanifest",

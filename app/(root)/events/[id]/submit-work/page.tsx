@@ -5,19 +5,23 @@ import { useUser } from "@/lib/actions/user.actions";
 
 type SubmitWorkPageProps = {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{ email?: string; workId?: string }>;
 };
 
 export default async function SubmitWorkPage(props: SubmitWorkPageProps) {
   const params = await props.params;
+  const searchParams = props.searchParams ? await props.searchParams : {};
   const [event, user] = await Promise.all([getEventById(params.id), useUser()]);
 
   if (!event) {
     redirect("/");
   }
 
-  if (!user) {
-    redirect("/sign-in");
-  }
-
-  return <WorkUploader eventId={params.id} userId={user._id} />;
+  return (
+    <WorkUploader
+      eventId={params.id}
+      userId={user?._id ? String(user._id) : undefined}
+      email={user?.email || searchParams?.email}
+    />
+  );
 }

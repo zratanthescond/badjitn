@@ -32,6 +32,7 @@ export const POST = async (req: Request) => {
   const fileUrl = (body.fileUrl as string) || "";
   const eventId = (body.eventId as string) || "";
   const userId = (body.userId as string) || "";
+  const email = (body.email as string) || "";
   const workId = (body.workId as string) || "";
   // "abstract" = document attached to the resume, uploadable any time.
   // "poster" (default) = final e-poster, only unlocked once the resume is approved.
@@ -61,12 +62,12 @@ export const POST = async (req: Request) => {
 
     try {
       if (kind === "abstract") {
-        await appendAbstractFile({ workId, eventId, userId, fileUrl: finalFileUrl });
+        await appendAbstractFile({ workId, eventId, userId: userId || undefined, fileUrl: finalFileUrl });
       } else {
         await appendWorkSubmissionImage({
           workId,
           eventId,
-          userId,
+          userId: userId || undefined,
           fileUrl: finalFileUrl,
         });
       }
@@ -105,14 +106,15 @@ export const POST = async (req: Request) => {
     // leave coAuthors undefined
   }
 
-  if (eventId && userId && (title || note || sections?.length)) {
+  if (eventId && (userId || email || workId) && (title || note || sections?.length)) {
     try {
       const work = await submitWorkSummary({
         workId: workId || undefined,
         eventId,
-        userId,
+        userId: userId || undefined,
+        email: email || undefined,
         title: title || "Sans titre",
-        clientInfo: clientInfo as { firstName?: string; lastName?: string; jobTitle?: string; republic?: string; city?: string; village?: string },
+        clientInfo: clientInfo as { firstName?: string; lastName?: string; jobTitle?: string; republic?: string; city?: string; village?: string; correspondenceEmail?: string },
         note: note || "",
         sections,
         coAuthors,
@@ -125,15 +127,21 @@ export const POST = async (req: Request) => {
   }
 
   return NextResponse.json(
-    { success: false, error: "Missing eventId, userId, or summary data." },
+    { success: false, error: "Missing eventId, user identification, or summary data." },
     { status: 400 }
   );
 };
 
 export const GET = async (req: NextRequest) => {
-  const userId = req.nextUrl.searchParams.get("userId") as string;
+  const userId = req.nextUrl.searchParams.get("userId") as string | null;
+  const email = req.nextUrl.searchParams.get("email") as string | null;
   const eventId = req.nextUrl.searchParams.get("eventId") as string;
-  const works = await getUserWorkByEvent({ userId, eventId });
+
+  if (!userId && !email) {
+    return NextResponse.json({ success: false, error: "userId or email required" }, { status: 400 });
+  }
+
+  const works = await getUserWorkByEvent({ userId: userId || undefined, email: email || undefined, eventId });
   if (!works) {
     return NextResponse.json({
       success: false,

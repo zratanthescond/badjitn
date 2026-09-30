@@ -27,7 +27,8 @@ export type WorkSection = {
 
 export type SubmitSummaryParams = {
   workId?: string;
-  userId: string;
+  userId?: string;
+  email?: string;
   eventId: string;
   title: string;
   clientInfo: ClientInfo;
@@ -39,7 +40,8 @@ export type SubmitSummaryParams = {
 export type UploadImageParams = {
   workId: string;
   file: File;
-  userId: string;
+  userId?: string;
+  email?: string;
   eventId: string;
   // "abstract" = document attached to the resume, uploadable any time.
   // "poster" (default) = final e-poster, only unlocked once the resume is approved.
@@ -49,7 +51,8 @@ export type UploadImageParams = {
 const submitSummary = async (data: SubmitSummaryParams) => {
   const formData = new FormData();
   if (data.workId) formData.append("workId", data.workId);
-  formData.append("userId", data.userId);
+  if (data.userId) formData.append("userId", data.userId);
+  if (data.email) formData.append("email", data.email);
   formData.append("eventId", data.eventId);
   formData.append("title", data.title);
   formData.append("clientInfo", JSON.stringify(data.clientInfo));
@@ -83,7 +86,8 @@ const uploadSubmissionImage = async (data: UploadImageParams) => {
   // Step 2: Submit the URL to the work submission API
   const workFormData = new FormData();
   workFormData.append("workId", data.workId);
-  workFormData.append("userId", data.userId);
+  if (data.userId) workFormData.append("userId", data.userId);
+  if (data.email) workFormData.append("email", data.email);
   workFormData.append("eventId", data.eventId);
   workFormData.append("fileUrl", fileUrl); // Send URL instead of binary file
   workFormData.append("kind", data.kind || "poster");
