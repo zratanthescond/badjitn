@@ -919,17 +919,21 @@ export async function getUserWorkByEvent({
     }
 
     const cleanEmail = email?.toLowerCase().trim();
-    if (cleanEmail) {
-      const users = await User.find({ email: cleanEmail }).select("_id");
+    const escapedEmail = cleanEmail
+      ? cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+      : "";
+    const emailRegex = escapedEmail
+      ? new RegExp(`^${escapedEmail}$`, "i")
+      : null;
+
+    if (cleanEmail && emailRegex) {
+      const users = await User.find({ email: emailRegex }).select("_id");
       users.forEach((u) => userIds.push(String(u._id)));
 
       // Also check orders for this event with this email to get buyer userId
       const orders = await Order.find({
         event: eventId,
-        $or: [
-          { buyerEmail: cleanEmail },
-          { "requiredUserInfo.value": cleanEmail },
-        ],
+        "requiredUserInfo.value": emailRegex,
       }).select("buyer");
       orders.forEach((o) => {
         if (o.buyer) userIds.push(String(o.buyer));
@@ -941,9 +945,9 @@ export async function getUserWorkByEvent({
     if (uniqueUserIds.length > 0) {
       orConditions.push({ userId: { $in: uniqueUserIds } });
     }
-    if (cleanEmail) {
+    if (cleanEmail && emailRegex) {
       orConditions.push({
-        "clientInfo.correspondenceEmail": { $regex: `^${cleanEmail}$`, $options: "i" },
+        "clientInfo.correspondenceEmail": { $regex: `^${escapedEmail}$`, $options: "i" },
       });
     }
 
