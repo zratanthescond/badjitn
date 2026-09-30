@@ -426,11 +426,13 @@ export async function submitWorkSummary({
         }
         user = await User.findOne({ email: targetEmail });
         if (!user) {
+          const guestId = `guest_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
           user = await User.create({
             email: targetEmail,
+            username: guestId,
             firstName: clientInfo?.firstName || "Participant",
             lastName: clientInfo?.lastName || "",
-            clerkId: `guest_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+            clerkId: guestId,
           });
         }
         resolvedUserId = String(user._id);
