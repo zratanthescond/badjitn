@@ -399,7 +399,7 @@ export async function submitWorkSummary({
 
       const progressHtml = await buildWorkSummaryProgressHtml({
         eventId,
-        userId,
+        userId: String(work.userId),
         maxWorkSubmissions: event.maxWorkSubmissions,
       });
 
@@ -511,10 +511,21 @@ async function applyWorkApproval(work: InstanceType<typeof EventWork>) {
   work.approvedAt = new Date();
   await work.save();
 
-  const [event, userEmail] = await Promise.all([
+  const [event, resolvedEmail] = await Promise.all([
     Event.findById(work.eventId),
     resolveWorkParticipantEmail(String(work.eventId), String(work.userId)),
   ]);
+
+  // Fallback to the correspondence email captured on the résumé itself, so
+  // every approval still notifies the participant even when no account/order
+  // email could be resolved.
+  const userEmail =
+    resolvedEmail || work.clientInfo?.correspondenceEmail || undefined;
+  if (!userEmail) {
+    console.warn(
+      `No email resolved for approved work ${String(work._id)} — notification skipped.`
+    );
+  }
 
   await sendWorkNotificationEmail({
     userEmail,
@@ -541,10 +552,18 @@ async function applyWorkRejection(
   work.rejectionReason = reason?.trim() || undefined;
   await work.save();
 
-  const [event, userEmail] = await Promise.all([
+  const [event, resolvedEmail] = await Promise.all([
     Event.findById(work.eventId),
     resolveWorkParticipantEmail(String(work.eventId), String(work.userId)),
   ]);
+
+  const userEmail =
+    resolvedEmail || work.clientInfo?.correspondenceEmail || undefined;
+  if (!userEmail) {
+    console.warn(
+      `No email resolved for rejected work ${String(work._id)} — notification skipped.`
+    );
+  }
 
   await sendWorkNotificationEmail({
     userEmail,
@@ -958,11 +977,13 @@ async function materializeOrderWorksForEmail({
     if (!userId) {
       let user = await User.findOne({ email: emailRegex });
       if (!user) {
+        const guestId = `guest_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
         user = await User.create({
           email: cleanEmail,
+          username: guestId,
           firstName: getInfo("firstName") || "Participant",
           lastName: getInfo("lastName") || "",
-          clerkId: `guest_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+          clerkId: guestId,
         });
       }
       userId = String(user._id);
