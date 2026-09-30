@@ -583,13 +583,21 @@ async function resolveWorkFromOrder(orderId: string, resumeIndex: number = 1) {
   // giving up. Never create one: clerkId/username are required+unique on
   // User and synthesizing them would risk colliding with a real account.
   let buyer = order.buyer;
-  if (!buyer) {
-    const email = getOrderParticipantEmail(order);
-    if (email) {
-      buyer = await User.findOne({
-        email: new RegExp(`^${email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i"),
-      });
-    }
+  const orderEmail = String(getOrderParticipantEmail(order) || "").toLowerCase().trim();
+  if (orderEmail) {
+    // Guest registrations have no account: create one by email and materialize
+    // every résumé of this registration (with sections/co-authors) first, so
+    // approving/rejecting works and the participant can be notified.
+    const emailRegex = new RegExp(
+      `^${orderEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`,
+      "i"
+    );
+    await materializeOrderWorksForEmail({
+      eventId: String(order.event),
+      cleanEmail: orderEmail,
+      emailRegex,
+    });
+    if (!buyer) buyer = await User.findOne({ email: emailRegex });
   }
   if (!buyer) {
     throw new Error(
