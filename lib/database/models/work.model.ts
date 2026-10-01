@@ -36,6 +36,11 @@ interface IEventWork extends mongoose.Document {
   // each is already its own document. Absent on documents created before this
   // field existed — those are always résumé #1.
   resumeIndex?: number;
+  // Registration this work was materialized from (see materializeOrderWorks).
+  // Together with resumeIndex it identifies one résumé of one registration.
+  // Absent on works created through the submit-work flow, and on works
+  // materialized before this field existed.
+  orderId?: mongoose.Schema.Types.ObjectId;
   title?: string;
   clientInfo?: IClientInfo;
   note?: string;
@@ -73,6 +78,11 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
     required: true,
   },
   resumeIndex: { type: Number, required: false, default: 1 },
+  orderId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Order",
+    required: false,
+  },
   title: { type: String, required: false },
   clientInfo: {
     type: {
