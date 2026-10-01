@@ -61,6 +61,7 @@ export interface IEvent extends Document {
   scanPoints?: string[];
   showWorkSubmissionPopup?: boolean;
   maxWorkSubmissions?: number;
+  workSubmissionDeadline?: Date | null;
   workAbstractConfig?: {
     allowCoAuthors?: boolean;
     sections?: { label: string; wordLimit?: number }[];
@@ -205,6 +206,9 @@ const EventSchema = new Schema({
   restricted: { type: Boolean, default: false },
   showWorkSubmissionPopup: { type: Boolean, default: false },
   maxWorkSubmissions: { type: Number },
+  // Once this date has passed, participants can no longer submit or edit
+  // résumés for the event. Unset/null = submissions stay open.
+  workSubmissionDeadline: { type: Date },
   workAbstractConfig: {
     allowCoAuthors: { type: Boolean, default: false },
     sections: {

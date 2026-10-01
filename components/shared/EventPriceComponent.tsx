@@ -752,7 +752,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   });
 
   const allowGuestRegistration = event.allowGuestRegistration !== false;
-  const shouldShowWorkSubmission = event.showWorkSubmissionPopup === true;
+  // Résumé submission is switched off once the organizer's deadline has passed.
+  const workSubmissionClosed =
+    !!event.workSubmissionDeadline &&
+    new Date(event.workSubmissionDeadline).getTime() <= Date.now();
+  const shouldShowWorkSubmission =
+    event.showWorkSubmissionPopup === true && !workSubmissionClosed;
   const workAbstractSections = event.workAbstractConfig?.sections;
   const workTotalWordLimit = event.workAbstractConfig?.totalWordLimit;
   const workAllowCoAuthors = event.workAbstractConfig?.allowCoAuthors === true;

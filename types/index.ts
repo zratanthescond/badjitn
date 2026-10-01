@@ -100,6 +100,7 @@ export type CreateEventParams = {
     organisationId?: string;
     showWorkSubmissionPopup?: boolean;
     maxWorkSubmissions?: number;
+    workSubmissionDeadline?: Date | null;
     allowGuestRegistration?: boolean;
     disabledBaseFields?: string[];
     city?: string;
@@ -149,6 +150,7 @@ export type UpdateEventParams = {
     organisationId?: string;
     showWorkSubmissionPopup?: boolean;
     maxWorkSubmissions?: number;
+    workSubmissionDeadline?: Date | null;
     allowGuestRegistration?: boolean;
     disabledBaseFields?: string[];
     city?: string;
@@ -238,6 +240,7 @@ export type Event = {
   attendees?: string[];
   showWorkSubmissionPopup?: boolean;
   maxWorkSubmissions?: number;
+  workSubmissionDeadline?: Date | string | null;
   allowGuestRegistration?: boolean;
   disabledBaseFields?: string[];
   city?: string;

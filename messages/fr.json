@@ -1646,7 +1646,11 @@
       "description": "Si cette option est activée, le client verra une confirmation après participation pour choisir entre soumettre un travail ou revenir à l'accueil.",
       "maxLabel": "Nombre maximum de résumés par participant",
       "maxDescription": "Laissez vide pour ne fixer aucune limite. Une fois ce nombre de résumés acceptés atteint pour un participant donné, il ne pourra plus en soumettre de nouveaux pour cet événement.",
-      "maxPlaceholder": "Aucune limite"
+      "maxPlaceholder": "Aucune limite",
+      "deadlineLabel": "Date limite de soumission des résumés",
+      "deadlineDescription": "Laissez vide pour ne fixer aucune date limite. Passé cette date, les participants ne pourront plus soumettre ni modifier de résumés pour cet événement.",
+      "deadlinePlaceholder": "Choisir la date et l'heure",
+      "deadlineTime": "Heure"
     },
     "showProfileButton": {
       "title": "Afficher le bouton 'Consulter mon profil'",

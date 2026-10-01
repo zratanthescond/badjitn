@@ -22,6 +22,7 @@ export default async function SubmitWorkPage(props: SubmitWorkPageProps) {
       eventId={params.id}
       userId={user?._id ? String(user._id) : undefined}
       email={user?.email || searchParams?.email}
+      submissionDeadline={event.workSubmissionDeadline}
     />
   );
 }

@@ -70,6 +70,7 @@ export const eventFormSchema = z
       .int()
       .min(0, "Must be 0 or more")
       .optional(),
+    workSubmissionDeadline: z.coerce.date().nullable().optional(),
     workAbstractConfig: z
       .object({
         allowCoAuthors: z.boolean().optional().default(false),

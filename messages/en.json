@@ -1644,7 +1644,11 @@
       "description": "If enabled, customers will see a confirmation after participating to choose between submitting work or returning home.",
       "maxLabel": "Maximum number of work submissions per participant",
       "maxDescription": "Leave empty for no limit. Once a participant reaches this number of accepted submissions, they will no longer be able to submit new ones for this event.",
-      "maxPlaceholder": "No limit"
+      "maxPlaceholder": "No limit",
+      "deadlineLabel": "Work submission deadline",
+      "deadlineDescription": "Leave empty for no deadline. After this date, participants can no longer submit or edit work submissions for this event.",
+      "deadlinePlaceholder": "Choose date and time",
+      "deadlineTime": "Time"
     },
     "city": "City",
     "village": "Village",

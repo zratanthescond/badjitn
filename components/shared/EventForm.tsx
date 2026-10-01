@@ -112,6 +112,9 @@ const EventForm = ({
         allowGuestRegistration: event.allowGuestRegistration ?? true,
         startDateTime: new Date(event.startDateTime),
         endDateTime: new Date(event.endDateTime),
+        workSubmissionDeadline: event.workSubmissionDeadline
+          ? new Date(event.workSubmissionDeadline)
+          : null,
         discount: event.discount
           ? {
               ...event.discount,
@@ -1288,6 +1291,43 @@ const EventForm = ({
                                 value={field.value ?? ""}
                                 className="rounded-full glass border-0"
                               />
+                            </FormControl>
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="workSubmissionDeadline"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                          <div className="w-full space-y-1">
+                            <FormLabel htmlFor="workSubmissionDeadline">
+                              {t("workSubmission.deadlineLabel")}
+                            </FormLabel>
+                            <FormDescription>
+                              {t("workSubmission.deadlineDescription")}
+                            </FormDescription>
+                            <FormControl>
+                              <div className="flex-center glass !backdrop-filter-none h-[54px] w-full overflow-hidden rounded-full px-4 py-2">
+                                <CalendarIcon />
+                                <DatePicker
+                                  id="workSubmissionDeadline"
+                                  selected={field.value ?? null}
+                                  onChange={(date: Date | null) => field.onChange(date)}
+                                  showTimeSelect
+                                  timeIntervals={15}
+                                  timeFormat="HH:mm"
+                                  timeCaption={t("workSubmission.deadlineTime")}
+                                  isClearable
+                                  placeholderText={t("workSubmission.deadlinePlaceholder")}
+                                  dateFormat="dd/MM/yyyy HH:mm"
+                                  wrapperClassName="datePicker"
+                                />
+                              </div>
                             </FormControl>
                           </div>
                         </div>

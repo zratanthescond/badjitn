@@ -75,10 +75,12 @@ export default function WorkUploader({
   eventId,
   userId,
   email,
+  submissionDeadline,
 }: {
   eventId: string;
   userId?: string;
   email?: string;
+  submissionDeadline?: Date | string | null;
 }) {
   const t = useTranslations("WorkUploader");
   const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
@@ -364,7 +366,10 @@ export default function WorkUploader({
   };
 
   const noteContent = typeof note === "string" ? note : "";
+  const submissionClosed =
+    !!submissionDeadline && new Date(submissionDeadline).getTime() <= Date.now();
   const canSubmitSummary =
+    !submissionClosed &&
     (title.trim().length > 0 || noteContent.trim().length > 0) &&
     !submitSummaryMutation.isPending;
 
@@ -436,6 +441,29 @@ export default function WorkUploader({
           </Card>
         )}
 
+        {submissionDeadline && (
+          <div
+            className={`flex items-center gap-2 p-3 rounded-xl border text-sm ${
+              submissionClosed
+                ? "bg-destructive/10 border-destructive/20 text-destructive"
+                : "bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-300"
+            }`}
+          >
+            {submissionClosed ? (
+              <AlertCircle className="h-5 w-5 shrink-0" />
+            ) : (
+              <Clock3 className="h-5 w-5 shrink-0" />
+            )}
+            {submissionClosed
+              ? tx("deadline.closed", "La soumission des résumés est clôturée depuis le")
+              : tx("deadline.open", "Date limite de soumission des résumés :")}{" "}
+            {new Date(submissionDeadline).toLocaleString(locale, {
+              dateStyle: "long",
+              timeStyle: "short",
+            })}
+          </div>
+        )}
+
         {isLoading ? (
           <Skeleton className="w-full h-64 rounded-xl" />
         ) : (
@@ -474,6 +502,7 @@ export default function WorkUploader({
                       variant="outline"
                       className="rounded-xl"
                       onClick={createNewSummary}
+                      disabled={submissionClosed}
                     >
                       <PlusCircle className="h-4 w-4 mr-2" />
                       {tx("newSummary", "Nouveau resume")}

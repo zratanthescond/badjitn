@@ -359,6 +359,10 @@ export async function submitWorkSummary({
     const event = await Event.findById(eventId);
     if (!event) throw new Error("Event not found");
 
+    if (event.workSubmissionDeadline && new Date(event.workSubmissionDeadline).getTime() <= Date.now()) {
+      throw new Error("La soumission des résumés est clôturée pour cet événement.");
+    }
+
     let resolvedUserId = userId;
     let user = resolvedUserId ? await User.findById(resolvedUserId) : null;
 
