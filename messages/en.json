@@ -4827,6 +4827,10 @@
       "done": "{created, plural, =0 {No certificates created} one {# certificate created} other {# certificates created}}{skipped, plural, =0 {.} other {, # existing skipped.}}",
       "failed": "Assignment failed."
     },
+    "planFilter": {
+      "label": "Filter by plan",
+      "all": "All plans"
+    },
     "issued": {
       "type": "Certificate type",
       "assign": "Assign to participants",

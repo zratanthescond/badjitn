@@ -21,12 +21,14 @@ import {
 } from "@/lib/actions/certificate.actions"
 import { CertificatePrinter, type PrintableCertificate } from "@/components/shared/certificates/certificate-printer"
 import { AssignCertificatesDialog } from "./AssignCertificatesDialog"
+import { ALL_PLANS, PlanFilterSelect, matchesPlanFilter, type PlanChoice } from "./PlanFilterSelect"
 import type { CertificateEventDetails } from "./CertificateManager"
 
 type Issued = {
     _id: string
     templateId: string
     orderId: string | null
+    plans: PlanChoice[]
     recipientName: string
     recipientEmail: string
     emailStatus: "none" | "queued" | "sent" | "failed"
@@ -57,6 +59,7 @@ export function IssuedCertificatesPanel({
     const t = useTranslations("certificates")
     const [templateId, setTemplateId] = useState<string>("")
     const [search, setSearch] = useState("")
+    const [planFilter, setPlanFilter] = useState(ALL_PLANS)
     const [selected, setSelected] = useState<Set<string>>(new Set())
     const [assignOpen, setAssignOpen] = useState(false)
     const [editing, setEditing] = useState<Issued | null>(null)
@@ -76,9 +79,12 @@ export function IssuedCertificatesPanel({
     const forTemplate = useMemo(() => issued.filter((c) => c.templateId === activeTemplateId), [issued, activeTemplateId])
     const filtered = useMemo(() => {
         const q = search.trim().toLowerCase()
-        if (!q) return forTemplate
-        return forTemplate.filter((c) => c.recipientName.toLowerCase().includes(q) || c.recipientEmail.includes(q))
-    }, [forTemplate, search])
+        return forTemplate.filter(
+            (c) =>
+                matchesPlanFilter(c.plans, planFilter) &&
+                (!q || c.recipientName.toLowerCase().includes(q) || c.recipientEmail.includes(q))
+        )
+    }, [forTemplate, search, planFilter])
     const issuedOrderIds = useMemo(() => new Set(forTemplate.map((c) => c.orderId).filter(Boolean) as string[]), [forTemplate])
     const selectedRows = filtered.filter((c) => selected.has(c._id))
     const allSelected = filtered.length > 0 && filtered.every((c) => selected.has(c._id))
@@ -161,7 +167,7 @@ export function IssuedCertificatesPanel({
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3">
                 <div className="space-y-1 w-full sm:w-80">
                     <Label>{t("issued.type")}</Label>
-                    <Select value={activeTemplateId} onValueChange={(v) => { setTemplateId(v); setSelected(new Set()) }}>
+                    <Select value={activeTemplateId} onValueChange={(v) => { setTemplateId(v); setPlanFilter(ALL_PLANS); setSelected(new Set()) }}>
                         <SelectTrigger>
                             <SelectValue />
                         </SelectTrigger>
@@ -180,9 +186,12 @@ export function IssuedCertificatesPanel({
 
             <Card className="p-4 space-y-3">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                    <div className="relative w-full md:w-72">
-                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("issued.search")} className="pl-9" />
+                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                        <div className="relative w-full sm:w-64">
+                            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                            <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("issued.search")} className="pl-9" />
+                        </div>
+                        <PlanFilterSelect rows={forTemplate} value={planFilter} onChange={setPlanFilter} className="w-full sm:w-64" />
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                         <span className="text-sm text-muted-foreground">{t("issued.selectedCount", { count: selectedRows.length, total: filtered.length })}</span>

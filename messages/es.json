@@ -4827,6 +4827,10 @@
       "done": "{created, plural, =0 {Ningún certificado creado} one {# certificado creado} other {# certificados creados}}{skipped, plural, =0 {.} other {, # existentes omitidos.}}",
       "failed": "La asignación falló."
     },
+    "planFilter": {
+      "label": "Filtrar por plan",
+      "all": "Todos los planes"
+    },
     "issued": {
       "type": "Tipo de certificado",
       "assign": "Asignar a participantes",

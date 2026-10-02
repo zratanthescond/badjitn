@@ -12,8 +12,9 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { toast } from "@/hooks/use-toast"
 import { getCertificateCandidates, issueCertificates, type IssueRecipient } from "@/lib/actions/certificate.actions"
+import { ALL_PLANS, PlanFilterSelect, matchesPlanFilter, type PlanChoice } from "./PlanFilterSelect"
 
-type Candidate = { orderId: string; name: string; email: string; category: string }
+type Candidate = { orderId: string; name: string; email: string; category: string; plans: PlanChoice[] }
 
 export function AssignCertificatesDialog({
     open,
@@ -32,6 +33,7 @@ export function AssignCertificatesDialog({
 }) {
     const t = useTranslations("certificates")
     const [search, setSearch] = useState("")
+    const [planFilter, setPlanFilter] = useState(ALL_PLANS)
     const [selected, setSelected] = useState<Set<string>>(new Set())
     const [manual, setManual] = useState<{ name: string; email: string }[]>([])
     const [manualName, setManualName] = useState("")
@@ -46,9 +48,12 @@ export function AssignCertificatesDialog({
 
     const filtered = useMemo(() => {
         const q = search.trim().toLowerCase()
-        if (!q) return candidates
-        return candidates.filter((c) => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q))
-    }, [candidates, search])
+        return candidates.filter(
+            (c) =>
+                matchesPlanFilter(c.plans, planFilter) &&
+                (!q || c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q))
+        )
+    }, [candidates, search, planFilter])
 
     const selectable = filtered.filter((c) => !alreadyIssuedOrderIds.has(c.orderId))
     const allFilteredSelected = selectable.length > 0 && selectable.every((c) => selected.has(c.orderId))
@@ -81,6 +86,7 @@ export function AssignCertificatesDialog({
         setSelected(new Set())
         setManual([])
         setSearch("")
+        setPlanFilter(ALL_PLANS)
         setManualName("")
         setManualEmail("")
     }
@@ -114,11 +120,13 @@ export function AssignCertificatesDialog({
                 </DialogHeader>
 
                 <div className="space-y-3 flex-1 min-h-0 flex flex-col">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                         <div className="relative flex-1">
                             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                             <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("assign.search")} className="pl-9" />
                         </div>
+                        <PlanFilterSelect rows={candidates} value={planFilter} onChange={setPlanFilter} className="w-full sm:w-56" />
+
                         <Button variant="outline" size="sm" onClick={toggleAllFiltered} disabled={selectable.length === 0}>
                             {allFilteredSelected ? t("assign.unselectAll") : t("assign.selectAll", { count: selectable.length })}
                         </Button>

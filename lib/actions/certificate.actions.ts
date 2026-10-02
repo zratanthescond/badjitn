@@ -5,6 +5,7 @@ import { connectToDatabase } from "@/lib/database";
 import Certificate from "@/lib/database/models/certification.model";
 import CertificateTemplate from "@/lib/database/models/certificate-template.model";
 import Event from "@/lib/database/models/event.model";
+import Order from "@/lib/database/models/order.model";
 import User from "@/lib/database/models/user.model";
 import { verifyOrganizerOrAdmin } from "./auth.actions";
 import { useUser } from "./user.actions";
@@ -119,14 +120,37 @@ export async function deleteCertificateTemplate(templateId: string) {
 
 // ---------- Issued certificates ----------
 
+export type CertificatePlanChoice = { plan: string; option: string };
+
+// Plans (and the chosen option / sub-plan, e.g. a workshop) bought on each order,
+// so certificates can be filtered by what the participant registered for.
+async function loadOrderPlans(filter: Record<string, unknown>) {
+  const orders = await Order.find(filter, { details: 1 }).lean();
+  const plansByOrder = new Map<string, CertificatePlanChoice[]>();
+  for (const order of orders as any[]) {
+    const plans: CertificatePlanChoice[] = [];
+    for (const detail of order.details || []) {
+      const plan = String(detail?.name || "").trim();
+      if (!plan) continue;
+      // Legacy orders may hold the option as an object instead of its name.
+      const rawOption = detail?.option && typeof detail.option === "object" ? detail.option.name : detail?.option;
+      plans.push({ plan, option: String(rawOption || "").trim() });
+    }
+    plansByOrder.set(String(order._id), plans);
+  }
+  return plansByOrder;
+}
+
 export async function getCertificateCandidates(eventId: string) {
   await verifyOrganizerOrAdmin(eventId);
   const attendees = (await getAttendeesByEvent(eventId)) || [];
+  const plansByOrder = await loadOrderPlans({ event: new ObjectId(eventId) });
   return attendees.map((a: any) => ({
     orderId: a.orderId || a._id,
     name: a.name,
     email: a.email || "",
     category: a.category,
+    plans: plansByOrder.get(String(a.orderId || a._id)) || [],
   }));
 }
 
@@ -136,10 +160,15 @@ export async function getIssuedCertificates(eventId: string) {
   const certificates = await Certificate.find({ eventId: new ObjectId(eventId), source: "issued" })
     .sort({ createdAt: -1 })
     .lean();
+  const orderIds = certificates.map((c: any) => c.orderId).filter(Boolean);
+  const plansByOrder = orderIds.length
+    ? await loadOrderPlans({ _id: { $in: orderIds }, event: new ObjectId(eventId) })
+    : new Map<string, CertificatePlanChoice[]>();
   return toPlain(certificates).map((c: any) => ({
     _id: c._id,
     templateId: c.templateId,
     orderId: c.orderId || null,
+    plans: (c.orderId && plansByOrder.get(String(c.orderId))) || [],
     recipientName: c.recipientName || "",
     recipientEmail: c.recipientEmail || "",
     emailStatus: c.emailStatus || "none",
