@@ -3724,6 +3724,9 @@
       "viewDetails": "عرض التفاصيل"
     },
     "bulkEmail": {
+      "testToastTitle": "تم إرسال البريد التجريبي",
+      "testToastDescription": "تم إرسال البريد التجريبي إلى {email}.",
+      "testToastErrorTitle": "فشل إرسال التجربة",
       "button": "بريد للمقبولين",
       "dialogTitle": "إرسال بريد إلى جميع الملخصات المقبولة",
       "dialogDescription": "يتم إرسال بريد إلكتروني لكل ملخص مقبول في هذه الفعالية بالرسالة أدناه.",
@@ -3833,6 +3836,10 @@
     }
   },
   "workEmailDialog": {
+    "testLabel": "إرسال بريد تجريبي",
+    "testPlaceholder": "عنوانك (افتراضيًا: بريد حسابك)",
+    "testButton": "إرسال تجربة",
+    "testHint": "يُرسل الاختبار إلى هذا العنوان فقط مع إضافة [TEST] إلى الموضوع. لا يتم إشعار أي مشارك.",
     "subjectLabel": "الموضوع",
     "subjectPlaceholder": "موضوع البريد الإلكتروني",
     "messageLabel": "الرسالة",
@@ -3895,6 +3902,9 @@
       "toastErrorTitle": "فشل الرفض"
     },
     "sendEmail": {
+      "testToastTitle": "تم إرسال البريد التجريبي",
+      "testToastDescription": "تم إرسال البريد التجريبي إلى {email}.",
+      "testToastErrorTitle": "فشل إرسال التجربة",
       "button": "إرسال بريد إلكتروني",
       "toastTitle": "تم إرسال البريد الإلكتروني",
       "toastDescription": "تم إرسال البريد الإلكتروني إلى {email}.",

@@ -38,6 +38,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
 import { WorkEmailDialog, type WorkEmailPayload } from "./WorkEmailDialog";
+import { sendWorkTestEmail } from "@/lib/actions/user.actions";
 
 const FileViewer = dynamic(() => import("react-file-viewer"), {
   ssr: false,
@@ -53,6 +54,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   const [rejectionReason, setRejectionReason] = useState("");
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
+  const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
   const fileViewerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const summaryStatus = value?.summaryStatus ?? value?.status ?? "submitted";
@@ -218,6 +220,32 @@ export function WorkDetailsDialog({ value }: { value: any }) {
     }
   };
 
+  const handleSendTestEmail = async (payload: WorkEmailPayload, to: string) => {
+    if (!value.eventId) return;
+    setIsSendingTestEmail(true);
+    try {
+      const result = await sendWorkTestEmail({
+        eventId: String(value.eventId),
+        to,
+        config: payload,
+        summaryStatus,
+        summaryTitle: value.title || undefined,
+      });
+      toast({
+        title: t("sendEmail.testToastTitle"),
+        description: t("sendEmail.testToastDescription", { email: result.email }),
+      });
+    } catch (err) {
+      toast({
+        title: t("sendEmail.testToastErrorTitle"),
+        description: err instanceof Error ? err.message : "",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingTestEmail(false);
+    }
+  };
+
   // Function to try and force scrollbar visibility and ensure height
   const adjustFileViewerScroll = () => {
     if (fileViewerRef.current) {
@@ -376,6 +404,8 @@ export function WorkDetailsDialog({ value }: { value: any }) {
             confirmLabel={t("sendEmail.confirm")}
             isSending={isSendingEmail}
             onSend={handleSendEmail}
+            onSendTest={value.eventId ? handleSendTestEmail : undefined}
+            isSendingTest={isSendingTestEmail}
           />
         </>
       )}

@@ -9,6 +9,7 @@ import Search from "../shared/Search";
 import {
   getUserWorkByEventId,
   sendEmailToApprovedWorks,
+  sendWorkTestEmail,
 } from "@/lib/actions/user.actions";
 import { WorkEmailDialog, type WorkEmailPayload } from "./WorkEmailDialog";
 import { useQuery } from "@tanstack/react-query";
@@ -109,6 +110,7 @@ export default function WorkAdministration({
   const [isExporting, setIsExporting] = useState(false);
   const [isBulkEmailDialogOpen, setIsBulkEmailDialogOpen] = useState(false);
   const [isBulkEmailing, setIsBulkEmailing] = useState(false);
+  const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
 
   const { isPending, data, error } = useQuery({
     queryKey: ["works", eventId, searchString],
@@ -367,6 +369,30 @@ export default function WorkAdministration({
       });
     } finally {
       setIsBulkEmailing(false);
+    }
+  };
+
+  const handleBulkTestEmail = async (payload: WorkEmailPayload, to: string) => {
+    setIsSendingTestEmail(true);
+    try {
+      const result = await sendWorkTestEmail({
+        eventId,
+        to,
+        config: payload,
+        summaryStatus: "approved",
+      });
+      toast({
+        title: t("bulkEmail.testToastTitle"),
+        description: t("bulkEmail.testToastDescription", { email: result.email }),
+      });
+    } catch (err) {
+      toast({
+        title: t("bulkEmail.testToastErrorTitle"),
+        description: err instanceof Error ? err.message : "",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingTestEmail(false);
     }
   };
 
@@ -934,6 +960,8 @@ export default function WorkAdministration({
             confirmLabel={t("bulkEmail.confirm", { count: approvedCount })}
             isSending={isBulkEmailing}
             onSend={handleBulkEmail}
+            onSendTest={handleBulkTestEmail}
+            isSendingTest={isSendingTestEmail}
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -3724,6 +3724,9 @@
       "viewDetails": "View Details"
     },
     "bulkEmail": {
+      "testToastTitle": "Test email sent",
+      "testToastDescription": "The test email was sent to {email}.",
+      "testToastErrorTitle": "Test send failed",
       "button": "Email approved",
       "dialogTitle": "Email all approved résumés",
       "dialogDescription": "One email is sent for each approved résumé of this event, with the message below.",
@@ -3833,6 +3836,10 @@
     }
   },
   "workEmailDialog": {
+    "testLabel": "Send a test email",
+    "testPlaceholder": "Your address (default: your account email)",
+    "testButton": "Send test",
+    "testHint": "The test goes only to this address, with the subject prefixed [TEST]. No participant is notified.",
     "subjectLabel": "Subject",
     "subjectPlaceholder": "Email subject",
     "messageLabel": "Message",
@@ -3895,6 +3902,9 @@
       "toastErrorTitle": "Rejection failed"
     },
     "sendEmail": {
+      "testToastTitle": "Test email sent",
+      "testToastDescription": "The test email was sent to {email}.",
+      "testToastErrorTitle": "Test send failed",
       "button": "Send email",
       "toastTitle": "Email sent",
       "toastDescription": "The email was sent to {email}.",

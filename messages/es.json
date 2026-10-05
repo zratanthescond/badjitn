@@ -3724,6 +3724,9 @@
       "viewDetails": "Ver detalles"
     },
     "bulkEmail": {
+      "testToastTitle": "Email de prueba enviado",
+      "testToastDescription": "El email de prueba se envió a {email}.",
+      "testToastErrorTitle": "Error al enviar la prueba",
       "button": "Email a aprobados",
       "dialogTitle": "Enviar un email a todos los resúmenes aprobados",
       "dialogDescription": "Se envía un email por cada resumen aprobado de este evento, con el mensaje de abajo.",
@@ -3833,6 +3836,10 @@
     }
   },
   "workEmailDialog": {
+    "testLabel": "Enviar un email de prueba",
+    "testPlaceholder": "Su dirección (por defecto: el email de su cuenta)",
+    "testButton": "Enviar prueba",
+    "testHint": "La prueba se envía solo a esta dirección, con el asunto precedido de [TEST]. Ningún participante recibe notificación.",
     "subjectLabel": "Asunto",
     "subjectPlaceholder": "Asunto del email",
     "messageLabel": "Mensaje",
@@ -3895,6 +3902,9 @@
       "toastErrorTitle": "Fallo en el rechazo"
     },
     "sendEmail": {
+      "testToastTitle": "Email de prueba enviado",
+      "testToastDescription": "El email de prueba se envió a {email}.",
+      "testToastErrorTitle": "Error al enviar la prueba",
       "button": "Enviar email",
       "toastTitle": "Email enviado",
       "toastDescription": "El email se envió a {email}.",

@@ -875,6 +875,56 @@ export async function resendWorkSubmissionEmail({
 }
 
 /**
+ * Sends the configured email to a single test address (the caller's own
+ * email when none is given) so the organizer can check the rendering before
+ * sending it to participants. Nothing is recorded against any résumé.
+ */
+export async function sendWorkTestEmail({
+  eventId,
+  to,
+  config,
+  summaryStatus = "approved",
+  summaryTitle,
+}: {
+  eventId: string;
+  to?: string;
+  config?: WorkEmailConfig;
+  summaryStatus?: string;
+  summaryTitle?: string;
+}) {
+  try {
+    await connectToDatabase();
+    const caller = await verifyOrganizerOrAdmin(eventId);
+
+    const target = (to || "").trim() || caller?.email;
+    if (!target) throw new Error("Aucune adresse email de test");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(target)) {
+      throw new Error("Adresse email de test invalide");
+    }
+
+    const event = await Event.findById(eventId).select("title");
+    const email = buildConfiguredWorkEmail(summaryStatus, config, "");
+
+    await sendWorkStatusEmail({
+      to: target,
+      subject: `[TEST] ${email.subject}`,
+      title: email.title,
+      intro: email.intro,
+      eventTitle: event?.title || "",
+      summaryTitle: summaryTitle || "Exemple de résumé",
+      extra: email.extra,
+      ctaLabel: email.ctaLabel,
+      ctaUrl: buildSubmitWorkUrl(eventId, target),
+    });
+
+    return { success: true, email: target };
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
+
+/**
  * Sends one email per approved résumé of the event, with the organizer's
  * configured subject/message. Failures are collected rather than aborting the
  * batch so one bad address does not block the others.

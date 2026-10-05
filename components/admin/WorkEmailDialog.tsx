@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Mail, RotateCcw, Send } from "lucide-react";
+import { FlaskConical, Mail, RotateCcw, Send } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import {
@@ -39,6 +39,8 @@ export function WorkEmailDialog({
   confirmLabel,
   isSending,
   onSend,
+  onSendTest,
+  isSendingTest = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -51,6 +53,9 @@ export function WorkEmailDialog({
   confirmLabel: string;
   isSending: boolean;
   onSend: (payload: WorkEmailPayload) => void | Promise<void>;
+  /** When provided, shows a "send a test" row; `to` is empty when the organizer wants their own address. */
+  onSendTest?: (payload: WorkEmailPayload, to: string) => void | Promise<void>;
+  isSendingTest?: boolean;
 }) {
   const t = useTranslations("workEmailDialog");
   const locale = useLocale();
@@ -58,6 +63,7 @@ export function WorkEmailDialog({
   const [subject, setSubject] = useState(defaultSubject);
   const [message, setMessage] = useState(defaultMessage);
   const [extraLine, setExtraLine] = useState("");
+  const [testEmail, setTestEmail] = useState("");
 
   // Re-seed the fields each time the dialog opens so edits from a previous
   // send (or a different row) do not leak into the next one.
@@ -66,8 +72,16 @@ export function WorkEmailDialog({
       setSubject(defaultSubject);
       setMessage(defaultMessage);
       setExtraLine("");
+      setTestEmail("");
     }
   }, [open, defaultSubject, defaultMessage]);
+
+  const busy = isSending || isSendingTest;
+  const currentPayload = (): WorkEmailPayload => ({
+    subject: subject.trim(),
+    message: message.trim(),
+    extraLine: extraLine.trim(),
+  });
 
   const resetToDefaults = () => {
     setSubject(defaultSubject);
@@ -76,10 +90,11 @@ export function WorkEmailDialog({
   };
 
   const fontClass = isRTL ? "font-arabic" : "";
-  const canSend = !isSending && subject.trim().length > 0 && message.trim().length > 0;
+  const hasContent = subject.trim().length > 0 && message.trim().length > 0;
+  const canSend = !busy && hasContent;
 
   return (
-    <Dialog open={open} onOpenChange={(next) => !isSending && onOpenChange(next)}>
+    <Dialog open={open} onOpenChange={(next) => !busy && onOpenChange(next)}>
       <DialogContent className={`sm:max-w-xl ${isRTL ? "rtl text-right" : ""}`}>
         <DialogHeader>
           <DialogTitle className={`flex items-center gap-2 ${fontClass}`}>
@@ -151,6 +166,43 @@ export function WorkEmailDialog({
               {t("extraLineHint")}
             </p>
           </div>
+
+          {onSendTest && (
+            <div className="rounded-xl border border-dashed border-amber-500/40 bg-amber-500/5 p-3 space-y-2">
+              <Label htmlFor="work-email-test" className={`flex items-center gap-2 ${fontClass}`}>
+                <FlaskConical className="h-4 w-4 text-amber-600" />
+                {t("testLabel")}
+              </Label>
+              <div className={`flex flex-col sm:flex-row gap-2 ${isRTL ? "sm:flex-row-reverse" : ""}`}>
+                <Input
+                  id="work-email-test"
+                  type="email"
+                  value={testEmail}
+                  onChange={(e) => setTestEmail(e.target.value)}
+                  placeholder={t("testPlaceholder")}
+                  disabled={busy}
+                  className={`flex-1 ${fontClass}`}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onSendTest(currentPayload(), testEmail.trim())}
+                  disabled={busy || !hasContent}
+                  className={`shrink-0 border-amber-500/40 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10 ${fontClass}`}
+                >
+                  {isSendingTest ? (
+                    <div className="w-4 h-4 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mr-2" />
+                  ) : (
+                    <FlaskConical className="h-4 w-4 mr-2" />
+                  )}
+                  {t("testButton")}
+                </Button>
+              </div>
+              <p className={`text-xs text-muted-foreground ${fontClass}`}>
+                {t("testHint")}
+              </p>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
@@ -158,7 +210,7 @@ export function WorkEmailDialog({
             type="button"
             variant="ghost"
             onClick={resetToDefaults}
-            disabled={isSending}
+            disabled={busy}
             className={`sm:mr-auto ${fontClass}`}
           >
             <RotateCcw className="h-4 w-4 mr-2" />
@@ -168,20 +220,14 @@ export function WorkEmailDialog({
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={isSending}
+            disabled={busy}
             className={fontClass}
           >
             {t("cancel")}
           </Button>
           <Button
             type="button"
-            onClick={() =>
-              onSend({
-                subject: subject.trim(),
-                message: message.trim(),
-                extraLine: extraLine.trim(),
-              })
-            }
+            onClick={() => onSend(currentPayload())}
             disabled={!canSend}
             className={`bg-blue-600 hover:bg-blue-700 text-white ${fontClass}`}
           >

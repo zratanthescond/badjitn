@@ -3724,6 +3724,9 @@
       "viewDetails": "Voir les Détails"
     },
     "bulkEmail": {
+      "testToastTitle": "Email de test envoyé",
+      "testToastDescription": "L'email de test a été envoyé à {email}.",
+      "testToastErrorTitle": "Échec de l'envoi du test",
       "button": "Email aux approuvés",
       "dialogTitle": "Envoyer un email à tous les résumés approuvés",
       "dialogDescription": "Un email est envoyé pour chaque résumé approuvé de cet événement, avec le message ci-dessous.",
@@ -3833,6 +3836,10 @@
     }
   },
   "workEmailDialog": {
+    "testLabel": "Envoyer un email de test",
+    "testPlaceholder": "Votre adresse (par défaut : l'email de votre compte)",
+    "testButton": "Envoyer un test",
+    "testHint": "Le test est envoyé uniquement à cette adresse, avec l'objet préfixé [TEST]. Aucun participant n'est notifié.",
     "subjectLabel": "Objet",
     "subjectPlaceholder": "Objet de l'email",
     "messageLabel": "Message",
@@ -3895,6 +3902,9 @@
       "toastErrorTitle": "Échec du refus"
     },
     "sendEmail": {
+      "testToastTitle": "Email de test envoyé",
+      "testToastDescription": "L'email de test a été envoyé à {email}.",
+      "testToastErrorTitle": "Échec de l'envoi du test",
       "button": "Envoyer un email",
       "toastTitle": "Email envoyé",
       "toastDescription": "L'email a été envoyé à {email}.",
