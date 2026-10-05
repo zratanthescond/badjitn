@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import DataTable from "@/components/shared/data-table";
 import { Badge } from "../ui/badge";
 import Search from "../shared/Search";
-import { getUserWorkByEventId } from "@/lib/actions/user.actions";
+import {
+  getUserWorkByEventId,
+  sendEmailToApprovedWorks,
+} from "@/lib/actions/user.actions";
+import { WorkEmailDialog, type WorkEmailPayload } from "./WorkEmailDialog";
 import { useQuery } from "@tanstack/react-query";
 import TableSkeleton from "../shared/table-skeleton";
 import { formatDateTime } from "@/lib/utils";
@@ -17,6 +21,7 @@ import {
   Calendar,
   FileText,
   Filter,
+  MailCheck,
 } from "lucide-react";
 import {
   Card,
@@ -102,6 +107,8 @@ export default function WorkAdministration({
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { toast } = useToast();
   const [isExporting, setIsExporting] = useState(false);
+  const [isBulkEmailDialogOpen, setIsBulkEmailDialogOpen] = useState(false);
+  const [isBulkEmailing, setIsBulkEmailing] = useState(false);
 
   const { isPending, data, error } = useQuery({
     queryKey: ["works", eventId, searchString],
@@ -324,6 +331,44 @@ export default function WorkAdministration({
         ).length,
       }
     : { total: 0, submitted: 0, reviewed: 0, pending: 0 };
+
+  // Only materialized EventWork rows can be approved, which is exactly what the
+  // bulk server action targets; the search filter does not narrow the bulk send.
+  const approvedCount = (data || []).filter(
+    (item: any) => item.summaryStatus === "approved" && !item.isPendingRegistration
+  ).length;
+
+  const handleBulkEmail = async (payload: WorkEmailPayload) => {
+    setIsBulkEmailing(true);
+    try {
+      const result = await sendEmailToApprovedWorks({ eventId, config: payload });
+      if (result.failed.length === 0) {
+        toast({
+          title: t("bulkEmail.toastTitle"),
+          description: t("bulkEmail.toastDescription", { sent: result.sent }),
+        });
+      } else {
+        toast({
+          title: t("bulkEmail.toastPartialTitle"),
+          description: t("bulkEmail.toastPartialDescription", {
+            sent: result.sent,
+            failed: result.failed.length,
+            titles: result.failed.map((f) => f.title).slice(0, 5).join(", "),
+          }),
+          variant: "destructive",
+        });
+      }
+      setIsBulkEmailDialogOpen(false);
+    } catch (err) {
+      toast({
+        title: t("bulkEmail.toastErrorTitle"),
+        description: err instanceof Error ? err.message : "",
+        variant: "destructive",
+      });
+    } finally {
+      setIsBulkEmailing(false);
+    }
+  };
 
   type ExportFormat = "csv" | "xlsx" | "word" | "pdf";
 
@@ -855,6 +900,41 @@ export default function WorkAdministration({
           >
             <Filter className="h-4 w-4" />
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => setIsBulkEmailDialogOpen(true)}
+            disabled={isPending || isBulkEmailing || approvedCount === 0}
+            title={t("bulkEmail.button")}
+            className={`shrink-0 glass bg-green-500/10 hover:bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300 ${
+              isRTL ? "font-arabic flex-row-reverse" : ""
+            }`}
+          >
+            {isBulkEmailing ? (
+              <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
+            ) : (
+              <MailCheck className="h-4 w-4" />
+            )}
+            <span className="ml-2 hidden sm:inline">
+              {t("bulkEmail.button")}
+            </span>
+            {approvedCount > 0 && (
+              <Badge className="ml-2 bg-green-600 text-white hover:bg-green-600 px-1.5 py-0 text-[11px]">
+                {approvedCount}
+              </Badge>
+            )}
+          </Button>
+          <WorkEmailDialog
+            open={isBulkEmailDialogOpen}
+            onOpenChange={setIsBulkEmailDialogOpen}
+            title={t("bulkEmail.dialogTitle")}
+            description={t("bulkEmail.dialogDescription")}
+            defaultSubject={t("bulkEmail.defaultSubject")}
+            defaultMessage={t("bulkEmail.defaultMessage")}
+            recipientSummary={t("bulkEmail.recipients", { count: approvedCount })}
+            confirmLabel={t("bulkEmail.confirm", { count: approvedCount })}
+            isSending={isBulkEmailing}
+            onSend={handleBulkEmail}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

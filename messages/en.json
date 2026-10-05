@@ -3723,6 +3723,20 @@
       "reviewWork": "Review Work",
       "viewDetails": "View Details"
     },
+    "bulkEmail": {
+      "button": "Email approved",
+      "dialogTitle": "Email all approved résumés",
+      "dialogDescription": "One email is sent for each approved résumé of this event, with the message below.",
+      "defaultSubject": "Résumé approved",
+      "defaultMessage": "Good news, the event organizer approved your résumé. You can now submit your work with your attachments by clicking the link below.",
+      "recipients": "{count, plural, one {# approved résumé will receive this email.} other {# approved résumés will receive this email.}}",
+      "confirm": "Send ({count})",
+      "toastTitle": "Emails sent",
+      "toastDescription": "{sent, plural, one {# email sent.} other {# emails sent.}}",
+      "toastPartialTitle": "Partial send",
+      "toastPartialDescription": "{sent} sent, {failed} failed: {titles}",
+      "toastErrorTitle": "Bulk send failed"
+    },
     "categories": {
       "add": "Add new category",
       "name": "Category name",
@@ -3818,6 +3832,18 @@
       "docSubtitle": "{count, plural, one {# submission} other {# submissions}} — exported on {date}"
     }
   },
+  "workEmailDialog": {
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Email subject",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Write the message sent to the participant…",
+    "messageHint": "Line breaks are kept. The event, the résumé title and the action button are added automatically.",
+    "extraLineLabel": "Additional line (optional)",
+    "extraLinePlaceholder": "E.g. Please upload your work before October 15.",
+    "extraLineHint": "Shown highlighted below the résumé details.",
+    "reset": "Restore default text",
+    "cancel": "Cancel"
+  },
   "workDetailsDialog": {
     "sections": {
       "title": "Structured abstract",
@@ -3871,8 +3897,26 @@
     "sendEmail": {
       "button": "Send email",
       "toastTitle": "Email sent",
-      "toastDescription": "The resume submission confirmation email was resent to {email}.",
-      "toastErrorTitle": "Failed to send email"
+      "toastDescription": "The email was sent to {email}.",
+      "toastErrorTitle": "Failed to send email",
+      "dialogTitle": "Send an email to the submitter",
+      "dialogDescription": "Configure the message before sending. The suggested text matches the résumé's current status.",
+      "recipient": "Recipient: {email}",
+      "confirm": "Send email",
+      "defaults": {
+        "approved": {
+          "subject": "Résumé approved",
+          "message": "Good news, the event organizer approved your résumé. You can now submit your work with your attachments by clicking the link below."
+        },
+        "rejected": {
+          "subject": "Résumé rejected",
+          "message": "After review, the event organizer could not validate your résumé."
+        },
+        "submitted": {
+          "subject": "Résumé submitted",
+          "message": "We have received your résumé. You will be able to upload your work once the event organizer approves it."
+        }
+      }
     },
     "status": {
       "pending": "Pending Review",

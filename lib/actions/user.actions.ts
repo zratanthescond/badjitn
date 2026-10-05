@@ -701,21 +701,101 @@ export async function rejectOrderWork(
   }
 }
 
+const escapeEmailHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+/** Plain text typed by the organizer → safe HTML with line breaks preserved. */
+const plainTextToEmailHtml = (value: string) =>
+  escapeEmailHtml(value.trim()).replace(/\r?\n/g, "<br/>");
+
+export type WorkEmailConfig = {
+  /** Email subject; falls back to the status default when empty. */
+  subject?: string;
+  /** Main message body (plain text, newlines kept); falls back to the status default when empty. */
+  message?: string;
+  /** Optional additional line appended under the event/résumé box. */
+  extraLine?: string;
+};
+
+/** Default subject/intro for an organizer-triggered email, by résumé status. */
+function getWorkEmailDefaults(summaryStatus?: string) {
+  if (summaryStatus === "approved") {
+    return {
+      subject: "Resume approuve",
+      title: "Votre resume a ete approuve",
+      intro:
+        "Bonne nouvelle, le createur de l'evenement a approuve votre resume. Vous pouvez maintenant soumettre votre travail avec vos pieces jointes en cliquant sur le lien ci-dessous.",
+      ctaLabel: "Soumettre mon travail",
+    };
+  }
+  if (summaryStatus === "rejected") {
+    return {
+      subject: "Resume refuse",
+      title: "Votre resume a ete refuse",
+      intro:
+        "Apres examen, le createur de l'evenement n'a pas pu valider votre resume.",
+      ctaLabel: "Consulter mes resumes",
+    };
+  }
+  return {
+    subject: "Resume soumis",
+    title: "Votre resume a ete soumis",
+    intro:
+      "Nous avons bien recu votre resume. Vous pourrez deposer votre travail une fois l'approbation effectuee par le createur de l'evenement.",
+    ctaLabel: "Consulter mes resumes",
+  };
+}
+
+function buildConfiguredWorkEmail(
+  summaryStatus: string | undefined,
+  config: WorkEmailConfig | undefined,
+  progressHtml: string
+) {
+  const defaults = getWorkEmailDefaults(summaryStatus);
+  const subject = config?.subject?.trim() || defaults.subject;
+  const customMessage = config?.message?.trim();
+  const intro = customMessage ? plainTextToEmailHtml(customMessage) : defaults.intro;
+  const extraLine = config?.extraLine?.trim();
+  const extraHtml = [
+    extraLine
+      ? `<p style="margin:0 0 12px;padding:12px 14px;border-left:4px solid #4f46e5;background:#eef2ff;border-radius:8px;">${plainTextToEmailHtml(extraLine)}</p>`
+      : "",
+    progressHtml,
+  ]
+    .filter(Boolean)
+    .join("");
+  return {
+    subject,
+    title: customMessage ? subject : defaults.title,
+    intro,
+    extra: extraHtml || undefined,
+    ctaLabel: defaults.ctaLabel,
+  };
+}
+
 /**
- * Resends the same "Resume soumis" confirmation email the participant received
- * when they submitted their resume. Used from the works admin table, where a
+ * Sends the status email for a résumé from the works admin table, where a
  * row is either a materialized EventWork (workId) or an order-only pending
  * registration that never went through the separate work-upload flow (orderId,
  * with the resume title/note still only captured on the Order).
+ * The organizer may override the subject/message and append an extra line;
+ * otherwise the default text for the résumé's current status is used.
  */
 export async function resendWorkSubmissionEmail({
   workId,
   orderId,
   resumeIndex = 1,
+  config,
 }: {
   workId?: string;
   orderId?: string;
   resumeIndex?: number;
+  config?: WorkEmailConfig;
 }) {
   try {
     await connectToDatabase();
@@ -724,6 +804,7 @@ export async function resendWorkSubmissionEmail({
     let userId: string | undefined;
     let title: string;
     let userEmail: string | undefined;
+    let summaryStatus: string | undefined;
 
     if (workId) {
       const work = await EventWork.findById(workId);
@@ -731,8 +812,12 @@ export async function resendWorkSubmissionEmail({
       eventId = String(work.eventId);
       userId = String(work.userId);
       title = work.title || "Sans titre";
+      summaryStatus = work.summaryStatus;
       await verifyOrganizerOrAdmin(eventId);
-      userEmail = await resolveWorkParticipantEmail(eventId, userId);
+      userEmail =
+        (await resolveWorkParticipantEmail(eventId, userId)) ||
+        work.clientInfo?.correspondenceEmail ||
+        undefined;
     } else if (orderId) {
       const order = await Order.findById(orderId).populate({
         path: "buyer",
@@ -766,21 +851,107 @@ export async function resendWorkSubmissionEmail({
         })
       : "";
 
-    await sendWorkNotificationEmail({
-      userEmail,
-      subject: "Resume soumis",
-      title: "Votre resume a ete soumis",
-      intro:
-        "Nous avons bien recu votre resume. Vous pourrez deposer votre travail une fois l'approbation effectuee par le createur de l'evenement.",
+    const email = buildConfiguredWorkEmail(summaryStatus, config, progressHtml);
+
+    // Sent directly (not through sendWorkNotificationEmail) so an SMTP failure
+    // surfaces to the organizer instead of being logged and reported as success.
+    await sendWorkStatusEmail({
+      to: userEmail,
+      subject: email.subject,
+      title: email.title,
+      intro: email.intro,
       eventTitle: event?.title || "",
       summaryTitle: title,
-      eventId,
-      extra: progressHtml,
-      ctaLabel: "Consulter mes resumes",
+      extra: email.extra,
+      ctaLabel: email.ctaLabel,
       ctaUrl: buildSubmitWorkUrl(eventId, userEmail),
     });
 
     return { success: true, email: userEmail };
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
+
+/**
+ * Sends one email per approved résumé of the event, with the organizer's
+ * configured subject/message. Failures are collected rather than aborting the
+ * batch so one bad address does not block the others.
+ */
+export async function sendEmailToApprovedWorks({
+  eventId,
+  config,
+}: {
+  eventId: string;
+  config?: WorkEmailConfig;
+}) {
+  try {
+    await connectToDatabase();
+    await verifyOrganizerOrAdmin(eventId);
+
+    const [event, works] = await Promise.all([
+      Event.findById(eventId).select("title maxWorkSubmissions"),
+      EventWork.find({ eventId, summaryStatus: "approved" }).sort({ createdAt: 1 }),
+    ]);
+
+    const eventTitle = event?.title || "";
+    let sent = 0;
+    const failed: { workId: string; title: string; reason: string }[] = [];
+
+    for (const work of works) {
+      const workTitle = work.title || "Sans titre";
+      try {
+        const userId = String(work.userId);
+        const userEmail =
+          (await resolveWorkParticipantEmail(eventId, userId)) ||
+          work.clientInfo?.correspondenceEmail ||
+          undefined;
+        if (!userEmail) {
+          failed.push({
+            workId: String(work._id),
+            title: workTitle,
+            reason: "Aucune adresse email trouvée",
+          });
+          continue;
+        }
+
+        const progressHtml = await buildWorkSummaryProgressHtml({
+          eventId,
+          userId,
+          maxWorkSubmissions: event?.maxWorkSubmissions,
+        });
+        const email = buildConfiguredWorkEmail("approved", config, progressHtml);
+
+        await sendWorkStatusEmail({
+          to: userEmail,
+          subject: email.subject,
+          title: email.title,
+          intro: email.intro,
+          eventTitle,
+          summaryTitle: workTitle,
+          extra: email.extra,
+          ctaLabel: email.ctaLabel,
+          ctaUrl: buildSubmitWorkUrl(eventId, userEmail),
+        });
+        sent += 1;
+      } catch (err) {
+        failed.push({
+          workId: String(work._id),
+          title: workTitle,
+          reason: err instanceof Error ? err.message : "Envoi échoué",
+        });
+      }
+    }
+
+    return JSON.parse(
+      JSON.stringify({ success: true, total: works.length, sent, failed })
+    ) as {
+      success: boolean;
+      total: number;
+      sent: number;
+      failed: { workId: string; title: string; reason: string }[];
+    };
   } catch (error) {
     handleError(error);
     throw error;

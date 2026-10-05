@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { resendWorkSubmissionEmail } from "@/lib/actions/user.actions";
+import {
+  resendWorkSubmissionEmail,
+  type WorkEmailConfig,
+} from "@/lib/actions/user.actions";
+
+const pickString = (value: unknown, max = 5000) =>
+  typeof value === "string" ? value.slice(0, max) : undefined;
 
 export async function POST(req: Request) {
   try {
@@ -13,7 +19,17 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const result = await resendWorkSubmissionEmail({ workId, orderId, resumeIndex });
+    const config: WorkEmailConfig = {
+      subject: pickString(body.subject, 200),
+      message: pickString(body.message),
+      extraLine: pickString(body.extraLine, 1000),
+    };
+    const result = await resendWorkSubmissionEmail({
+      workId,
+      orderId,
+      resumeIndex,
+      config,
+    });
     return NextResponse.json({ success: true, email: result?.email });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Email sending failed";

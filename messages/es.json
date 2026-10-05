@@ -3723,6 +3723,20 @@
       "reviewWork": "Revisar trabajo",
       "viewDetails": "Ver detalles"
     },
+    "bulkEmail": {
+      "button": "Email a aprobados",
+      "dialogTitle": "Enviar un email a todos los resúmenes aprobados",
+      "dialogDescription": "Se envía un email por cada resumen aprobado de este evento, con el mensaje de abajo.",
+      "defaultSubject": "Resumen aprobado",
+      "defaultMessage": "Buenas noticias, el organizador del evento aprobó su resumen. Ahora puede enviar su trabajo con sus archivos adjuntos haciendo clic en el enlace de abajo.",
+      "recipients": "{count, plural, one {# resumen aprobado recibirá este email.} other {# resúmenes aprobados recibirán este email.}}",
+      "confirm": "Enviar ({count})",
+      "toastTitle": "Emails enviados",
+      "toastDescription": "{sent, plural, one {# email enviado.} other {# emails enviados.}}",
+      "toastPartialTitle": "Envío parcial",
+      "toastPartialDescription": "{sent} enviado(s), {failed} con error: {titles}",
+      "toastErrorTitle": "Error en el envío masivo"
+    },
     "categories": {
       "add": "Añadir nueva categoría",
       "name": "Nombre de la categoría",
@@ -3818,6 +3832,18 @@
       "docSubtitle": "{count, plural, one {# envío} other {# envíos}} — exportado el {date}"
     }
   },
+  "workEmailDialog": {
+    "subjectLabel": "Asunto",
+    "subjectPlaceholder": "Asunto del email",
+    "messageLabel": "Mensaje",
+    "messagePlaceholder": "Escriba el mensaje enviado al participante…",
+    "messageHint": "Se conservan los saltos de línea. El evento, el título del resumen y el botón de acción se añaden automáticamente.",
+    "extraLineLabel": "Línea adicional (opcional)",
+    "extraLinePlaceholder": "Ej.: Suba su trabajo antes del 15 de octubre.",
+    "extraLineHint": "Se muestra resaltada debajo de los datos del resumen.",
+    "reset": "Restaurar texto por defecto",
+    "cancel": "Cancelar"
+  },
   "workDetailsDialog": {
     "sections": {
       "title": "Resumen estructurado",
@@ -3871,8 +3897,26 @@
     "sendEmail": {
       "button": "Enviar email",
       "toastTitle": "Email enviado",
-      "toastDescription": "El email de confirmación de envío del resumen se reenvió a {email}.",
-      "toastErrorTitle": "Fallo al enviar el email"
+      "toastDescription": "El email se envió a {email}.",
+      "toastErrorTitle": "Fallo al enviar el email",
+      "dialogTitle": "Enviar un email al remitente",
+      "dialogDescription": "Configure el mensaje antes de enviarlo. El texto propuesto corresponde al estado actual del resumen.",
+      "recipient": "Destinatario: {email}",
+      "confirm": "Enviar email",
+      "defaults": {
+        "approved": {
+          "subject": "Resumen aprobado",
+          "message": "Buenas noticias, el organizador del evento aprobó su resumen. Ahora puede enviar su trabajo con sus archivos adjuntos haciendo clic en el enlace de abajo."
+        },
+        "rejected": {
+          "subject": "Resumen rechazado",
+          "message": "Tras la revisión, el organizador del evento no pudo validar su resumen."
+        },
+        "submitted": {
+          "subject": "Resumen enviado",
+          "message": "Hemos recibido su resumen. Podrá subir su trabajo una vez que el organizador del evento lo apruebe."
+        }
+      }
     },
     "status": {
       "pending": "Pendiente de revisión",

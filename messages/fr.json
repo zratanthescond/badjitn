@@ -3723,6 +3723,20 @@
       "reviewWork": "Review Work",
       "viewDetails": "Voir les Détails"
     },
+    "bulkEmail": {
+      "button": "Email aux approuvés",
+      "dialogTitle": "Envoyer un email à tous les résumés approuvés",
+      "dialogDescription": "Un email est envoyé pour chaque résumé approuvé de cet événement, avec le message ci-dessous.",
+      "defaultSubject": "Résumé approuvé",
+      "defaultMessage": "Bonne nouvelle, le créateur de l'événement a approuvé votre résumé. Vous pouvez maintenant soumettre votre travail avec vos pièces jointes en cliquant sur le lien ci-dessous.",
+      "recipients": "{count, plural, one {# résumé approuvé recevra cet email.} other {# résumés approuvés recevront cet email.}}",
+      "confirm": "Envoyer ({count})",
+      "toastTitle": "Emails envoyés",
+      "toastDescription": "{sent, plural, one {# email envoyé.} other {# emails envoyés.}}",
+      "toastPartialTitle": "Envoi partiel",
+      "toastPartialDescription": "{sent} envoyé(s), {failed} en échec : {titles}",
+      "toastErrorTitle": "Échec de l'envoi groupé"
+    },
     "categories": {
       "add": "Ajouter une nouvelle catégorie",
       "name": "Nom de la catégorie",
@@ -3818,6 +3832,18 @@
       "docSubtitle": "{count, plural, one {# soumission} other {# soumissions}} — exporté le {date}"
     }
   },
+  "workEmailDialog": {
+    "subjectLabel": "Objet",
+    "subjectPlaceholder": "Objet de l'email",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Rédigez le message envoyé au participant…",
+    "messageHint": "Les retours à la ligne sont conservés. L'événement, le titre du résumé et le bouton d'action sont ajoutés automatiquement.",
+    "extraLineLabel": "Ligne supplémentaire (optionnel)",
+    "extraLinePlaceholder": "Ex : Merci de déposer votre travail avant le 15 octobre.",
+    "extraLineHint": "Affichée en évidence sous les informations du résumé.",
+    "reset": "Rétablir le texte par défaut",
+    "cancel": "Annuler"
+  },
   "workDetailsDialog": {
     "sections": {
       "title": "Résumé structuré",
@@ -3871,8 +3897,26 @@
     "sendEmail": {
       "button": "Envoyer un email",
       "toastTitle": "Email envoyé",
-      "toastDescription": "L'email de confirmation de soumission du résumé a été renvoyé à {email}.",
-      "toastErrorTitle": "Échec de l'envoi de l'email"
+      "toastDescription": "L'email a été envoyé à {email}.",
+      "toastErrorTitle": "Échec de l'envoi de l'email",
+      "dialogTitle": "Envoyer un email au soumissionnaire",
+      "dialogDescription": "Configurez le message avant l'envoi. Le texte proposé correspond au statut actuel du résumé.",
+      "recipient": "Destinataire : {email}",
+      "confirm": "Envoyer l'email",
+      "defaults": {
+        "approved": {
+          "subject": "Résumé approuvé",
+          "message": "Bonne nouvelle, le créateur de l'événement a approuvé votre résumé. Vous pouvez maintenant soumettre votre travail avec vos pièces jointes en cliquant sur le lien ci-dessous."
+        },
+        "rejected": {
+          "subject": "Résumé refusé",
+          "message": "Après examen, le créateur de l'événement n'a pas pu valider votre résumé."
+        },
+        "submitted": {
+          "subject": "Résumé soumis",
+          "message": "Nous avons bien reçu votre résumé. Vous pourrez déposer votre travail une fois l'approbation effectuée par le créateur de l'événement."
+        }
+      }
     },
     "status": {
       "pending": "En Attente d'Examen",

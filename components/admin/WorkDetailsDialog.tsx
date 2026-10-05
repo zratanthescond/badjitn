@@ -37,6 +37,7 @@ import { useState, useRef, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
+import { WorkEmailDialog, type WorkEmailPayload } from "./WorkEmailDialog";
 
 const FileViewer = dynamic(() => import("react-file-viewer"), {
   ssr: false,
@@ -51,6 +52,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
   const fileViewerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const summaryStatus = value?.summaryStatus ?? value?.status ?? "submitted";
@@ -165,20 +167,31 @@ export function WorkDetailsDialog({ value }: { value: any }) {
     }
   };
 
-  const handleSendEmail = async () => {
+  // Prefill the compose dialog with the same text the server would send for
+  // this résumé's status, so an untouched dialog behaves like the old one-click send.
+  const emailDefaultsKey = isApproved
+    ? "approved"
+    : isRejected
+    ? "rejected"
+    : "submitted";
+  const emailDefaultSubject = t(`sendEmail.defaults.${emailDefaultsKey}.subject`);
+  const emailDefaultMessage = t(`sendEmail.defaults.${emailDefaultsKey}.message`);
+  const recipientEmail: string | undefined =
+    value?.buyerEmail || value?.clientInfo?.correspondenceEmail || undefined;
+
+  const handleSendEmail = async (payload: WorkEmailPayload) => {
     if (!value._id) return;
     setIsSendingEmail(true);
     try {
+      const target = isPendingRegistration
+        ? { orderId: value.orderId, resumeIndex: value.resumeIndex }
+        : { workId: value._id };
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/work/send-email`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(
-            isPendingRegistration
-              ? { orderId: value.orderId, resumeIndex: value.resumeIndex }
-              : { workId: value._id }
-          ),
+          body: JSON.stringify({ ...target, ...payload }),
         }
       );
       const data = await res.json();
@@ -187,6 +200,7 @@ export function WorkDetailsDialog({ value }: { value: any }) {
           title: t("sendEmail.toastTitle"),
           description: t("sendEmail.toastDescription", { email: data.email || "" }),
         });
+        setIsEmailDialogOpen(false);
       } else {
         toast({
           title: t("sendEmail.toastErrorTitle"),
@@ -331,21 +345,39 @@ export function WorkDetailsDialog({ value }: { value: any }) {
       )}
 
       {canReview && (
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleSendEmail}
-          disabled={isSendingEmail}
-          title={t("sendEmail.button")}
-          className="h-9 w-9 shrink-0 bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300 rounded-full transition-all duration-200 hover:scale-105"
-        >
-          {isSendingEmail ? (
-            <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-          ) : (
-            <Mail className="w-4 h-4 text-blue-500" />
-          )}
-          <span className="sr-only">{t("sendEmail.button")}</span>
-        </Button>
+        <>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setIsEmailDialogOpen(true)}
+            disabled={isSendingEmail}
+            title={t("sendEmail.button")}
+            className="h-9 w-9 shrink-0 bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300 rounded-full transition-all duration-200 hover:scale-105"
+          >
+            {isSendingEmail ? (
+              <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+            ) : (
+              <Mail className="w-4 h-4 text-blue-500" />
+            )}
+            <span className="sr-only">{t("sendEmail.button")}</span>
+          </Button>
+          <WorkEmailDialog
+            open={isEmailDialogOpen}
+            onOpenChange={setIsEmailDialogOpen}
+            title={t("sendEmail.dialogTitle")}
+            description={t("sendEmail.dialogDescription")}
+            defaultSubject={emailDefaultSubject}
+            defaultMessage={emailDefaultMessage}
+            recipientSummary={
+              recipientEmail
+                ? t("sendEmail.recipient", { email: recipientEmail })
+                : undefined
+            }
+            confirmLabel={t("sendEmail.confirm")}
+            isSending={isSendingEmail}
+            onSend={handleSendEmail}
+          />
+        </>
       )}
 
       <Dialog>
