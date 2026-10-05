@@ -268,6 +268,19 @@ body {
   margin-left: 16px;
 }
 
+/* Popup rendered in a body-level portal so it is never clipped by
+   overflow-hidden wrappers or stacked under sibling glass cards. */
+#datepicker-portal .react-datepicker-popper,
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
+
+.react-datepicker {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
 .react-datepicker__day--selected {
   background-color: #624cf5 !important;
   color: #ffffff !important;

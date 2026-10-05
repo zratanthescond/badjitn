@@ -483,6 +483,7 @@ const EventForm = ({
                         timeInputLabel="Time:"
                         dateFormat="MM/dd/yyyy h:mm aa"
                         wrapperClassName="datePicker"
+                        portalId="datepicker-portal"
                       />
                     </div>
                   </FormControl>
@@ -507,6 +508,7 @@ const EventForm = ({
                         timeInputLabel="Time:"
                         dateFormat="MM/dd/yyyy h:mm aa"
                         wrapperClassName="datePicker"
+                        portalId="datepicker-portal"
                       />
                     </div>
                   </FormControl>
@@ -1326,6 +1328,7 @@ const EventForm = ({
                                   placeholderText={t("workSubmission.deadlinePlaceholder")}
                                   dateFormat="dd/MM/yyyy HH:mm"
                                   wrapperClassName="datePicker"
+                                  portalId="datepicker-portal"
                                 />
                               </div>
                             </FormControl>
