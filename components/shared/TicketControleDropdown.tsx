@@ -26,9 +26,11 @@ import TiketComponent from "./TiketComponent";
 export default function TicketControleDropdown({
   eventId,
   userId,
+  allowAbstractFileUpload = true,
 }: {
   eventId: string;
   userId: string;
+  allowAbstractFileUpload?: boolean;
 }) {
   const t = useTranslations("TicketControle");
   const locale = useLocale();
@@ -87,7 +89,11 @@ export default function TicketControleDropdown({
               <Card className="w-full h-full bg-transparent border-none">
                 <CardContent className="h-full max-h-full flex">
                   <ScrollArea className="w-full">
-                    <WorkUploader eventId={eventId} userId={userId} />
+                    <WorkUploader
+                      eventId={eventId}
+                      userId={userId}
+                      allowAbstractFileUpload={allowAbstractFileUpload}
+                    />
                     <ScrollBar orientation="vertical" />
                   </ScrollArea>
                 </CardContent>

@@ -167,6 +167,9 @@ const Card = ({
         <TicketControleDropdown
           eventId={event._id.toString()}
           userId={currentUserId}
+          allowAbstractFileUpload={
+            event.workAbstractConfig?.allowAbstractFileUpload !== false
+          }
         />
       )}
 

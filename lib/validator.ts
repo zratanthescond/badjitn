@@ -74,6 +74,7 @@ export const eventFormSchema = z
     workAbstractConfig: z
       .object({
         allowCoAuthors: z.boolean().optional().default(false),
+        allowAbstractFileUpload: z.boolean().optional().default(true),
         sections: z
           .array(
             z.object({

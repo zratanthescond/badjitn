@@ -76,11 +76,14 @@ export default function WorkUploader({
   userId,
   email,
   submissionDeadline,
+  allowAbstractFileUpload = true,
 }: {
   eventId: string;
   userId?: string;
   email?: string;
   submissionDeadline?: Date | string | null;
+  /** Event-level switch for the "abstract file upload" section (workAbstractConfig.allowAbstractFileUpload). */
+  allowAbstractFileUpload?: boolean;
 }) {
   const t = useTranslations("WorkUploader");
   const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
@@ -725,6 +728,7 @@ export default function WorkUploader({
                   </ScrollArea>
                 </div>
 
+                {allowAbstractFileUpload && (
                 <div className="space-y-2">
                   <Label>{tx("abstract.title", "Téléchargement de l'abstract")}</Label>
                   <p className="text-xs text-muted-foreground">
@@ -837,6 +841,7 @@ export default function WorkUploader({
                     </>
                   )}
                 </div>
+                )}
 
                 {error && (
                   <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">

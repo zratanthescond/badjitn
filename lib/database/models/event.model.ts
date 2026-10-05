@@ -64,6 +64,8 @@ export interface IEvent extends Document {
   workSubmissionDeadline?: Date | null;
   workAbstractConfig?: {
     allowCoAuthors?: boolean;
+    /** Show the "abstract file upload" section on the submit-work page (default true). */
+    allowAbstractFileUpload?: boolean;
     sections?: { label: string; wordLimit?: number }[];
     totalWordLimit?: number;
   };
@@ -211,6 +213,7 @@ const EventSchema = new Schema({
   workSubmissionDeadline: { type: Date },
   workAbstractConfig: {
     allowCoAuthors: { type: Boolean, default: false },
+    allowAbstractFileUpload: { type: Boolean, default: true },
     sections: {
       type: [{
         label: { type: String },

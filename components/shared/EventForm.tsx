@@ -1372,6 +1372,34 @@ const EventForm = ({
 
                       <FormField
                         control={form.control}
+                        name="workAbstractConfig.allowAbstractFileUpload"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value !== false}
+                                  onCheckedChange={(checked) => field.onChange(checked === true)}
+                                  id="workAbstractConfig.allowAbstractFileUpload"
+                                  className="mt-1"
+                                />
+                              </FormControl>
+                              <div className="space-y-1">
+                                <FormLabel htmlFor="workAbstractConfig.allowAbstractFileUpload" className="cursor-pointer">
+                                  Autoriser le téléchargement du fichier de l&apos;abstract
+                                </FormLabel>
+                                <FormDescription>
+                                  Affiche la section « Téléchargement de l&apos;abstract » (PDF, Word ou image) sur la page de soumission du résumé. Décochez pour la masquer : le participant ne pourra joindre que son e-poster final après approbation.
+                                </FormDescription>
+                              </div>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
                         name="workAbstractConfig.totalWordLimit"
                         render={({ field }) => (
                           <FormItem>
