@@ -26,6 +26,7 @@ export default async function SubmitWorkPage(props: SubmitWorkPageProps) {
       allowAbstractFileUpload={
         event.workAbstractConfig?.allowAbstractFileUpload !== false
       }
+      posterFileTypes={event.workAbstractConfig?.posterFileTypes}
     />
   );
 }

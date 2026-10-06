@@ -10,14 +10,25 @@ import {
 } from "@/lib/actions/user.actions";
 import { v4 as uuidv4 } from "uuid";
 import { uploadToFileServer } from "@/lib/upload-to-server";
+import { connectToDatabase } from "@/lib/database";
+import Event from "@/lib/database/models/event.model";
+import {
+  isAllowedPosterFile,
+  posterFormatsLabel,
+  resolvePosterFileTypes,
+} from "@/lib/poster-file-types";
 
 const UPLOAD_DIR = path.resolve(process.env.ROOT_PATH ?? "", "public/uploads");
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
 const ABSTRACT_EXTENSIONS = [...IMAGE_EXTENSIONS, ".pdf", ".doc", ".docx"];
 
-function isImageFile(fileName: string): boolean {
-  const ext = path.extname(fileName).toLowerCase();
-  return IMAGE_EXTENSIONS.includes(ext);
+/** The e-poster formats configured on the event (default jpg/png/webp). */
+async function getEventPosterTypes(eventId: string) {
+  await connectToDatabase();
+  const event = eventId
+    ? await Event.findById(eventId).select("workAbstractConfig.posterFileTypes")
+    : null;
+  return resolvePosterFileTypes(event?.workAbstractConfig?.posterFileTypes);
 }
 
 function isAbstractFile(fileName: string): boolean {
@@ -43,13 +54,25 @@ export const POST = async (req: Request) => {
 
     if (!fileUrl && file) {
       const fileName = (body.file as File).name;
-      const isAllowed = kind === "abstract" ? isAbstractFile(fileName) : isImageFile(fileName);
-      if (!isAllowed) {
-        const message =
-          kind === "abstract"
-            ? "Formats acceptés : jpg, png, gif, webp, pdf, doc, docx."
-            : "Only image files are allowed (jpg, png, gif, webp).";
-        return NextResponse.json({ success: false, error: message }, { status: 400 });
+      if (kind === "abstract") {
+        if (!isAbstractFile(fileName)) {
+          return NextResponse.json(
+            { success: false, error: "Formats acceptés : jpg, png, gif, webp, pdf, doc, docx." },
+            { status: 400 }
+          );
+        }
+      } else {
+        // Final e-poster: formats are configured per event.
+        const posterTypes = await getEventPosterTypes(eventId);
+        if (!isAllowedPosterFile(fileName, posterTypes)) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `Formats acceptés pour l'e-poster : ${posterFormatsLabel(posterTypes)}.`,
+            },
+            { status: 400 }
+          );
+        }
       }
       const buffer = Buffer.from(await (file as Blob).arrayBuffer());
       try {

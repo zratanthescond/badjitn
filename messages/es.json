@@ -283,6 +283,7 @@
   },
   "WorkUploader": {
     "actions": {
+      "uploadFileGeneric": "Subir archivo",
       "saveNotes": "Enviar resumen",
       "savingNotes": "Enviando...",
       "uploadFile": "Subir imagen",
@@ -319,6 +320,13 @@
     },
     "title": "Portal de entrega de trabajos",
     "upload": {
+      "titleFile": "Archivo «Envío de trabajo»",
+      "descriptionFormats": "Archivo de envío de trabajo ({formats}). Disponible tras la aprobación del resumen.",
+      "dragDropFile": "Arrastre y suelte el archivo aquí",
+      "dropHereFile": "¡Suelte el archivo aquí!",
+      "previousFilesGeneric": "Archivos ya subidos",
+      "noInlinePreview": "Sin vista previa para este formato. Abra el archivo para comprobarlo.",
+      "openFile": "Abrir archivo",
       "description": "Imagen de la entrega (JPG, PNG, WEBP). Disponible después de que tu resumen sea aprobado.",
       "dragDrop": "Arrastra y suelta tu imagen aquí",
       "dropHere": "Suelta la imagen aquí",

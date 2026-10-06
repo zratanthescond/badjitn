@@ -39,6 +39,12 @@ import { extractFileDetails } from "@/lib/utils";
 import { useDropzone } from "react-dropzone";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
+import {
+  isImageExtension,
+  posterDropzoneAccept,
+  posterFormatsLabel,
+  resolvePosterFileTypes,
+} from "@/lib/poster-file-types";
 
 const defaultClientInfo: ClientInfo = {
   firstName: "",
@@ -77,6 +83,7 @@ export default function WorkUploader({
   email,
   submissionDeadline,
   allowAbstractFileUpload = true,
+  posterFileTypes,
 }: {
   eventId: string;
   userId?: string;
@@ -84,11 +91,21 @@ export default function WorkUploader({
   submissionDeadline?: Date | string | null;
   /** Event-level switch for the "abstract file upload" section (workAbstractConfig.allowAbstractFileUpload). */
   allowAbstractFileUpload?: boolean;
+  /** Accepted e-poster formats (workAbstractConfig.posterFileTypes); undefined/empty = jpg/png/webp. */
+  posterFileTypes?: string[];
 }) {
   const t = useTranslations("WorkUploader");
   const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const locale = useLocale();
   const isRTL = locale === "ar";
+
+  const posterTypes = resolvePosterFileTypes(posterFileTypes);
+  const posterFormats = posterFormatsLabel(posterTypes);
+  const posterIsImageOnly = posterTypes.every((type) => type.isImage);
+  // Wording: the historical strings say "image"; with non-image formats configured
+  // (PDF, PowerPoint) the generic "fichier" strings take over.
+  const txf = (key: string, fallback: string) =>
+    tx(key, fallback).replace("{formats}", posterFormats);
 
   const [activeEmail, setActiveEmail] = useState<string>(email || "");
   const [emailInput, setEmailInput] = useState<string>(email || "");
@@ -224,12 +241,7 @@ export default function WorkUploader({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-      "image/gif": [".gif"],
-      "image/webp": [".webp"],
-    },
+    accept: posterDropzoneAccept(posterTypes),
     maxFiles: 1,
     onDragEnter: () => setDragActive(true),
     onDragLeave: () => setDragActive(false),
@@ -342,13 +354,16 @@ export default function WorkUploader({
   };
 
   const getFileIcon = (type: string | null) => {
-    switch (type?.toLowerCase()) {
-      case "jpg":
-      case "jpeg":
-      case "png":
-      case "gif":
-      case "webp":
-        return <ImageIcon className="h-5 w-5 text-green-500 dark:text-green-400" />;
+    const ext = type?.toLowerCase();
+    if (isImageExtension(ext)) {
+      return <ImageIcon className="h-5 w-5 text-green-500 dark:text-green-400" />;
+    }
+    switch (ext) {
+      case "pdf":
+        return <FileText className="h-5 w-5 text-red-500" />;
+      case "ppt":
+      case "pptx":
+        return <FileText className="h-5 w-5 text-orange-500" />;
       default:
         return <File className="h-5 w-5 text-muted-foreground" />;
     }
@@ -899,10 +914,14 @@ export default function WorkUploader({
                   </div>
                   <div>
                     <CardTitle className="text-xl font-bold text-foreground">
-                      {t("upload.title")} <span className="text-sm font-normal text-muted-foreground">({tx("abstract.finalPoster", "e-poster final")})</span>
+                      {posterIsImageOnly ? t("upload.title") : tx("upload.titleFile", "Fichier « Soumission travail »")}{" "}
+                      <span className="text-sm font-normal text-muted-foreground">({tx("abstract.finalPoster", "e-poster final")})</span>
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      {t("upload.description")}
+                      {txf(
+                        "upload.descriptionFormats",
+                        "Fichier de soumission travail ({formats}). Disponible après approbation du résumé."
+                      )}
                     </p>
                   </div>
                 </div>
@@ -945,21 +964,27 @@ export default function WorkUploader({
                         </div>
                         <div className="space-y-2">
                           <p className="text-lg font-medium text-foreground">
-                            {isDragActive ? t("upload.dropHere") : t("upload.dragDrop")}
+                            {isDragActive
+                              ? posterIsImageOnly
+                                ? t("upload.dropHere")
+                                : tx("upload.dropHereFile", "Déposez le fichier ici !")
+                              : posterIsImageOnly
+                              ? t("upload.dragDrop")
+                              : tx("upload.dragDropFile", "Glissez-déposez le fichier ici")}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             {t("upload.orClick")}
                           </p>
                           <div className="flex items-center justify-center gap-2 mt-3 flex-wrap">
-                            <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
-                              JPG
-                            </Badge>
-                            <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
-                              PNG
-                            </Badge>
-                            <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
-                              WEBP
-                            </Badge>
+                            {posterTypes.map((type) => (
+                              <Badge
+                                key={type.key}
+                                variant="secondary"
+                                className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800"
+                              >
+                                {type.label}
+                              </Badge>
+                            ))}
                           </div>
                         </div>
                       </div>
@@ -999,7 +1024,9 @@ export default function WorkUploader({
                         <div className="flex items-center gap-2">
                           <File className="h-4 w-4 text-muted-foreground" />
                           <span className="text-sm font-medium">
-                            {t("upload.previousFiles")}
+                            {posterIsImageOnly
+                              ? t("upload.previousFiles")
+                              : tx("upload.previousFilesGeneric", "Fichiers déjà téléchargés")}
                           </span>
                         </div>
                         <ScrollArea className="bg-muted/30 rounded-xl p-3">
@@ -1027,12 +1054,33 @@ export default function WorkUploader({
                           <span className="text-sm font-medium">{t("upload.preview")}</span>
                         </div>
                         <div className="border-2 border-border rounded-xl bg-background overflow-hidden">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={previewUrl}
-                            alt={tx("preview", "Preview")}
-                            className="max-h-[300px] w-full object-contain"
-                          />
+                          {isImageExtension(fileType) ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={previewUrl}
+                              alt={tx("preview", "Preview")}
+                              className="max-h-[300px] w-full object-contain"
+                            />
+                          ) : (
+                            // PDF / PowerPoint: no inline rendering, offer the file instead.
+                            <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
+                              {getFileIcon(fileType)}
+                              <p className="text-sm text-muted-foreground px-4">
+                                {tx(
+                                  "upload.noInlinePreview",
+                                  "Aperçu non disponible pour ce format. Ouvrez le fichier pour le vérifier."
+                                )}
+                              </p>
+                              {!previewUrl.startsWith("blob:") && (
+                                <Button asChild variant="outline" size="sm" className="rounded-xl">
+                                  <a href={previewUrl} target="_blank" rel="noopener noreferrer">
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    {tx("upload.openFile", "Ouvrir le fichier")}
+                                  </a>
+                                </Button>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -1050,7 +1098,9 @@ export default function WorkUploader({
                       ) : (
                         <div className="flex items-center gap-2">
                           <UploadCloud className="h-5 w-5" />
-                          {t("actions.uploadFile")}
+                          {posterIsImageOnly
+                            ? t("actions.uploadFile")
+                            : tx("actions.uploadFileGeneric", "Télécharger le fichier")}
                         </div>
                       )}
                     </Button>

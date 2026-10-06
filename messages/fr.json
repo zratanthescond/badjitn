@@ -283,6 +283,7 @@
   },
   "WorkUploader": {
     "actions": {
+      "uploadFileGeneric": "Télécharger le fichier",
       "saveNotes": "Soumettre le résumé",
       "savingNotes": "Envoi en cours...",
       "uploadFile": "Télécharger l'image",
@@ -319,6 +320,13 @@
     },
     "title": "Portail de Soumission de Travaux",
     "upload": {
+      "titleFile": "Fichier « Soumission travail »",
+      "descriptionFormats": "Fichier de soumission travail ({formats}). Disponible après approbation du résumé.",
+      "dragDropFile": "Glissez-déposez le fichier ici",
+      "dropHereFile": "Déposez le fichier ici !",
+      "previousFilesGeneric": "Fichiers déjà téléchargés",
+      "noInlinePreview": "Aperçu non disponible pour ce format. Ouvrez le fichier pour le vérifier.",
+      "openFile": "Ouvrir le fichier",
       "description": "Image de soumission travail (JPG, PNG, WEBP). Disponible après approbation du résumé.",
       "dragDrop": "Glissez-déposez l'image ici",
       "dropHere": "Déposez l'image ici !",

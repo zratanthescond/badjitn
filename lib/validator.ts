@@ -75,6 +75,7 @@ export const eventFormSchema = z
       .object({
         allowCoAuthors: z.boolean().optional().default(false),
         allowAbstractFileUpload: z.boolean().optional().default(true),
+        posterFileTypes: z.array(z.string()).optional().default([]),
         sections: z
           .array(
             z.object({

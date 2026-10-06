@@ -170,6 +170,7 @@ const Card = ({
           allowAbstractFileUpload={
             event.workAbstractConfig?.allowAbstractFileUpload !== false
           }
+          posterFileTypes={event.workAbstractConfig?.posterFileTypes}
         />
       )}
 

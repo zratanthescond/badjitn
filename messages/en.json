@@ -283,6 +283,7 @@
   },
   "WorkUploader": {
     "actions": {
+      "uploadFileGeneric": "Upload file",
       "saveNotes": "Submit summary",
       "savingNotes": "Submitting...",
       "uploadFile": "Upload image",
@@ -319,6 +320,13 @@
     },
     "title": "Work Submission Portal",
     "upload": {
+      "titleFile": "“Work submission” file",
+      "descriptionFormats": "Work submission file ({formats}). Available once the résumé is approved.",
+      "dragDropFile": "Drag and drop the file here",
+      "dropHereFile": "Drop the file here!",
+      "previousFilesGeneric": "Files already uploaded",
+      "noInlinePreview": "No preview for this format. Open the file to check it.",
+      "openFile": "Open file",
       "description": "Submission image (JPG, PNG, WEBP). Available after your summary is approved.",
       "dragDrop": "Drag and drop your image here",
       "dropHere": "Drop the image here",

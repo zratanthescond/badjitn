@@ -66,6 +66,8 @@ export interface IEvent extends Document {
     allowCoAuthors?: boolean;
     /** Show the "abstract file upload" section on the submit-work page (default true). */
     allowAbstractFileUpload?: boolean;
+    /** Accepted formats for the final e-poster (keys of lib/poster-file-types); empty = jpg/png/webp. */
+    posterFileTypes?: string[];
     sections?: { label: string; wordLimit?: number }[];
     totalWordLimit?: number;
   };
@@ -214,6 +216,7 @@ const EventSchema = new Schema({
   workAbstractConfig: {
     allowCoAuthors: { type: Boolean, default: false },
     allowAbstractFileUpload: { type: Boolean, default: true },
+    posterFileTypes: { type: [String], default: undefined },
     sections: {
       type: [{
         label: { type: String },

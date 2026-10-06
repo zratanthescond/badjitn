@@ -27,10 +27,12 @@ export default function TicketControleDropdown({
   eventId,
   userId,
   allowAbstractFileUpload = true,
+  posterFileTypes,
 }: {
   eventId: string;
   userId: string;
   allowAbstractFileUpload?: boolean;
+  posterFileTypes?: string[];
 }) {
   const t = useTranslations("TicketControle");
   const locale = useLocale();
@@ -93,6 +95,7 @@ export default function TicketControleDropdown({
                       eventId={eventId}
                       userId={userId}
                       allowAbstractFileUpload={allowAbstractFileUpload}
+                      posterFileTypes={posterFileTypes}
                     />
                     <ScrollBar orientation="vertical" />
                   </ScrollArea>

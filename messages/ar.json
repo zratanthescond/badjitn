@@ -283,6 +283,7 @@
   },
   "WorkUploader": {
     "actions": {
+      "uploadFileGeneric": "رفع الملف",
       "saveNotes": "إرسال الملخص",
       "savingNotes": "جاري الإرسال...",
       "uploadFile": "رفع الصورة",
@@ -319,6 +320,13 @@
     },
     "title": "بوابة تقديم الأعمال",
     "upload": {
+      "titleFile": "ملف «تقديم العمل»",
+      "descriptionFormats": "ملف تقديم العمل ({formats}). متاح بعد الموافقة على الملخص.",
+      "dragDropFile": "اسحب الملف وأفلته هنا",
+      "dropHereFile": "أفلت الملف هنا!",
+      "previousFilesGeneric": "الملفات المرفوعة سابقًا",
+      "noInlinePreview": "لا تتوفر معاينة لهذا التنسيق. افتح الملف للتحقق منه.",
+      "openFile": "فتح الملف",
       "description": "صورة التقديم (JPG، PNG، WEBP). متاحة بعد الموافقة على الملخص.",
       "dragDrop": "اسحب وأفلت الصورة هنا",
       "dropHere": "أفلت الصورة هنا",

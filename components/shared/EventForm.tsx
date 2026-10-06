@@ -22,6 +22,7 @@ import { FileUploader } from "./FileUploader";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
+import { POSTER_FILE_TYPES } from "@/lib/poster-file-types";
 import OrganisationDropdown from "./OrganisationDropdown";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -1396,6 +1397,52 @@ const EventForm = ({
                             <FormMessage />
                           </FormItem>
                         )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="workAbstractConfig.posterFileTypes"
+                        render={({ field }) => {
+                          const selected: string[] = Array.isArray(field.value) ? field.value : [];
+                          const toggle = (key: string, checked: boolean) =>
+                            field.onChange(
+                              checked
+                                ? Array.from(new Set([...selected, key]))
+                                : selected.filter((k) => k !== key)
+                            );
+                          return (
+                            <FormItem>
+                              <div className="rounded-2xl border border-border/60 bg-background/40 p-4 space-y-3">
+                                <div className="space-y-1">
+                                  <FormLabel>Formats acceptés pour l&apos;e-poster final</FormLabel>
+                                  <FormDescription>
+                                    Formats que le participant peut déposer comme « Image Soumission travail » une fois son résumé approuvé. Aucune case cochée = JPG, PNG et WEBP.
+                                  </FormDescription>
+                                </div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                  {POSTER_FILE_TYPES.map((type) => {
+                                    const id = `posterFileTypes-${type.key}`;
+                                    return (
+                                      <label
+                                        key={type.key}
+                                        htmlFor={id}
+                                        className="flex items-center gap-2 rounded-xl border border-border/60 px-3 py-2 cursor-pointer hover:bg-muted/40"
+                                      >
+                                        <Checkbox
+                                          id={id}
+                                          checked={selected.includes(type.key)}
+                                          onCheckedChange={(checked) => toggle(type.key, checked === true)}
+                                        />
+                                        <span className="text-sm">{type.label}</span>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
                       />
 
                       <FormField
