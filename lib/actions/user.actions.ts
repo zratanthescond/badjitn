@@ -367,8 +367,11 @@ export async function submitWorkSummary({
     let user = resolvedUserId ? await User.findById(resolvedUserId) : null;
 
     const candidateEmail = (email || clientInfo?.correspondenceEmail || "").toLowerCase().trim();
+    // Case-insensitive, like every other lookup in this file: an exact match
+    // misses accounts stored with capitals and would create a second guest
+    // user for the same person, splitting their résumés across two users.
     if (!user && candidateEmail) {
-      user = await User.findOne({ email: candidateEmail });
+      user = await User.findOne({ email: new RegExp(`^${escapeRegExp(candidateEmail)}$`, "i") });
       if (user) resolvedUserId = String(user._id);
     }
 
@@ -428,7 +431,7 @@ export async function submitWorkSummary({
         if (!targetEmail) {
           throw new Error("Une adresse email est requise pour soumettre un résumé.");
         }
-        user = await User.findOne({ email: targetEmail });
+        user = await User.findOne({ email: new RegExp(`^${escapeRegExp(targetEmail)}$`, "i") });
         if (!user) {
           const guestId = `guest_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
           user = await User.create({
@@ -640,7 +643,14 @@ async function resolveWorkFromOrder(orderId: string, resumeIndex: number = 1) {
       submittedAt: order.createdAt || new Date(),
       fileUrls: [],
     });
-    await work.save();
+    try {
+      await work.save();
+    } catch (err) {
+      if (!isDuplicateKeyError(err)) throw err;
+      // Lost the race to a concurrent materialization: use the surviving copy.
+      work = await EventWork.findOne({ eventId, orderId: order._id, resumeIndex });
+      if (!work) throw err;
+    }
   }
   return work;
 }
@@ -1272,30 +1282,40 @@ async function materializeOrderWorks(
       continue;
     }
 
-    await EventWork.create({
-      eventId,
-      userId,
-      orderId: order._id,
-      resumeIndex: index,
-      title: title || "Sans titre",
-      note: sections.length ? composeNoteFromSections(sections, note) : note,
-      sections: sections.length ? sections : undefined,
-      clientInfo: {
-        firstName: getInfo("firstName"),
-        lastName: getInfo("lastName"),
-        jobTitle: getInfo("jobTitle"),
-        republic: getInfo("republic"),
-        city: getInfo("city"),
-        coAuthors: getInfo(`workCoAuthors${suffix}`) || undefined,
-        correspondenceEmail: ownEmail || undefined,
-      },
-      summaryStatus: "submitted",
-      submittedAt: order.createdAt || new Date(),
-      fileUrls: [],
-    });
+    try {
+      await EventWork.create({
+        eventId,
+        userId,
+        orderId: order._id,
+        resumeIndex: index,
+        title: title || "Sans titre",
+        note: sections.length ? composeNoteFromSections(sections, note) : note,
+        sections: sections.length ? sections : undefined,
+        clientInfo: {
+          firstName: getInfo("firstName"),
+          lastName: getInfo("lastName"),
+          jobTitle: getInfo("jobTitle"),
+          republic: getInfo("republic"),
+          city: getInfo("city"),
+          coAuthors: getInfo(`workCoAuthors${suffix}`) || undefined,
+          correspondenceEmail: ownEmail || undefined,
+        },
+        summaryStatus: "submitted",
+        submittedAt: order.createdAt || new Date(),
+        fileUrls: [],
+      });
+    } catch (err) {
+      // Concurrent materialization (portal + admin page, or two tabs) raced
+      // past the lookup above; the unique (eventId, orderId, resumeIndex)
+      // index kept a single copy, which is exactly what we want.
+      if (!isDuplicateKeyError(err)) throw err;
+    }
   }
   return userId;
 }
+
+const isDuplicateKeyError = (err: unknown) =>
+  typeof err === "object" && err !== null && (err as { code?: number }).code === 11000;
 
 /** Materializes the checkout résumés of every registration made by this email. */
 async function materializeOrderWorksForEmail({

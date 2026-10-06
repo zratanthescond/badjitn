@@ -142,6 +142,13 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
 
 eventWorkSchema.index({ eventId: 1, userId: 1 });
 eventWorkSchema.index({ eventId: 1, userId: 1, summaryStatus: 1 });
+// A résumé typed at checkout (one per registration + index) must materialize
+// into exactly one EventWork, whatever concurrent portal/admin visits do.
+// Partial: works created from the submit-work page carry no orderId.
+eventWorkSchema.index(
+  { eventId: 1, orderId: 1, resumeIndex: 1 },
+  { unique: true, partialFilterExpression: { orderId: { $type: "objectId" } } }
+);
 
 const EventWork =
   mongoose.models.EventWork ||

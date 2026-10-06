@@ -513,8 +513,13 @@ export default function WorkUploader({
                   </div>
 
                   {works.length > 0 && (
-                    <ScrollArea className="w-full rounded-xl border bg-muted/20">
-                      <div className="flex gap-3 p-3">
+                    <div className="w-full rounded-xl border bg-muted/20 p-3 space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground">
+                        {tx("summariesCount", "{count} résumé(s)").replace("{count}", String(works.length))}
+                      </p>
+                      {/* Grid, not a horizontal strip: long titles used to stretch the first card past
+                          the viewport on mobile, hiding every other résumé with no visible scrollbar. */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                         {works.map((item) => {
                           const status = item.summaryStatus ?? "draft";
                           const isSelected = item._id === selectedWorkId;
@@ -533,25 +538,26 @@ export default function WorkUploader({
                                 setIsCreatingNew(false);
                                 setSelectedWorkId(item._id);
                               }}
-                              className={`min-w-[220px] rounded-xl border p-3 text-left transition-all ${
+                              aria-pressed={isSelected}
+                              className={`min-w-0 w-full rounded-xl border p-3 text-left transition-all ${
                                 isSelected
                                   ? "border-primary bg-primary/10 shadow-sm"
                                   : "border-border bg-background hover:border-primary/40"
                               }`}
                             >
                               <div className="flex items-center justify-between gap-2">
-                                <p className="truncate font-medium text-sm">
+                                <p className="min-w-0 truncate font-medium text-sm" title={item.title?.trim() || undefined}>
                                   {item.title?.trim() || tx("untitled", "Sans titre")}
                                 </p>
                                 <Badge
                                   variant="secondary"
-                                  className={
+                                  className={`shrink-0 ${
                                     status === "approved"
                                       ? "bg-green-500/10 text-green-700 border-green-200"
                                       : status === "submitted"
                                       ? "bg-blue-500/10 text-blue-700 border-blue-200"
                                       : "bg-yellow-500/10 text-yellow-700 border-yellow-200"
-                                  }
+                                  }`}
                                 >
                                   {statusLabel}
                                 </Badge>
@@ -566,8 +572,7 @@ export default function WorkUploader({
                           );
                         })}
                       </div>
-                      <ScrollBar orientation="horizontal" />
-                    </ScrollArea>
+                    </div>
                   )}
                 </div>
 
