@@ -6,11 +6,7 @@ import { Button } from "@/components/ui/button";
 import DataTable from "@/components/shared/data-table";
 import { Badge } from "../ui/badge";
 import Search from "../shared/Search";
-import {
-  getUserWorkByEventId,
-  sendEmailToApprovedWorks,
-  sendWorkTestEmail,
-} from "@/lib/actions/user.actions";
+import { getUserWorkByEventId } from "@/lib/actions/user.actions";
 import { WorkEmailDialog, type WorkEmailPayload } from "./WorkEmailDialog";
 import { useQuery } from "@tanstack/react-query";
 import TableSkeleton from "../shared/table-skeleton";
@@ -343,7 +339,24 @@ export default function WorkAdministration({
   const handleBulkEmail = async (payload: WorkEmailPayload) => {
     setIsBulkEmailing(true);
     try {
-      const result = await sendEmailToApprovedWorks({ eventId, config: payload });
+      // Routes, not server actions: a tab opened before a deployment would
+      // otherwise fail with "Server Action ... was not found on the server".
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/work/send-email-approved`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eventId, ...payload }),
+        }
+      );
+      const result: {
+        success: boolean;
+        error?: string;
+        total: number;
+        sent: number;
+        failed: { workId: string; title: string; reason: string }[];
+      } = await res.json();
+      if (!result.success) throw new Error(result.error || "");
       if (result.failed.length === 0) {
         toast({
           title: t("bulkEmail.toastTitle"),
@@ -375,15 +388,19 @@ export default function WorkAdministration({
   const handleBulkTestEmail = async (payload: WorkEmailPayload, to: string) => {
     setIsSendingTestEmail(true);
     try {
-      const result = await sendWorkTestEmail({
-        eventId,
-        to,
-        config: payload,
-        summaryStatus: "approved",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/work/send-test-email`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eventId, to, summaryStatus: "approved", ...payload }),
+        }
+      );
+      const result: { success: boolean; email?: string; error?: string } = await res.json();
+      if (!result.success) throw new Error(result.error || "");
       toast({
         title: t("bulkEmail.testToastTitle"),
-        description: t("bulkEmail.testToastDescription", { email: result.email }),
+        description: t("bulkEmail.testToastDescription", { email: result.email || "" }),
       });
     } catch (err) {
       toast({

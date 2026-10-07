@@ -38,7 +38,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
 import { WorkEmailDialog, type WorkEmailPayload } from "./WorkEmailDialog";
-import { sendWorkTestEmail } from "@/lib/actions/user.actions";
 
 const FileViewer = dynamic(() => import("react-file-viewer"), {
   ssr: false,
@@ -224,16 +223,26 @@ export function WorkDetailsDialog({ value }: { value: any }) {
     if (!value.eventId) return;
     setIsSendingTestEmail(true);
     try {
-      const result = await sendWorkTestEmail({
-        eventId: String(value.eventId),
-        to,
-        config: payload,
-        summaryStatus,
-        summaryTitle: value.title || undefined,
-      });
+      // Route rather than a server action: survives tabs opened before a deployment.
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/work/send-test-email`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            eventId: String(value.eventId),
+            to,
+            summaryStatus,
+            summaryTitle: value.title || undefined,
+            ...payload,
+          }),
+        }
+      );
+      const result: { success: boolean; email?: string; error?: string } = await res.json();
+      if (!result.success) throw new Error(result.error || "");
       toast({
         title: t("sendEmail.testToastTitle"),
-        description: t("sendEmail.testToastDescription", { email: result.email }),
+        description: t("sendEmail.testToastDescription", { email: result.email || "" }),
       });
     } catch (err) {
       toast({
