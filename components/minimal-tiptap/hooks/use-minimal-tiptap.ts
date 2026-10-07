@@ -211,6 +211,22 @@ export const useMinimalTiptapEditor = ({
     ...props
   })
 
+  // Keep the editor in sync when the parent swaps `value` from outside
+  // (e.g. the user selects another résumé). Without this, only the content
+  // present at creation was ever shown: the title and fields changed but the
+  // text stayed from the previous record, and saving would have written that
+  // stale text under the new title. Skipped while the user is typing: their
+  // own edits come back through onUpdate and already match the editor.
+  React.useEffect(() => {
+    if (!editor || editor.isDestroyed || editor.isFocused) return
+    const next = value ?? ''
+    const current = getOutput(editor, output)
+    const nextIsEmpty = next === '' || next === '<p></p>'
+    if (nextIsEmpty && editor.isEmpty) return
+    if (next === current) return
+    editor.commands.setContent(next, false)
+  }, [editor, value, output])
+
   return editor
 }
 

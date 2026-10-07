@@ -727,6 +727,9 @@ export default function WorkUploader({
                   <p className="text-xs text-muted-foreground">{t("notes.description")}</p>
                   <ScrollArea className="border-2 border-border rounded-xl focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all duration-200">
                     <MinimalTiptapEditor
+                      // Remount per résumé so the editor can never carry one
+                      // record's text over to another (see use-minimal-tiptap).
+                      key={selectedWorkId ?? "new"}
                       placeholder={t("notes.placeholder")}
                       className="min-h-[280px] bg-background"
                       value={note}
