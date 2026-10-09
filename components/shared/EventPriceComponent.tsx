@@ -2362,6 +2362,63 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                               </div>
                             );
                           })()}
+
+                          {/* A grouped child card may carry its own choices (e.g. which
+                              pre-congress course): show them under the row once that card is
+                              picked, since validateOptions() requires one to be selected. */}
+                          {childCards
+                            .filter((child: any) => checkPlan.includes(child._id) && child.options?.length > 0)
+                            .map((child: any) => (
+                              <div key={`${child._id}-options`} className="mt-1 p-3 bg-muted/40 rounded-2xl border border-dashed border-primary/20 space-y-2">
+                                <p className="text-xs font-semibold text-foreground">
+                                  {child.name} — {text("chooseOption", "Choisissez une option")}
+                                  <span className="ml-1 text-destructive">*</span>
+                                </p>
+                                <div className="flex flex-col gap-2">
+                                  {(child.options as any[]).map((opt: any, idx: number) => {
+                                    const optName = typeof opt === "object" ? opt.name : opt;
+                                    const optPrice = typeof opt === "object" ? (opt.price || 0) : 0;
+                                    const optPlaces = typeof opt === "object" ? opt.places : undefined;
+                                    const optDescription = typeof opt === "object" ? opt.description : undefined;
+                                    const isOptSelected = selectedOptions[child._id] === optName;
+                                    return (
+                                      <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => handleSelectOption(child._id, optName)}
+                                        className={`flex flex-col gap-1 p-2 px-3 rounded-xl border transition-all text-xs text-left ${
+                                          isOptSelected
+                                            ? "border-primary bg-primary/10 text-primary font-medium"
+                                            : "border-border/60 bg-background/50 hover:border-primary/40"
+                                        }`}
+                                      >
+                                        <div className="flex items-center justify-between gap-2 w-full">
+                                          <div className="flex items-center gap-2">
+                                            <div className={`w-3 h-3 rounded-full border-2 shrink-0 ${isOptSelected ? "border-primary bg-primary" : "border-muted-foreground/40"}`} />
+                                            <span>{optName}</span>
+                                          </div>
+                                          <div className="flex items-center gap-1.5 shrink-0">
+                                            {optPrice > 0 && (
+                                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${isOptSelected ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+                                                +{formatPriceByCountry(optPrice, event.country, "en-US", event.location)}
+                                              </span>
+                                            )}
+                                            {optPlaces !== undefined && (
+                                              <span className="text-[10px] text-muted-foreground">{optPlaces} pl.</span>
+                                            )}
+                                          </div>
+                                        </div>
+                                        {optDescription && (
+                                          <p className={`text-[11px] leading-relaxed pl-5 font-normal ${isOptSelected ? "text-primary/80" : "text-muted-foreground"}`}>
+                                            {optDescription}
+                                          </p>
+                                        )}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ))}
                         </div>
                       );
                     }
