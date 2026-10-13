@@ -101,6 +101,7 @@ export type CreateEventParams = {
     showWorkSubmissionPopup?: boolean;
     maxWorkSubmissions?: number;
     workSubmissionDeadline?: Date | null;
+    posterSubmissionDeadline?: Date | null;
     allowGuestRegistration?: boolean;
     disabledBaseFields?: string[];
     city?: string;
@@ -151,6 +152,7 @@ export type UpdateEventParams = {
     showWorkSubmissionPopup?: boolean;
     maxWorkSubmissions?: number;
     workSubmissionDeadline?: Date | null;
+    posterSubmissionDeadline?: Date | null;
     allowGuestRegistration?: boolean;
     disabledBaseFields?: string[];
     city?: string;
@@ -241,6 +243,7 @@ export type Event = {
   showWorkSubmissionPopup?: boolean;
   maxWorkSubmissions?: number;
   workSubmissionDeadline?: Date | string | null;
+  posterSubmissionDeadline?: Date | string | null;
   allowGuestRegistration?: boolean;
   disabledBaseFields?: string[];
   city?: string;

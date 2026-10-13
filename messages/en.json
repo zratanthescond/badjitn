@@ -1656,7 +1656,9 @@
       "deadlineLabel": "Work submission deadline",
       "deadlineDescription": "Leave empty for no deadline. After this date, participants can no longer submit or edit work submissions for this event.",
       "deadlinePlaceholder": "Choose date and time",
-      "deadlineTime": "Time"
+      "deadlineTime": "Time",
+      "posterDeadlineLabel": "E-poster upload deadline",
+      "posterDeadlineDescription": "Leave empty for no deadline. Independent of the abstract deadline: participants whose abstract is approved can upload their e-poster until this date."
     },
     "city": "City",
     "village": "Village",

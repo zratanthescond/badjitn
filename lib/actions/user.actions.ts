@@ -1067,6 +1067,15 @@ export async function appendWorkSubmissionImage({
     if (work.summaryStatus && work.summaryStatus !== "approved") {
       throw new Error("Work summary must be approved before uploading submission image");
     }
+    // The e-poster has its own cut-off (posterSubmissionDeadline), independent
+    // of the résumé deadline which only gates submitWorkSummary.
+    const eventDeadlines = await Event.findById(eventId, { posterSubmissionDeadline: 1 }).lean<{ posterSubmissionDeadline?: Date | null }>();
+    if (
+      eventDeadlines?.posterSubmissionDeadline &&
+      new Date(eventDeadlines.posterSubmissionDeadline).getTime() <= Date.now()
+    ) {
+      throw new Error("Le dépôt des e-posters est clôturé pour cet événement.");
+    }
     work.fileUrls = work.fileUrls || [];
     work.fileUrls.push(fileUrl);
     await work.save();

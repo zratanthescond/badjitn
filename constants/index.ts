@@ -43,6 +43,7 @@ export const eventDefaultValues = {
   showWorkSubmissionPopup: false,
   maxWorkSubmissions: undefined as number | undefined,
   workSubmissionDeadline: null as Date | null,
+  posterSubmissionDeadline: null as Date | null,
   allowGuestRegistration: true,
   disabledBaseFields: [] as string[],
   city: "",

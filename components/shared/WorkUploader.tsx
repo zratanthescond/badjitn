@@ -82,6 +82,7 @@ export default function WorkUploader({
   userId,
   email,
   submissionDeadline,
+  posterDeadline,
   allowAbstractFileUpload = true,
   posterFileTypes,
 }: {
@@ -89,6 +90,8 @@ export default function WorkUploader({
   userId?: string;
   email?: string;
   submissionDeadline?: Date | string | null;
+  /** Cut-off for the final e-poster upload (event.posterSubmissionDeadline); null = always open. */
+  posterDeadline?: Date | string | null;
   /** Event-level switch for the "abstract file upload" section (workAbstractConfig.allowAbstractFileUpload). */
   allowAbstractFileUpload?: boolean;
   /** Accepted e-poster formats (workAbstractConfig.posterFileTypes); undefined/empty = jpg/png/webp. */
@@ -239,10 +242,14 @@ export default function WorkUploader({
     setTimeout(() => setUploadProgress(0), 2000);
   }, []);
 
+  const posterClosed =
+    !!posterDeadline && new Date(posterDeadline).getTime() <= Date.now();
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: posterDropzoneAccept(posterTypes),
     maxFiles: 1,
+    disabled: posterClosed,
     onDragEnter: () => setDragActive(true),
     onDragLeave: () => setDragActive(false),
   });
@@ -319,7 +326,7 @@ export default function WorkUploader({
   };
 
   const handleUploadImage = () => {
-    if (!file || !selectedWork?._id) return;
+    if (!file || !selectedWork?._id || posterClosed) return;
     setError(null);
     uploadImageMutation.mutate(
       {
@@ -476,6 +483,29 @@ export default function WorkUploader({
               ? tx("deadline.closed", "La soumission des résumés est clôturée depuis le")
               : tx("deadline.open", "Date limite de soumission des résumés :")}{" "}
             {new Date(submissionDeadline).toLocaleString(locale, {
+              dateStyle: "long",
+              timeStyle: "short",
+            })}
+          </div>
+        )}
+
+        {posterDeadline && (
+          <div
+            className={`flex items-center gap-2 p-3 rounded-xl border text-sm ${
+              posterClosed
+                ? "bg-destructive/10 border-destructive/20 text-destructive"
+                : "bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-300"
+            }`}
+          >
+            {posterClosed ? (
+              <AlertCircle className="h-5 w-5 shrink-0" />
+            ) : (
+              <Clock3 className="h-5 w-5 shrink-0" />
+            )}
+            {posterClosed
+              ? tx("deadline.posterClosed", "Le dépôt des e-posters est clôturé depuis le")
+              : tx("deadline.posterOpen", "Date limite de dépôt des e-posters :")}{" "}
+            {new Date(posterDeadline).toLocaleString(locale, {
               dateStyle: "long",
               timeStyle: "short",
             })}
@@ -950,6 +980,13 @@ export default function WorkUploader({
                       {t("upload.unlockHint")}
                     </p>
                   </div>
+                ) : posterClosed ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center rounded-xl bg-destructive/5 border border-dashed border-destructive/30">
+                    <AlertCircle className="h-12 w-12 text-destructive mb-3" />
+                    <p className="text-destructive font-medium">
+                      {tx("deadline.posterClosedMessage", "Le dépôt des e-posters est clôturé pour cet événement.")}
+                    </p>
+                  </div>
                 ) : (
                   <>
                     <div
@@ -1091,7 +1128,7 @@ export default function WorkUploader({
                     <Button
                       className="w-full h-12 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
                       onClick={handleUploadImage}
-                      disabled={!file || !selectedWork?._id || uploadImageMutation.isPending}
+                      disabled={!file || !selectedWork?._id || posterClosed || uploadImageMutation.isPending}
                     >
                       {uploadImageMutation.isPending ? (
                         <div className="flex items-center gap-2">

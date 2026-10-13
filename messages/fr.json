@@ -1658,7 +1658,9 @@
       "deadlineLabel": "Date limite de soumission des résumés",
       "deadlineDescription": "Laissez vide pour ne fixer aucune date limite. Passé cette date, les participants ne pourront plus soumettre ni modifier de résumés pour cet événement.",
       "deadlinePlaceholder": "Choisir la date et l'heure",
-      "deadlineTime": "Heure"
+      "deadlineTime": "Heure",
+      "posterDeadlineLabel": "Date limite de dépôt des e-posters",
+      "posterDeadlineDescription": "Laissez vide pour ne fixer aucune date limite. Indépendante de la date limite des résumés : les participants dont le résumé est approuvé peuvent déposer leur e-poster jusqu'à cette date."
     },
     "showProfileButton": {
       "title": "Afficher le bouton 'Consulter mon profil'",

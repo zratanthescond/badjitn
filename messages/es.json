@@ -1656,7 +1656,9 @@
       "deadlineLabel": "Fecha límite de envío de resúmenes",
       "deadlineDescription": "Déjelo vacío para no establecer fecha límite. Pasada esta fecha, los participantes ya no podrán enviar ni modificar resúmenes para este evento.",
       "deadlinePlaceholder": "Elegir fecha y hora",
-      "deadlineTime": "Hora"
+      "deadlineTime": "Hora",
+      "posterDeadlineLabel": "Fecha límite de envío de e-pósteres",
+      "posterDeadlineDescription": "Déjelo vacío para no establecer fecha límite. Independiente de la fecha límite de resúmenes: los participantes con resumen aprobado pueden enviar su e-póster hasta esta fecha."
     },
     "city": "Ciudad",
     "village": "Pueblo",

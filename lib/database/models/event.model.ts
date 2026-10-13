@@ -62,6 +62,7 @@ export interface IEvent extends Document {
   showWorkSubmissionPopup?: boolean;
   maxWorkSubmissions?: number;
   workSubmissionDeadline?: Date | null;
+  posterSubmissionDeadline?: Date | null;
   workAbstractConfig?: {
     allowCoAuthors?: boolean;
     /** Show the "abstract file upload" section on the submit-work page (default true). */
@@ -213,6 +214,9 @@ const EventSchema = new Schema({
   // Once this date has passed, participants can no longer submit or edit
   // résumés for the event. Unset/null = submissions stay open.
   workSubmissionDeadline: { type: Date },
+  // Separate cut-off for the final e-poster file upload, which typically stays
+  // open after résumés are closed. Unset/null = uploads stay open.
+  posterSubmissionDeadline: { type: Date },
   workAbstractConfig: {
     allowCoAuthors: { type: Boolean, default: false },
     allowAbstractFileUpload: { type: Boolean, default: true },

@@ -23,6 +23,7 @@ export default async function SubmitWorkPage(props: SubmitWorkPageProps) {
       userId={user?._id ? String(user._id) : undefined}
       email={user?.email || searchParams?.email}
       submissionDeadline={event.workSubmissionDeadline}
+      posterDeadline={event.posterSubmissionDeadline}
       allowAbstractFileUpload={
         event.workAbstractConfig?.allowAbstractFileUpload !== false
       }
