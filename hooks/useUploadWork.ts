@@ -73,9 +73,16 @@ const uploadSubmissionImage = async (data: UploadImageParams) => {
   const uploadFormData = new FormData();
   uploadFormData.append("file", data.file);
 
-  const uploadRes = await axios.post("/api/upload/", uploadFormData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  // /api/upload answers 500 with a `message` when the file server refuses the file;
+  // surface that message instead of axios' generic "Request failed with status code 500".
+  let uploadRes;
+  try {
+    uploadRes = await axios.post("/api/upload/", uploadFormData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || err?.message || "Initial file upload failed");
+  }
 
   if (!uploadRes.data?.success || !uploadRes.data?.url) {
     throw new Error(uploadRes.data?.message || "Initial file upload failed");

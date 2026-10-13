@@ -41,13 +41,16 @@ export async function uploadToFileServer(
   console.log("[uploadToFileServer] Final resolved request endpoint:", url);
 
   try {
-    console.log("[uploadToFileServer] Dispatching axios.post request now (with 15s timeout)...");
+    console.log("[uploadToFileServer] Dispatching axios.post request now (with 60s timeout)...");
     const startTime = Date.now();
     const response = await axios.post(url, formData, {
       headers: {
         "x-webhook-secret": webhookSecret,
       },
-      timeout: 15000, 
+      // E-posters (PDF/PPTX) can weigh several MB; 15s was too tight for them.
+      timeout: 60000,
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
     });
 
     const duration = Date.now() - startTime;
@@ -80,6 +83,11 @@ export async function uploadToFileServer(
       console.error("[uploadToFileServer] Error config setup failed:", error.message);
     }
     console.error("[uploadToFileServer] Full error stringified:", error.toString());
+    // The file server's multer fileFilter only accepts image/video/audio; anything else
+    // (PDF, PPTX e-posters…) is silently dropped and comes back as "No file uploaded".
+    if (error.response?.status === 400 && /no file uploaded/i.test(String(error.response?.data?.error || ""))) {
+      throw new Error(`Le serveur de fichiers refuse ce type de fichier (${mimeType || "inconnu"}).`);
+    }
     throw new Error(error.response?.data?.error || error.message || "File server upload failed");
   }
 }
