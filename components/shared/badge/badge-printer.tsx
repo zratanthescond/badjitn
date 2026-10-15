@@ -98,10 +98,13 @@ export function BadgePrinter({
         onAfterPrint: recordPrint,
     })
 
-    const replacePlaceholders = (text: string, attendee: any) => {
+    // `raw` (QR data) gets the bare number; visible text always gets the "N°" prefix,
+    // even for designs saved with a plain "{number}" element.
+    const replacePlaceholders = (text: string, attendee: any, raw = false) => {
         if (!text) return ""
+        const num = attendee.number != null ? String(attendee.number) : ""
         return text
-            .replace(/{number}/g, attendee.number != null ? String(attendee.number) : "")
+            .replace(/N°\s*{number}|{number}/g, raw || !num ? num : `N° ${num}`)
             .replace(/{name}/g, attendee.name || "")
             .replace(/{email}/g, attendee.email || "")
             .replace(/{company}/g, attendee.company || "")
@@ -191,7 +194,7 @@ export function BadgePrinter({
                 {el.type === "qr" && (
                     <div className="w-full h-full bg-white flex items-center justify-center" style={{ borderRadius: el.borderRadius, padding: `${el.qrMargin ?? 1}px` }}>
                         <QRCode
-                            value={replacePlaceholders(el.qrData || "{qr_code}", attendee)}
+                            value={replacePlaceholders(el.qrData || "{qr_code}", attendee, true)}
                             size={Math.min(el.width, el.height) - ((el.qrMargin ?? 1) * 2)}
                             fgColor={el.qrFgColor || "#000000"}
                             className="w-full h-full"
