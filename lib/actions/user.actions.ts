@@ -632,13 +632,24 @@ async function resolveWorkFromOrder(orderId: string, resumeIndex: number = 1) {
     title: getInfo(`workSummaryTitle${suffix}`),
   });
   if (!work) {
+    // Same section handling as materializeOrderWorks: events configured with
+    // abstract sections store the body in workSection_<label> fields, not in
+    // workSummaryNote — reading only the latter produced title-only résumés.
+    const note = getInfo(`workSummaryNote${suffix}`);
+    const sections: IWorkSection[] = sectionLabels
+      .map((label) => ({
+        label,
+        content: getInfo(`workSection_${label}${suffix}`),
+      }))
+      .filter((s) => s.content);
     work = new EventWork({
       eventId,
       userId,
       orderId: order._id,
       resumeIndex,
       title: getInfo(`workSummaryTitle${suffix}`) || "Sans titre",
-      note: getInfo(`workSummaryNote${suffix}`) || "",
+      note: sections.length ? composeNoteFromSections(sections, note) : note,
+      sections: sections.length ? sections : undefined,
       summaryStatus: "submitted",
       submittedAt: order.createdAt || new Date(),
       fileUrls: [],
