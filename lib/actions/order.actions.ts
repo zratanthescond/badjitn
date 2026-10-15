@@ -640,33 +640,69 @@ export async function getOrdersByEvent({
       {
         // buyerDisplay reads buyerDisplayFromRequiredInfo from the previous
         // stage — computing it here (same-stage-reference constraint above).
+        // The name typed in the registration form wins over the account name:
+        // an account holder can register someone else, and the list must show
+        // the actual participant (consistent with the Excel export columns).
+        // Only explicit name fields (first/last or full name) take precedence;
+        // the generic "first two non-empty values" fallback inside
+        // buyerDisplayFromRequiredInfo is still used only after the account name.
         $addFields: {
-          buyerDisplay: {
-            $cond: [
-              {
-                $gt: [
-                  { $strLenCP: { $ifNull: ["$buyerDisplayFromUser", ""] } },
-                  0,
+          participantExplicitName: {
+            $let: {
+              vars: {
+                firstLast: {
+                  $trim: {
+                    input: {
+                      $concat: [
+                        { $ifNull: ["$participantFirstName", ""] },
+                        " ",
+                        { $ifNull: ["$participantLastName", ""] },
+                      ],
+                    },
+                  },
+                },
+                full: { $trim: { input: { $ifNull: ["$participantFullName", ""] } } },
+              },
+              in: {
+                $cond: [
+                  { $gt: [{ $strLenCP: "$$firstLast" }, 0] },
+                  "$$firstLast",
+                  "$$full",
                 ],
               },
-              "$buyerDisplayFromUser",
-              {
-                $cond: [
-                  {
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          buyerDisplay: {
+            $switch: {
+              branches: [
+                {
+                  case: {
+                    $gt: [{ $strLenCP: { $ifNull: ["$participantExplicitName", ""] } }, 0],
+                  },
+                  then: "$participantExplicitName",
+                },
+                {
+                  case: {
+                    $gt: [{ $strLenCP: { $ifNull: ["$buyerDisplayFromUser", ""] } }, 0],
+                  },
+                  then: "$buyerDisplayFromUser",
+                },
+                {
+                  case: {
                     $gt: [
-                      {
-                        $strLenCP: {
-                          $ifNull: ["$buyerDisplayFromRequiredInfo", ""],
-                        },
-                      },
+                      { $strLenCP: { $ifNull: ["$buyerDisplayFromRequiredInfo", ""] } },
                       0,
                     ],
                   },
-                  "$buyerDisplayFromRequiredInfo",
-                  "Guest registration",
-                ],
-              },
-            ],
+                  then: "$buyerDisplayFromRequiredInfo",
+                },
+              ],
+              default: "Guest registration",
+            },
           },
         },
       },
