@@ -13,6 +13,7 @@ import { handleError } from "../utils";
 import { connectToDatabase } from "../database";
 import Order from "../database/models/order.model";
 import Event from "../database/models/event.model";
+import { allocateOrderNumber, ensureOrderNumbers } from "../database/order-number";
 import { ObjectId } from "mongodb";
 import User from "../database/models/user.model";
 import { getCurrencyCodeByCountry } from "../utils";
@@ -128,6 +129,7 @@ export const createOrder = async (order: CreateOrderParams) => {
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,
+      orderNumber: await allocateOrderNumber(String(order.eventId)),
       ...(buyer ? { buyer: buyer._id } : {}),
       ...(order.originalAmount !== undefined
         ? { originalAmount: Number(order.originalAmount) }
@@ -358,6 +360,9 @@ export async function getOrdersByEvent({
 
     if (!eventId) throw new Error("Event ID is required");
     const eventObjectId = new ObjectId(eventId);
+
+    // Legacy orders get their registration number on first listing.
+    await ensureOrderNumbers(eventId);
 
     const orders = await Order.aggregate([
       {
@@ -720,6 +725,7 @@ export async function getOrdersByEvent({
       {
         $project: {
           _id: 1,
+          orderNumber: 1,
           totalAmount: 1,
           createdAt: 1,
           eventTitle: "$event.title",
@@ -936,6 +942,7 @@ export const bulkImportParticipants = async ({
         const newOrder = await Order.create({
           stripeId: `import_${eventId}_${Date.now()}_${i}_${Math.random().toString(36).slice(2, 8)}`,
           event: eventId,
+          orderNumber: await allocateOrderNumber(eventId),
           totalAmount,
           type: totalAmount > 0 ? "paid" : "hosted",
           details: [{ name: planName, price: planPrice }],
@@ -996,6 +1003,7 @@ export const addManualParticipant = async ({
     const newOrder = await Order.create({
       stripeId: `manual_${eventId}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
       event: eventId,
+      orderNumber: await allocateOrderNumber(eventId),
       totalAmount,
       type: ticketType,
       details: [{ name: planName || "Manuel", price: planPrice || "0" }],

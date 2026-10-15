@@ -101,6 +101,7 @@ export function BadgePrinter({
     const replacePlaceholders = (text: string, attendee: any) => {
         if (!text) return ""
         return text
+            .replace(/{number}/g, attendee.number != null ? String(attendee.number) : "")
             .replace(/{name}/g, attendee.name || "")
             .replace(/{email}/g, attendee.email || "")
             .replace(/{company}/g, attendee.company || "")

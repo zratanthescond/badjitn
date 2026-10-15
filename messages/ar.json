@@ -2817,6 +2817,7 @@
         "details": "التفاصيل",
         "eventTitle": "عنوان الفعالية",
         "orderId": "رقم الطلب",
+        "number": "الرقم",
         "ticketType": "نوع التذكرة"
       }
     },
@@ -4683,6 +4684,7 @@
     "shape": "شكل",
     "qrCode": "رمز QR",
     "dynamicElements": "عناصر ديناميكية",
+    "number": "الرقم",
     "name": "الاسم",
     "photo": "صورة",
     "eventTitle": "عنوان الفعالية",
@@ -4699,6 +4701,7 @@
     "qrContent": "محتوى رمز QR",
     "insertTemplate": "— إدراج نموذج —",
     "participantId": "معرّف المشارك",
+    "qrNumber": "رقم التسجيل",
     "email": "البريد الإلكتروني",
     "qrName": "الاسم",
     "nameEmail": "الاسم + البريد الإلكتروني",
@@ -4733,6 +4736,7 @@
     "printSelected": "طباعة المحدد ({count})",
     "columns": {
       "attendee": "المشارك",
+      "number": "الرقم",
       "companyTitle": "الشركة والمنصب",
       "category": "الفئة",
       "status": "الحالة",

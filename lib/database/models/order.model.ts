@@ -30,6 +30,8 @@ export type RequiredUserInfoType = {
 
 export interface IOrder extends Document {
   createdAt: Date;
+  // Sequential per-event registration number (1, 2, 3…), shown as "Numéro"
+  orderNumber?: number;
   stripeId: string;
   totalAmount: number;
   event: {
@@ -87,6 +89,10 @@ const OrderSchema = new Schema<IOrder>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  orderNumber: {
+    type: Number,
+    required: false,
   },
   stripeId: {
     type: String,
@@ -157,6 +163,8 @@ const OrderSchema = new Schema<IOrder>({
     required: false,
   },
 });
+
+OrderSchema.index({ event: 1, orderNumber: 1 });
 
 const Order = models.Order || model<IOrder>("Order", OrderSchema);
 

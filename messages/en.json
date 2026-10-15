@@ -2817,6 +2817,7 @@
         "details": "Details",
         "eventTitle": "Event Title",
         "orderId": "Reference",
+        "number": "Number",
         "ticketType": "Access Type"
       }
     },
@@ -4683,6 +4684,7 @@
     "shape": "Shape",
     "qrCode": "QR Code",
     "dynamicElements": "Dynamic Elements",
+    "number": "Number",
     "name": "Name",
     "photo": "Photo",
     "eventTitle": "Event Title",
@@ -4699,6 +4701,7 @@
     "qrContent": "QR Code content",
     "insertTemplate": "— Insert a template —",
     "participantId": "Participant ID",
+    "qrNumber": "Registration number",
     "email": "Email",
     "qrName": "Name",
     "nameEmail": "Name + Email",
@@ -4733,6 +4736,7 @@
     "printSelected": "Print Selected ({count})",
     "columns": {
       "attendee": "Attendee",
+      "number": "No.",
       "companyTitle": "Company & Title",
       "category": "Category",
       "status": "Status",

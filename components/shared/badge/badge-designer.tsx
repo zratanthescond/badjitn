@@ -23,6 +23,7 @@ import {
     UserCircle,
     Calendar,
     Home,
+    Hash,
     Bold,
     Italic,
     Underline,
@@ -400,6 +401,10 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                 <UserCircle className="w-4 h-4" />
                                 <span className="text-[10px]">{tx("name", "Name")}</span>
                             </Button>
+                            <Button variant="secondary" size="sm" onClick={() => addTextElement("{number}", { fontWeight: "bold", fontSize: 18, width: 100 })} className="flex flex-col gap-1 h-auto py-2">
+                                <Hash className="w-4 h-4" />
+                                <span className="text-[10px]">{tx("number", "Numéro")}</span>
+                            </Button>
                             <Button variant="secondary" size="sm" onClick={addDynamicPhoto} className="flex flex-col gap-1 h-auto py-2">
                                 <ImageIcon className="w-4 h-4" />
                                 <span className="text-[10px]">{tx("photo", "Photo")}</span>
@@ -520,13 +525,14 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                     >
                                         <option value="">{tx("insertTemplate", "— Insérer un modèle —")}</option>
                                         <option value="{qr_code}">{tx("participantId", "ID participant")}</option>
+                                        <option value="{number}">{tx("qrNumber", "Numéro d'inscription")}</option>
                                         <option value="{email}">{tx("email", "Email")}</option>
                                         <option value="{name}">{tx("qrName", "Nom")}</option>
                                         <option value="{name} - {email}">{tx("nameEmail", "Nom + Email")}</option>
                                         <option value="{qr_code}|{name}|{email}">{tx("idNameEmail", "ID + Nom + Email")}</option>
                                     </select>
                                     <Input value={selectedEl.qrData || "{qr_code}"} onChange={(e) => updateElement(selectedEl.id, { qrData: e.target.value })} placeholder={tx("qrPlaceholder", "ex: {qr_code}")} />
-                                    <p className="text-[10px] text-muted-foreground mt-1">{tx("variablesLabel", "Variables :")} {"{qr_code}"}, {"{name}"}, {"{email}"}, {"{company}"}, {"{event_title}"}</p>
+                                    <p className="text-[10px] text-muted-foreground mt-1">{tx("variablesLabel", "Variables :")} {"{qr_code}"}, {"{number}"}, {"{name}"}, {"{email}"}, {"{company}"}, {"{event_title}"}</p>
                                 </div>
                                 <div className="space-y-1">
                                     <Label className="text-xs">{tx("quietZone", "Marge blanche (quiet zone) :")} {selectedEl.qrMargin ?? 1}</Label>

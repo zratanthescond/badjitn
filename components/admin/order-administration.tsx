@@ -173,6 +173,15 @@ export default function OrderAdministration({
 
   const columns = [
     {
+      header: tx("table.headers.number", "Numéro"),
+      accessor: "orderNumber",
+      cell: (value?: number) => (
+        <span className="font-semibold text-primary tabular-nums">
+          {value ? `N° ${value}` : "-"}
+        </span>
+      ),
+    },
+    {
       header: t("table.headers.orderId"),
       accessor: "_id",
       cell: (value: string) => (
@@ -294,6 +303,7 @@ export default function OrderAdministration({
           className={`font-mono text-sm ${isRTL ? "font-arabic text-right" : ""
             }`}
         >
+          {item.orderNumber ? `N° ${item.orderNumber} · ` : ""}
           {t("orderIdLabel")}: {item._id.slice(-8)}
         </CardDescription>
       </CardHeader>
@@ -399,6 +409,7 @@ export default function OrderAdministration({
 
   const getExportPayload = () => {
     const headers = [
+      tx("table.headers.number", "Numéro"),
       t("table.headers.orderId"),
       t("table.headers.eventTitle"),
       t("table.headers.buyer"),
@@ -410,6 +421,7 @@ export default function OrderAdministration({
 
     const rows = (data || []).map((order: any) => {
       const row = [
+        order?.orderNumber ?? "",
         order?._id ?? "",
         order?.eventTitle ?? "",
         order?.buyer ?? "",
@@ -462,12 +474,13 @@ export default function OrderAdministration({
     const shouldHideParticipantColumn = hasFirstNameColumn && hasLastNameColumn;
 
     const baseHeaders: string[] = [
+      tx("table.headers.number", "Numéro"),
       t("table.headers.orderId"),
       t("table.headers.ticketType"),
       t("table.headers.created"),
     ];
     if (!shouldHideParticipantColumn) {
-      baseHeaders.splice(1, 0, t("table.headers.buyer"));
+      baseHeaders.splice(2, 0, t("table.headers.buyer"));
     }
     if (!isFreeEvent) baseHeaders.push(t("table.headers.amount"));
 
@@ -519,7 +532,7 @@ export default function OrderAdministration({
     const headers = [...baseHeaders, ...participantColumns, ...planColumns];
 
     const rows = (data || []).map((order: any) => {
-      const row: (string | number)[] = [order?._id ?? ""];
+      const row: (string | number)[] = [order?.orderNumber ?? "", order?._id ?? ""];
       if (!shouldHideParticipantColumn) {
         row.push(getParticipantNameFromOrder(order));
       }

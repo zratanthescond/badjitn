@@ -2817,6 +2817,7 @@
         "details": "Détails",
         "eventTitle": "Titre de l'Événement",
         "orderId": "Reference",
+        "number": "Numéro",
         "ticketType": "Modalite d'acces"
       }
     },
@@ -4683,6 +4684,7 @@
     "shape": "Forme",
     "qrCode": "QR Code",
     "dynamicElements": "Éléments dynamiques",
+    "number": "Numéro",
     "name": "Nom",
     "photo": "Photo",
     "eventTitle": "Titre de l'événement",
@@ -4699,6 +4701,7 @@
     "qrContent": "Contenu du QR Code",
     "insertTemplate": "— Insérer un modèle —",
     "participantId": "ID participant",
+    "qrNumber": "Numéro d'inscription",
     "email": "Email",
     "qrName": "Nom",
     "nameEmail": "Nom + Email",
@@ -4733,6 +4736,7 @@
     "printSelected": "Imprimer la sélection ({count})",
     "columns": {
       "attendee": "Participant",
+      "number": "N°",
       "companyTitle": "Société et fonction",
       "category": "Catégorie",
       "status": "Statut",

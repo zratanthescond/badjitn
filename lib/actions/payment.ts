@@ -5,6 +5,7 @@ import { connectToDatabase } from '../database'
 import BankTransfer from '../database/models/banktransfer.model'
 import Order from '../database/models/order.model'
 import Event from '../database/models/event.model'
+import { allocateOrderNumber } from '../database/order-number'
 import User from '../database/models/user.model'
 import { sendRegistrationStatusEmail } from './order.actions'
 import { uploadToFileServer } from '../upload-to-server'
@@ -113,6 +114,7 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
     const newOrder = await Order.create({
       stripeId: `bt_${uuidv4()}`,
       event: eventId,
+      orderNumber: await allocateOrderNumber(String(eventId)),
       ...(buyer ? { buyer: buyer._id } : {}),
       totalAmount: Number(totalAmount),
       type: 'bank_transfer',

@@ -38,6 +38,7 @@ import { toast } from "sonner"
 
 interface Attendee {
     _id: string
+    number?: number | null
     name: string
     email: string
     company?: string
@@ -153,6 +154,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
                                     disabled={filteredAttendees.length === 0}
                                 />
                             </TableHead>
+                            <TableHead className="w-20">{t("columns.number")}</TableHead>
                             <TableHead>{t("columns.attendee")}</TableHead>
                             <TableHead>{t("columns.companyTitle")}</TableHead>
                             <TableHead>{t("columns.category")}</TableHead>
@@ -163,13 +165,13 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
                     <TableBody>
                         {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center py-10">
+                                <TableCell colSpan={7} className="text-center py-10">
                                     <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
                                 </TableCell>
                             </TableRow>
                         ) : filteredAttendees.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
+                                <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
                                     {t("emptyEvent")}
                                 </TableCell>
                             </TableRow>
@@ -183,6 +185,11 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
                                             checked={selectedAttendees.includes(attendee._id)}
                                             onChange={() => toggleSelect(attendee._id)}
                                         />
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="font-semibold text-primary tabular-nums">
+                                            {attendee.number ? `N° ${attendee.number}` : "-"}
+                                        </span>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-3">

@@ -8,6 +8,7 @@ import Attendance from "@/lib/database/models/attendance.model"
 import EventWork from "@/lib/database/models/work.model"
 import { handleError } from "@/lib/utils"
 import { verifyOrganizerOrAdmin } from "@/lib/actions/auth.actions"
+import { ensureOrderNumbers } from "@/lib/database/order-number"
 import { ObjectId } from "mongodb"
 
 const BADGE_PRINT_ENTRY_POINT = "Entrée principale"
@@ -48,8 +49,13 @@ export async function getAttendeesByEvent(eventId: string) {
     try {
         await connectToDatabase()
 
+        // Legacy orders get their registration number on first listing.
+        await ensureOrderNumbers(eventId)
+
         // Fetch all orders for this event and populate the buyer (User)
-        const orders = await Order.find({ event: new ObjectId(eventId) }).populate("buyer")
+        const orders = await Order.find({ event: new ObjectId(eventId) })
+            .sort({ orderNumber: 1, createdAt: 1 })
+            .populate("buyer")
 
         // Map orders to a friendly "Attendee" structure for the frontend
         const attendees = orders.map((order: any) => {
@@ -96,6 +102,7 @@ export async function getAttendeesByEvent(eventId: string) {
 
             return {
                 _id: order._id.toString(),
+                number: order.orderNumber ?? null,
                 name: attendeeName,
                 email: attendeeEmail,
                 photo: buyer?.photo || "",

@@ -135,6 +135,7 @@ const OrderDetailsDialog = ({ value }: { value: any }) => {
               }`}
             >
               {t("title")}
+              {value?.orderNumber ? ` · N° ${value.orderNumber}` : ""}
             </AlertDialogTitle>
           </div>
           <AlertDialogDescription
