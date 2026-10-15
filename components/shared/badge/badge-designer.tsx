@@ -401,7 +401,7 @@ export function BadgeDesigner({ eventId, initialDesign, eventDetails, onDesignSa
                                 <UserCircle className="w-4 h-4" />
                                 <span className="text-[10px]">{tx("name", "Name")}</span>
                             </Button>
-                            <Button variant="secondary" size="sm" onClick={() => addTextElement("{number}", { fontWeight: "bold", fontSize: 18, width: 100 })} className="flex flex-col gap-1 h-auto py-2">
+                            <Button variant="secondary" size="sm" onClick={() => addTextElement("N° {number}", { fontWeight: "bold", fontSize: 18, width: 120 })} className="flex flex-col gap-1 h-auto py-2">
                                 <Hash className="w-4 h-4" />
                                 <span className="text-[10px]">{tx("number", "Numéro")}</span>
                             </Button>
