@@ -3398,7 +3398,9 @@
       "linkCopied": "¡Enlace copiado al portapapeles!",
       "title": "Compartir evento",
       "twitter": "X/Twitter",
-      "whatsapp": "WhatsApp"
+      "whatsapp": "WhatsApp",
+      "text": "¡Descubre el evento «{title}» en Badgi.net!",
+      "textDefault": "¡Descubre este evento en Badgi.net!"
     },
     "video": {
       "autoplayBlocked": "Reproducción automática bloqueada por el navegador",

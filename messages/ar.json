@@ -3398,7 +3398,9 @@
       "linkCopied": "تم نسخ الرابط إلى الحافظة!",
       "title": "مشاركة الحدث",
       "twitter": "إكس/تويتر",
-      "whatsapp": "واتساب"
+      "whatsapp": "واتساب",
+      "text": "اكتشف فعالية «{title}» على Badgi.net!",
+      "textDefault": "اكتشف هذه الفعالية على Badgi.net!"
     },
     "video": {
       "autoplayBlocked": "تم حظر التشغيل التلقائي من قبل المتصفح",

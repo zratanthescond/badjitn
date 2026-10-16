@@ -3398,7 +3398,9 @@
       "linkCopied": "Link copied to clipboard!",
       "title": "Share Event",
       "twitter": "X/Twitter",
-      "whatsapp": "WhatsApp"
+      "whatsapp": "WhatsApp",
+      "text": "Check out the event \"{title}\" on Badgi.net!",
+      "textDefault": "Check out this event on Badgi.net!"
     },
     "video": {
       "autoplayBlocked": "Autoplay blocked by browser",

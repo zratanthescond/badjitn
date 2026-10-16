@@ -7,7 +7,7 @@ import { VideoItem } from "./video-item";
 import { ShareDialog } from "./share-dialog";
 import { useTranslations } from "next-intl";
 import { toast } from "@/hooks/use-toast";
-import type { ShortsData } from "./types";
+import type { Event, ShortsData } from "./types";
 
 interface ShortsScrollProps {
   videos?: ShortsData;
@@ -24,9 +24,11 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
   const [shareDialog, setShareDialog] = useState<{
     isOpen: boolean;
     videoId: string;
+    videoTitle: string;
   }>({
     isOpen: false,
     videoId: "",
+    videoTitle: "",
   });
 
   const videosData = useMemo(() => videos?.data || [], [videos]);
@@ -104,12 +106,16 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
   }, []);
 
   // Handle share dialog
-  const handleShare = useCallback((videoId: string) => {
-    setShareDialog({ isOpen: true, videoId });
+  const handleShare = useCallback((video: Event) => {
+    setShareDialog({
+      isOpen: true,
+      videoId: video.slug || video._id,
+      videoTitle: video.title,
+    });
   }, []);
 
   const closeShareDialog = useCallback(() => {
-    setShareDialog({ isOpen: false, videoId: "" });
+    setShareDialog({ isOpen: false, videoId: "", videoTitle: "" });
   }, []);
 
   // Loading state
@@ -148,7 +154,7 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
                 video={video}
                 isDetailsVisible={detailsVisibility[video._id] !== false}
                 onToggleDetails={() => toggleDetails(video._id)}
-                onShare={() => handleShare(video._id)}
+                onShare={() => handleShare(video)}
                 videoRef={(el) => (videoRefs.current[virtualItem.index] = el)}
               />
             );
@@ -161,6 +167,7 @@ export default function ShortsScroll({ videos }: ShortsScrollProps) {
         isOpen={shareDialog.isOpen}
         onClose={closeShareDialog}
         videoId={shareDialog.videoId}
+        videoTitle={shareDialog.videoTitle}
       />
     </div>
   );

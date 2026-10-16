@@ -3398,7 +3398,9 @@
       "linkCopied": "Lien copié dans le presse-papiers !",
       "title": "Partager l'Événement",
       "twitter": "X/Twitter",
-      "whatsapp": "WhatsApp"
+      "whatsapp": "WhatsApp",
+      "text": "Découvrez l'événement « {title} » sur Badgi.net !",
+      "textDefault": "Découvrez cet événement sur Badgi.net !"
     },
     "video": {
       "autoplayBlocked": "La lecture automatique a été bloquée par le navigateur",

@@ -17,14 +17,17 @@ interface ShareDialogProps {
   isOpen: boolean;
   onClose: () => void;
   videoId: string;
+  videoTitle?: string;
 }
 
-export function ShareDialog({ isOpen, onClose, videoId }: ShareDialogProps) {
+export function ShareDialog({ isOpen, onClose, videoId, videoTitle }: ShareDialogProps) {
   const shareUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/events/${videoId}`;
   const t = useTranslations("shorts");
   const handleShare = (platform: string) => {
     const encodedUrl = encodeURIComponent(shareUrl);
-    const shareText = encodeURIComponent("Check out this amazing event!");
+    const shareText = encodeURIComponent(
+      videoTitle ? t("share.text", { title: videoTitle }) : t("share.textDefault")
+    );
 
     const shareUrls = {
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
@@ -45,6 +48,12 @@ export function ShareDialog({ isOpen, onClose, videoId }: ShareDialogProps) {
           <h3 className="text-xl font-bold text-foreground">
             {t("share.title")}
           </h3>
+
+          {videoTitle && (
+            <p className="text-base font-semibold text-foreground -mt-3 truncate">
+              {videoTitle}
+            </p>
+          )}
 
           <Input
             type="url"
