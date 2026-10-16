@@ -39,15 +39,20 @@ const GradientLine = () => (
   <div className="h-[2px] w-full" style={{ background: "linear-gradient(to right, #624CF5, #20D5EC)" }} />
 );
 
-const EyebrowLabel = ({ children }: { children: React.ReactNode }) => (
+const EyebrowLabel = ({ children, onDark = false }: { children: React.ReactNode; onDark?: boolean }) => (
   <span
     className="text-[10px] font-syne font-bold uppercase tracking-[0.18em]"
-    style={{
-      background: "linear-gradient(to right, #624CF5, #20D5EC)",
-      WebkitBackgroundClip: "text",
-      WebkitTextFillColor: "transparent",
-      backgroundClip: "text",
-    }}
+    style={
+      onDark
+        ? // Solid light cyan: gradient text was too faint on the dark glass card.
+          { color: "#9BEFF9", textShadow: "0 1px 8px rgba(0,0,0,0.35)" }
+        : {
+            background: "linear-gradient(to right, #624CF5, #20D5EC)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }
+    }
   >
     {children}
   </span>
@@ -216,11 +221,12 @@ export default async function OrgPage({
             <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #0A0A0C 0%, #1a0a2e 50%, #0d1a3d 100%)" }} />
           )}
           {/* Cinematic multi-layer overlay */}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.88) 100%)" }} />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 65%)" }} />
+          {/* Lighter overlays so the cover image (often a poster) stays readable, especially bottom-left */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0.55) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(0,0,0,0.18) 0%, transparent 45%)" }} />
           {/* Violet glow — bottom left */}
           <div className="absolute bottom-0 left-0 w-[600px] h-[400px] pointer-events-none"
-            style={{ background: "radial-gradient(ellipse at bottom left, rgba(98,76,245,0.2) 0%, transparent 70%)" }} />
+            style={{ background: "radial-gradient(ellipse at bottom left, rgba(98,76,245,0.08) 0%, transparent 70%)" }} />
           {/* Cyan glow — top right */}
           <div className="absolute top-0 right-0 w-[400px] h-[300px] pointer-events-none"
             style={{ background: "radial-gradient(ellipse at top right, rgba(32,213,236,0.08) 0%, transparent 70%)" }} />
@@ -334,7 +340,7 @@ export default async function OrgPage({
                   {/* Eyebrow */}
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#20D5EC" }} />
-                    <EyebrowLabel>Prochain événement</EyebrowLabel>
+                    <EyebrowLabel onDark>Prochain événement</EyebrowLabel>
                   </div>
 
                   {/* Event title */}
