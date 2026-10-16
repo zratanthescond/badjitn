@@ -40,7 +40,9 @@ function slugifyTitle(text: string): string {
 }
 
 async function generateUniqueSlug(title: string, excludeId?: string): Promise<string> {
-  const base = slugifyTitle(title);
+  // Titles without latin characters (e.g. Arabic) slugify to "": fall back to
+  // the event id so the unique index never sees an empty slug.
+  const base = slugifyTitle(title) || excludeId || `event-${Date.now()}`;
   let slug = base;
   let counter = 2;
   while (true) {
@@ -149,6 +151,15 @@ export async function getEventBySlug(param: string) {
       event = await populateEvent(Event.findById(param));
     }
     if (!event) throw new Error("Event not found");
+
+    // Legacy events were created before `slug` existed in the schema:
+    // generate and persist one the first time they are loaded.
+    if (!event.slug && event.title) {
+      const slug = await generateUniqueSlug(event.title, event._id.toString());
+      await Event.updateOne({ _id: event._id }, { $set: { slug } });
+      event.slug = slug;
+    }
+
     return JSON.parse(JSON.stringify(event));
   } catch (error) {
     handleError(error);

@@ -4,6 +4,8 @@ import { number, string } from "zod";
 export interface IEvent extends Document {
   _id: any;
   title: string;
+  /** URL-friendly identifier derived from the title (e.g. "mon-evenement"). */
+  slug?: string;
   description?: string;
   location?: {
     name: string;
@@ -153,6 +155,10 @@ const pricePlanSchema = new mongoose.Schema({
 });
 const EventSchema = new Schema({
   title: { type: String, required: true },
+  // Human-readable URL segment (/events/<slug>). Sparse so legacy events
+  // without a slug don't collide on the unique index; they get one lazily
+  // the first time they are loaded (see getEventBySlug).
+  slug: { type: String, unique: true, sparse: true, trim: true },
   description: { type: String },
   location: {
     name: {
