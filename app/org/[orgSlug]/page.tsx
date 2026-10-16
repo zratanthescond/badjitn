@@ -163,8 +163,8 @@ export default async function OrgPage({
           <div className="flex items-center gap-3">
             {org.logo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={org.logo} alt={org.name} width={30} height={30}
-                className="rounded-full object-cover ring-1 ring-white/20" />
+              <img src={org.logo} alt={org.name}
+                className="h-8 w-auto max-w-[120px] object-contain rounded-md" />
             ) : (
               <div
                 className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold font-syne"
@@ -176,12 +176,6 @@ export default async function OrgPage({
             <span className="font-syne font-semibold text-white/90 text-sm truncate max-w-[200px] sm:max-w-xs">
               {org.name}
             </span>
-            {org.isVerified && (
-              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-900/40 px-2 py-0.5 rounded-full border border-emerald-700/40">
-                <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                Vérifié
-              </span>
-            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -244,7 +238,8 @@ export default async function OrgPage({
         <div className="relative z-10 flex-1 flex flex-col justify-end max-w-7xl mx-auto w-full px-4 sm:px-6 pb-10 sm:pb-16 pt-24 sm:pt-28">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-10 items-end">
 
-            {/* Left 3/5 — Org identity */}
+            {/* Left 3/5 — Org identity (can be hidden from the organisation settings) */}
+            {!org.hideHeroInfo && (
             <div className="lg:col-span-3 flex flex-col gap-5">
 
               {/* Logo + name */}
@@ -253,24 +248,21 @@ export default async function OrgPage({
                 style={{ animation: "fade-in-up 0.6s cubic-bezier(0.16,1,0.3,1) both" }}
               >
                 {org.logo && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={org.logo}
-                    alt={org.name}
-                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shrink-0"
-                    style={{ border: "2px solid rgba(255,255,255,0.18)", boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)" }}
-                  />
+                  // Logo box keeps the whole image visible (landscape or square),
+                  // on a light backdrop so dark/transparent logos stay readable.
+                  <div
+                    className="shrink-0 h-20 sm:h-24 max-w-[200px] sm:max-w-[260px] rounded-2xl p-2 flex items-center justify-center"
+                    style={{ background: "rgba(255,255,255,0.92)", border: "2px solid rgba(255,255,255,0.18)", boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)" }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={org.logo}
+                      alt={org.name}
+                      className="h-full w-auto max-w-full object-contain"
+                    />
+                  </div>
                 )}
                 <div className="flex flex-col gap-1.5">
-                  {org.isVerified && (
-                    <span
-                      className="self-start inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-700/50"
-                      style={{ background: "rgba(16,185,129,0.1)" }}
-                    >
-                      <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                      Organisation vérifiée
-                    </span>
-                  )}
                   <h1
                     className="text-2xl sm:text-3xl font-syne font-bold text-white leading-snug line-clamp-2"
                     style={{ textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}
@@ -321,11 +313,12 @@ export default async function OrgPage({
                 ))}
               </div>
             </div>
+            )}
 
             {/* Right 2/5 — Next event glass card */}
             {nextEvent && (
               <div
-                className="lg:col-span-2 rounded-2xl overflow-hidden"
+                className={`lg:col-span-2 rounded-2xl overflow-hidden ${org.hideHeroInfo ? "lg:col-start-4" : ""}`}
                 style={{
                   background: "rgba(255,255,255,0.05)",
                   backdropFilter: "blur(28px) saturate(1.5)",
@@ -504,7 +497,7 @@ export default async function OrgPage({
               <div className="flex items-center gap-3">
                 {org.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={org.logo} alt={org.name} className="w-10 h-10 rounded-xl object-cover border border-white/20" />
+                  <img src={org.logo} alt={org.name} className="h-10 w-auto max-w-[140px] rounded-xl object-contain" />
                 ) : (
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center border border-white/10"
@@ -517,12 +510,6 @@ export default async function OrgPage({
               </div>
               {org.description && (
                 <p className="text-slate-500 text-sm leading-relaxed line-clamp-4">{org.description}</p>
-              )}
-              {org.isVerified && (
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                  Organisation vérifiée
-                </span>
               )}
             </div>
 

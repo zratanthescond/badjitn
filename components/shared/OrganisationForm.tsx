@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import {
     createOrganisation,
@@ -66,6 +67,7 @@ const organisationSchema = z.object({
     })).optional(),
     logo: z.string().optional(),
     coverImage: z.string().optional(),
+    hideHeroInfo: z.boolean().optional(),
     facebook: z.string().optional(),
     twitter: z.string().optional(),
     instagram: z.string().optional(),
@@ -91,6 +93,7 @@ interface OrganisationFormProps {
         partners?: { name: string; logo?: string; website?: string }[];
         logo?: string;
         coverImage?: string;
+        hideHeroInfo?: boolean;
         socialLinks?: {
             facebook?: string;
             twitter?: string;
@@ -131,6 +134,7 @@ export default function OrganisationForm({
             partners: organisation?.partners || [],
             logo: organisation?.logo || "",
             coverImage: organisation?.coverImage || "",
+            hideHeroInfo: organisation?.hideHeroInfo || false,
             facebook: organisation?.socialLinks?.facebook || "",
             twitter: organisation?.socialLinks?.twitter || "",
             instagram: organisation?.socialLinks?.instagram || "",
@@ -166,6 +170,7 @@ export default function OrganisationForm({
                     partners: values.partners || [],
                     logo: values.logo,
                     coverImage: values.coverImage,
+                    hideHeroInfo: Boolean(values.hideHeroInfo),
                     socialLinks: {
                         facebook: values.facebook,
                         twitter: values.twitter,
@@ -196,6 +201,7 @@ export default function OrganisationForm({
                         partners: values.partners || [],
                         logo: values.logo,
                         coverImage: values.coverImage,
+                        hideHeroInfo: Boolean(values.hideHeroInfo),
                         socialLinks: {
                             facebook: values.facebook,
                             twitter: values.twitter,
@@ -265,6 +271,27 @@ export default function OrganisationForm({
                                         />
                                     </FormControl>
                                     <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {/* Hide the logo/name/description block overlaid on the cover image */}
+                        <FormField
+                            control={form.control}
+                            name="hideHeroInfo"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between gap-4 rounded-xl border border-slate-200 dark:border-slate-700 glass px-4 py-3">
+                                    <div className="space-y-0.5">
+                                        <FormLabel className="text-sm font-medium">
+                                            {tx("coverImage.hideInfoLabel", "Masquer les infos sur la bannière")}
+                                        </FormLabel>
+                                        <p className="text-xs text-muted-foreground">
+                                            {tx("coverImage.hideInfoHint", "Cache le logo, le nom, la description et les liens affichés par-dessus l'image de couverture.")}
+                                        </p>
+                                    </div>
+                                    <FormControl>
+                                        <Switch checked={Boolean(field.value)} onCheckedChange={field.onChange} />
+                                    </FormControl>
                                 </FormItem>
                             )}
                         />

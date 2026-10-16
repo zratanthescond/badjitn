@@ -8,6 +8,8 @@ export interface IOrganisation extends Document {
     logo: string;
     website: string;
     coverImage: string;
+    /** When true, the hero no longer shows the logo, name, description and links over the cover image. */
+    hideHeroInfo?: boolean;
     bannerTitle?: string;
     bannerContent?: string;
     bannerImage?: string;
@@ -34,6 +36,7 @@ const OrganisationSchema = new Schema<IOrganisation>({
     logo: { type: String },
     website: { type: String },
     coverImage: { type: String },
+    hideHeroInfo: { type: Boolean, default: false },
     bannerTitle: { type: String },
     bannerContent: { type: String },
     bannerImage: { type: String },
