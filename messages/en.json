@@ -4769,7 +4769,16 @@
     "deleteFailedForm": "Failed to delete submission",
     "loadFailedEvent": "Failed to load attendees",
     "loadFailedForm": "Failed to load submissions",
-    "selectToPrint": "Please select items to print"
+    "selectToPrint": "Please select items to print",
+    "categoryFilter": {
+      "all": "All categories"
+    },
+    "categories": {
+      "attendee": "Attendee",
+      "speaker": "Speaker",
+      "sponsor": "Sponsor",
+      "staff": "Staff"
+    }
   },
   "badgePrinter": {
     "documentTitle": "Event Badges",

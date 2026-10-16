@@ -4769,7 +4769,16 @@
     "deleteFailedForm": "Échec de la suppression de l'inscription",
     "loadFailedEvent": "Échec du chargement des participants",
     "loadFailedForm": "Échec du chargement des inscriptions",
-    "selectToPrint": "Veuillez sélectionner des éléments à imprimer"
+    "selectToPrint": "Veuillez sélectionner des éléments à imprimer",
+    "categoryFilter": {
+      "all": "Toutes les catégories"
+    },
+    "categories": {
+      "attendee": "Participant",
+      "speaker": "Intervenant",
+      "sponsor": "Sponsor",
+      "staff": "Personnel"
+    }
   },
   "badgePrinter": {
     "documentTitle": "Badges",

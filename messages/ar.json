@@ -4769,7 +4769,16 @@
     "deleteFailedForm": "فشل حذف التسجيل",
     "loadFailedEvent": "فشل تحميل المشاركين",
     "loadFailedForm": "فشل تحميل التسجيلات",
-    "selectToPrint": "يرجى اختيار عناصر للطباعة"
+    "selectToPrint": "يرجى اختيار عناصر للطباعة",
+    "categoryFilter": {
+      "all": "كل الفئات"
+    },
+    "categories": {
+      "attendee": "مشارك",
+      "speaker": "متحدث",
+      "sponsor": "راعٍ",
+      "staff": "طاقم"
+    }
   },
   "badgePrinter": {
     "documentTitle": "الشارات",

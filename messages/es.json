@@ -4769,7 +4769,16 @@
     "deleteFailedForm": "Error al eliminar la inscripción",
     "loadFailedEvent": "Error al cargar los participantes",
     "loadFailedForm": "Error al cargar las inscripciones",
-    "selectToPrint": "Por favor, selecciona elementos para imprimir"
+    "selectToPrint": "Por favor, selecciona elementos para imprimir",
+    "categoryFilter": {
+      "all": "Todas las categorías"
+    },
+    "categories": {
+      "attendee": "Participante",
+      "speaker": "Ponente",
+      "sponsor": "Patrocinador",
+      "staff": "Personal"
+    }
   },
   "badgePrinter": {
     "documentTitle": "Credenciales",

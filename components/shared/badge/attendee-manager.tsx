@@ -23,7 +23,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {
     Search,
+    Filter,
     MoreVertical,
     Printer,
     Trash2,
@@ -59,6 +67,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
     const t = useTranslations("attendeeManager")
     const [attendees, setAttendees] = useState<Attendee[]>([])
     const [searchTerm, setSearchTerm] = useState("")
+    const [categoryFilter, setCategoryFilter] = useState<string>("all")
     const [isLoading, setIsLoading] = useState(true)
     const [selectedAttendees, setSelectedAttendees] = useState<string[]>([])
 
@@ -91,12 +100,32 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
         }
     }
 
+    const BADGE_CATEGORIES = ["attendee", "speaker", "sponsor", "staff"] as const
+    const categoryLabel = (category: string) =>
+        BADGE_CATEGORIES.includes(category as any)
+            ? t(`categories.${category}`)
+            : category
+
     const filteredAttendees = attendees.filter(
         (a) =>
-            a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            a.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            a.company?.toLowerCase().includes(searchTerm.toLowerCase())
+            (categoryFilter === "all" || (a.category || "attendee") === categoryFilter) &&
+            (a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                a.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                a.company?.toLowerCase().includes(searchTerm.toLowerCase()))
     )
+
+    // Changing the category filter drops selections that are no longer visible,
+    // so "Print selection" never prints hidden rows.
+    const handleCategoryFilterChange = (value: string) => {
+        setCategoryFilter(value)
+        if (value === "all") return
+        setSelectedAttendees((prev) =>
+            prev.filter((id) => {
+                const a = attendees.find((x) => x._id === id)
+                return a && (a.category || "attendee") === value
+            })
+        )
+    }
 
     const toggleSelect = (id: string) => {
         setSelectedAttendees((prev) =>
@@ -132,6 +161,22 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                </div>
+                <div className="w-full md:w-56">
+                    <Select value={categoryFilter} onValueChange={handleCategoryFilterChange}>
+                        <SelectTrigger>
+                            <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
+                            <SelectValue placeholder={t("categoryFilter.all")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">{t("categoryFilter.all")}</SelectItem>
+                            {BADGE_CATEGORIES.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                    {categoryLabel(category)} ({attendees.filter((a) => (a.category || "attendee") === category).length})
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-auto">
                     <Button onClick={handlePrintSelected} disabled={selectedAttendees.length === 0} className="flex-1 md:flex-none">
@@ -218,7 +263,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
                                     </TableCell>
                                     <TableCell>
                                         <Badge variant="outline" className="capitalize">
-                                            {attendee.category}
+                                            {categoryLabel(attendee.category)}
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
