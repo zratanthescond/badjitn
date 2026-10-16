@@ -498,14 +498,27 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     const eventCustomFields = (event.customRegistrationFields || []).map((cf) => ({
       _id: cf.label,
       label: cf.label,
-      type: "text",
+      type: cf.type || "text",
       placeholder: cf.label,
       required: cf.isRequired,
-      options: [],
+      options: cf.options || [],
+      showWhen: cf.showWhen?.field && cf.showWhen?.value ? cf.showWhen : undefined,
     }));
 
     return [...filteredBase, ...customFields, ...eventCustomFields];
   }, [customFields, event.disabledBaseFields, event.customRegistrationFields, event.selectedRepublic]);
+
+  // Fields whose "showWhen" condition is unmet are neither rendered, validated
+  // nor sent with the registration.
+  const visibleRegistrationFields = useMemo(
+    () =>
+      registrationFields.filter((field) => {
+        const condition = (field as { showWhen?: { field: string; value: string } }).showWhen;
+        if (!condition) return true;
+        return (registrationValues[condition.field] || "") === condition.value;
+      }),
+    [registrationFields, registrationValues]
+  );
   const cityOptions = useMemo(() => {
     const selectedRepublic = registrationValues.republic;
     if (!selectedRepublic) return [];
@@ -783,7 +796,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const isAvailable = () => new Date(event.endDateTime) > new Date();
 
   const builtRegistrationInfo = useMemo<RegistrationInfoItem[]>(() => {
-    const items = registrationFields.map((field) => ({
+    const items = visibleRegistrationFields.map((field) => ({
       field: String(field._id),
       label: getFieldLabel(String(field._id), field.label),
       type: field.type,
@@ -902,7 +915,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     return items;
   }, [
     getFieldLabel,
-    registrationFields,
+    visibleRegistrationFields,
     registrationValues,
     shouldShowWorkSubmission,
     workChoice,
@@ -1006,7 +1019,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const validateRegistration = async () => {
     const nextErrors: Record<string, string> = {};
 
-    registrationFields.forEach((field) => {
+    visibleRegistrationFields.forEach((field) => {
       const fieldId = String(field._id);
       if (field.required && !(registrationValues[fieldId] || "").trim()) {
         nextErrors[fieldId] = text("requiredField", "Ce champ est obligatoire.");
@@ -1722,7 +1735,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               )}
 
               <div className="grid gap-4 md:grid-cols-2">
-                {registrationFields.map((field) => (
+                {visibleRegistrationFields.map((field) => (
                   <div
                     key={String(field._id)}
                     className={field.type === "radio" ? "space-y-3 md:col-span-2" : "space-y-2"}

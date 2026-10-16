@@ -1685,7 +1685,17 @@
           "title": "حقول مخصصة",
           "addField": "إضافة حقل",
           "labelPlaceholder": "اسم الحقل",
-          "isRequired": "مطلوب"
+          "isRequired": "مطلوب",
+          "fieldType": "نوع الحقل",
+          "typeText": "نص حر",
+          "typeSelect": "قائمة منسدلة",
+          "typeRadio": "اختيار واحد (أزرار)",
+          "optionsLabel": "الخيارات (خيار في كل سطر)",
+          "optionsPlaceholder": "نعم\nلا",
+          "conditionLabel": "إظهار فقط إذا",
+          "conditionNone": "يظهر دائمًا",
+          "conditionValue": "يساوي",
+          "conditionValuePlaceholder": "مثال: نعم"
         }
       }
     },

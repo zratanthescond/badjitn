@@ -1685,7 +1685,17 @@
           "title": "Campos personalizados",
           "addField": "Agregar un campo",
           "labelPlaceholder": "Nombre del campo",
-          "isRequired": "Obligatorio"
+          "isRequired": "Obligatorio",
+          "fieldType": "Tipo de campo",
+          "typeText": "Texto libre",
+          "typeSelect": "Lista desplegable",
+          "typeRadio": "Opción única (botones)",
+          "optionsLabel": "Opciones (una por línea)",
+          "optionsPlaceholder": "Sí\nNo",
+          "conditionLabel": "Mostrar solo si",
+          "conditionNone": "Siempre visible",
+          "conditionValue": "es igual a",
+          "conditionValuePlaceholder": "Ej. Sí"
         }
       }
     },

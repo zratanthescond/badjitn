@@ -1685,7 +1685,17 @@
           "title": "Champs personnalisés",
           "addField": "Ajouter un champ",
           "labelPlaceholder": "Nom du champ",
-          "isRequired": "Obligatoire"
+          "isRequired": "Obligatoire",
+          "fieldType": "Type de champ",
+          "typeText": "Texte libre",
+          "typeSelect": "Liste déroulante",
+          "typeRadio": "Choix unique (boutons)",
+          "optionsLabel": "Options (une par ligne)",
+          "optionsPlaceholder": "Oui\nNon",
+          "conditionLabel": "Afficher seulement si",
+          "conditionNone": "Toujours affiché",
+          "conditionValue": "a la valeur",
+          "conditionValuePlaceholder": "Ex. Oui"
         }
       }
     },

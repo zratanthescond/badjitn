@@ -1685,7 +1685,17 @@
           "title": "Custom fields",
           "addField": "Add a field",
           "labelPlaceholder": "Field name",
-          "isRequired": "Required"
+          "isRequired": "Required",
+          "fieldType": "Field type",
+          "typeText": "Free text",
+          "typeSelect": "Dropdown",
+          "typeRadio": "Single choice (buttons)",
+          "optionsLabel": "Options (one per line)",
+          "optionsPlaceholder": "Yes\nNo",
+          "conditionLabel": "Show only if",
+          "conditionNone": "Always shown",
+          "conditionValue": "equals",
+          "conditionValuePlaceholder": "e.g. Yes"
         }
       }
     },

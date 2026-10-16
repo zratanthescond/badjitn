@@ -14,7 +14,16 @@ export interface IEvent extends Document {
   village?: string;
   jobTitleLabel?: string;
   selectedRepublic?: string;
-  customRegistrationFields?: { label: string; isRequired: boolean }[];
+  customRegistrationFields?: {
+    label: string;
+    isRequired: boolean;
+    /** Input kind; "text" when omitted (legacy fields). */
+    type?: "text" | "select" | "radio";
+    /** Choices for select/radio fields. */
+    options?: string[];
+    /** Only show this field when another custom field (by label) has the given value. */
+    showWhen?: { field: string; value: string };
+  }[];
   programme?: { title?: string; text?: string; imageUrl?: string }[];
   pricePlan?: {
     _id?: string;
@@ -238,7 +247,15 @@ const EventSchema = new Schema({
   selectedRepublic: { type: String },
   customRegistrationFields: [{
     label: { type: String },
-    isRequired: { type: Boolean, default: false }
+    isRequired: { type: Boolean, default: false },
+    type: { type: String, enum: ["text", "select", "radio"], default: "text" },
+    options: { type: [String], default: [] },
+    // Conditional display: field = label of another custom field, value = the
+    // answer that reveals this one (e.g. "Transfert" === "Oui" → "Plan").
+    showWhen: {
+      field: { type: String },
+      value: { type: String },
+    },
   }],
   showProfileButton: { type: Boolean, default: true },
   showReturnButton: { type: Boolean, default: true },

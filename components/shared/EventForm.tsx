@@ -970,7 +970,7 @@ const EventForm = ({
                               className="rounded-xl border-dashed"
                               onClick={() => {
                                 const current = field.value || [];
-                                field.onChange([...current, { label: "", isRequired: false }]);
+                                field.onChange([...current, { label: "", isRequired: false, type: "text", options: [] }]);
                               }}
                             >
                               <Plus className="h-4 w-4 mr-2" />
@@ -979,22 +979,142 @@ const EventForm = ({
                           </div>
                           
                           <div className="space-y-3">
-                            {(field.value || []).map((customField: any, index: number) => (
+                            {(field.value || []).map((customField: any, index: number) => {
+                              const updateField = (changes: Record<string, any>) => {
+                                const newList = [...(field.value || [])];
+                                if (!newList[index]) return;
+                                newList[index] = { ...newList[index], ...changes };
+                                field.onChange(newList);
+                              };
+                              const fieldType: string = customField.type || "text";
+                              const hasOptions = fieldType === "select" || fieldType === "radio";
+                              // Only fields with a fixed set of answers can drive a condition.
+                              const conditionCandidates = (field.value || []).filter(
+                                (other: any, i: number) =>
+                                  i !== index &&
+                                  other.label &&
+                                  (other.type === "select" || other.type === "radio")
+                              );
+                              const conditionField = customField.showWhen?.field || "";
+                              const conditionParent = conditionCandidates.find((c: any) => c.label === conditionField);
+                              return (
                               <div key={index} className="flex gap-4 items-start bg-background/20 p-4 rounded-2xl border border-border/20">
-                                <div className="flex-1 space-y-2">
-                                  <Input
-                                    placeholder={t("registrationConfig.fields.customFields.labelPlaceholder")}
-                                    value={customField.label}
-                                    onChange={(e) => {
-                                      const current = field.value || [];
-                                      const newList = [...current];
-                                      if (newList[index]) {
-                                        newList[index].label = e.target.value;
-                                        field.onChange(newList);
+                                <div className="flex-1 space-y-3">
+                                  <div className="grid gap-3 md:grid-cols-2">
+                                    <Input
+                                      placeholder={t("registrationConfig.fields.customFields.labelPlaceholder")}
+                                      value={customField.label}
+                                      onChange={(e) => updateField({ label: e.target.value })}
+                                      className="bg-background/40 rounded-xl border-border/40"
+                                    />
+                                    <Select
+                                      value={fieldType}
+                                      onValueChange={(value) =>
+                                        updateField({
+                                          type: value,
+                                          options: value === "text" ? [] : customField.options || [],
+                                        })
                                       }
-                                    }}
-                                    className="bg-background/40 rounded-xl border-border/40"
-                                  />
+                                    >
+                                      <SelectTrigger className="bg-background/40 rounded-xl border-border/40">
+                                        <SelectValue placeholder={t("registrationConfig.fields.customFields.fieldType")} />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="text">{t("registrationConfig.fields.customFields.typeText")}</SelectItem>
+                                        <SelectItem value="select">{t("registrationConfig.fields.customFields.typeSelect")}</SelectItem>
+                                        <SelectItem value="radio">{t("registrationConfig.fields.customFields.typeRadio")}</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+
+                                  {hasOptions && (
+                                    <div className="space-y-1">
+                                      <Label className="text-xs text-muted-foreground">
+                                        {t("registrationConfig.fields.customFields.optionsLabel")}
+                                      </Label>
+                                      <Textarea
+                                        rows={3}
+                                        placeholder={t("registrationConfig.fields.customFields.optionsPlaceholder")}
+                                        value={(customField.options || []).join("\n")}
+                                        onChange={(e) =>
+                                          updateField({
+                                            options: e.target.value
+                                              .split("\n")
+                                              .map((o: string) => o.trim())
+                                              .filter((o: string, i: number, arr: string[]) => o && arr.indexOf(o) === i),
+                                          })
+                                        }
+                                        className="bg-background/40 rounded-xl border-border/40"
+                                      />
+                                    </div>
+                                  )}
+
+                                  {conditionCandidates.length > 0 && (
+                                    <div className="grid gap-3 md:grid-cols-2">
+                                      <div className="space-y-1">
+                                        <Label className="text-xs text-muted-foreground">
+                                          {t("registrationConfig.fields.customFields.conditionLabel")}
+                                        </Label>
+                                        <Select
+                                          value={conditionField || "__none__"}
+                                          onValueChange={(value) =>
+                                            updateField({
+                                              showWhen: value === "__none__" ? undefined : { field: value, value: "" },
+                                            })
+                                          }
+                                        >
+                                          <SelectTrigger className="bg-background/40 rounded-xl border-border/40">
+                                            <SelectValue />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="__none__">
+                                              {t("registrationConfig.fields.customFields.conditionNone")}
+                                            </SelectItem>
+                                            {conditionCandidates.map((c: any) => (
+                                              <SelectItem key={c.label} value={c.label}>
+                                                {c.label}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                      {conditionField && (
+                                        <div className="space-y-1">
+                                          <Label className="text-xs text-muted-foreground">
+                                            {t("registrationConfig.fields.customFields.conditionValue")}
+                                          </Label>
+                                          {conditionParent?.options?.length ? (
+                                            <Select
+                                              value={customField.showWhen?.value || ""}
+                                              onValueChange={(value) =>
+                                                updateField({ showWhen: { field: conditionField, value } })
+                                              }
+                                            >
+                                              <SelectTrigger className="bg-background/40 rounded-xl border-border/40">
+                                                <SelectValue placeholder={t("registrationConfig.fields.customFields.conditionValuePlaceholder")} />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                {conditionParent.options.map((opt: string) => (
+                                                  <SelectItem key={opt} value={opt}>
+                                                    {opt}
+                                                  </SelectItem>
+                                                ))}
+                                              </SelectContent>
+                                            </Select>
+                                          ) : (
+                                            <Input
+                                              placeholder={t("registrationConfig.fields.customFields.conditionValuePlaceholder")}
+                                              value={customField.showWhen?.value || ""}
+                                              onChange={(e) =>
+                                                updateField({ showWhen: { field: conditionField, value: e.target.value } })
+                                              }
+                                              className="bg-background/40 rounded-xl border-border/40"
+                                            />
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
                                 </div>
                                 <div className="flex items-center gap-4 pt-2">
                                   <div className="flex items-center space-x-2">
@@ -1025,7 +1145,8 @@ const EventForm = ({
                                   </Button>
                                 </div>
                               </div>
-                            ))}
+                              );
+                            })}
                           </div>
                           <FormMessage />
                         </FormItem>

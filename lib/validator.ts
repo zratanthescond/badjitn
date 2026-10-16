@@ -112,7 +112,15 @@ export const eventFormSchema = z
     selectedRepublic: z.string().optional(),
     customRegistrationFields: z.array(z.object({
       label: z.string(),
-      isRequired: z.boolean().default(false)
+      isRequired: z.boolean().default(false),
+      type: z.enum(["text", "select", "radio"]).optional().default("text"),
+      options: z.array(z.string()).optional().default([]),
+      showWhen: z
+        .object({
+          field: z.string().optional(),
+          value: z.string().optional(),
+        })
+        .optional(),
     })).optional().default([]),
     programme: z.array(z.object({
       title: z.string().optional(),
