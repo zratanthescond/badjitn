@@ -27,6 +27,8 @@ export interface IEvent extends Document {
     showWhen?: { field: string; value: string };
   }[];
   programme?: { title?: string; text?: string; imageUrl?: string }[];
+  /** Speaker / author CVs shown in a dedicated "CVs auteurs" tab (one image per author). */
+  authorsCv?: { name?: string; imageUrl: string }[];
   pricePlan?: {
     _id?: string;
     name: string;
@@ -135,6 +137,11 @@ const programmeItemSchema = new mongoose.Schema({
   imageUrl: { type: String },
 });
 
+const authorCvSchema = new mongoose.Schema({
+  name: { type: String },
+  imageUrl: { type: String, required: true },
+});
+
 const pricePlanSchema = new mongoose.Schema({
   name: { type: String },
   price: { type: Number },
@@ -179,6 +186,8 @@ const EventSchema = new Schema({
   // text and image) the organizer builds, shown via a dedicated tab/button
   // on the event page next to Détails/Date/Lieu/Inscription/Commentaires.
   programme: { type: [programmeItemSchema], default: [] },
+  // "CVs auteurs" tab: one image (and optional name) per speaker/author.
+  authorsCv: { type: [authorCvSchema], default: [] },
   pricePlan: { type: [pricePlanSchema], default: [] },
   pricePlanNote: { type: String },
   registrationFeeNote: { type: String },

@@ -1492,7 +1492,8 @@
       "location": "Ubicación",
       "price": "Precio",
       "programme": "Programa",
-      "registration": "Inscripción"
+      "registration": "Inscripción",
+      "authorsCv": "CV de los autores"
     },
     "title": "Detalles del Evento",
     "viewProgramme": "Ver el programa",
@@ -1500,7 +1501,8 @@
     "viewPricing": "Ver Precios",
     "hostedBy": "Organizado por",
     "organizer": "Organizador",
-    "checkInBegins": "El registro comienza"
+    "checkInBegins": "El registro comienza",
+    "viewAuthorsCv": "Ver los CV de los autores"
   },
   "eventControls": {
     "delete": "Eliminar",
@@ -1710,6 +1712,16 @@
       "itemTextPlaceholder": "Detalles, horarios, ponentes...",
       "itemImageLabel": "Imagen (opcional)",
       "itemImagePlaceholder": "Suba una imagen para este elemento"
+    },
+    "authorsCv": {
+      "title": "CV de los autores / ponentes",
+      "description": "Añada una imagen de CV por ponente. Aparecerá automáticamente una pestaña \"CV de los autores\" en la página del evento.",
+      "addItem": "Añadir un CV",
+      "empty": "Ningún CV. Haga clic en \"Añadir un CV\" para empezar.",
+      "itemNameLabel": "Nombre del ponente (opcional)",
+      "itemNamePlaceholder": "Ej.: Dr Bernard Escudier",
+      "itemImageLabel": "Imagen del CV",
+      "itemImagePlaceholder": "Suba la imagen del CV"
     }
   },
   "eventFormBuilder": {

@@ -127,6 +127,10 @@ export const eventFormSchema = z
       text: z.string().optional(),
       imageUrl: z.string().optional(),
     })).optional().default([]),
+    authorsCv: z.array(z.object({
+      name: z.string().optional(),
+      imageUrl: z.string().optional(),
+    })).optional().default([]),
     showProfileButton: z.boolean().optional().default(true),
     showReturnButton: z.boolean().optional().default(true),
     organisationId: z.string().min(1, "Organisation is required"),

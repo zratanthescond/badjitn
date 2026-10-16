@@ -110,6 +110,7 @@ export type CreateEventParams = {
     selectedRepublic?: string;
     customRegistrationFields?: { label: string; isRequired: boolean }[];
     programme?: { title?: string; text?: string; imageUrl?: string }[];
+    authorsCv?: { name?: string; imageUrl?: string }[];
     pricePlanNote?: string;
     registrationFeeNote?: string;
     paymentMethods?: PaymentMethods;
@@ -161,6 +162,7 @@ export type UpdateEventParams = {
     selectedRepublic?: string;
     customRegistrationFields?: { label: string; isRequired: boolean }[];
     programme?: { title?: string; text?: string; imageUrl?: string }[];
+    authorsCv?: { name?: string; imageUrl?: string }[];
     pricePlanNote?: string;
     registrationFeeNote?: string;
     paymentMethods?: PaymentMethods;
@@ -252,6 +254,7 @@ export type Event = {
   selectedRepublic?: string;
   customRegistrationFields?: { label: string; isRequired: boolean }[];
   programme?: { title: string; text?: string; imageUrl?: string }[];
+  authorsCv?: { name?: string; imageUrl?: string }[];
 };
 
 // ====== CATEGORY PARAMS

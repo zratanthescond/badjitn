@@ -1492,7 +1492,8 @@
       "location": "الموقع",
       "price": "السعر",
       "programme": "البرنامج",
-      "registration": "التسجيل"
+      "registration": "التسجيل",
+      "authorsCv": "السير الذاتية للمؤلفين"
     },
     "title": "تفاصيل الحدث",
     "viewProgramme": "الاطلاع على البرنامج",
@@ -1500,7 +1501,8 @@
     "viewPricing": "عرض الأسعار",
     "hostedBy": "بتنظيم",
     "organizer": "المنظم",
-    "checkInBegins": "يبدأ تسجيل الدخول"
+    "checkInBegins": "يبدأ تسجيل الدخول",
+    "viewAuthorsCv": "عرض السير الذاتية للمؤلفين"
   },
   "eventControls": {
     "delete": "حذف",
@@ -1710,6 +1712,16 @@
       "itemTextPlaceholder": "التفاصيل، التوقيت، المتحدثون...",
       "itemImageLabel": "صورة (اختياري)",
       "itemImagePlaceholder": "قم برفع صورة لهذا العنصر"
+    },
+    "authorsCv": {
+      "title": "السير الذاتية للمؤلفين / المتحدثين",
+      "description": "أضف صورة سيرة ذاتية لكل متحدث. ستظهر علامة تبويب \"السير الذاتية للمؤلفين\" تلقائيًا في صفحة الفعالية.",
+      "addItem": "إضافة سيرة ذاتية",
+      "empty": "لا توجد سيرة ذاتية. انقر على \"إضافة سيرة ذاتية\" للبدء.",
+      "itemNameLabel": "اسم المتحدث (اختياري)",
+      "itemNamePlaceholder": "مثال: Dr Bernard Escudier",
+      "itemImageLabel": "صورة السيرة الذاتية",
+      "itemImagePlaceholder": "ارفع صورة السيرة الذاتية"
     }
   },
   "eventFormBuilder": {

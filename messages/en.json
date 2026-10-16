@@ -1492,7 +1492,8 @@
       "location": "Location",
       "price": "Price",
       "programme": "Programme",
-      "registration": "Registration"
+      "registration": "Registration",
+      "authorsCv": "Authors' CVs"
     },
     "title": "Event Details",
     "viewProgramme": "View programme",
@@ -1500,7 +1501,8 @@
     "viewPricing": "View Pricing",
     "hostedBy": "Hosted by",
     "organizer": "Organizer",
-    "checkInBegins": "Check-in begins"
+    "checkInBegins": "Check-in begins",
+    "viewAuthorsCv": "View the authors' CVs"
   },
   "eventControls": {
     "delete": "Delete",
@@ -1710,6 +1712,16 @@
       "itemTextPlaceholder": "Details, schedule, speakers...",
       "itemImageLabel": "Image (optional)",
       "itemImagePlaceholder": "Upload an image for this item"
+    },
+    "authorsCv": {
+      "title": "Authors / speakers CVs",
+      "description": "Add one CV image per speaker. An \"Authors' CVs\" tab will automatically appear on the event page.",
+      "addItem": "Add a CV",
+      "empty": "No CV yet. Click \"Add a CV\" to get started.",
+      "itemNameLabel": "Speaker name (optional)",
+      "itemNamePlaceholder": "e.g. Dr Bernard Escudier",
+      "itemImageLabel": "CV image",
+      "itemImagePlaceholder": "Upload the CV image"
     }
   },
   "eventFormBuilder": {

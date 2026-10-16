@@ -46,7 +46,7 @@ interface ReelDetailsProps {
   event: Event;
 }
 
-type SectionType = "details" | "date" | "location" | "registration" | "programme" | "feedback";
+type SectionType = "details" | "date" | "location" | "registration" | "programme" | "authorsCv" | "feedback";
 
 // Date locales mapping
 const dateLocales = {
@@ -251,6 +251,21 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
               </Button>
             </div>
           )}
+
+          {/* Authors' CVs Button — only shown when the organizer uploaded CV images */}
+          {event.authorsCv && event.authorsCv.length > 0 && (
+            <div className="pt-2">
+              <Button
+                onClick={() => setSection("authorsCv")}
+                size="lg"
+                variant="outline"
+                className="rounded-2xl min-w-[200px] h-12 text-base glass-control border-primary/30"
+              >
+                <Users className="w-4 h-4 mr-2" />
+                {tx("viewAuthorsCv", "Consulter les CVs des auteurs")}
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Description */}
@@ -395,6 +410,53 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
     );
   }, [event, t, tx]);
 
+  const AuthorsCvComponent = useCallback(() => {
+    const items = (event.authorsCv || []).filter((item) => item.imageUrl);
+    return (
+      <div className="space-y-6 w-full animate-in fade-in slide-in-from-right-4 duration-500">
+        <div className="glass-panel p-6 md:p-8 rounded-3xl space-y-6">
+          <div className="text-center">
+            <h3 className="text-2xl font-syne font-bold text-slate-900 dark:text-white">
+              {t("tabs.authorsCv")}
+            </h3>
+            <div className="h-1 w-12 bg-primary mx-auto mt-2 rounded-full" />
+          </div>
+
+          <div className="grid grid-cols-1 gap-4">
+            {items.map((item, index) => (
+              <div
+                key={index}
+                className="glass-control rounded-2xl overflow-hidden group hover:border-primary/50 transition-all duration-300"
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPreviewImage({ src: item.imageUrl as string, alt: item.name || "" })
+                  }
+                  className="block w-full cursor-zoom-in"
+                  aria-label={tx("zoomImage", "Agrandir l'image")}
+                >
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name || ""}
+                    className="w-full h-auto object-contain"
+                  />
+                </button>
+                {item.name && (
+                  <div className="p-4">
+                    <h4 className="font-syne font-bold text-base text-slate-900 dark:text-white">
+                      {item.name}
+                    </h4>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }, [event, t, tx]);
+
   const RenderComponent = useMemo(() => {
     switch (section) {
       case "details":
@@ -407,12 +469,14 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
         return <EventPriceComponent event={event as any} />;
       case "programme":
         return <ProgrammeComponent />;
+      case "authorsCv":
+        return <AuthorsCvComponent />;
       case "feedback":
         return <FeedBackComponent eventId={event._id.toString()} />;
       default:
         return <DetailComponent />;
     }
-  }, [section, event, DetailComponent, DateComponent, ProgrammeComponent]);
+  }, [section, event, DetailComponent, DateComponent, ProgrammeComponent, AuthorsCvComponent]);
 
   const tabItems = useMemo(
     () => [
@@ -420,12 +484,15 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
       ...(event.programme && event.programme.length > 0
         ? [{ value: "programme", label: t("tabs.programme"), icon: LayoutList }]
         : []),
+      ...(event.authorsCv && event.authorsCv.length > 0
+        ? [{ value: "authorsCv", label: t("tabs.authorsCv"), icon: Users }]
+        : []),
       { value: "date", label: t("tabs.date"), icon: CalendarDays },
       { value: "location", label: t("tabs.location"), icon: MapPin },
       ...(!event.url ? [{ value: "registration", label: registrationTabLabel, icon: Wallet }] : []),
       { value: "feedback", label: t("tabs.feedback"), icon: MessageSquareIcon },
     ],
-    [registrationTabLabel, t, event.url, event.programme]
+    [registrationTabLabel, t, event.url, event.programme, event.authorsCv]
   );
 
   return (
