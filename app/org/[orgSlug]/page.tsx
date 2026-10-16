@@ -5,6 +5,7 @@ import OrgCountdown from "@/components/shared/OrgCountdown";
 import OrgPartnersCarousel from "@/components/shared/OrgPartnersCarousel";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { eventUrl } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -186,7 +187,7 @@ export default async function OrgPage({
           <div className="flex items-center gap-3">
             {nextEvent && (
               <Link
-                href={`/events/${nextEvent._id}`}
+                href={eventUrl(nextEvent)}
                 className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-white px-4 py-1.5 rounded-full transition-all hover:opacity-90"
                 style={{ background: "linear-gradient(to right, #624CF5, #4f8ef7)", boxShadow: "0 2px 12px rgba(98,76,245,0.4)" }}
               >
@@ -372,7 +373,7 @@ export default async function OrgPage({
 
                   {/* CTA */}
                   <Link
-                    href={`/events/${nextEvent._id}`}
+                    href={eventUrl(nextEvent)}
                     className="inline-flex items-center justify-center gap-2 w-full text-sm font-semibold text-white py-3 rounded-xl transition-all hover:opacity-90"
                     style={{ background: "linear-gradient(to right, #624CF5, #4f8ef7)", boxShadow: "0 4px 20px rgba(98,76,245,0.4)" }}
                   >
