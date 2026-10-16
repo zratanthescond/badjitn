@@ -1493,7 +1493,7 @@
       "price": "Prix",
       "programme": "Programme",
       "registration": "Inscription",
-      "authorsCv": "CVs auteurs"
+      "authorsCv": "Nos conférenciers"
     },
     "title": "Détails de l'Événement",
     "viewProgramme": "Consulter le programme",
@@ -1502,7 +1502,7 @@
     "hostedBy": "Organisé par",
     "organizer": "Organisateur",
     "checkInBegins": "L'enregistrement commence",
-    "viewAuthorsCv": "Consulter les CVs des auteurs"
+    "viewAuthorsCv": "Nos conférenciers"
   },
   "eventControls": {
     "delete": "Supprimer",

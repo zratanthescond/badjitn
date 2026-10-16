@@ -262,7 +262,7 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
                 className="rounded-2xl min-w-[200px] h-12 text-base glass-control border-primary/30"
               >
                 <Users className="w-4 h-4 mr-2" />
-                {tx("viewAuthorsCv", "Consulter les CVs des auteurs")}
+                {tx("viewAuthorsCv", "Nos conférenciers")}
               </Button>
             </div>
           )}
