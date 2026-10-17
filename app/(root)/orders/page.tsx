@@ -60,6 +60,13 @@ const Orders = async (props: SearchParamProps) => {
   const totalWorks = worksData ? worksData.length : 0;
 
   const isFreeEvent = eventData?.isFree || eventData?.price === "0" || Number(eventData?.price) === 0;
+  // Events priced through plans, or accepting bank transfers, must keep the tab
+  // even when the legacy `price` / `isFree` fields say "free".
+  const hasPaidPlans = (eventData?.pricePlan || []).some(
+    (p: any) => Number(p?.price) > 0 || (p?.options || []).some((o: any) => Number(o?.price) > 0)
+  );
+  const showBankTransfers =
+    !isFreeEvent || hasPaidPlans || !!eventData?.paymentMethods?.bankTransfer;
 
   return (
     <div
@@ -162,7 +169,7 @@ const Orders = async (props: SearchParamProps) => {
         <div className="glass bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-3xl p-6 sm:p-8 shadow-xl">
           <Tabs defaultValue="orders" className="w-full">
             <TabsList
-              className={`flex justify-start md:justify-center overflow-x-auto h-auto min-h-[4rem] items-center md:grid w-full ${!isFreeEvent ? 'md:grid-cols-4' : 'md:grid-cols-3'} mb-6 sm:mb-8 glass bg-slate-100/80 dark:bg-slate-700/80 backdrop-blur-sm border border-white/20 dark:border-slate-600/50 rounded-2xl p-1 sm:p-2 scroll-smooth scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 ${isRTL ? "font-arabic flex-row-reverse" : ""
+              className={`flex justify-start md:justify-center overflow-x-auto h-auto min-h-[4rem] items-center md:grid w-full ${showBankTransfers ? 'md:grid-cols-4' : 'md:grid-cols-3'} mb-6 sm:mb-8 glass bg-slate-100/80 dark:bg-slate-700/80 backdrop-blur-sm border border-white/20 dark:border-slate-600/50 rounded-2xl p-1 sm:p-2 scroll-smooth scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 ${isRTL ? "font-arabic flex-row-reverse" : ""
                 }`}
             >
               <TabsTrigger
@@ -201,7 +208,7 @@ const Orders = async (props: SearchParamProps) => {
                 <span className="sm:hidden">{t("tabs.works")}</span>
               </TabsTrigger>
 
-              {!isFreeEvent && (
+              {showBankTransfers && (
                 <TabsTrigger
                   value="bank-transfers"
                   className={`flex flex-row items-center justify-center gap-2 text-sm sm:text-base font-medium whitespace-nowrap shrink-0 px-4 py-2 my-1 data-[state=active]:glass data-[state=active]:bg-white/90 data-[state=active]:dark:bg-slate-600/90 data-[state=active]:shadow-md rounded-xl transition-all duration-300 ${isRTL ? "flex-row-reverse font-arabic" : ""
@@ -296,7 +303,7 @@ const Orders = async (props: SearchParamProps) => {
               </div>
             </TabsContent>
 
-            {!isFreeEvent && (
+            {showBankTransfers && (
               <TabsContent value="bank-transfers" className="rounded-2xl">
                 <div className="glass bg-gradient-to-br from-pink-50/50 to-rose-50/50 dark:from-pink-900/20 dark:to-rose-900/20 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30 rounded-2xl p-6">
                   <div
