@@ -27,7 +27,7 @@ export default function OrgPartnersCarousel({ partners }: { partners: Partner[] 
           Ils nous soutiennent
         </span>
         <h2 className="mt-2 text-2xl sm:text-3xl font-syne font-bold text-slate-900 dark:text-white">
-          Nos Sponsors &amp; Partenaires
+          Nos Partenaires
         </h2>
         <div className="mt-3 mx-auto w-10 h-px" style={{ background: "linear-gradient(to right, #624CF5, #20D5EC)" }} />
       </div>
