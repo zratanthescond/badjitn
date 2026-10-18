@@ -7,7 +7,7 @@ import {
 const pickString = (value: unknown, max = 5000) =>
   typeof value === "string" ? value.slice(0, max) : undefined;
 
-/** Bulk email to every approved résumé of an event (see send-test-email for why a route). */
+/** Bulk email to approved résumés of an event (optionally only those without an e-poster) (see send-test-email for why a route). */
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -23,7 +23,8 @@ export async function POST(req: Request) {
       message: pickString(body.message),
       extraLine: pickString(body.extraLine, 1000),
     };
-    const result = await sendEmailToApprovedWorks({ eventId, config });
+    const filter = body.filter === "noPoster" ? "noPoster" : "all";
+    const result = await sendEmailToApprovedWorks({ eventId, config, filter });
     return NextResponse.json(result);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Bulk email failed";

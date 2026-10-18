@@ -106,6 +106,8 @@ export default function WorkAdministration({
   const [isExporting, setIsExporting] = useState(false);
   const [isBulkEmailDialogOpen, setIsBulkEmailDialogOpen] = useState(false);
   const [isBulkEmailing, setIsBulkEmailing] = useState(false);
+  // "all" = every approved résumé; "noPoster" = approved résumés still without an e-poster (reminder).
+  const [bulkFilter, setBulkFilter] = useState<"all" | "noPoster">("all");
   const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
 
   const { isPending, data, error } = useQuery({
@@ -336,6 +338,21 @@ export default function WorkAdministration({
     (item: any) => item.summaryStatus === "approved" && !item.isPendingRegistration
   ).length;
 
+  // Approved résumés with no e-poster yet. The reminder is sent once per author
+  // (server de-duplicates by email), so count distinct authors alongside résumés.
+  const noPosterItems = (data || []).filter(
+    (item: any) =>
+      item.summaryStatus === "approved" &&
+      !item.isPendingRegistration &&
+      (item.fileUrls || []).length === 0
+  );
+  const noPosterCount = noPosterItems.length;
+  const noPosterAuthors = new Set(
+    noPosterItems.map((item: any) => String(item.userId || item.buyerEmail || item._id))
+  ).size;
+  const isNoPoster = bulkFilter === "noPoster";
+  const recipientCount = isNoPoster ? noPosterAuthors : approvedCount;
+
   const handleBulkEmail = async (payload: WorkEmailPayload) => {
     setIsBulkEmailing(true);
     try {
@@ -346,7 +363,7 @@ export default function WorkAdministration({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ eventId, ...payload }),
+          body: JSON.stringify({ eventId, filter: bulkFilter, ...payload }),
         }
       );
       const result: {
@@ -969,16 +986,47 @@ export default function WorkAdministration({
           <WorkEmailDialog
             open={isBulkEmailDialogOpen}
             onOpenChange={setIsBulkEmailDialogOpen}
-            title={t("bulkEmail.dialogTitle")}
-            description={t("bulkEmail.dialogDescription")}
-            defaultSubject={t("bulkEmail.defaultSubject")}
-            defaultMessage={t("bulkEmail.defaultMessage")}
-            recipientSummary={t("bulkEmail.recipients", { count: approvedCount })}
-            confirmLabel={t("bulkEmail.confirm", { count: approvedCount })}
+            title={t(isNoPoster ? "bulkEmail.dialogTitleNoPoster" : "bulkEmail.dialogTitle")}
+            description={t(isNoPoster ? "bulkEmail.dialogDescriptionNoPoster" : "bulkEmail.dialogDescription")}
+            defaultSubject={t(isNoPoster ? "bulkEmail.defaultSubjectNoPoster" : "bulkEmail.defaultSubject")}
+            defaultMessage={t(isNoPoster ? "bulkEmail.defaultMessageNoPoster" : "bulkEmail.defaultMessage")}
+            recipientSummary={
+              isNoPoster
+                ? t("bulkEmail.recipientsNoPoster", { authors: noPosterAuthors, count: noPosterCount })
+                : t("bulkEmail.recipients", { count: approvedCount })
+            }
+            confirmLabel={t("bulkEmail.confirm", { count: recipientCount })}
             isSending={isBulkEmailing}
             onSend={handleBulkEmail}
             onSendTest={handleBulkTestEmail}
             isSendingTest={isSendingTestEmail}
+            filterSlot={
+              <div className="space-y-1.5">
+                <p className={`text-sm font-medium ${isRTL ? "font-arabic" : ""}`}>
+                  {t("bulkEmail.filterLabel")}
+                </p>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {(
+                    [
+                      { value: "all", label: t("bulkEmail.filterAll", { count: approvedCount }) },
+                      { value: "noPoster", label: t("bulkEmail.filterNoPoster", { count: noPosterCount }) },
+                    ] as const
+                  ).map((opt) => (
+                    <Button
+                      key={opt.value}
+                      type="button"
+                      variant={bulkFilter === opt.value ? "default" : "outline"}
+                      onClick={() => setBulkFilter(opt.value)}
+                      disabled={isBulkEmailing || isSendingTestEmail}
+                      aria-pressed={bulkFilter === opt.value}
+                      className={`h-auto whitespace-normal py-2 text-sm ${isRTL ? "font-arabic" : ""}`}
+                    >
+                      {opt.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            }
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

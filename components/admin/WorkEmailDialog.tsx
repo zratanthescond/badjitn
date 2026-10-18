@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { FlaskConical, Mail, RotateCcw, Send } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "../ui/button";
@@ -41,6 +41,7 @@ export function WorkEmailDialog({
   onSend,
   onSendTest,
   isSendingTest = false,
+  filterSlot,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -56,6 +57,8 @@ export function WorkEmailDialog({
   /** When provided, shows a "send a test" row; `to` is empty when the organizer wants their own address. */
   onSendTest?: (payload: WorkEmailPayload, to: string) => void | Promise<void>;
   isSendingTest?: boolean;
+  /** Optional control rendered above the recipient summary (e.g. a recipient filter). */
+  filterSlot?: ReactNode;
 }) {
   const t = useTranslations("workEmailDialog");
   const locale = useLocale();
@@ -95,8 +98,14 @@ export function WorkEmailDialog({
 
   return (
     <Dialog open={open} onOpenChange={(next) => !busy && onOpenChange(next)}>
-      <DialogContent className={`sm:max-w-xl ${isRTL ? "rtl text-right" : ""}`}>
-        <DialogHeader>
+      {/* Flex column capped to the viewport: header and footer stay visible and
+          only the form body scrolls, so the buttons are never pushed off-screen. */}
+      <DialogContent
+        className={`sm:max-w-xl max-h-[92dvh] flex flex-col gap-0 overflow-hidden p-0 ${
+          isRTL ? "rtl text-right" : ""
+        }`}
+      >
+        <DialogHeader className="shrink-0 border-b px-6 pb-4 pt-6 pr-14">
           <DialogTitle className={`flex items-center gap-2 ${fontClass}`}>
             <Mail className="h-5 w-5 text-blue-500" />
             {title}
@@ -106,6 +115,8 @@ export function WorkEmailDialog({
           )}
         </DialogHeader>
 
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-4">
+        {filterSlot}
         {recipientSummary && (
           <p
             className={`rounded-lg bg-blue-500/10 border border-blue-500/20 px-3 py-2 text-sm text-blue-800 dark:text-blue-200 ${fontClass}`}
@@ -204,8 +215,9 @@ export function WorkEmailDialog({
             </div>
           )}
         </div>
+        </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter className="shrink-0 gap-2 border-t bg-background px-6 py-4 sm:gap-0">
           <Button
             type="button"
             variant="ghost"

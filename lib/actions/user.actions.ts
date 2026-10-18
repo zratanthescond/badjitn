@@ -946,42 +946,80 @@ export async function sendWorkTestEmail({
 }
 
 /**
- * Sends one email per approved résumé of the event, with the organizer's
- * configured subject/message. Failures are collected rather than aborting the
+ * Sends the configured email to the approved résumés of the event, with the
+ * organizer's subject/message. Failures are collected rather than aborting the
  * batch so one bad address does not block the others.
+ *
+ * `filter: "noPoster"` targets only approved résumés with no e-poster uploaded
+ * yet (a reminder); recipients are then de-duplicated by email so an author
+ * with several résumés receives a single email listing all of them. The
+ * default `"all"` keeps one email per approved résumé.
  */
 export async function sendEmailToApprovedWorks({
   eventId,
   config,
+  filter = "all",
 }: {
   eventId: string;
   config?: WorkEmailConfig;
+  filter?: "all" | "noPoster";
 }) {
   try {
     await connectToDatabase();
     await verifyOrganizerOrAdmin(eventId);
 
+    const query: Record<string, unknown> = { eventId, summaryStatus: "approved" };
+    if (filter === "noPoster") {
+      query.$or = [{ fileUrls: { $exists: false } }, { fileUrls: { $size: 0 } }];
+    }
+
     const [event, works] = await Promise.all([
       Event.findById(eventId).select("title maxWorkSubmissions"),
-      EventWork.find({ eventId, summaryStatus: "approved" }).sort({ createdAt: 1 }),
+      EventWork.find(query).sort({ createdAt: 1 }),
     ]);
 
     const eventTitle = event?.title || "";
     let sent = 0;
     const failed: { workId: string; title: string; reason: string }[] = [];
 
+    // One batch per email to send: a single work in "all" mode, every work of
+    // the same recipient in "noPoster" mode.
+    const batches: { key: string; works: any[]; email?: string }[] = [];
+    const byEmail = new Map<string, { key: string; works: any[]; email?: string }>();
     for (const work of works) {
-      const workTitle = work.title || "Sans titre";
+      const userId = String(work.userId);
+      let userEmail: string | undefined;
       try {
-        const userId = String(work.userId);
-        const userEmail =
+        userEmail =
           (await resolveWorkParticipantEmail(eventId, userId)) ||
           work.clientInfo?.correspondenceEmail ||
           undefined;
-        if (!userEmail) {
+      } catch {
+        userEmail = undefined;
+      }
+      if (filter === "noPoster" && userEmail) {
+        const k = userEmail.trim().toLowerCase();
+        const existing = byEmail.get(k);
+        if (existing) {
+          existing.works.push(work);
+          continue;
+        }
+        const batch = { key: k, works: [work], email: userEmail };
+        byEmail.set(k, batch);
+        batches.push(batch);
+      } else {
+        batches.push({ key: String(work._id), works: [work], email: userEmail });
+      }
+    }
+
+    for (const batch of batches) {
+      const first = batch.works[0];
+      const titles = batch.works.map((w) => w.title || "Sans titre");
+      try {
+        if (!batch.email) {
           failed.push({
-            workId: String(work._id),
-            title: workTitle,
+            workId: String(first._id),
+            title: titles[0],
             reason: "Aucune adresse email trouvée",
           });
           continue;
@@ -989,34 +1027,37 @@ export async function sendEmailToApprovedWorks({
 
         const progressHtml = await buildWorkSummaryProgressHtml({
           eventId,
-          userId,
+          userId: String(first.userId),
           maxWorkSubmissions: event?.maxWorkSubmissions,
         });
         const email = buildConfiguredWorkEmail("approved", config, progressHtml);
 
         await sendWorkStatusEmail({
-          to: userEmail,
+          to: batch.email,
           subject: email.subject,
           title: email.title,
           intro: email.intro,
           eventTitle,
-          summaryTitle: workTitle,
+          summaryTitle:
+            batch.works.length > 1
+              ? titles.map((t) => escapeEmailHtml(t)).join("<br/>")
+              : titles[0],
           extra: email.extra,
           ctaLabel: email.ctaLabel,
-          ctaUrl: buildSubmitWorkUrl(eventId, userEmail),
+          ctaUrl: buildSubmitWorkUrl(eventId, batch.email),
         });
         sent += 1;
       } catch (err) {
         failed.push({
-          workId: String(work._id),
-          title: workTitle,
+          workId: String(first._id),
+          title: titles[0],
           reason: err instanceof Error ? err.message : "Envoi échoué",
         });
       }
     }
 
     return JSON.parse(
-      JSON.stringify({ success: true, total: works.length, sent, failed })
+      JSON.stringify({ success: true, total: batches.length, sent, failed })
     ) as {
       success: boolean;
       total: number;
