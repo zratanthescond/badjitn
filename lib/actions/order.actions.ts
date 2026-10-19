@@ -1040,3 +1040,31 @@ export async function deleteOrder(orderId: string) {
     handleError(error);
   }
 }
+
+/** Updates the values of a registration's form answers (name, email, phone…), matched by position. */
+export async function updateOrderInfo(
+  orderId: string,
+  updates: { index: number; value: string }[]
+) {
+  try {
+    await connectToDatabase();
+
+    const order = await Order.findById(orderId);
+    if (!order) throw new Error("Order not found");
+
+    await verifyOrganizerOrAdmin(String(order.event));
+
+    updates.forEach(({ index, value }) => {
+      if (order.requiredUserInfo[index]) {
+        order.requiredUserInfo[index].value = String(value ?? "").trim();
+      }
+    });
+    order.markModified("requiredUserInfo");
+    await order.save();
+
+    revalidatePath("/orders");
+    return { success: true };
+  } catch (error) {
+    handleError(error);
+  }
+}

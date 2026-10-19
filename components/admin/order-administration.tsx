@@ -33,6 +33,7 @@ import {
 import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
 import DeleteOrderButton from "./DeleteOrderButton";
+import EditOrderDialog from "./EditOrderDialog";
 import EventReportDialog from "./EventReportDialog";
 import ImportParticipantsDialog from "./ImportParticipantsDialog";
 import AddParticipantDialog from "./AddParticipantDialog";
@@ -190,6 +191,26 @@ export default function OrderAdministration({
     />
   );
 
+  const renderEditButton = (order: any) => (
+    <EditOrderDialog
+      order={order}
+      label={tx("edit.label", "Modifier l'inscription")}
+      title={tx("edit.title", "Modifier l'inscription")}
+      saveLabel={tx("edit.save", "Enregistrer")}
+      cancelLabel={tx("delete.cancel", "Annuler")}
+      emptyLabel={tx("edit.empty", "Aucune information modifiable.")}
+      successMessage={tx("edit.success", "Inscription modifiée")}
+      errorMessage={tx("edit.error", "Échec de la modification")}
+    />
+  );
+
+  const renderActions = (order: any) => (
+    <div className="flex items-center justify-end gap-1">
+      {renderEditButton(order)}
+      {renderDeleteButton(order)}
+    </div>
+  );
+
   const columns = [
     {
       header: tx("table.headers.number", "Numéro"),
@@ -294,12 +315,13 @@ export default function OrderAdministration({
       header: t("table.headers.details"),
       accessor: "root",
       align: "right" as const,
-      cell: (value: any) => (
-        <div className="flex items-center justify-end gap-1">
-          <OrderDetailsDialog value={value} />
-          {renderDeleteButton(value)}
-        </div>
-      ),
+      cell: (value: any) => <OrderDetailsDialog value={value} />,
+    },
+    {
+      header: tx("table.headers.actions", "Actions"),
+      accessor: "root",
+      align: "right" as const,
+      cell: (value: any) => renderActions(value),
     },
   ];
 
@@ -395,7 +417,7 @@ export default function OrderAdministration({
       <CardFooter
         className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""}`}
       >
-        {renderDeleteButton(item)}
+        {renderActions(item)}
         <OrderDetailsDialog value={item} />
       </CardFooter>
     </Card>
