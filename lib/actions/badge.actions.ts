@@ -62,28 +62,33 @@ export async function getAttendeesByEvent(eventId: string) {
             const buyer = order.buyer;
 
             let attendeeName = "Unknown Guest";
-            let attendeeEmail = buyer?.email || "";
+            let attendeeEmail = "";
+            let usesBuyerIdentity = false;
 
-            if (buyer && buyer.firstName && buyer.firstName.toLowerCase() !== "guest") {
+            // The registration's own data comes first: several registrations can
+            // share one buyer account (e.g. an association account that registers
+            // members), so the buyer's name would repeat on every one of them.
+            const getVal = (fields: string[]) => {
+                const found = (order.requiredUserInfo || []).find((f: any) =>
+                    fields.includes(f.field?.toLowerCase()) || fields.includes(f.label?.toLowerCase())
+                );
+                return found ? String(found.value || "").trim() : "";
+            };
+            const regFirstName = getVal(["firstname", "first_name", "prenom"]);
+            const regLastName = getVal(["lastname", "last_name", "nom", "familyname", "family_name"]);
+            const regFullName = getVal(["name", "fullname", "full_name", "nomcomplet", "nom_complet"]);
+            const regEmail = getVal(["email", "e-mail", "courriel"]);
+            const regName = regFullName || `${regFirstName} ${regLastName}`.trim();
+
+            if (regName) {
+                attendeeName = regName;
+                attendeeEmail = regEmail || buyer?.email || "";
+            } else if (buyer && buyer.firstName && buyer.firstName.toLowerCase() !== "guest") {
                 attendeeName = `${buyer.firstName} ${buyer.lastName || ""}`.trim();
-            } else if (order.requiredUserInfo && Array.isArray(order.requiredUserInfo)) {
-                const getVal = (fields: string[]) => {
-                    const found = order.requiredUserInfo.find((f: any) => 
-                        fields.includes(f.field?.toLowerCase()) || fields.includes(f.label?.toLowerCase())
-                    );
-                    return found ? found.value : "";
-                };
-                
-                const firstName = getVal(["firstname", "first_name", "prenom"]);
-                const lastName = getVal(["lastname", "last_name", "nom", "familyname", "family_name"]);
-                const fullName = getVal(["name", "fullname", "full_name", "nomcomplet", "nom_complet"]);
-                
-                if (fullName) attendeeName = fullName;
-                else if (firstName || lastName) attendeeName = `${firstName} ${lastName}`.trim();
-
-                if (!attendeeEmail) {
-                    attendeeEmail = getVal(["email", "e-mail", "courriel"]);
-                }
+                attendeeEmail = buyer.email || "";
+                usesBuyerIdentity = true;
+            } else {
+                attendeeEmail = regEmail || buyer?.email || "";
             }
 
             const formatName = (str: string) => {
@@ -105,7 +110,12 @@ export async function getAttendeesByEvent(eventId: string) {
                 number: order.orderNumber ?? null,
                 name: attendeeName,
                 email: attendeeEmail,
-                photo: buyer?.photo || "",
+                // The buyer's photo only belongs to the attendee when the buyer is the attendee.
+                photo:
+                    usesBuyerIdentity ||
+                    (buyer?.email && attendeeEmail && buyer.email.toLowerCase() === attendeeEmail.toLowerCase())
+                        ? buyer?.photo || ""
+                        : "",
                 // Try to find company/title from requiredUserInfo if not directly on User
                 company: order.requiredUserInfo?.find((f: any) => f.label?.toLowerCase().includes("company") || f.field?.toLowerCase().includes("company") || f.label?.toLowerCase().includes("société") || f.label?.toLowerCase().includes("societe"))?.value || "",
                 title: order.requiredUserInfo?.find((f: any) => f.label?.toLowerCase().includes("title") || f.label?.toLowerCase().includes("poste") || f.field?.toLowerCase().includes("title"))?.value || "",
@@ -199,8 +209,20 @@ export async function deleteAttendee(id: string) {
         if (deletedOrder && deletedOrder.event) {
             // The order's résumé/work submission, if any, is a separate document —
             // remove it too so it doesn't linger as an orphaned entry in the work admin table.
+            // Résumés materialized from this very registration are always safe to remove.
+            await EventWork.deleteMany({ eventId: deletedOrder.event, orderId: deletedOrder._id })
+            // Legacy résumés (no orderId) are tied to the buyer account only. Remove them
+            // only if no other registration of the event shares that buyer: a shared
+            // account (e.g. an association registering members) owns many people's works.
             if (deletedOrder.buyer) {
-                await EventWork.deleteMany({ eventId: deletedOrder.event, userId: deletedOrder.buyer })
+                const otherOrders = await Order.countDocuments({ event: deletedOrder.event, buyer: deletedOrder.buyer })
+                if (otherOrders === 0) {
+                    await EventWork.deleteMany({
+                        eventId: deletedOrder.event,
+                        userId: deletedOrder.buyer,
+                        orderId: { $exists: false },
+                    })
+                }
             }
             revalidatePath(`/events/${deletedOrder.event}/badge`)
         }
