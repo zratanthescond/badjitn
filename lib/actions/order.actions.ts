@@ -18,6 +18,7 @@ import { ObjectId } from "mongodb";
 import User from "../database/models/user.model";
 import { getCurrencyCodeByCountry } from "../utils";
 import { verifyOrganizerOrAdmin } from "./auth.actions";
+import EventWork from "../database/models/work.model";
 import {
   sendEligibilityApprovedEmail,
   sendEligibilityRejectedEmail,
@@ -1019,3 +1020,23 @@ export const addManualParticipant = async ({
     handleError(error);
   }
 };
+
+/** Permanently deletes a registration (order) and the work submissions attached to it. */
+export async function deleteOrder(orderId: string) {
+  try {
+    await connectToDatabase();
+
+    const order = await Order.findById(orderId).select("event");
+    if (!order) throw new Error("Order not found");
+
+    await verifyOrganizerOrAdmin(String(order.event));
+
+    await EventWork.deleteMany({ orderId: order._id });
+    await Order.deleteOne({ _id: order._id });
+
+    revalidatePath("/orders");
+    return { success: true };
+  } catch (error) {
+    handleError(error);
+  }
+}

@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import OrderDetailsDialog from "./OrderDetailsDialog";
+import DeleteOrderButton from "./DeleteOrderButton";
 import EventReportDialog from "./EventReportDialog";
 import ImportParticipantsDialog from "./ImportParticipantsDialog";
 import AddParticipantDialog from "./AddParticipantDialog";
@@ -173,6 +174,22 @@ export default function OrderAdministration({
       : tx("guestRegistration", "Guest registration");
   };
 
+  const renderDeleteButton = (order: any) => (
+    <DeleteOrderButton
+      orderId={String(order._id)}
+      participantName={getParticipantNameFromOrder(order)}
+      label={tx("delete.label", "Supprimer l'inscription")}
+      title={tx("delete.title", "Supprimer cette inscription ?")}
+      description={tx(
+        "delete.description",
+        "Cette action est définitive : l'inscription et les travaux soumis qui lui sont liés seront supprimés."
+      )}
+      cancelLabel={tx("delete.cancel", "Annuler")}
+      successMessage={tx("delete.success", "Inscription supprimée")}
+      errorMessage={tx("delete.error", "Échec de la suppression")}
+    />
+  );
+
   const columns = [
     {
       header: tx("table.headers.number", "Numéro"),
@@ -277,7 +294,12 @@ export default function OrderAdministration({
       header: t("table.headers.details"),
       accessor: "root",
       align: "right" as const,
-      cell: (value: any) => <OrderDetailsDialog value={value} />,
+      cell: (value: any) => (
+        <div className="flex items-center justify-end gap-1">
+          <OrderDetailsDialog value={value} />
+          {renderDeleteButton(value)}
+        </div>
+      ),
     },
   ];
 
@@ -373,6 +395,7 @@ export default function OrderAdministration({
       <CardFooter
         className={`flex justify-end ${isRTL ? "flex-row-reverse" : ""}`}
       >
+        {renderDeleteButton(item)}
         <OrderDetailsDialog value={item} />
       </CardFooter>
     </Card>
