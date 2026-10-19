@@ -1627,9 +1627,15 @@ export async function getUserWorkByEventId({
         const order =
           candidateOrders.find((o: any) => w.orderId && String(o._id) === String(w.orderId)) ||
           candidateOrders.find((o: any) => o.buyer && String(o.buyer._id) === String(w.userId));
+        const clientName = [w.clientInfo?.firstName, w.clientInfo?.lastName]
+          .filter(Boolean)
+          .join(" ")
+          .trim();
         const orderName = order ? getOrderParticipantName(order) : "";
         w.buyer =
-          orderName && orderName !== "Participant" ? orderName : String(w.buyerEmail || "").trim();
+          clientName ||
+          (orderName && orderName !== "Participant" && !orderName.includes("@") ? orderName : "") ||
+          String(w.buyerEmail || "").trim();
       });
     }
 
