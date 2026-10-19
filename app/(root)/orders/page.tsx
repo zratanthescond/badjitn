@@ -248,6 +248,7 @@ const Orders = async (props: SearchParamProps) => {
                   eventStartDateTime={eventData?.startDateTime}
                   eventEndDateTime={eventData?.endDateTime}
                   eventPlace={eventData?.location?.name || ""}
+                  pricePlans={eventData?.pricePlan}
                 />
               </div>
             </TabsContent>

@@ -57,6 +57,7 @@ export default function OrderAdministration({
   eventStartDateTime,
   eventEndDateTime,
   eventPlace,
+  pricePlans,
 }: {
   eventId: string;
   searchString: string;
@@ -68,6 +69,7 @@ export default function OrderAdministration({
   eventStartDateTime?: string | Date;
   eventEndDateTime?: string | Date;
   eventPlace?: string;
+  pricePlans?: { name?: string; price?: number | string; options?: unknown[] }[];
 }) {
   const t = useTranslations("orderAdministration");
   const tx = (key: string, fallback: string) =>
@@ -529,7 +531,22 @@ export default function OrderAdministration({
       });
     });
 
-    const headers = [...baseHeaders, ...participantColumns, ...planColumns];
+    // Priced plans that carry sub-plans (e.g. "Congrès et Pré-congrès" 850 DT):
+    // export the chosen sub-plan in its own column, alongside the plan column.
+    const subPlanNames = (pricePlans || [])
+      .filter((p) => Number(p?.price) > 0 && (p?.options?.length || 0) > 0)
+      .map((p) => String(p?.name || "").trim())
+      .filter(Boolean);
+    const subPlanHeaders = subPlanNames.map((name) =>
+      ensureUniqueHeader(`Sous-plan choisi (${name})`)
+    );
+
+    const headers = [
+      ...baseHeaders,
+      ...participantColumns,
+      ...planColumns,
+      ...subPlanHeaders,
+    ];
 
     const rows = (data || []).map((order: any) => {
       const row: (string | number)[] = [order?.orderNumber ?? "", order?._id ?? ""];
@@ -569,6 +586,13 @@ export default function OrderAdministration({
 
       planNameToHeader.forEach((_, planName) => {
         row.push(selectedPlanMap.get(planName) || "");
+      });
+
+      subPlanNames.forEach((planName) => {
+        const detail = (order?.details || []).find(
+          (d: any) => String(d?.name || "").trim() === planName
+        );
+        row.push(detail ? (detail.option ? String(detail.option) : "Non précisé") : "");
       });
 
       return row;
