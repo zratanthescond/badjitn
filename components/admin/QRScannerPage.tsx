@@ -152,6 +152,18 @@ export default function QRScannerPage({
     return scannerRef.current;
   };
 
+  // Prefer the main rear camera: phones list ultra-wide/telephoto lenses too, and
+  // the ultra-wide one can't focus close enough to read a printed QR code.
+  const pickDefaultCamera = (devices: { id: string; label: string }[]) => {
+    const isRear = (d: { label: string }) => /back|rear|arri[eè]re|environment/i.test(d.label);
+    const isSecondaryLens = (d: { label: string }) => /ultra|wide|tele|zoom|desk/i.test(d.label);
+    return (
+      devices.find((d) => isRear(d) && !isSecondaryLens(d)) ||
+      devices.find(isRear) ||
+      devices[0]
+    ).id;
+  };
+
   const startScanner = async (cameraId: string) => {
     setIsCameraStarting(true);
     try {
@@ -195,6 +207,17 @@ export default function QRScannerPage({
         }
       );
       setIsScanning(true);
+
+      // Sharper image + continuous autofocus (ignored by browsers that don't support it).
+      try {
+        await scannerRef.current.applyVideoConstraints({
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          advanced: [{ focusMode: "continuous" } as any],
+        } as MediaTrackConstraints);
+      } catch {
+        // Constraints unsupported on this device
+      }
     } catch (err) {
       console.error("Failed to start scanner", err);
       toast({
@@ -223,10 +246,11 @@ export default function QRScannerPage({
       const devices = await Html5Qrcode.getCameras();
       if (devices && devices.length > 0) {
         setCameras(devices.map(d => ({ id: d.id, label: d.label })));
-        setSelectedCameraId(devices[0].id);
+        const defaultId = pickDefaultCamera(devices);
+        setSelectedCameraId(defaultId);
         setHasPermission(true);
         // We need to wait for the DOM to update to include the "reader" element
-        setTimeout(() => startScanner(devices[0].id), 100);
+        setTimeout(() => startScanner(defaultId), 100);
       } else {
         setHasPermission(false);
       }
@@ -391,9 +415,10 @@ export default function QRScannerPage({
     Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length > 0) {
             setCameras(devices.map(d => ({ id: d.id, label: d.label })));
-            setSelectedCameraId(devices[0].id);
+            const defaultId = pickDefaultCamera(devices);
+            setSelectedCameraId(defaultId);
             setHasPermission(true);
-            setTimeout(() => startScanner(devices[0].id), 200);
+            setTimeout(() => startScanner(defaultId), 200);
         }
     }).catch(() => {
         // Permission not yet granted
