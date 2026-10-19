@@ -67,8 +67,8 @@ export default function DeleteOrderButton({
         className="text-destructive hover:text-destructive hover:bg-destructive/10"
         title={label}
       >
-        <Trash2 className="h-4 w-4 mr-1" />
-        {label}
+        <Trash2 className="h-4 w-4" />
+        <span className="sr-only">{label}</span>
       </Button>
       <AlertDialog open={open} onOpenChange={(v) => !isDeleting && setOpen(v)}>
         <AlertDialogContent>
