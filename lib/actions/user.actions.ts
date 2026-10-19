@@ -1612,6 +1612,27 @@ export async function getUserWorkByEventId({
       },
     ]);
 
+    // Accounts with no first/last name (e.g. created from an email only) leave
+    // the buyer blank: fall back to the name captured on the registration form,
+    // then to the email, so the admin list and exports never show an empty submitter.
+    const nameless = works.filter((w: any) => !String(w.buyer || "").trim());
+    if (nameless.length > 0) {
+      const orderIds = nameless.filter((w: any) => w.orderId).map((w: any) => w.orderId);
+      const userIds = nameless.map((w: any) => w.userId);
+      const candidateOrders = await Order.find({
+        event: eventObjectId,
+        $or: [{ _id: { $in: orderIds } }, { buyer: { $in: userIds } }],
+      }).populate({ path: "buyer", model: User, select: "firstName lastName email" });
+      nameless.forEach((w: any) => {
+        const order =
+          candidateOrders.find((o: any) => w.orderId && String(o._id) === String(w.orderId)) ||
+          candidateOrders.find((o: any) => o.buyer && String(o.buyer._id) === String(w.userId));
+        const orderName = order ? getOrderParticipantName(order) : "";
+        w.buyer =
+          orderName && orderName !== "Participant" ? orderName : String(w.buyerEmail || "").trim();
+      });
+    }
+
     // Registrations that answered "yes" to "Soumettre un travail" at checkout
     // but never went through the separate work-upload flow (so no EventWork
     // document exists yet) — surface them here too, otherwise they never
