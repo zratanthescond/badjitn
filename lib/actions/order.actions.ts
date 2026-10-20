@@ -1069,6 +1069,31 @@ export async function updateOrderInfo(
   }
 }
 
+/** The plans configured on the event (with their options and prices), for the order plan editor. */
+export async function getEventPricePlans(eventId: string) {
+  try {
+    await connectToDatabase();
+    await verifyOrganizerOrAdmin(eventId);
+
+    const event = await Event.findById(eventId).select("pricePlan").lean<any>();
+    const plans = (event?.pricePlan || []).map((p: any) => ({
+      name: String(p.name ?? ""),
+      price: Number(p.price) || 0,
+      options: (p.options || []).map((o: any) => ({
+        name: String(o.name ?? ""),
+        price: Number(o.price) || 0,
+      })),
+    }));
+    return JSON.parse(JSON.stringify(plans)) as {
+      name: string;
+      price: number;
+      options: { name: string; price: number }[];
+    }[];
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 /**
  * Replaces a registration's plans (the purchased lines: registration, nights, extras…) and its total.
  * `totalAmount` defaults to the sum of the line prices when not given.

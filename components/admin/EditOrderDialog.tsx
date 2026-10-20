@@ -12,11 +12,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { updateOrderInfo, updateOrderPlans } from "@/lib/actions/order.actions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getEventPricePlans, updateOrderInfo, updateOrderPlans } from "@/lib/actions/order.actions";
 import { useToast } from "@/hooks/use-toast";
 
 type Info = { label?: string; field?: string; type?: string; value?: string };
-type Plan = { name: string; option: string; price: string };
+type Plan = { name: string; option: string; price: string; custom?: boolean };
+type ConfiguredPlan = { name: string; price: number; options: { name: string; price: number }[] };
+
+const CUSTOM = "__custom__";
 
 // Work-submission answers are long free text edited elsewhere; files can't be typed.
 const isEditable = (info: Info) =>
@@ -51,6 +61,7 @@ export default function EditOrderDialog({
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<Record<number, string>>({});
   const [plans, setPlans] = useState<Plan[]>([]);
+  const [catalog, setCatalog] = useState<ConfiguredPlan[]>([]);
   const [total, setTotal] = useState("");
   const [totalTouched, setTotalTouched] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -73,6 +84,12 @@ export default function EditOrderDialog({
     setTotal(String(order?.totalAmount ?? ""));
     setTotalTouched(false);
     setOpen(true);
+    const eventId = String(order?.eventId ?? order?.event?._id ?? order?.event ?? "");
+    if (eventId) {
+      getEventPricePlans(eventId)
+        .then((list) => setCatalog(list || []))
+        .catch(() => setCatalog([]));
+    }
   };
 
   // The total follows the sum of the lines until the admin sets it by hand.
@@ -83,6 +100,25 @@ export default function EditOrderDialog({
   const updatePlan = (i: number, patch: Partial<Plan>) =>
     applyPlans(plans.map((p, idx) => (idx === i ? { ...p, ...patch } : p)));
   const addPlan = () => applyPlans([...plans, { name: "", option: "", price: "0" }]);
+
+  const findPlan = (name: string) => catalog.find((c) => c.name === name);
+  // A line is edited with dropdowns when its plan is one of the event's configured plans.
+  const isCustom = (plan: Plan) => !!plan.custom || (catalog.length > 0 && !findPlan(plan.name) && plan.name !== "");
+  // Price of an option = option price (+ the plan's own price when it has one, e.g. a base fee).
+  const priceOf = (cp: ConfiguredPlan, optionName: string) =>
+    (cp.price || 0) + (cp.options.find((o) => o.name === optionName)?.price || 0);
+
+  const selectPlan = (i: number, value: string) => {
+    if (value === CUSTOM) return updatePlan(i, { custom: true });
+    const cp = findPlan(value);
+    if (!cp) return;
+    const first = cp.options[0]?.name ?? "";
+    updatePlan(i, { name: cp.name, option: first, price: String(priceOf(cp, first)), custom: false });
+  };
+  const selectOption = (i: number, value: string) => {
+    const cp = findPlan(plans[i].name);
+    updatePlan(i, { option: value, ...(cp ? { price: String(priceOf(cp, value)) } : {}) });
+  };
   const removePlan = (i: number) => applyPlans(plans.filter((_, idx) => idx !== i));
 
   const handleSave = async () => {
@@ -152,11 +188,27 @@ export default function EditOrderDialog({
             {plans.map((plan, i) => (
               <div key={i} className="space-y-2 rounded-lg border p-3">
                 <div className="flex items-center gap-2">
-                  <Input
-                    placeholder="Plan (ex. Nuitée du 22 octobre)"
-                    value={plan.name}
-                    onChange={(e) => updatePlan(i, { name: e.target.value })}
-                  />
+                  {catalog.length > 0 && !isCustom(plan) ? (
+                    <Select value={plan.name || undefined} onValueChange={(v) => selectPlan(i, v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choisir un plan" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {catalog.map((c) => (
+                          <SelectItem key={c.name} value={c.name}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value={CUSTOM}>Autre (saisie libre)…</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      placeholder="Plan (ex. Nuitée du 22 octobre)"
+                      value={plan.name}
+                      onChange={(e) => updatePlan(i, { name: e.target.value })}
+                    />
+                  )}
                   <Button
                     type="button"
                     variant="ghost"
@@ -168,11 +220,31 @@ export default function EditOrderDialog({
                   </Button>
                 </div>
                 <div className="grid grid-cols-[1fr_7rem] gap-2">
-                  <Input
-                    placeholder="Option (ex. Chambre double)"
-                    value={plan.option}
-                    onChange={(e) => updatePlan(i, { option: e.target.value })}
-                  />
+                  {catalog.length > 0 && !isCustom(plan) && findPlan(plan.name) ? (
+                    <Select value={plan.option || undefined} onValueChange={(v) => selectOption(i, v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choisir une option" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(() => {
+                          const opts = findPlan(plan.name)!.options.map((o) => o.name);
+                          // Keep an existing value that is no longer configured selectable.
+                          if (plan.option && !opts.includes(plan.option)) opts.push(plan.option);
+                          return opts.map((o) => (
+                            <SelectItem key={o} value={o}>
+                              {o}
+                            </SelectItem>
+                          ));
+                        })()}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      placeholder="Option (ex. Chambre double)"
+                      value={plan.option}
+                      onChange={(e) => updatePlan(i, { option: e.target.value })}
+                    />
+                  )}
                   <Input
                     type="number"
                     min="0"
