@@ -33,6 +33,9 @@ ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
  
+# E-poster export (PPTX -> PDF/JPEG): LibreOffice + poppler
+RUN apk add --no-cache libreoffice-impress poppler-utils font-noto ttf-dejavu
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
  

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import DataTable from "@/components/shared/data-table";
 import { Badge } from "../ui/badge";
 import Search from "../shared/Search";
@@ -18,6 +19,8 @@ import {
   Calendar,
   FileText,
   Filter,
+  ImageDown,
+  Loader2,
   MailCheck,
 } from "lucide-react";
 import {
@@ -104,6 +107,8 @@ export default function WorkAdministration({
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { toast } = useToast();
   const [isExporting, setIsExporting] = useState(false);
+  const [selectedPosters, setSelectedPosters] = useState<Set<string>>(new Set());
+  const [isExportingPosters, setIsExportingPosters] = useState(false);
   const [isBulkEmailDialogOpen, setIsBulkEmailDialogOpen] = useState(false);
   const [isBulkEmailing, setIsBulkEmailing] = useState(false);
   // "all" = every approved résumé; "noPoster" = approved résumés still without an e-poster (reminder).
@@ -179,7 +184,88 @@ export default function WorkAdministration({
   // Same numbering as the Word/PDF export ("Soumission N / total"): position in the list.
   const submissionNumber = (item: any) => (data || []).indexOf(item) + 1;
 
+  const hasPoster = (item: any) => Array.isArray(item?.fileUrls) && item.fileUrls.length > 0;
+  const postersAvailable = (data || []).filter(hasPoster);
+  const allPostersSelected =
+    postersAvailable.length > 0 && postersAvailable.every((item: any) => selectedPosters.has(String(item._id)));
+  const togglePoster = (item: any, checked: boolean) =>
+    setSelectedPosters((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(String(item._id));
+      else next.delete(String(item._id));
+      return next;
+    });
+  const toggleAllPosters = (checked: boolean) =>
+    setSelectedPosters(checked ? new Set(postersAvailable.map((item: any) => String(item._id))) : new Set());
+
+  // Exports the selected e-posters in the chosen format; each file is named after the
+  // submission number (same numbering as the list / Word / PDF export).
+  const handleExportPosters = async (format: "jpeg" | "pdf" | "pptx") => {
+    const items = (data || [])
+      .filter((item: any) => selectedPosters.has(String(item._id)) && hasPoster(item))
+      .map((item: any) => ({ number: submissionNumber(item), urls: item.fileUrls as string[] }));
+    if (items.length === 0) {
+      toast({ title: "Export e-posters", description: "Sélectionnez au moins un e-poster.", variant: "destructive" });
+      return;
+    }
+    setIsExportingPosters(true);
+    try {
+      const res = await fetch("/api/work/export-posters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, format }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new Error(err?.error || "Échec de l'export");
+      }
+      const blob = await res.blob();
+      const filename = res.headers.get("X-Filename") || "e-posters.zip";
+      const failed = decodeURIComponent(res.headers.get("X-Export-Errors") || "");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast({
+        title: "Export e-posters",
+        description: failed ? `Terminé avec des erreurs : ${failed}` : `${items.length} e-poster(s) exporté(s).`,
+        variant: failed ? "destructive" : undefined,
+      });
+    } catch (e) {
+      toast({
+        title: "Export e-posters",
+        description: e instanceof Error ? e.message : "Échec de l'export",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExportingPosters(false);
+    }
+  };
+
   const columns = [
+    {
+      header: (
+        <Checkbox
+          aria-label="Tout sélectionner"
+          checked={allPostersSelected}
+          disabled={postersAvailable.length === 0}
+          onCheckedChange={(v) => toggleAllPosters(v === true)}
+        />
+      ),
+      accessor: "root",
+      cell: (value: any) =>
+        hasPoster(value) ? (
+          <Checkbox
+            aria-label="Sélectionner l'e-poster"
+            checked={selectedPosters.has(String(value._id))}
+            onCheckedChange={(v) => togglePoster(value, v === true)}
+          />
+        ) : null,
+    },
     {
       header: "N°",
       accessor: "root",
@@ -275,6 +361,14 @@ export default function WorkAdministration({
             isRTL ? "font-arabic text-right" : ""
           }`}
         >
+          {hasPoster(item) && (
+            <Checkbox
+              className="mr-2 align-middle"
+              aria-label="Sélectionner l'e-poster"
+              checked={selectedPosters.has(String(item._id))}
+              onCheckedChange={(v) => togglePoster(item, v === true)}
+            />
+          )}
           N° {submissionNumber(item)} · {t("workIdLabel")}: {item._id.slice(-8)}
         </CardDescription>
       </CardHeader>
@@ -1038,6 +1132,27 @@ export default function WorkAdministration({
               </div>
             }
           />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                disabled={isExportingPosters || isPending || postersAvailable.length === 0}
+                className="shrink-0 gap-2 glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-700/80"
+                title="Exporter les e-posters sélectionnés"
+              >
+                {isExportingPosters ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageDown className="h-4 w-4" />}
+                <span className="hidden sm:inline">E-posters ({selectedPosters.size})</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align={isRTL ? "start" : "end"}>
+              <DropdownMenuItem onClick={() => toggleAllPosters(!allPostersSelected)}>
+                {allPostersSelected ? "Tout désélectionner" : `Tout sélectionner (${postersAvailable.length})`}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExportPosters("jpeg")}>Exporter en JPEG</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExportPosters("pdf")}>Exporter en PDF</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExportPosters("pptx")}>Exporter en PPTX</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
