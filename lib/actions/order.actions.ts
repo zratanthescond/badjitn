@@ -1068,3 +1068,48 @@ export async function updateOrderInfo(
     handleError(error);
   }
 }
+
+/**
+ * Replaces a registration's plans (the purchased lines: registration, nights, extras…) and its total.
+ * `totalAmount` defaults to the sum of the line prices when not given.
+ */
+export async function updateOrderPlans(
+  orderId: string,
+  details: { name: string; option?: string; price: string | number }[],
+  totalAmount?: number
+) {
+  try {
+    await connectToDatabase();
+
+    const order = await Order.findById(orderId);
+    if (!order) throw new Error("Order not found");
+
+    await verifyOrganizerOrAdmin(String(order.event));
+
+    const cleaned = (Array.isArray(details) ? details : [])
+      .map((d) => ({
+        name: String(d?.name ?? "").trim(),
+        option: String(d?.option ?? "").trim(),
+        price: String(d?.price ?? "").trim(),
+      }))
+      .filter((d) => d.name);
+    if (cleaned.some((d) => d.price === "" || !Number.isFinite(Number(d.price)))) {
+      throw new Error("Chaque plan doit avoir un prix numérique");
+    }
+
+    const sum = cleaned.reduce((acc, d) => acc + Number(d.price), 0);
+    const total =
+      totalAmount === undefined || !Number.isFinite(Number(totalAmount)) ? sum : Number(totalAmount);
+    if (total < 0) throw new Error("Le total ne peut pas être négatif");
+
+    order.details = cleaned.map((d) => (d.option ? d : { name: d.name, price: d.price })) as any;
+    order.totalAmount = total;
+    order.markModified("details");
+    await order.save();
+
+    revalidatePath("/orders");
+    return { success: true };
+  } catch (error) {
+    handleError(error);
+  }
+}
