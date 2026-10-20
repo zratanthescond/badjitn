@@ -64,6 +64,7 @@ export type pricePlan = {
   options?: PlanOption[];
   isPackage?: boolean;
   cardsLayout?: boolean;
+  isHidden?: boolean;
   groupedWithPlanId?: string;
   displayPriceLabel?: string;
 };

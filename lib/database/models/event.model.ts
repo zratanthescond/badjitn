@@ -37,6 +37,7 @@ export interface IEvent extends Document {
     note?: string;
     isPackage?: boolean;
     cardsLayout?: boolean;
+    isHidden?: boolean;
     groupedWithPlanId?: string;
     displayPriceLabel?: string;
     options?: { _id?: string; name: string; price: number; places?: number; description?: string; requireEmail?: boolean; registrationRequestOnly?: boolean; requireProof?: boolean; proofDescription?: string; proofFallbackPrice?: number }[];
@@ -151,6 +152,9 @@ const pricePlanSchema = new mongoose.Schema({
   // When true, this plan's options are rendered as horizontal cards (with each
   // option's description shown as an "Incluant" block) instead of the compact list.
   cardsLayout: { type: Boolean, default: false },
+  // When true, the plan is hidden from the public registration form (kept in the
+  // admin editor and on existing orders) so it can be switched off and on again.
+  isHidden: { type: Boolean, default: false },
   // When set, this whole plan is rendered as an extra card inside the cardsLayout
   // row of the referenced plan, as an independent toggle (not mutually exclusive
   // with that plan's own options) — e.g. a "Pré-congrès" add-on next to a base fee.

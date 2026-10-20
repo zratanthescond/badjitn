@@ -221,7 +221,7 @@ const ContributorSelection: React.FC<ContributorProps> = ({ event }) => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {event.pricePlan.map((plan, index) => (
+                {event.pricePlan.filter((p) => !(p as any).isHidden).map((plan, index) => (
                   <div
                     key={index}
                     className={`flex items-center justify-between p-4 rounded-lg glass bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200 ${

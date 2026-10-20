@@ -709,7 +709,7 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     const map: Record<string, any[]> = {};
     (event.pricePlan || []).forEach((p: any) => {
       if (p.groupedWithPlanId) {
-        (map[p.groupedWithPlanId] ||= []).push(p);
+        if (!p.isHidden) (map[p.groupedWithPlanId] ||= []).push(p);
       }
     });
     return map;
@@ -2221,6 +2221,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                     if (labPlanDefRaw && plan._id === labPlanDefRaw._id) return null;
                     // Plans grouped into another plan's cards row are rendered there instead
                     if (groupedChildPlanIds.has(plan._id)) return null;
+                    // Plan switched off by the organizer
+                    if (plan.isHidden) return null;
                     const isSelected = checkPlan.includes(plan._id);
 
                     if (plan.cardsLayout) {

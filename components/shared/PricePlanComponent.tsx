@@ -40,6 +40,7 @@ interface PricePlan {
   options?: PlanOption[];
   isPackage?: boolean;
   cardsLayout?: boolean;
+  isHidden?: boolean;
   groupedWithPlanId?: string;
   displayPriceLabel?: string;
 }
@@ -72,6 +73,7 @@ export default function PricePlanComponent({
   const [planNote, setPlanNote] = useState("");
   const [planIsPackage, setPlanIsPackage] = useState(false);
   const [planCardsLayout, setPlanCardsLayout] = useState(false);
+  const [planIsHidden, setPlanIsHidden] = useState(false);
   const [planGroupedWithPlanId, setPlanGroupedWithPlanId] = useState("");
   const [planDisplayPriceLabel, setPlanDisplayPriceLabel] = useState("");
   const [planOptions, setPlanOptions] = useState<PlanOption[]>([]);
@@ -110,6 +112,7 @@ export default function PricePlanComponent({
     setPlanNote("");
     setPlanIsPackage(false);
     setPlanCardsLayout(false);
+    setPlanIsHidden(false);
     setPlanGroupedWithPlanId("");
     setPlanDisplayPriceLabel("");
     setPlanOptions([]);
@@ -125,6 +128,7 @@ export default function PricePlanComponent({
     setPlanNote(plan.note ?? "");
     setPlanIsPackage(plan.isPackage ?? false);
     setPlanCardsLayout(plan.cardsLayout ?? false);
+    setPlanIsHidden(plan.isHidden ?? false);
     setPlanGroupedWithPlanId(plan.groupedWithPlanId ?? "");
     setPlanDisplayPriceLabel(plan.displayPriceLabel ?? "");
     setPlanOptions(plan.options ?? []);
@@ -195,6 +199,7 @@ export default function PricePlanComponent({
       note: planNote.trim() || undefined,
       isPackage: planIsPackage || undefined,
       cardsLayout: planCardsLayout || undefined,
+      isHidden: planIsHidden,
       groupedWithPlanId: planGroupedWithPlanId || undefined,
       displayPriceLabel: planGroupedWithPlanId ? (planDisplayPriceLabel.trim() || undefined) : undefined,
       options: planOptions.length > 0 ? planOptions : undefined,
@@ -344,6 +349,23 @@ export default function PricePlanComponent({
                 onChange={(e) => setPlanNote(e.target.value)}
                 className="mt-1 rounded-full"
               />
+            </div>
+
+            {/* Hide plan toggle */}
+            <div className="md:col-span-2">
+              <label className="flex items-start gap-3 p-3 rounded-2xl border border-dashed border-amber-500/40 bg-amber-500/[0.04] cursor-pointer">
+                <Checkbox
+                  checked={planIsHidden}
+                  onCheckedChange={(v) => setPlanIsHidden(v === true)}
+                  className="mt-0.5"
+                />
+                <span className="text-sm">
+                  <span className="font-medium">{tx("hiddenToggle.title", "Masquer ce plan")}</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">
+                    {tx("hiddenToggle.description", "Le plan n'apparaît plus dans le formulaire d'inscription public. Il reste ici et sur les inscriptions existantes ; décochez pour le réafficher.")}
+                  </span>
+                </span>
+              </label>
             </div>
 
             {/* All-inclusive package toggle */}
@@ -703,6 +725,11 @@ export default function PricePlanComponent({
                       <Badge variant="outline" className="font-semibold rounded-full">
                         {plan.price} {currencyCode}
                       </Badge>
+                      {plan.isHidden && (
+                        <Badge variant="outline" className="text-xs rounded-full border-amber-500/50 text-amber-600">
+                          {tx("list.hidden", "Masqué")}
+                        </Badge>
+                      )}
                       {plan.isPackage && (
                         <Badge className="text-xs rounded-full bg-primary/15 text-primary border-primary/30">
                           {tx("list.allInclusive", "Tout inclus")}
