@@ -176,7 +176,17 @@ export default function WorkAdministration({
     return labels[status] || labels.submitted;
   };
 
+  // Same numbering as the Word/PDF export ("Soumission N / total"): position in the list.
+  const submissionNumber = (item: any) => (data || []).indexOf(item) + 1;
+
   const columns = [
+    {
+      header: "N°",
+      accessor: "root",
+      cell: (value: any) => (
+        <span className="font-semibold tabular-nums">{submissionNumber(value)}</span>
+      ),
+    },
     {
       header: t("table.headers.id"),
       accessor: "_id",
@@ -265,7 +275,7 @@ export default function WorkAdministration({
             isRTL ? "font-arabic text-right" : ""
           }`}
         >
-          {t("workIdLabel")}: {item._id.slice(-8)}
+          N° {submissionNumber(item)} · {t("workIdLabel")}: {item._id.slice(-8)}
         </CardDescription>
       </CardHeader>
 
