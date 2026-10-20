@@ -1,3 +1,5 @@
+# Carlito/Liberation/Caladea are metric-compatible with Calibri/Arial+Times New Roman/Cambria,
+# so converted posters keep their layout instead of overflowing with a wider fallback font.
 # E-poster export (PPTX -> PDF/JPEG) needs LibreOffice (soffice) and poppler (pdftoppm) at runtime.
 [phases.setup]
-aptPkgs = ["...", "libreoffice-impress", "poppler-utils", "fonts-dejavu", "fonts-noto-core"]
+aptPkgs = ["...", "libreoffice-impress", "poppler-utils", "fonts-dejavu", "fonts-noto-core", "fonts-liberation", "fonts-crosextra-carlito", "fonts-crosextra-caladea"]
