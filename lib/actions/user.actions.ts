@@ -7,6 +7,7 @@ import User from "@/lib/database/models/user.model";
 import Order from "@/lib/database/models/order.model";
 import Event from "@/lib/database/models/event.model";
 import Report from "@/lib/database/models/report.model";
+import { ensureWorkNumbers } from "@/lib/database/work-number";
 import { handleError } from "@/lib/utils";
 import { CreateUserParams, UpdateUserParams } from "@/types";
 import EventWork, { IClientInfo, ICoAuthor, IWorkSection } from "../database/models/work.model";
@@ -1550,6 +1551,8 @@ export async function getUserWorkByEventId({
     await connectToDatabase();
     const eventObjectId = new ObjectId(eventId);
     if (!eventId) throw new Error("Event ID is required");
+    // Legacy works get their permanent number once (in the order the list always showed).
+    await ensureWorkNumbers(eventId);
     const works = await EventWork.aggregate([
       {
         $lookup: {
@@ -1593,6 +1596,7 @@ export async function getUserWorkByEventId({
           title: 1,
           clientInfo: 1,
           fileUrls: 1,
+          submissionNumber: 1,
           abstractFileUrls: 1,
           note: 1,
           sections: 1,
@@ -1769,7 +1773,9 @@ export async function getUserWorkByEventId({
           });
       });
 
-    const combined = [...works, ...pendingWorks];
+    // `number` is the permanent stored submission number; résumés not yet
+    // materialized into a work (pendingWorks) have none until they are saved.
+    const combined = [...works, ...pendingWorks].map((w: any) => ({ ...w, number: w.submissionNumber }));
     const filtered = searchString
       ? combined.filter((w: any) => new RegExp(searchString, "i").test(w.buyer))
       : combined;

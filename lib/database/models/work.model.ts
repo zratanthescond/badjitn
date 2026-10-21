@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { allocateWorkNumber } from "@/lib/database/work-number";
 
 export interface IClientInfo {
   firstName?: string;
@@ -58,6 +59,8 @@ interface IEventWork extends mongoose.Document {
   abstractFileUrls: string[];
   // Final e-poster upload; only unlocked once the abstract has been approved.
   fileUrls: string[];
+  // Permanent per-event submission number (see lib/database/work-number.ts).
+  submissionNumber?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -132,6 +135,8 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
     type: [String],
     default: [],
   },
+  // Permanent N° de soumission: assigned once on creation, never recomputed.
+  submissionNumber: { type: Number, required: false },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -140,7 +145,19 @@ const eventWorkSchema = new mongoose.Schema<IEventWork>({
   timestamps: true,
 });
 
+eventWorkSchema.pre("save", async function (next) {
+  try {
+    if (this.isNew && this.submissionNumber == null) {
+      this.submissionNumber = await allocateWorkNumber(String(this.eventId));
+    }
+    next();
+  } catch (err) {
+    next(err as Error);
+  }
+});
+
 eventWorkSchema.index({ eventId: 1, userId: 1 });
+eventWorkSchema.index({ eventId: 1, submissionNumber: 1 });
 eventWorkSchema.index({ eventId: 1, userId: 1, summaryStatus: 1 });
 // A résumé typed at checkout (one per registration + index) must materialize
 // into exactly one EventWork, whatever concurrent portal/admin visits do.

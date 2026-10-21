@@ -181,8 +181,9 @@ export default function WorkAdministration({
     return labels[status] || labels.submitted;
   };
 
-  // Same numbering as the Word/PDF export ("Soumission N / total"): position in the list.
-  const submissionNumber = (item: any) => (data || []).indexOf(item) + 1;
+  // Permanent N° de soumission stored on the work (never a list position);
+  // a résumé not yet materialized has none, hence the dash.
+  const submissionNumber = (item: any) => item?.number ?? "—";
 
   const hasPoster = (item: any) => Array.isArray(item?.fileUrls) && item.fileUrls.length > 0;
   const postersAvailable = (data || []).filter(hasPoster);
@@ -605,6 +606,7 @@ export default function WorkAdministration({
     title: string;
     sections: { label: string; text: string; html: string }[];
     coAuthors: string;
+    number?: number;
   };
 
   const getExportDocuments = (): ExportDocument[] =>
@@ -632,6 +634,7 @@ export default function WorkAdministration({
         title: richTextToExport(work.title).text,
         sections,
         coAuthors: richTextToExport(coAuthors).text.replace(/\s*\n\s*/g, " "),
+        number: work.number,
       };
     });
 
@@ -875,7 +878,7 @@ export default function WorkAdministration({
               : "";
             return (
               `<div${index > 0 ? ' style="page-break-before:always;"' : ""}>` +
-              `<p style="font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#64748b;margin:0 0 6pt 0;">${esc(t("export.submissionNumber", { number: index + 1, total: documents.length }))}</p>` +
+              `<p style="font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#64748b;margin:0 0 6pt 0;">${esc(t("export.submissionNumber", { number: d.number ?? index + 1, total: documents.length }))}</p>` +
               `<h2 style="font-family:Calibri,Arial,sans-serif;font-size:15pt;color:#0f172a;margin:0 0 6pt 0;">${esc(d.title || untitled)}</h2>` +
               `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#334155;margin:0 0 4pt 0;padding-bottom:8pt;border-bottom:1.5pt solid #2563eb;">${meta}</p>` +
               sections +
@@ -950,7 +953,7 @@ export default function WorkAdministration({
           } else {
             y += 24;
           }
-          writeParagraph(t("export.submissionNumber", { number: index + 1, total: documents.length }), 8, "normal", [100, 116, 139]);
+          writeParagraph(t("export.submissionNumber", { number: d.number ?? index + 1, total: documents.length }), 8, "normal", [100, 116, 139]);
           y += 2;
           writeParagraph(d.title || untitled, 14, "bold", [15, 23, 42], 1.3);
           y += 4;
