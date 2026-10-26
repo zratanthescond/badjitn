@@ -71,10 +71,11 @@ export function CertificateViewer({ view }: { view: CertificateViewData }) {
             if (!el) return
             const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import("html2canvas"), import("jspdf")])
             const { height } = certificateCanvasSize(template.orientation)
-            const canvas = await html2canvas(el, { scale: 3, useCORS: true, backgroundColor: null, width, height, windowWidth: width, windowHeight: height })
+            try { await document.fonts.ready } catch {}
+            const canvas = await html2canvas(el, { scale: 4, useCORS: true, backgroundColor: null, width, height, windowWidth: width, windowHeight: height })
             // A4 page, image stretched edge to edge (canvas ratio matches A4).
             const pdf = new jsPDF({ orientation: isLandscape ? "landscape" : "portrait", unit: "mm", format: "a4", compress: true })
-            pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight())
+            pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), undefined, "FAST")
             pdf.save(fileName)
         } finally {
             setIsDownloading(false)
