@@ -4766,6 +4766,16 @@
   "attendeeManager": {
     "searchPlaceholder": "Rechercher...",
     "printSelected": "Imprimer la sélection ({count})",
+    "export": {
+      "button": "Exporter imprimés ({count})",
+      "sheetName": "Badges imprimés",
+      "title": "BADGI - BADGES IMPRIMÉS",
+      "exportedOn": "Exporté le",
+      "total": "Total",
+      "company": "Société",
+      "jobTitle": "Fonction",
+      "error": "Échec de l'export"
+    },
     "columns": {
       "attendee": "Participant",
       "number": "N°",

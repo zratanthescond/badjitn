@@ -4766,6 +4766,16 @@
   "attendeeManager": {
     "searchPlaceholder": "Buscar...",
     "printSelected": "Imprimir selección ({count})",
+    "export": {
+      "button": "Exportar impresos ({count})",
+      "sheetName": "Gafetes impresos",
+      "title": "BADGI - GAFETES IMPRESOS",
+      "exportedOn": "Exportado el",
+      "total": "Total",
+      "company": "Empresa",
+      "jobTitle": "Cargo",
+      "error": "Error de exportación"
+    },
     "columns": {
       "attendee": "Participante",
       "number": "N.º",

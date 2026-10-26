@@ -40,6 +40,7 @@ import {
     CheckCircle2,
     XCircle,
     UserCircle,
+    FileSpreadsheet,
 } from "lucide-react"
 import { getAttendeesByEvent, deleteAttendee } from "@/lib/actions/badge.actions"
 import { toast } from "sonner"
@@ -70,6 +71,7 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
     const [categoryFilter, setCategoryFilter] = useState<string>("all")
     const [isLoading, setIsLoading] = useState(true)
     const [selectedAttendees, setSelectedAttendees] = useState<string[]>([])
+    const [isExporting, setIsExporting] = useState(false)
 
     const fetchAttendees = async () => {
         setIsLoading(true)
@@ -113,6 +115,111 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
                 a.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 a.company?.toLowerCase().includes(searchTerm.toLowerCase()))
     )
+
+    const printedAttendees = filteredAttendees.filter((a) => a.badgePrinted)
+
+    const handleExportPrinted = async () => {
+        if (printedAttendees.length === 0) return
+        setIsExporting(true)
+        try {
+            const exceljsModule = await import("exceljs")
+            const ExcelJS: any = (exceljsModule as any).default ?? exceljsModule
+            const workbook = new ExcelJS.Workbook()
+            const ws = workbook.addWorksheet(t("export.sheetName"))
+            const headers = [
+                t("columns.number"),
+                t("columns.attendee"),
+                "Email",
+                t("export.company"),
+                t("export.jobTitle"),
+                t("columns.category"),
+                t("columns.status"),
+            ]
+            const cols = headers.length
+            const headerRowNumber = 5
+            const border = {
+                top: { style: "thin", color: { argb: "FFD1D5DB" } },
+                bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+                left: { style: "thin", color: { argb: "FFD1D5DB" } },
+                right: { style: "thin", color: { argb: "FFD1D5DB" } },
+            }
+            const fill = (argb: string) => ({ type: "pattern", pattern: "solid", fgColor: { argb } })
+
+            ws.mergeCells(1, 1, 1, cols)
+            const title = ws.getCell(1, 1)
+            title.value = t("export.title")
+            title.font = { bold: true, size: 14, color: { argb: "FF0F172A" } }
+            title.fill = fill("FFDCEBFF")
+            title.alignment = { horizontal: "left", vertical: "middle" }
+            ws.getRow(1).height = 32
+
+            const meta: [string, string][] = [
+                [t("export.exportedOn"), new Date().toLocaleString()],
+                [t("export.total"), String(printedAttendees.length)],
+            ]
+            meta.forEach(([label, value], i) => {
+                const r = 2 + i
+                ws.getCell(r, 1).value = label
+                ws.getCell(r, 1).font = { bold: true }
+                ws.getCell(r, 1).fill = fill("FFE5E7EB")
+                ws.mergeCells(r, 2, r, cols)
+                ws.getCell(r, 2).value = value
+                ws.getCell(r, 1).border = border
+                ws.getCell(r, 2).border = border
+            })
+
+            const header = ws.getRow(headerRowNumber)
+            header.values = headers
+            header.height = 24
+            header.eachCell((c: any) => {
+                c.font = { bold: true, color: { argb: "FFFFFFFF" } }
+                c.fill = fill("FF2563EB")
+                c.alignment = { horizontal: "center", vertical: "middle" }
+                c.border = border
+            })
+
+            const rows = printedAttendees.map((a) => [
+                a.number ?? "",
+                a.name,
+                a.email,
+                a.company || "",
+                a.title || "",
+                categoryLabel(a.category || "attendee"),
+                t("printed"),
+            ])
+            rows.forEach((values, i) => {
+                const row = ws.getRow(headerRowNumber + 1 + i)
+                row.values = values
+                row.height = 20
+                for (let c = 1; c <= cols; c++) {
+                    const cell = row.getCell(c)
+                    cell.border = border
+                    cell.alignment = { horizontal: c === 1 ? "center" : "left", vertical: "middle" }
+                    if (i % 2 === 1) cell.fill = fill("FFF8FAFC")
+                }
+            })
+
+            const widths = [8, 30, 34, 28, 28, 16, 14]
+            widths.forEach((w, i) => (ws.getColumn(i + 1).width = w))
+            ws.views = [{ state: "frozen", ySplit: headerRowNumber }]
+            ws.autoFilter = { from: { row: headerRowNumber, column: 1 }, to: { row: headerRowNumber, column: cols } }
+            ws.pageSetup = { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0 }
+
+            const buffer = await workbook.xlsx.writeBuffer()
+            const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement("a")
+            a.href = url
+            a.download = `badges_imprimes_${new Date().toISOString().slice(0, 10)}.xlsx`
+            a.click()
+            URL.revokeObjectURL(url)
+        } catch (error) {
+            console.error(error)
+            toast.error(t("export.error"))
+        } finally {
+            setIsExporting(false)
+        }
+    }
 
     // Changing the category filter drops selections that are no longer visible,
     // so "Print selection" never prints hidden rows.
@@ -179,6 +286,10 @@ export function AttendeeManager({ eventId, onPrintBadges, onPrintSingle, refresh
                     </Select>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-auto">
+                    <Button variant="outline" onClick={handleExportPrinted} disabled={printedAttendees.length === 0 || isExporting} className="flex-1 md:flex-none">
+                        {isExporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileSpreadsheet className="w-4 h-4 mr-2" />}
+                        {t("export.button", { count: printedAttendees.length })}
+                    </Button>
                     <Button onClick={handlePrintSelected} disabled={selectedAttendees.length === 0} className="flex-1 md:flex-none">
                         <Printer className="w-4 h-4 mr-2" />
                         {t("printSelected", { count: selectedAttendees.length })}

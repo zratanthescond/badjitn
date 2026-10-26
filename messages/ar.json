@@ -4766,6 +4766,16 @@
   "attendeeManager": {
     "searchPlaceholder": "بحث...",
     "printSelected": "طباعة المحدد ({count})",
+    "export": {
+      "button": "تصدير المطبوعة ({count})",
+      "sheetName": "الشارات المطبوعة",
+      "title": "BADGI - الشارات المطبوعة",
+      "exportedOn": "تاريخ التصدير",
+      "total": "المجموع",
+      "company": "الشركة",
+      "jobTitle": "الوظيفة",
+      "error": "فشل التصدير"
+    },
     "columns": {
       "attendee": "المشارك",
       "number": "الرقم",

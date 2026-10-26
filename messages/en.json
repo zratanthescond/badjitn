@@ -4766,6 +4766,16 @@
   "attendeeManager": {
     "searchPlaceholder": "Search...",
     "printSelected": "Print Selected ({count})",
+    "export": {
+      "button": "Export printed ({count})",
+      "sheetName": "Printed badges",
+      "title": "BADGI - PRINTED BADGES",
+      "exportedOn": "Exported on",
+      "total": "Total",
+      "company": "Company",
+      "jobTitle": "Job title",
+      "error": "Export failed"
+    },
     "columns": {
       "attendee": "Attendee",
       "number": "No.",
