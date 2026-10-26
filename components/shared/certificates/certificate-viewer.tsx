@@ -69,22 +69,12 @@ export function CertificateViewer({ view }: { view: CertificateViewData }) {
         try {
             const el = pdfRef.current
             if (!el) return
-            const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import("html2canvas"), import("jspdf")])
+            // html-to-image lets the browser itself lay out the DOM (SVG foreignObject),
+            // so text lands exactly where it does on screen, unlike html2canvas.
+            const [{ toCanvas }, { jsPDF }] = await Promise.all([import("html-to-image"), import("jspdf")])
             const { height } = certificateCanvasSize(template.orientation)
             try { await document.fonts.ready } catch {}
-            const canvas = await html2canvas(el, { scale: 4, useCORS: true, backgroundColor: null, width, height, windowWidth: width, windowHeight: height,
-                // html2canvas places flex-centred text lower than the browser does; centre it with explicit padding instead.
-                onclone: (doc) => {
-                    doc.querySelectorAll<HTMLElement>(".certificate-canvas-scaler > div > div.flex").forEach((node) => {
-                        const parentH = node.parentElement?.clientHeight || 0
-                        node.style.display = "block"
-                        node.style.height = "auto"
-                        node.style.textAlign = node.style.textAlign || "left"
-                        const contentH = node.scrollHeight
-                        node.style.paddingTop = `${Math.max(0, (parentH - contentH) / 2)}px`
-                    })
-                },
-            })
+            const canvas = await toCanvas(el, { width, height, pixelRatio: 4, cacheBust: true, backgroundColor: "#ffffff" })
             // A4 page, image stretched edge to edge (canvas ratio matches A4).
             const pdf = new jsPDF({ orientation: isLandscape ? "landscape" : "portrait", unit: "mm", format: "a4", compress: true })
             pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), undefined, "FAST")
