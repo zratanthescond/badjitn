@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { useReactToPrint } from "react-to-print"
-import generatePDF from "react-to-pdf"
 import { BadgeCheck, Download, Loader2, Printer } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { certificateCanvasSize, certificateVerifyUrl, type CertificateRenderData } from "@/lib/certificate-render"
@@ -68,13 +67,15 @@ export function CertificateViewer({ view }: { view: CertificateViewData }) {
     const handleDownload = async () => {
         setIsDownloading(true)
         try {
-            await generatePDF(pdfRef, {
-                filename: fileName,
-                method: "save",
-                resolution: 3,
-                page: { format: "a4", orientation: isLandscape ? "landscape" : "portrait", margin: 0 },
-                canvas: { mimeType: "image/jpeg", qualityRatio: 0.95 },
-            })
+            const el = pdfRef.current
+            if (!el) return
+            const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import("html2canvas"), import("jspdf")])
+            const { height } = certificateCanvasSize(template.orientation)
+            const canvas = await html2canvas(el, { scale: 3, useCORS: true, backgroundColor: null, width, height, windowWidth: width, windowHeight: height })
+            // A4 page, image stretched edge to edge (canvas ratio matches A4).
+            const pdf = new jsPDF({ orientation: isLandscape ? "landscape" : "portrait", unit: "mm", format: "a4", compress: true })
+            pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight())
+            pdf.save(fileName)
         } finally {
             setIsDownloading(false)
         }
