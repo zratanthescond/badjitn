@@ -30,7 +30,22 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: 'Messages are required' }), { status: 400 });
     }
 
-    const modelMessages = await convertToModelMessages(messages);
+    // Drop messages without any text (e.g. empty assistant bubbles persisted in
+    // localStorage after a failed request). Groq rejects empty content.
+    const cleanedMessages = messages
+      .map((m) => ({
+        ...m,
+        parts: Array.isArray(m.parts)
+          ? m.parts.filter((p: any) => p?.type === 'text' && typeof p.text === 'string' && p.text.trim() !== '')
+          : [],
+      }))
+      .filter((m) => m.parts.length > 0);
+
+    if (cleanedMessages.length === 0) {
+      return new Response(JSON.stringify({ error: 'Messages are required' }), { status: 400 });
+    }
+
+    const modelMessages = await convertToModelMessages(cleanedMessages);
 
     // Provider selection: Groq is the primary provider (free tier, fast).
     // Gemini is only used when GROQ_API_KEY is absent and a Google key exists.
@@ -47,7 +62,7 @@ export async function POST(req: Request) {
     }
 
     const model = hasGroq
-      ? groq(advanced ? 'llama-3.3-70b-versatile' : 'llama-3.1-8b-instant')
+      ? groq.chat(advanced ? 'llama-3.3-70b-versatile' : 'llama-3.1-8b-instant')
       : googleProvider(advanced ? 'gemini-2.5-pro' : 'gemini-2.5-flash');
 
     const result = streamText({

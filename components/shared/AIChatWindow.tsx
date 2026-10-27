@@ -55,9 +55,14 @@ const AIChatWindow = ({ toolId = "badgi-chat", toolName, onClose }: AIChatWindow
     if (!hasLoadedStoredMessages.current) return;
 
     try {
+      // Only persist messages that actually contain text, so a failed request
+      // never leaves an empty assistant bubble in the stored history.
+      const persistable = messages.filter((m) =>
+        m.parts?.some((p: any) => p.type === "text" && p.text?.trim())
+      );
       window.localStorage.setItem(
         getChatStorageKey(toolId),
-        JSON.stringify(messages)
+        JSON.stringify(persistable)
       );
     } catch {
       // Ignore storage write failures to avoid blocking chat usage.
