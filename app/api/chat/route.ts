@@ -16,7 +16,11 @@ const groq = createOpenAI({
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-export const runtime = 'edge';
+// Node runtime: on self-hosted deployments (Coolify/Docker) the edge runtime
+// does not see container environment variables at request time, so the API
+// keys were always reported as missing.
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
