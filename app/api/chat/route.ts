@@ -28,21 +28,23 @@ export async function POST(req: Request) {
 
     const modelMessages = await convertToModelMessages(messages);
 
-    const useGroq = toolId === 'chatgpt';
-    const apiKey = useGroq ? process.env.GROQ_API_KEY : process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    // Provider selection: Groq is the primary provider (free tier, fast).
+    // Gemini is only used when GROQ_API_KEY is absent and a Google key exists.
+    const hasGroq = !!process.env.GROQ_API_KEY;
+    const hasGoogle = !!process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    const advanced = toolId === 'chatgpt';
 
-    if (!apiKey) {
-      const missing = useGroq ? 'GROQ_API_KEY' : 'GOOGLE_GENERATIVE_AI_API_KEY';
-      console.error(`Chat API: missing environment variable ${missing}`);
+    if (!hasGroq && !hasGoogle) {
+      console.error('Chat API: missing GROQ_API_KEY (or GOOGLE_GENERATIVE_AI_API_KEY)');
       return new Response(
-        JSON.stringify({ error: `AI provider is not configured (${missing} is missing)` }),
+        JSON.stringify({ error: 'AI provider is not configured (GROQ_API_KEY is missing)' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    const model = useGroq
-      ? groq('llama-3.3-70b-versatile')
-      : googleProvider('gemini-2.5-flash');
+    const model = hasGroq
+      ? groq(advanced ? 'llama-3.3-70b-versatile' : 'llama-3.1-8b-instant')
+      : googleProvider(advanced ? 'gemini-2.5-pro' : 'gemini-2.5-flash');
 
     const result = streamText({
       model,
