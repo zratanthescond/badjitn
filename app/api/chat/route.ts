@@ -2,6 +2,25 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { streamText, convertToModelMessages } from 'ai';
 
+import { BADGI_KNOWLEDGE } from '@/lib/ai/badgi-knowledge';
+import { buildChatUserContext } from '@/lib/ai/chat-context';
+
+// Keep the request small (Groq free tier limits tokens per minute) by only
+// sending the most recent turns of the conversation.
+const MAX_HISTORY_MESSAGES = 12;
+
+const SYSTEM_RULES = `Tu es "badgi AI", l'assistant officiel de la plateforme badgi.net. Tu aides les visiteurs, participants, organisateurs et administrateurs à utiliser la plateforme.
+
+Règles absolues :
+- Tu ne réponds QU'AUX questions liées à badgi : la plateforme, ses fonctionnalités, les événements qu'elle héberge, les inscriptions, les organisations, les certificats, les travaux scientifiques, les offres et le support. Pour tout autre sujet, refuse poliment et ramène la conversation vers badgi.
+- Tu t'appuies UNIQUEMENT sur le guide ci-dessous. N'invente JAMAIS une fonctionnalité, un bouton, un menu, une page, un délai ou une règle qui n'y figure pas. Si l'information n'est pas dans le guide, dis-le clairement et oriente vers support@badgi.net ou vers l'organisateur de l'événement.
+- Pour les détails d'un événement précis (programme, prix, dates), renvoie l'utilisateur à la page de l'événement ou à son organisateur : tu n'as pas accès au contenu des événements.
+- Donne les chemins des pages tels qu'ils apparaissent dans le guide (ex. /events/create, /profile). Ne fabrique pas d'URL.
+- Adapte la réponse au rôle et à la situation de l'utilisateur décrits dans la section "Contexte de l'utilisateur".
+- Réponds dans la langue de l'interface indiquée, sauf si l'utilisateur écrit clairement dans une autre langue : dans ce cas, réponds dans sa langue.
+- Sois concis et concret : étapes numérotées quand il s'agit d'une procédure, phrases courtes. Utilise le Markdown léger (gras, listes).
+- Tu es l'assistant de badgi, pas une IA généraliste : ne parle pas de ton modèle ni de ton fournisseur.`;
+
 // Initialize providers with explicit API keys
 // Using default v1beta API which supports systemInstruction
 const googleProvider = createGoogleGenerativeAI({
@@ -45,7 +64,11 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: 'Messages are required' }), { status: 400 });
     }
 
-    const modelMessages = await convertToModelMessages(cleanedMessages);
+    const recentMessages = cleanedMessages.slice(-MAX_HISTORY_MESSAGES);
+    const [modelMessages, userContext] = await Promise.all([
+      convertToModelMessages(recentMessages),
+      buildChatUserContext(),
+    ]);
 
     // Provider selection: Groq is the primary provider (free tier, fast).
     // Gemini is only used when GROQ_API_KEY is absent and a Google key exists.
@@ -73,28 +96,13 @@ export async function POST(req: Request) {
       onError: ({ error }) => {
         console.error('Chat API stream error:', error);
       },
-      system: `You are "badgi Chat", a helpful and friendly AI assistant dedicated only to the badgi platform.
+      system: `${SYSTEM_RULES}
 
-Your scope is strictly limited to:
-- the badgi platform
-- badgi offers and services
-- event creation and event management on badgi
-- registration, on-site access, and event participation
-- information about events shown on the platform
+## Contexte de l'utilisateur
+${userContext.prompt}
 
-Important rules:
-- Reply in the same language as the user.
-- Be concise, clear, and professional.
-- If the user asks about something outside badgi, its offers, or its events, politely refuse and redirect them back to badgi-related topics.
-- Do not answer broad general-knowledge questions unrelated to the platform.
-- If you do not know a specific event detail, tell the user to open the event page or contact the organizer.
-- Present yourself as badgi's platform assistant, not as a general-purpose AI.
-
-Helpful product context:
-- badgi is an event platform where users can discover, create, manage, and attend events.
-- Users may browse events, filter them, and access event details.
-- Registrations and participant access can be handled through the platform.
-- The assistant should help users understand the platform experience and available offers only.`,
+## Guide de la plateforme (source unique de vérité)
+${BADGI_KNOWLEDGE}`,
     });
 
     // UI message stream forwards provider errors to the client instead of
