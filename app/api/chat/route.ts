@@ -62,7 +62,9 @@ export async function POST(req: Request) {
     }
 
     const model = hasGroq
-      ? groq.chat(advanced ? 'llama-3.3-70b-versatile' : 'llama-3.1-8b-instant')
+      // Llama 3.x models were retired by Groq on 2026-08-16; these are the
+      // official replacements (see console.groq.com/docs/deprecations).
+      ? groq.chat(advanced ? 'openai/gpt-oss-120b' : 'openai/gpt-oss-20b')
       : googleProvider(advanced ? 'gemini-2.5-pro' : 'gemini-2.5-flash');
 
     const result = streamText({
