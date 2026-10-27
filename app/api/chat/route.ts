@@ -28,14 +28,28 @@ export async function POST(req: Request) {
 
     const modelMessages = await convertToModelMessages(messages);
 
-    const model =
-      toolId === 'chatgpt'
-        ? groq('llama-3.3-70b-versatile')
-        : googleProvider('gemini-2.5-flash');
+    const useGroq = toolId === 'chatgpt';
+    const apiKey = useGroq ? process.env.GROQ_API_KEY : process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 
-    const result = await streamText({
+    if (!apiKey) {
+      const missing = useGroq ? 'GROQ_API_KEY' : 'GOOGLE_GENERATIVE_AI_API_KEY';
+      console.error(`Chat API: missing environment variable ${missing}`);
+      return new Response(
+        JSON.stringify({ error: `AI provider is not configured (${missing} is missing)` }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const model = useGroq
+      ? groq('llama-3.3-70b-versatile')
+      : googleProvider('gemini-2.5-flash');
+
+    const result = streamText({
       model,
       messages: modelMessages,
+      onError: ({ error }) => {
+        console.error('Chat API stream error:', error);
+      },
       system: `You are "badgi Chat", a helpful and friendly AI assistant dedicated only to the badgi platform.
 
 Your scope is strictly limited to:
@@ -60,7 +74,14 @@ Helpful product context:
 - The assistant should help users understand the platform experience and available offers only.`,
     });
 
-    return result.toTextStreamResponse();
+    // UI message stream forwards provider errors to the client instead of
+    // silently ending with an empty message.
+    return result.toUIMessageStreamResponse({
+      onError: (error) => {
+        const message = error instanceof Error ? error.message : String(error);
+        return `AI provider error: ${message}`;
+      },
+    });
   } catch (error: any) {
     console.error('Chat API Error Details:', {
       message: error.message,

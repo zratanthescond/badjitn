@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { useChat, UIMessage } from "@ai-sdk/react";
-import { TextStreamChatTransport } from "ai";
+import { DefaultChatTransport } from "ai";
 import { Send, X, ArrowLeft, Loader2, Bot, Trash2 } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,10 @@ const AIChatWindow = ({ toolId = "badgi-chat", toolName, onClose }: AIChatWindow
 
   const { messages, sendMessage, status, setMessages, error } = useChat({
     id: toolId,
-    transport: new TextStreamChatTransport({
-      api: "/api/chat",
+    // Trailing slash matches next.config `trailingSlash: true` and avoids a
+    // 308 redirect on every POST.
+    transport: new DefaultChatTransport({
+      api: "/api/chat/",
       body: { toolId: model },
     }),
   });
