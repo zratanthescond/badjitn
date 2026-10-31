@@ -7,7 +7,8 @@ import { HomeEventCardSkeleton } from "@/components/shared/HomeEventSkeleton";
 import Search from "@/components/shared/Search";
 import { Button } from "@/components/ui/button";
 import { CountryDropdown } from "@/components/ui/country-dropdown";
-import { getAllEvents } from "@/lib/actions/event.actions";
+import { getAllEvents, getPlatformStats } from "@/lib/actions/event.actions";
+import PlatformStats from "@/components/shared/PlatformStats";
 import { useUser } from "@/lib/actions/user.actions";
 import { SearchParamProps } from "@/types";
 import Image from "next/image";
@@ -43,6 +44,7 @@ export default async function Home(props: SearchParamProps) {
 
   const webSiteSchema = generateWebSiteSchema(baseUrl);
   const orgSchema = generateOrganizationSchema(baseUrl);
+  const platformStats = await getPlatformStats();
 
   return (
     <main className="relative min-h-screen bg-background pb-20 overflow-hidden">
@@ -78,9 +80,17 @@ export default async function Home(props: SearchParamProps) {
           </div>
         </div>
 
+        {/* Platform Stats */}
+        <PlatformStats
+          eventsCount={platformStats?.eventsCount ?? 0}
+          organisationsCount={platformStats?.organisationsCount ?? 0}
+          participantsCount={platformStats?.participantsCount ?? 0}
+          categoriesCount={platformStats?.categoriesCount ?? 0}
+        />
+
         {/* Content Section */}
         <div className="animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-elite-spring">
-          <CollectionWrapper 
+          <CollectionWrapper
             initialData={initialEvents} 
             currentUserId={currentUserId}
             userPhoto={userPhoto}

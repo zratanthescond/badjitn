@@ -505,6 +505,30 @@ export async function removeScanPoint(eventId: string, scanPoint: string) {
   }
 }
 
+// GET PLATFORM-WIDE STATS (for homepage stats section)
+export async function getPlatformStats() {
+  try {
+    await connectToDatabase();
+
+    const [eventsCount, organisationsCount, participantsCount, categoriesCount] = await Promise.all([
+      Event.countDocuments({}),
+      Organisation.countDocuments({}),
+      Order.countDocuments({}),
+      Category.countDocuments({}),
+    ]);
+
+    return {
+      eventsCount,
+      organisationsCount,
+      participantsCount,
+      categoriesCount,
+    };
+  } catch (error) {
+    handleError(error);
+    return { eventsCount: 0, organisationsCount: 0, participantsCount: 0, categoriesCount: 0 };
+  }
+}
+
 export async function getEventDates() {
   try {
     await connectToDatabase();
