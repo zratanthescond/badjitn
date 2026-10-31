@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarCheck2, Building2, Users2, LayoutGrid } from "lucide-react";
+import { CalendarDays, Handshake, UserCheck, Stethoscope } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 type PlatformStatsProps = {
@@ -15,8 +15,10 @@ type StatItem = {
   value: number;
   suffix?: string;
   icon: React.ElementType;
-  accent: string;
-  glow: string;
+  text: string;
+  iconBg: string;
+  iconColor: string;
+  ring: string;
 };
 
 function useInView<T extends HTMLElement>() {
@@ -80,32 +82,40 @@ export default function PlatformStats({
       label: "Événements organisés",
       value: eventsCount,
       suffix: "+",
-      icon: CalendarCheck2,
-      accent: "from-elite-violet to-elite-cyan",
-      glow: "shadow-[0_0_30px_-8px_rgba(98,76,245,0.55)]",
+      icon: CalendarDays,
+      text: "text-indigo-500 dark:text-indigo-400",
+      iconBg: "bg-indigo-500/10 dark:bg-indigo-400/10",
+      iconColor: "text-indigo-500 dark:text-indigo-400",
+      ring: "ring-indigo-500/20",
     },
     {
       label: "Organisations partenaires",
       value: organisationsCount,
       suffix: "+",
-      icon: Building2,
-      accent: "from-elite-cyan to-coral-500",
-      glow: "shadow-[0_0_30px_-8px_rgba(32,213,236,0.5)]",
+      icon: Handshake,
+      text: "text-sky-500 dark:text-sky-400",
+      iconBg: "bg-sky-500/10 dark:bg-sky-400/10",
+      iconColor: "text-sky-500 dark:text-sky-400",
+      ring: "ring-sky-500/20",
     },
     {
       label: "Participants inscrits",
       value: participantsCount,
       suffix: "+",
-      icon: Users2,
-      accent: "from-coral-500 to-elite-violet",
-      glow: "shadow-[0_0_30px_-8px_rgba(21,191,89,0.45)]",
+      icon: UserCheck,
+      text: "text-emerald-500 dark:text-emerald-400",
+      iconBg: "bg-emerald-500/10 dark:bg-emerald-400/10",
+      iconColor: "text-emerald-500 dark:text-emerald-400",
+      ring: "ring-emerald-500/20",
     },
     {
       label: "Spécialités couvertes",
       value: categoriesCount,
-      icon: LayoutGrid,
-      accent: "from-elite-violet to-coral-500",
-      glow: "shadow-[0_0_30px_-8px_rgba(98,76,245,0.5)]",
+      icon: Stethoscope,
+      text: "text-rose-500 dark:text-rose-400",
+      iconBg: "bg-rose-500/10 dark:bg-rose-400/10",
+      iconColor: "text-rose-500 dark:text-rose-400",
+      ring: "ring-rose-500/20",
     },
   ];
 
@@ -131,27 +141,22 @@ export default function PlatformStats({
         </div>
 
         <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {stats.map(({ label, value, suffix, icon: Icon, accent, glow }) => (
+          {stats.map(({ label, value, suffix, icon: Icon, text, iconBg, iconColor, ring }) => (
             <div
               key={label}
-              className="group relative flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/5 dark:bg-elite-zinc/40 p-6 md:p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-white/20 overflow-hidden"
+              className="group relative flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/5 dark:bg-elite-zinc/40 p-6 md:p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-white/20 hover:bg-white/10 overflow-hidden"
             >
-              {/* Bottom accent bar, revealed on hover */}
               <div
-                className={`absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r ${accent} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}
-              />
-
-              <div
-                className={`flex items-center justify-center w-13 h-13 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${accent} ${glow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                className={`flex items-center justify-center w-14 h-14 rounded-2xl ${iconBg} ring-1 ${ring} transition-transform duration-500 group-hover:scale-110`}
               >
-                <Icon className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2} />
+                <Icon className={`w-7 h-7 ${iconColor}`} strokeWidth={1.75} />
               </div>
 
               <div
-                className={`flex items-baseline justify-center gap-1 font-syne text-4xl md:text-5xl font-extrabold leading-none tracking-tight bg-clip-text text-transparent bg-gradient-to-br ${accent}`}
+                className={`flex items-baseline justify-center gap-1 font-outfit text-4xl md:text-5xl font-black leading-none tracking-tight ${text}`}
               >
                 <CountUp value={value} />
-                {suffix && <span>{suffix}</span>}
+                {suffix && <span className="text-2xl md:text-3xl font-bold">{suffix}</span>}
               </div>
 
               <p className="text-xs md:text-sm font-semibold text-muted-foreground text-center leading-snug uppercase tracking-wide">
