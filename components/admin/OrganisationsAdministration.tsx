@@ -269,17 +269,17 @@ export default function OrganisationsAdministration() {
       {data && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <div className="glass rounded-xl border border-border/40 bg-white/50 p-3 backdrop-blur-sm dark:bg-slate-900/50">
-            <p className="text-2xl font-bold">{data.length}</p>
+            <p className="stat-figure text-2xl">{data.length}</p>
             <p className="text-xs text-muted-foreground">{t("stats.totalOrganisations")}</p>
           </div>
           <div className="glass rounded-xl border border-emerald-200/30 bg-emerald-50/50 p-3 backdrop-blur-sm dark:border-emerald-700/30 dark:bg-emerald-950/20">
-            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            <p className="stat-figure text-2xl text-emerald-600 dark:text-emerald-400">
               {data.filter((o: any) => o.isVerified).length}
             </p>
             <p className="text-xs text-muted-foreground">{t("status.verified")}</p>
           </div>
           <div className="glass rounded-xl border border-border/40 bg-slate-50/50 p-3 backdrop-blur-sm dark:bg-slate-900/50">
-            <p className="text-2xl font-bold text-slate-500">
+            <p className="stat-figure text-2xl text-slate-500">
               {data.filter((o: any) => !o.isVerified).length}
             </p>
             <p className="text-xs text-muted-foreground">{t("stats.pendingUnverified")}</p>

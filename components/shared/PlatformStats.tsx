@@ -153,7 +153,7 @@ export default function PlatformStats({
               </div>
 
               <div
-                className={`flex items-baseline justify-center gap-1 font-outfit text-4xl md:text-5xl font-black leading-none tracking-tight ${text}`}
+                className={`stat-figure flex items-baseline justify-center gap-1 text-4xl md:text-5xl leading-none ${text}`}
               >
                 <CountUp value={value} />
                 {suffix && <span className="text-2xl md:text-3xl font-bold">{suffix}</span>}

@@ -201,6 +201,11 @@ body {
     @apply font-outfit font-normal text-[16px] leading-[1.6] opacity-90;
   }
 
+  /* Consistent typography for figures/stats/KPIs across the app (dashboards, counters, badges) */
+  .stat-figure {
+    @apply font-outfit font-black tabular-nums tracking-tight;
+  }
+
   /* SHADCN OVERRIDES - GLASS STYLE */
   .select-field {
     @apply w-full glass-control h-[54px] rounded-xl px-5 py-3 focus-visible:ring-1 focus-visible:ring-primary/50 !important;

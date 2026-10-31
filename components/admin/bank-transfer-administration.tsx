@@ -603,7 +603,7 @@ export default function BankTransferAdministration({
                   <Landmark className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-xl md:text-2xl font-bold">{data.statusCounts?.total ?? data.totalCount}</p>
+                  <p className="stat-figure text-xl md:text-2xl">{data.statusCounts?.total ?? data.totalCount}</p>
                   <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.total")}</p>
                 </div>
               </div>
@@ -615,7 +615,7 @@ export default function BankTransferAdministration({
                   <Clock className="h-5 w-5 text-yellow-600" />
                 </div>
                 <div>
-                  <p className="text-xl md:text-2xl font-bold">
+                  <p className="stat-figure text-xl md:text-2xl">
                     {data.statusCounts?.pending ?? 0}
                   </p>
                   <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.pending")}</p>
@@ -629,7 +629,7 @@ export default function BankTransferAdministration({
                   <CheckCircle2 className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-xl md:text-2xl font-bold">
+                  <p className="stat-figure text-xl md:text-2xl">
                     {data.statusCounts?.approved ?? 0}
                   </p>
                   <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.approved")}</p>
@@ -643,7 +643,7 @@ export default function BankTransferAdministration({
                   <XCircle className="h-5 w-5 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-xl md:text-2xl font-bold">
+                  <p className="stat-figure text-xl md:text-2xl">
                     {data.statusCounts?.rejected ?? 0}
                   </p>
                   <p className="text-xs md:text-sm text-balance leading-tight text-muted-foreground">{t("stats.rejected")}</p>

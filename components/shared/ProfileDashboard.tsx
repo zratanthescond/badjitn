@@ -1314,7 +1314,7 @@ function StatCard({
             <div className={`p-2 rounded-xl bg-gradient-to-r ${color} text-white w-fit mb-3`}>
                 <Icon className="h-4 w-4" />
             </div>
-            <p className="text-2xl font-bold">{value}</p>
+            <p className="stat-figure text-2xl">{value}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
         </button>
     );
