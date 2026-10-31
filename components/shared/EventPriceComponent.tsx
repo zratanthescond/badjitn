@@ -8,13 +8,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import {
   ArrowRight,
+  Check,
   CheckCircle,
+  ChevronLeft,
+  ChevronRight,
   Copy,
   FileText,
   Landmark,
   LogIn,
+  Pencil,
   Plus,
   ShoppingBag,
   Sparkles,
@@ -22,6 +27,31 @@ import {
   Upload,
   X,
 } from "lucide-react";
+
+// Flat, light design tokens for the registration wizard only — scoped to this
+// component so the rest of the app keeps its existing glass/dark look.
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const flat = {
+  page: "bg-[#F6F6FB]",
+  surface: "bg-white border border-[#E4E4EF]",
+  surfaceInner: "bg-white border border-[#F0F0F6]",
+  textPrimary: "text-[#15152B]",
+  textSecondary: "text-[#55576B]",
+  textBody: "text-[#3B3D55]",
+  accent: "text-[#4338CA]",
+  accentBg: "bg-[#4338CA] hover:bg-[#2E2699]",
+  accentSoftBg: "bg-[#EEF0FF]",
+  accentSoftText: "text-[#3730A3]",
+  error: "text-[#B42318]",
+  input:
+    "h-[52px] rounded-xl border-[1.5px] border-[#CFCFE0] bg-white text-[16px] text-[#15152B] placeholder:text-[#55576B]/70 focus-visible:ring-[3px] focus-visible:ring-[#A5B4FC] focus-visible:ring-offset-1 focus-visible:border-[#4338CA]",
+  cardRadius: "rounded-[20px]",
+  blockRadius: "rounded-2xl",
+};
 import { toast } from "@/hooks/use-toast";
 import { createOrder, checkExistingRegistration } from "@/lib/actions/order.actions";
 import { v4 as uuidv4 } from "uuid";
@@ -218,6 +248,15 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   const [discountProofName, setDiscountProofName] = useState<string>("");
   const [discountProofIsImage, setDiscountProofIsImage] = useState(false);
   const [discountProofError, setDiscountProofError] = useState<string>("");
+
+  // 4-step adaptive wizard — purely a UI concern: no field names, validation
+  // functions or submission payload are affected by which step is visible.
+  const [step, setStep] = useState(0);
+  const [consentChecked, setConsentChecked] = useState(false);
+  const identityFieldIds = ["firstName", "lastName", "email"];
+  const stepHeaderRef = useRef<HTMLOListElement>(null);
+  const DRAFT_STORAGE_KEY = `badgi-registration-draft-${event._id}`;
+  const draftRestoredRef = useRef(false);
 
   useEffect(() => {
     const loadFields = async () => {
@@ -546,6 +585,25 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     }
   };
 
+  // French, non-administrative placeholders for the base fields — purely
+  // display text, the underlying field ids/values are unchanged.
+  const getFieldPlaceholder = (fieldId: string, fallback?: string) => {
+    switch (fieldId) {
+      case "firstName":
+        return "Prénom";
+      case "lastName":
+        return "Nom";
+      case "email":
+        return "nom@exemple.com";
+      case "village":
+        return "Ville ou village";
+      case "jobTitle":
+        return "Hôpital, clinique, cabinet, spécialité…";
+      default:
+        return fallback || "";
+    }
+  };
+
   useEffect(() => {
     setRegistrationValues((prev) => {
       const next = { ...prev };
@@ -564,6 +622,37 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       return next;
     });
   }, [registrationFields, event.selectedRepublic]);
+
+  // Restore a non-sensitive draft (text field values only, never files/uploads)
+  // once on mount, so a refresh mid-registration doesn't lose everything.
+  useEffect(() => {
+    if (draftRestoredRef.current) return;
+    draftRestoredRef.current = true;
+    try {
+      const raw = window.sessionStorage.getItem(DRAFT_STORAGE_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      if (draft?.registrationValues) setRegistrationValues((prev) => ({ ...prev, ...draft.registrationValues }));
+      if (draft?.checkPlan) setCheckedPlan(draft.checkPlan);
+      if (draft?.selectedOptions) setSelectedOptions(draft.selectedOptions);
+      if (draft?.optionEmails) setOptionEmails(draft.optionEmails);
+      if (typeof draft?.workChoice === "string") setWorkChoice(draft.workChoice);
+      if (typeof draft?.step === "number") setStep(draft.step);
+    } catch {
+      // Ignore malformed/unavailable storage — the form simply starts empty.
+    }
+  }, [DRAFT_STORAGE_KEY]);
+
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(
+        DRAFT_STORAGE_KEY,
+        JSON.stringify({ registrationValues, checkPlan, selectedOptions, optionEmails, workChoice, step })
+      );
+    } catch {
+      // Storage can be unavailable (private mode, quota) — non-critical, skip silently.
+    }
+  }, [DRAFT_STORAGE_KEY, registrationValues, checkPlan, selectedOptions, optionEmails, workChoice, step]);
 
   const handleAddPlan = (num: string) => {
     setCheckedPlan((prev) => (prev.includes(num) ? prev : [...prev, num]));
@@ -1015,6 +1104,73 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
       ? text("benefitAllFree", "Inscription offerte.")
       : text("benefitAll", `Remise de ${amount} sur le total.`, { amount });
   })();
+
+  // Whether this event actually has anything to show in the "Options" step —
+  // events with no plans, no discount, no lab section and no résumé submission
+  // skip straight from "Profil" to "Récap", per the spec's adaptive stepper.
+  const hasOptionsStep =
+    (event.pricePlan && event.pricePlan.length > 0) ||
+    !!discountInfo ||
+    shouldShowWorkSubmission ||
+    !!labPlanDefRaw;
+
+  const wizardSteps = [
+    { key: "identity", label: text("stepIdentity", "Identité") },
+    { key: "profile", label: text("stepProfile", "Profil") },
+    ...(hasOptionsStep ? [{ key: "options", label: text("stepOptions", "Options") }] : []),
+    { key: "recap", label: text("stepRecap", "Récap") },
+  ] as const;
+  const recapStepIndex = wizardSteps.length - 1;
+  const clampedStep = Math.min(step, recapStepIndex);
+
+  const goToStep = (index: number) => {
+    setStep(Math.max(0, Math.min(index, recapStepIndex)));
+    const prefersReducedMotion =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    stepHeaderRef.current?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+  };
+
+  // Lightweight per-step check: flags empty/invalid required fields on the
+  // fields that belong to that step and focuses the first one, but — per the
+  // spec — never disables the Continuer button itself. The exhaustive check
+  // (incl. the server-side duplicate-email lookup) still runs in validateAll()
+  // right before submission regardless of what happened here.
+  const validateVisibleFieldsSubset = (fields: typeof visibleRegistrationFields) => {
+    const nextErrors: Record<string, string> = {};
+    let firstInvalidId: string | null = null;
+    fields.forEach((field) => {
+      const fieldId = String(field._id);
+      const value = (registrationValues[fieldId] || "").trim();
+      if (field.required && !value) {
+        nextErrors[fieldId] = text("requiredField", "Ce champ est obligatoire.");
+        firstInvalidId ||= fieldId;
+      } else if (fieldId === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        nextErrors[fieldId] = text("invalidEmail", "Veuillez saisir une adresse email valide.");
+        firstInvalidId ||= fieldId;
+      }
+    });
+    setRegistrationErrors((prev) => ({ ...prev, ...nextErrors }));
+    if (firstInvalidId) {
+      document.getElementById(`reg-field-${firstInvalidId}`)?.focus();
+    }
+    return !firstInvalidId;
+  };
+
+  const handleContinueFromStep = (stepKey: string) => {
+    if (stepKey === "identity") {
+      const ok = validateVisibleFieldsSubset(
+        visibleRegistrationFields.filter((f) => identityFieldIds.includes(String(f._id)))
+      );
+      if (!ok) return;
+    }
+    if (stepKey === "profile") {
+      const ok = validateVisibleFieldsSubset(
+        visibleRegistrationFields.filter((f) => !identityFieldIds.includes(String(f._id)))
+      );
+      if (!ok) return;
+    }
+    goToStep(clampedStep + 1);
+  };
 
   const validateRegistration = async () => {
     const nextErrors: Record<string, string> = {};
@@ -1601,14 +1757,16 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
   return (
     <div className="relative mx-auto w-full max-w-full">
       <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
-        <DialogContent className="rounded-3xl border border-border/60 bg-background/95 p-0 sm:max-w-lg">
-          <div className="rounded-t-3xl bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-5 text-white">
-            <DialogHeader className="space-y-2 text-left">
-              <DialogTitle className="flex items-center gap-2 text-2xl font-bold">
-                <CheckCircle className="h-6 w-6" />
-                Inscription reussie
+        <DialogContent className={`${jakarta.className} rounded-[20px] border border-[#E4E4EF] bg-white p-0 sm:max-w-lg`}>
+          <div className="flex flex-col items-center gap-3 px-6 pt-8 pb-2 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#DCFCE7]">
+              <CheckCircle className="h-7 w-7 text-[#166534]" />
+            </div>
+            <DialogHeader className="items-center space-y-2 text-center">
+              <DialogTitle className={`text-2xl font-extrabold ${flat.textPrimary}`}>
+                {text("registrationConfirmed", "Inscription confirmée")}
               </DialogTitle>
-              <DialogDescription className="text-white/90">
+              <DialogDescription className={flat.textSecondary}>
                 {userId
                   ? "Votre inscription a bien ete enregistree."
                   : "Votre inscription a bien ete enregistree. Un compte Badgi vous permettra de la retrouver plus facilement."}
@@ -1677,25 +1835,54 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
         </DialogContent>
       </Dialog>
 
-      <div className="absolute -left-6 -top-6 h-28 w-28 rounded-full bg-primary/10 blur-xl" />
-      <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-primary/10 blur-xl" />
-
-      <Card className="relative w-full overflow-hidden rounded-2xl border bg-card/90 shadow-2xl backdrop-blur-sm">
-        <div className="absolute left-0 top-0 h-2 w-full rounded-t-[2rem] bg-gradient-to-r from-blue-500 via-pink-500 to-red-500" />
-
-        <CardHeader className="items-center px-4 pb-1 pt-4">
-          <div className="mb-2 flex items-center gap-2 rounded-full shadow-md">
-            <span className="inline-flex items-center justify-center rounded-full bg-card/10 px-3 py-1 text-xs font-semibold text-foreground/80">
-              <Ticket size={12} className="mr-1" />
-              {event.title}
-            </span>
-          </div>
-          <CardTitle className="text-center text-2xl font-bold text-foreground">
+      <Card className={`${flat.cardRadius} relative w-full overflow-hidden border border-[#E4E4EF] bg-white shadow-[0_8px_30px_rgba(21,21,43,0.06)]`}>
+        <CardHeader className="items-center gap-3 px-4 pb-2 pt-6">
+          <span className={`inline-flex items-center justify-center rounded-full ${flat.accentSoftBg} px-3 py-1 text-xs font-bold uppercase tracking-wide ${flat.accentSoftText}`}>
+            <Ticket size={12} className="mr-1.5" />
+            {event.title}
+          </span>
+          <CardTitle className={`text-center text-2xl font-extrabold ${flat.textPrimary}`}>
             {text("inscription", "Inscription")}
           </CardTitle>
+
+          {/* Step indicator — section 5 of the redesign spec */}
+          <ol
+            ref={stepHeaderRef}
+            aria-label={text("stepsAriaLabel", "Étapes de l'inscription")}
+            className="flex w-full max-w-sm items-center justify-between pt-2"
+          >
+            {wizardSteps.map((s, index) => {
+              const isDone = index < clampedStep;
+              const isCurrent = index === clampedStep;
+              return (
+                <li key={s.key} className="flex flex-1 items-center last:flex-none">
+                  <div className="flex flex-col items-center gap-1">
+                    <span
+                      aria-current={isCurrent ? "step" : undefined}
+                      className={`flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 text-sm font-bold transition-colors ${
+                        isDone
+                          ? "border-[#4338CA] bg-[#4338CA] text-white"
+                          : isCurrent
+                          ? `border-[#4338CA] ${flat.accent} bg-white`
+                          : "border-[#CFCFE0] text-[#CFCFE0] bg-white"
+                      }`}
+                    >
+                      {isDone ? <Check className="h-4 w-4" /> : index + 1}
+                    </span>
+                    <span className={`text-[11px] font-semibold ${isCurrent ? flat.accent : flat.textSecondary}`}>
+                      {s.label}
+                    </span>
+                  </div>
+                  {index < wizardSteps.length - 1 && (
+                    <span className={`mx-1.5 h-[2px] flex-1 ${isDone ? "bg-[#4338CA]" : "bg-[#E4E4EF]"}`} />
+                  )}
+                </li>
+              );
+            })}
+          </ol>
         </CardHeader>
 
-        <CardContent className="space-y-3 px-1.5 sm:px-3 pb-4">
+        <CardContent className={`${jakarta.className} space-y-3 ${flat.page} px-1.5 sm:px-3 pb-4 motion-reduce:[&_*]:transition-none`}>
           <div className="space-y-3">
             {baseFee > 0 && (
               <div className="rounded-[2rem] border border-border/50 bg-card/5 p-6 text-center backdrop-blur-sm">
@@ -1715,34 +1902,46 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               </div>
             )}
 
-            <div className="space-y-3 rounded-3xl border border-border/60 bg-background/40 p-3">
+            {(wizardSteps[clampedStep]?.key === "identity" || wizardSteps[clampedStep]?.key === "profile") && (
+            <div className={`space-y-3 ${flat.cardRadius} border border-[#E4E4EF] bg-white p-5`}>
               <div className="space-y-1">
-                <h3 className="text-lg font-semibold text-foreground">
-                  {text("personalInformation", "Informations personnelles")}
+                <h3 className={`text-lg font-bold ${flat.textPrimary}`}>
+                  {wizardSteps[clampedStep]?.key === "identity"
+                    ? text("stepIdentityTitle", "Qui participe ?")
+                    : text("stepProfileTitle", "Votre profil")}
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  {text(
-                    "personalInformationDescription",
-                    "Remplissez les informations du participant avant de confirmer l'inscription."
-                  )}
+                <p className={`text-sm ${flat.textSecondary}`}>
+                  {wizardSteps[clampedStep]?.key === "identity"
+                    ? text(
+                        "personalInformationDescription",
+                        "Remplissez les informations du participant avant de confirmer l'inscription."
+                      )
+                    : text("stepProfileDescription", "Quelques informations sur votre exercice professionnel.")}
                 </p>
               </div>
 
-              {!allowGuestRegistration && !userId && (
+              {wizardSteps[clampedStep]?.key === "identity" && !allowGuestRegistration && !userId && (
                 <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
                   {text("signInRequired", "Cet evenement exige un compte avant l'inscription.")}
                 </div>
               )}
 
               <div className="grid gap-4 md:grid-cols-2">
-                {visibleRegistrationFields.map((field) => (
+                {(wizardSteps[clampedStep]?.key === "identity"
+                  ? visibleRegistrationFields.filter((f) => identityFieldIds.includes(String(f._id)))
+                  : visibleRegistrationFields.filter((f) => !identityFieldIds.includes(String(f._id)))
+                ).map((field) => (
                   <div
                     key={String(field._id)}
                     className={field.type === "radio" ? "space-y-3 md:col-span-2" : "space-y-2"}
                   >
-                    <Label className="text-sm font-medium text-foreground">
+                    <Label htmlFor={`reg-field-${String(field._id)}`} className={`text-sm font-bold ${flat.textPrimary}`}>
                       {getFieldLabel(String(field._id), field.label)}
-                      {field.required && <span className="ml-1 text-destructive">*</span>}
+                      {field.required ? (
+                        <span className={`ml-1 ${flat.error}`}>*</span>
+                      ) : (
+                        <span className={`ml-1 text-xs font-normal ${flat.textSecondary}`}>({text("optional", "facultatif")})</span>
+                      )}
                     </Label>
 
                     {String(field._id) === "republic" ? (
@@ -1766,12 +1965,12 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         onValueChange={(value) => handleRegistrationValueChange("city", value)}
                         disabled={!registrationValues.republic || cityOptions.length === 0}
                       >
-                        <SelectTrigger className="rounded-2xl">
+                        <SelectTrigger id={`reg-field-${String(field._id)}`} className={flat.input}>
                           <SelectValue
                             placeholder={
                               cityOptions.length === 0
-                                ? profileText("settings.cityNoOptions", "No cities available for this country")
-                                : field.placeholder || profileText("settings.cityPlaceholder", "Select a city")
+                                ? text("cityNoOptions", "Aucune ville disponible pour ce pays")
+                                : text("cityPlaceholder", "Choisir une ville")
                             }
                           />
                         </SelectTrigger>
@@ -1788,8 +1987,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                         value={registrationValues[String(field._id)] || ""}
                         onValueChange={(value) => handleRegistrationValueChange(String(field._id), value)}
                       >
-                        <SelectTrigger className="rounded-2xl">
-                          <SelectValue placeholder={field.placeholder || text("selectOption", "Selectionnez une option")} />
+                        <SelectTrigger id={`reg-field-${String(field._id)}`} className={flat.input}>
+                          <SelectValue placeholder={field.placeholder || text("selectOption", "Choisir une option")} />
                         </SelectTrigger>
                         <SelectContent>
                           {field.options?.map((option) => (
@@ -1827,28 +2026,67 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                     ) : (
                       <div className="relative">
                         <Input
+                          id={`reg-field-${String(field._id)}`}
                           type={String(field._id) === "email" ? "email" : field.type === "number" ? "number" : "text"}
+                          inputMode={String(field._id) === "email" ? "email" : undefined}
                           value={registrationValues[String(field._id)] || ""}
                           onChange={(e) => handleRegistrationValueChange(String(field._id), e.target.value)}
                           onBlur={(e) => String(field._id) === "email" && handleEmailBlur(e.target.value)}
-                          placeholder={field.placeholder || getFieldLabel(String(field._id), field.label)}
-                          className={`rounded-2xl ${String(field._id) === "email" && emailAlreadyRegistered ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                          placeholder={getFieldPlaceholder(String(field._id), field.placeholder || getFieldLabel(String(field._id), field.label))}
+                          aria-invalid={!!registrationErrors[String(field._id)]}
+                          aria-describedby={registrationErrors[String(field._id)] ? `reg-field-${String(field._id)}-error` : undefined}
+                          className={`${flat.input} ${String(field._id) === "email" && emailAlreadyRegistered ? `border-[#B42318] focus-visible:ring-[#B42318]/40` : ""}`}
                         />
                         {String(field._id) === "email" && isCheckingEmail && (
                           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#4338CA] border-t-transparent" />
                           </div>
+                        )}
+                        {String(field._id) === "email" && !registrationErrors.email && (
+                          <p className={`mt-1.5 text-xs ${flat.textSecondary}`}>
+                            {text("emailHelp", "Votre badge et QR code y seront envoyés.")}
+                          </p>
                         )}
                       </div>
                     )}
 
                     {registrationErrors[String(field._id)] && (
-                      <p className="text-sm text-destructive">{registrationErrors[String(field._id)]}</p>
+                      <p id={`reg-field-${String(field._id)}-error`} className={`text-sm ${flat.error}`}>
+                        {registrationErrors[String(field._id)]}
+                      </p>
                     )}
                   </div>
                 ))}
               </div>
 
+              <div className="flex items-center justify-between gap-3 pt-2">
+                {clampedStep > 0 ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => goToStep(clampedStep - 1)}
+                    className={`h-11 min-w-[44px] rounded-xl border-[#CFCFE0] ${flat.textPrimary} hover:bg-[#F6F6FB]`}
+                  >
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    {text("back", "Retour")}
+                  </Button>
+                ) : (
+                  <span />
+                )}
+                <Button
+                  type="button"
+                  onClick={() => handleContinueFromStep(wizardSteps[clampedStep]?.key)}
+                  className={`h-11 min-w-[44px] rounded-xl px-6 font-bold text-white ${flat.accentBg}`}
+                >
+                  {text("continue", "Continuer")}
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            )}
+
+            {wizardSteps[clampedStep]?.key === "options" && (
+            <div className="space-y-3">
               {shouldShowWorkSubmission && (
                 <div className="space-y-4 rounded-3xl border border-border/60 bg-card/30 p-5">
                   <div className="space-y-1">
@@ -2201,7 +2439,6 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
                   )}
                 </div>
               )}
-            </div>
 
             {event.pricePlan && event.pricePlan.length > 0 && (
               <div className="space-y-3">
@@ -2652,6 +2889,183 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
 
             {roommateCard}
 
+              <div className="flex items-center justify-between gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => goToStep(clampedStep - 1)}
+                  className={`h-11 min-w-[44px] rounded-xl border-[#CFCFE0] ${flat.textPrimary} hover:bg-[#F6F6FB]`}
+                >
+                  <ChevronLeft className="mr-1 h-4 w-4" />
+                  {text("back", "Retour")}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => goToStep(clampedStep + 1)}
+                  className={`h-11 min-w-[44px] rounded-xl px-6 font-bold text-white ${flat.accentBg}`}
+                >
+                  {text("continue", "Continuer")}
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            )}
+
+            {wizardSteps[clampedStep]?.key === "recap" && (
+            <div className="space-y-3">
+              <div className={`space-y-4 ${flat.cardRadius} border border-[#E4E4EF] bg-white p-5`}>
+                <div className="space-y-1">
+                  <h3 className={`text-lg font-bold ${flat.textPrimary}`}>
+                    {text("stepRecapTitle", "Vérifiez et confirmez")}
+                  </h3>
+                  <p className={`text-sm ${flat.textSecondary}`}>
+                    {text("stepRecapDescription", "Relisez vos informations avant de valider votre inscription.")}
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="rounded-xl border border-[#F0F0F6] bg-[#F6F6FB] p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className={`text-xs font-bold uppercase tracking-wide ${flat.textSecondary}`}>
+                        {text("recapParticipant", "Participant")}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => goToStep(wizardSteps.findIndex((s) => s.key === "identity"))}
+                        aria-label={`${text("edit", "Modifier")} — ${text("recapParticipant", "Participant")}`}
+                        className={`-my-2 -mr-1 inline-flex h-11 shrink-0 items-center gap-1 rounded-lg px-2 text-sm font-semibold ${flat.accent} hover:bg-[#EEF0FF]`}
+                      >
+                        <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                        {text("edit", "Modifier")}
+                      </button>
+                    </div>
+                    <div className="mt-1 space-y-0.5 min-w-0">
+                      <p className={`text-sm font-semibold break-words ${flat.textPrimary}`}>
+                        {[registrationValues.firstName, registrationValues.lastName].filter(Boolean).join(" ") || "—"}
+                      </p>
+                      <p className={`text-sm break-all ${flat.textBody}`}>{registrationValues.email || "—"}</p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-[#F0F0F6] bg-[#F6F6FB] p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className={`text-xs font-bold uppercase tracking-wide ${flat.textSecondary}`}>
+                        {text("recapProfile", "Profil")}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => goToStep(wizardSteps.findIndex((s) => s.key === "profile"))}
+                        aria-label={`${text("edit", "Modifier")} — ${text("recapProfile", "Profil")}`}
+                        className={`-my-2 -mr-1 inline-flex h-11 shrink-0 items-center gap-1 rounded-lg px-2 text-sm font-semibold ${flat.accent} hover:bg-[#EEF0FF]`}
+                      >
+                        <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                        {text("edit", "Modifier")}
+                      </button>
+                    </div>
+                    <dl className="mt-1 space-y-1 min-w-0">
+                      {visibleRegistrationFields
+                        .filter((f) => !identityFieldIds.includes(String(f._id)))
+                        .map((f) => (
+                          <div key={String(f._id)} className="text-sm break-words">
+                            <dt className={`inline ${flat.textSecondary}`}>{getFieldLabel(String(f._id), f.label)} : </dt>
+                            <dd className={`inline font-medium ${flat.textBody}`}>{registrationValues[String(f._id)] || "—"}</dd>
+                          </div>
+                        ))}
+                    </dl>
+                  </div>
+
+                  {hasOptionsStep && (
+                    <div className="rounded-xl border border-[#F0F0F6] bg-[#F6F6FB] p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className={`text-xs font-bold uppercase tracking-wide ${flat.textSecondary}`}>
+                          {text("recapOptions", "Options")}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => goToStep(wizardSteps.findIndex((s) => s.key === "options"))}
+                          aria-label={`${text("edit", "Modifier")} — ${text("recapOptions", "Options")}`}
+                          className={`-my-2 -mr-1 inline-flex h-11 shrink-0 items-center gap-1 rounded-lg px-2 text-sm font-semibold ${flat.accent} hover:bg-[#EEF0FF]`}
+                        >
+                          <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                          {text("edit", "Modifier")}
+                        </button>
+                      </div>
+                      <div className="mt-1 space-y-1 min-w-0 break-words">
+                        {checkPlan.length > 0 ? (
+                          (event.pricePlan || [])
+                            .filter((p: any) => checkPlan.includes(p._id))
+                            .map((p: any) => (
+                              <p key={p._id} className={`text-sm ${flat.textBody}`}>
+                                {p.name}
+                                {selectedOptions[p._id] ? ` — ${selectedOptions[p._id]}` : ""}
+                              </p>
+                            ))
+                        ) : (
+                          <p className={`text-sm ${flat.textBody}`}>
+                            {text("recapNoOptions", "Aucune option sélectionnée")}
+                          </p>
+                        )}
+                        {shouldShowWorkSubmission && (
+                          <p className={`text-sm ${flat.textBody}`}>
+                            {text("workSubmissionTitle", "Soumission de travail")}: {workChoice === "yes" ? text("workYes", "Oui") : text("workNo", "Non")}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={`flex items-center justify-between gap-3 rounded-xl border border-[#F0F0F6] bg-[#F6F6FB] p-3`}>
+                    <p className={`text-sm font-semibold ${flat.textPrimary}`}>
+                      {text("recapTotal", "Total")}
+                    </p>
+                    <p className={`text-lg font-extrabold ${flat.accent}`}>
+                      {isFreeEvent
+                        ? text("free", "Gratuit")
+                        : formatPriceByCountry(Number(calculatePriceAsNumber(price)), event.country, "en-US", event.location)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Texte de consentement à faire valider par le product owner avant mise en production. */}
+                <label className="flex items-start gap-3 rounded-xl border border-[#E4E4EF] bg-white p-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={consentChecked}
+                    onChange={(e) => setConsentChecked(e.target.checked)}
+                    className="mt-0.5 h-5 w-5 shrink-0 accent-[#4338CA]"
+                  />
+                  <span className={`text-sm ${flat.textBody}`}>
+                    {text(
+                      "consentText",
+                      "J'accepte que mes informations soient transmises à l'organisateur pour la gestion de l'événement."
+                    )}
+                  </span>
+                </label>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => goToStep(clampedStep - 1)}
+                  className={`h-11 min-w-[44px] rounded-xl border-[#CFCFE0] ${flat.textPrimary} hover:bg-[#F6F6FB]`}
+                >
+                  <ChevronLeft className="mr-1 h-4 w-4" />
+                  {text("back", "Retour")}
+                </Button>
+              </div>
+
+              <div
+                className={!consentChecked ? "relative pointer-events-none opacity-50" : "relative"}
+                aria-disabled={!consentChecked}
+              >
+                {!consentChecked && (
+                  <button
+                    type="button"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    className="absolute inset-0 z-10 cursor-not-allowed"
+                  />
+                )}
+
             {isAvailable() && (
               isRegistrationRequest ? (
                 // Selecting a `registrationRequestOnly` option replaces the payment
@@ -3017,20 +3431,23 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
               </>
               )
             )}
-          </div>
-
-          <div className="flex items-center justify-center gap-4 pb-2 pt-2 text-sm">
-            <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/50 px-4 py-2">
-              <CheckCircle size={14} className="text-green-500" />
-              <span className="font-bold text-foreground">
-                {event.isFree ? text("freeRegistration", "Inscription gratuite") : t("secureCheckout")}
-              </span>
-            </div>
-            {!isFreeEvent && (
-              <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/50 px-4 py-2">
-                <CheckCircle size={14} className="text-green-500" />
-                <span className="font-bold text-foreground">{t("instantConfirmation")}</span>
               </div>
+
+              <div className="flex items-center justify-center gap-4 pb-2 pt-2 text-sm">
+                <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/50 px-4 py-2">
+                  <CheckCircle size={14} className="text-green-500" />
+                  <span className="font-bold text-foreground">
+                    {event.isFree ? text("freeRegistration", "Inscription gratuite") : t("secureCheckout")}
+                  </span>
+                </div>
+                {!isFreeEvent && (
+                  <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/50 px-4 py-2">
+                    <CheckCircle size={14} className="text-green-500" />
+                    <span className="font-bold text-foreground">{t("instantConfirmation")}</span>
+                  </div>
+                )}
+              </div>
+            </div>
             )}
           </div>
         </CardContent>

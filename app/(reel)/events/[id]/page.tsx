@@ -1,4 +1,7 @@
 import ShortsScroll from "@/components/shorts/shorts-scroll";
+import ReelDetails from "@/components/ReelDetails";
+import Header from "@/components/shared/Header";
+import Footer from "@/components/shared/Footer";
 import { getEventBySlug } from "@/lib/actions/event.actions";
 import { SearchParamProps } from "@/types";
 import { Metadata } from "next";
@@ -142,7 +145,19 @@ const EventDetails = async (props: SearchParamProps) => {
   return (
     <>
       <JsonLd data={[eventSchema, breadcrumbsSchema]} />
-      <ShortsScroll videos={{ data: [event], totalPages: 1 }} />
+      {/* Direct event links land on a standalone page (header, full scroll,
+          footer) — the swipeable reel feed (ShortsScroll) is a separate
+          browsing surface used elsewhere in the app, not this landing page. */}
+      {/* body is `flex items-center`, so without this full-width wrapper the
+          page shrinks to its content's min width (the nowrap tab bar) and
+          gets centered and clipped on narrow screens. Same wrapper as (root). */}
+      <div className="flex w-full min-h-screen flex-col">
+        <Header />
+        <main className="mt-20 w-full min-w-0 flex-1">
+          <ReelDetails event={event as any} variant="page" />
+        </main>
+        <Footer />
+      </div>
     </>
   );
 };

@@ -63,16 +63,20 @@ export const ImagePreviewDialog: React.FC<ImagePreviewDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 border-none bg-black/90 flex flex-col items-center justify-center overflow-hidden">
+      <DialogContent
+        aria-label={alt ? `Aperçu de l'image — ${alt}` : "Aperçu de l'image"}
+        className="max-w-[95vw] max-h-[95vh] p-0 border-none bg-black/90 flex flex-col items-center justify-center overflow-hidden"
+      >
         <div className="absolute top-4 right-4 z-50 flex gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
+                aria-label="Télécharger l'image"
                 className="rounded-full bg-white/10 hover:bg-white/20 border-white/20 text-white"
               >
-                <Download className="h-5 w-5" />
+                <Download className="h-5 w-5" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -91,10 +95,11 @@ export const ImagePreviewDialog: React.FC<ImagePreviewDialogProps> = ({
           <Button
             variant="outline"
             size="icon"
+            aria-label="Fermer"
             className="rounded-full bg-white/10 hover:bg-white/20 border-white/20 text-white"
             onClick={onClose}
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </Button>
         </div>
 

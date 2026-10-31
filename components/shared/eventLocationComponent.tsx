@@ -2,9 +2,13 @@ import { Event } from "@/types";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function EventLocationComponent({ event }: { event: Event }) {
+  const t = useTranslations("event");
+  const tx = (key: string, fallback: string) => (t.has(key as any) ? t(key as any) : fallback);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [mapFailed, setMapFailed] = useState(false);
 
   // Replace with the latitude and longitude you want to center the map
   const lat = event.location.lat; // Example latitude
@@ -157,46 +161,72 @@ export default function EventLocationComponent({ event }: { event: Event }) {
   const mapOptions = {
     styles: mapStyles, // Apply custom styles
   };
+  // Avoid "HAMMAMET - HAMMAMET": city and village are sometimes the same
+  // value (city + governorate aliasing); only show the village when it adds
+  // information the city name doesn't already carry.
+  const villageAddsInfo =
+    event.village && event.village.trim().toLowerCase() !== (event.city || "").trim().toLowerCase();
+  const locationLabel = event.city
+    ? villageAddsInfo
+      ? `${event.city} - ${event.village}`
+      : event.city
+    : tx("onlineAt", "Cet événement est organisé en ligne") + (event.location?.name ? ` · ${event.location.name}` : "");
+
+  const address = event.location?.name || locationLabel;
+  const mapsUrl = lat && lng
+    ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
   return event.isOnline ? (
-    <span className="glass w-full text-center p-2 rounded-2xl m-1 text-gray-500">
-      This event is organized online check the event url{" "}
-      <a href={event.url} className="text-indigo-500">
-        here
+    <span className="block w-full text-center p-4 rounded-2xl bg-white border border-[#E4E4EF] text-[#55576B]">
+      {tx("onlineEvent", "Cet événement est organisé en ligne, consultez l'url de l'événement")}{" "}
+      <a href={event.url} className="text-[#4338CA] underline">
+        {tx("here", "ici")}
       </a>
     </span>
   ) : (
-    <div className="w-full glass flex rounded-2xl p-1 gap-2 flex-col ">
-      <div className="flex flex-row w-full p-2 items-center justify-between  rounded-2xl bg-card">
-        <label className="flex flex-row  p-2  font-semibold rounded-lg gap-2 items-start ">
-          <MapPin />
-        </label>
-        <span className="bg-card text-center p-2 rounded-2xl m-1 w-full uppercase font-bold text-sm tracking-wide">
-          {event.city ? (
-            <>
-              {event.city}
-              {event.village ? ` - ${event.village}` : ""}
-            </>
-          ) : (
-            `This event is organized on ${event.location?.name || ""}`
-          )}
+    <div className="w-full bg-white flex rounded-[20px] border border-[#E4E4EF] p-5 gap-4 flex-col">
+      <h2 className="text-xl font-bold text-[#15152B]">{tx("locationTitle", "Lieu")}</h2>
+      <div className="flex flex-row w-full items-center gap-3">
+        <span className="flex items-center justify-center h-10 w-10 rounded-xl bg-[#EEF0FF] text-[#4338CA] shrink-0">
+          <MapPin aria-hidden="true" className="h-5 w-5" />
+        </span>
+        <span className="font-bold text-[#15152B] uppercase tracking-wide text-sm">
+          {locationLabel}
         </span>
       </div>
 
-      <LoadScript
-        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-      >
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={12}
-          onLoad={handleLoad}
-          options={mapOptions}
+      {!mapFailed ? (
+        <LoadScript
+          googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+          onError={() => setMapFailed(true)}
         >
-          <>
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={center}
+            zoom={12}
+            onLoad={handleLoad}
+            options={mapOptions}
+          >
             <Marker position={markerPosition} />
-          </>
-        </GoogleMap>
-      </LoadScript>
+          </GoogleMap>
+        </LoadScript>
+      ) : (
+        // Fallback when the Maps JS API fails to load (bad key, billing,
+        // domain restriction) — spec issue #7 — show the address as text
+        // plus a direct link instead of the raw Google error banner.
+        <div className="min-h-[220px] rounded-2xl border border-[#E4E4EF] bg-[#F6F6FB] flex flex-col items-center justify-center gap-3 p-6 text-center">
+          <p className="text-[#3B3D55]">{address}</p>
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#4338CA] font-bold underline underline-offset-2"
+          >
+            {tx("openInMaps", "Ouvrir dans Google Maps")}
+          </a>
+        </div>
+      )}
     </div>
   );
 }
