@@ -511,7 +511,8 @@ export async function getPlatformStats() {
     await connectToDatabase();
 
     const [eventsCount, organisationsCount, participantsCount, categoriesCount] = await Promise.all([
-      Event.countDocuments({}),
+      // Only count events created natively on Badgi, not ones imported from other platforms
+      Event.countDocuments({ isFromOtherPlatform: { $ne: true } }),
       Organisation.countDocuments({}),
       Order.countDocuments({}),
       Category.countDocuments({}),

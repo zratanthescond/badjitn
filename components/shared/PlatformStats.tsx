@@ -134,24 +134,27 @@ export default function PlatformStats({
           {stats.map(({ label, value, suffix, icon: Icon, accent, glow }) => (
             <div
               key={label}
-              className="group relative flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 dark:bg-elite-zinc/40 p-5 md:p-7 transition-all duration-500 hover:-translate-y-1.5 hover:border-white/20"
+              className="group relative flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/5 dark:bg-elite-zinc/40 p-6 md:p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-white/20 overflow-hidden"
             >
+              {/* Bottom accent bar, revealed on hover */}
               <div
-                className={`flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${accent} ${glow} transition-transform duration-500 group-hover:scale-110`}
+                className={`absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r ${accent} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}
+              />
+
+              <div
+                className={`flex items-center justify-center w-13 h-13 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${accent} ${glow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}
               >
                 <Icon className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2} />
               </div>
 
-              <div className="flex items-baseline gap-0.5 font-syne text-3xl md:text-4xl font-extrabold text-foreground">
+              <div
+                className={`flex items-baseline justify-center gap-1 font-syne text-4xl md:text-5xl font-extrabold leading-none tracking-tight bg-clip-text text-transparent bg-gradient-to-br ${accent}`}
+              >
                 <CountUp value={value} />
-                {suffix && (
-                  <span className="bg-clip-text text-transparent bg-elite-gradient">
-                    {suffix}
-                  </span>
-                )}
+                {suffix && <span>{suffix}</span>}
               </div>
 
-              <p className="text-xs md:text-sm font-medium text-muted-foreground text-center leading-snug">
+              <p className="text-xs md:text-sm font-semibold text-muted-foreground text-center leading-snug uppercase tracking-wide">
                 {label}
               </p>
             </div>
