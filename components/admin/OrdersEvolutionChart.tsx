@@ -61,11 +61,9 @@ const OrdersEvolutionChart: React.FC<OrdersEvolutionChartProps> = ({
 
   if (data.length === 0) {
     return (
-      <div className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-3xl p-6 sm:p-8 shadow-xl mt-8">
-        <h3 className="text-xl font-semibold mb-6 text-slate-800 dark:text-slate-200">
-          {title}
-        </h3>
-        <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
+        <h3 className="mb-4 text-sm font-semibold text-foreground">{title}</h3>
+        <div className="flex h-[260px] items-center justify-center text-sm text-muted-foreground">
           Pas assez de données pour afficher l'évolution.
         </div>
       </div>
@@ -73,11 +71,9 @@ const OrdersEvolutionChart: React.FC<OrdersEvolutionChartProps> = ({
   }
 
   return (
-    <div className="glass bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-3xl p-6 sm:p-8 shadow-xl mt-8">
-      <h3 className="text-xl font-semibold mb-6 text-slate-800 dark:text-slate-200">
-        {title}
-      </h3>
-      <div className="h-[300px] w-full">
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
+      <h3 className="mb-4 text-sm font-semibold text-foreground">{title}</h3>
+      <div className="h-[260px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
@@ -85,22 +81,24 @@ const OrdersEvolutionChart: React.FC<OrdersEvolutionChartProps> = ({
           >
             <defs>
               <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                <stop offset="5%" stopColor="#0059bb" stopOpacity={0.28} />
+                <stop offset="95%" stopColor="#0059bb" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" opacity={0.3} vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" opacity={0.25} vertical={false} />
             <XAxis
               dataKey="date"
               tickFormatter={formatDate}
-              stroke="#888888"
+              stroke="currentColor"
+              className="text-muted-foreground"
               fontSize={12}
               tickLine={false}
               axisLine={false}
               dy={10}
             />
             <YAxis
-              stroke="#888888"
+              stroke="currentColor"
+              className="text-muted-foreground"
               fontSize={12}
               tickLine={false}
               axisLine={false}
@@ -110,21 +108,21 @@ const OrdersEvolutionChart: React.FC<OrdersEvolutionChartProps> = ({
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "rgba(255, 255, 255, 0.9)",
-                borderColor: "#e2e8f0",
+                backgroundColor: "hsl(var(--card))",
+                borderColor: "hsl(var(--border))",
                 borderRadius: "8px",
-                color: "#0f172a",
+                color: "hsl(var(--foreground))",
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
               }}
               labelFormatter={(label: any) => formatDate(label as string)}
-              itemStyle={{ color: "#4f46e5", fontWeight: "bold" }}
+              itemStyle={{ color: "#0059bb", fontWeight: "bold" }}
             />
             <Area
               type="monotone"
               dataKey="count"
               name="Inscriptions"
-              stroke="#4f46e5"
-              strokeWidth={3}
+              stroke="#0059bb"
+              strokeWidth={2.5}
               fillOpacity={1}
               fill="url(#colorCount)"
               animationDuration={1500}

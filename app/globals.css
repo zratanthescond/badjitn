@@ -77,6 +77,105 @@
     --glass-shadow-color: rgba(0, 0, 0, 0.4);
   }
 
+  /*
+   * ===========================================================
+   * ADMIN THEME — "Clinical Precision"
+   * ===========================================================
+   * Scoped to the organizer/admin backoffice only (the `/orders` screen
+   * and its four tabs). Applied to <body> at runtime by
+   * `AdminThemeScope` (components/admin/ui/AdminThemeScope.tsx), which
+   * keeps every shadcn primitive (Button, Card, Badge, Select, Sheet...)
+   * on its existing CSS-variable wiring — nothing in components/ui is
+   * modified. Because Radix portals (Dialog/Sheet/Select/DropdownMenu)
+   * render into document.body, the class MUST live on <body> (not an
+   * inner wrapper div) so portaled content still inherits these tokens.
+   * The public site is completely unaffected outside this scope.
+   */
+  .admin-theme {
+    --background: 210 20% 98%;
+    --foreground: 205 35% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 205 35% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 205 35% 10%;
+
+    --primary: 211 100% 37%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 25% 95%;
+    --secondary-foreground: 205 35% 12%;
+
+    --muted: 210 20% 95%;
+    --muted-foreground: 213 8% 32%;
+
+    --accent: 213 65% 94%;
+    --accent-foreground: 211 100% 30%;
+
+    --destructive: 2 68% 42%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 16% 84%;
+    --input: 214 16% 84%;
+    --ring: 211 100% 37%;
+
+    --radius: 0.75rem;
+
+    /* Semantic tokens with no shadcn equivalent (status chips, the navy
+       context bar). Light values only need declaring once — dark mode
+       redefines them under `.dark .admin-theme` below. */
+    --admin-navy: 210 55% 8%;
+    --admin-navy-soft: 213 50% 16%;
+    --admin-success: 152 65% 28%;
+    --admin-success-soft: 152 55% 92%;
+    --admin-warning: 38 90% 32%;
+    --admin-warning-soft: 42 85% 92%;
+    --admin-critical-soft: 4 68% 94%;
+    --admin-accent-soft: 213 60% 94%;
+    --admin-accent-soft-foreground: 211 100% 30%;
+  }
+
+  .dark .admin-theme {
+    --background: 220 45% 6%;
+    --foreground: 210 30% 94%;
+
+    --card: 218 38% 10%;
+    --card-foreground: 210 30% 94%;
+
+    --popover: 218 38% 10%;
+    --popover-foreground: 210 30% 94%;
+
+    --primary: 212 90% 66%;
+    --primary-foreground: 220 45% 8%;
+
+    --secondary: 218 30% 16%;
+    --secondary-foreground: 210 30% 92%;
+
+    --muted: 218 30% 14%;
+    --muted-foreground: 213 15% 68%;
+
+    --accent: 213 45% 20%;
+    --accent-foreground: 210 90% 85%;
+
+    --destructive: 4 70% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 216 24% 22%;
+    --input: 216 24% 22%;
+    --ring: 212 90% 66%;
+
+    --admin-navy: 220 55% 4%;
+    --admin-navy-soft: 216 42% 11%;
+    --admin-success: 152 55% 55%;
+    --admin-success-soft: 152 40% 14%;
+    --admin-warning: 42 90% 58%;
+    --admin-warning-soft: 40 60% 14%;
+    --admin-critical-soft: 4 45% 16%;
+    --admin-accent-soft: 213 45% 18%;
+    --admin-accent-soft-foreground: 212 90% 82%;
+  }
+
   ::selection {
     @apply bg-primary text-white;
   }
