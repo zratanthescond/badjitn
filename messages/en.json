@@ -3174,6 +3174,17 @@
     }
   },
   "profile": {
+    "tenants": {
+      "title": "My client spaces",
+      "description": "You have been added as a member of these clients. Open their back office.",
+      "open": "Open",
+      "inactive": "subscription inactive",
+      "roles": {
+        "owner": "Owner",
+        "manager": "Manager",
+        "viewer": "Viewer"
+      }
+    },
     "addCustomRequiredInfo": "Add Custom Required Information",
     "emptyCustomFields": "No custom required information has been added yet.",
     "createNewEvent": "Create New Event",

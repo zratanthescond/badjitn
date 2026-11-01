@@ -3,6 +3,7 @@ import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { AdminSectionHeader } from "@/components/admin/ui/AdminSectionHeader";
 import { AdminEmptyState } from "@/components/admin/ui/AdminEmptyState";
+import EventThumb from "@/components/pro/EventThumb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getTenantEvents } from "@/lib/actions/tenant-stats.actions";
@@ -103,11 +104,7 @@ export default async function ProEventsPage({
                   href={`/events/${e.id}`}
                   className="flex items-center gap-4 p-3 transition-colors hover:bg-muted/50 sm:p-4"
                 >
-                  {e.imageUrl ? (
-                    <img src={e.imageUrl} alt="" className="h-14 w-20 shrink-0 rounded-lg object-cover" />
-                  ) : (
-                    <span className="h-14 w-20 shrink-0 rounded-lg bg-muted" />
-                  )}
+                  <EventThumb src={e.imageUrl} className="h-14 w-20" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-foreground">{e.title}</p>
                     <p className="truncate text-xs text-muted-foreground">

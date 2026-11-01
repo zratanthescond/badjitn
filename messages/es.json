@@ -3174,6 +3174,17 @@
     }
   },
   "profile": {
+    "tenants": {
+      "title": "Mis espacios de cliente",
+      "description": "Ha sido añadido como miembro de estos clientes. Acceda a su back office.",
+      "open": "Abrir",
+      "inactive": "suscripción inactiva",
+      "roles": {
+        "owner": "Propietario",
+        "manager": "Gestor",
+        "viewer": "Lector"
+      }
+    },
     "addCustomRequiredInfo": "Añadir información requerida personalizada",
     "emptyCustomFields": "Aún no se ha añadido información requerida personalizada.",
     "createNewEvent": "Crear nuevo evento",

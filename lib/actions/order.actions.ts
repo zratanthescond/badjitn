@@ -26,6 +26,8 @@ import {
   sendWorkStatusEmail,
 } from "../mail";
 
+import { assertTenantAllowsRegistration } from "../services/tenantQuota.service";
+
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
@@ -33,6 +35,8 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
 
   try {
     await connectToDatabase();
+    // Before any payment is started: refuse when the client plan's per-event limit is reached.
+    await assertTenantAllowsRegistration(order.eventId);
     const event = await Event.findById(order.eventId).select(
       "country location showWorkSubmissionPopup"
     );
@@ -80,6 +84,11 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
 export const createOrder = async (order: CreateOrderParams) => {
   try {
     await connectToDatabase();
+    // Free registrations only: paid orders reach here from the Stripe webhook after the
+    // customer already paid, so they must never be rejected (checkoutOrder guards them earlier).
+    if (Number(order.totalAmount) === 0) {
+      await assertTenantAllowsRegistration(order.eventId);
+    }
     const buyer = order.buyerId
       ? await User.findOne({ clerkId: order.buyerId })
       : null;

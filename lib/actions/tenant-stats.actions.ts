@@ -277,7 +277,8 @@ export async function getTenantEvents(tenantSlug: string, filters: TenantEventsF
     const q = filters.q?.trim().slice(0, 100);
     if (q) query.title = { $regex: escapeRegex(q), $options: "i" };
 
-    const page = Math.max(1, Math.floor(filters.page || 1));
+    // Public action: never trust the page number (NaN/Infinity would break skip()).
+    const page = Number.isFinite(filters.page) ? Math.max(1, Math.floor(filters.page as number)) : 1;
     const [total, events] = await Promise.all([
         Event.countDocuments(query),
         Event.find(query)

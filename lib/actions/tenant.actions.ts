@@ -7,6 +7,7 @@ import Organisation from "@/lib/database/models/organisation.model";
 import Event from "@/lib/database/models/event.model";
 import User from "@/lib/database/models/user.model";
 import { handleError } from "@/lib/utils";
+import { getTenantUrl } from "@/lib/tenant-url";
 import { verifyAdmin, verifyUser } from "./auth.actions";
 
 const ROLE_RANK: Record<TenantMemberRole, number> = { viewer: 1, manager: 2, owner: 3 };
@@ -53,25 +54,6 @@ export async function checkTenantAccess(tenantSlug: string, minRole: TenantMembe
     return { tenant: JSON.parse(JSON.stringify(tenant)), role, user, isPlatformAdmin };
 }
 
-// Ids of the organisations owned by a tenant (used to scope every back office query).
-export async function getTenantOrganisationIds(tenantId: string): Promise<string[]> {
-    await connectToDatabase();
-    const orgs = await Organisation.find({ tenant: tenantId }).select("_id").lean<any[]>();
-    return orgs.map((o) => o._id.toString());
-}
-
-// True when the user is an owner/manager of the client (tenant) that owns this organisation.
-// Used to open existing organiser pages (e.g. /orders) to client managers only.
-export async function isTenantManagerOfOrganisation(organisationId: string, userId: string): Promise<boolean> {
-    await connectToDatabase();
-    const org = await Organisation.findById(organisationId).select("tenant").lean<any>();
-    if (!org?.tenant) return false;
-    return !!(await Tenant.exists({
-        _id: org.tenant,
-        members: { $elemMatch: { user: userId, role: { $in: ["owner", "manager"] } } },
-    }));
-}
-
 // Non-throwing helper for page-level guards: returns null when the caller has no access.
 export async function getTenantForCurrentUser(tenantSlug: string, minRole: TenantMemberRole = "viewer") {
     try {
@@ -89,6 +71,34 @@ export async function getMyTenants() {
         const filter = user.role === "admin" ? {} : { "members.user": user._id };
         const tenants = await Tenant.find(filter).select("name slug logo plan subscription").lean();
         return JSON.parse(JSON.stringify(tenants));
+    } catch (error) {
+        handleError(error);
+        return [];
+    }
+}
+
+// Clients (tenants) the user is an actual member of, with their role and back office URL.
+// Unlike getMyTenants, platform admins do not get every tenant here: this feeds "Mon profil".
+export async function getMyTenantMemberships(userId: string) {
+    try {
+        const caller = await verifyUser();
+        // Only ever the caller's own memberships.
+        if (caller._id.toString() !== userId) return [];
+        await connectToDatabase();
+
+        const tenants = await Tenant.find({ "members.user": caller._id })
+            .select("name slug logo members subscription.status")
+            .lean<any[]>();
+
+        return tenants.map((t) => ({
+            _id: t._id.toString(),
+            name: t.name,
+            slug: t.slug,
+            logo: t.logo || "",
+            status: t.subscription?.status || "trial",
+            role: t.members.find((m: any) => m.user.toString() === caller._id.toString())?.role || "viewer",
+            url: getTenantUrl(t.slug),
+        }));
     } catch (error) {
         handleError(error);
         return [];

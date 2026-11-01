@@ -4,6 +4,7 @@ import { ArrowLeft, CalendarDays, ExternalLink, ScanLine, Ticket, Users, Wallet 
 import { getLocale, getTranslations } from "next-intl/server";
 import { StatCard } from "@/components/admin/ui/StatCard";
 import BarList from "@/components/pro/BarList";
+import EventThumb from "@/components/pro/EventThumb";
 import TimelineChart from "@/components/pro/TimelineChart";
 import { Button } from "@/components/ui/button";
 import { checkTenantAccess } from "@/lib/actions/tenant.actions";
@@ -50,7 +51,7 @@ export default async function ProEventDetailPage({
       </Link>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        {event.imageUrl && <img src={event.imageUrl} alt="" className="h-24 w-40 shrink-0 rounded-xl object-cover" />}
+        <EventThumb src={event.imageUrl} className="h-24 w-40 rounded-xl" />
         <div className="min-w-0 flex-1">
           <h1 className="font-outfit text-2xl font-semibold text-foreground">{event.title}</h1>
           <p className="mt-1 flex flex-wrap items-center gap-x-3 text-sm text-muted-foreground">

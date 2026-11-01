@@ -13,7 +13,7 @@ import { redirect } from "next/navigation";
 
 import { getOrdersByEvent } from "@/lib/actions/order.actions";
 import { getEventById } from "@/lib/actions/event.actions";
-import { isTenantManagerOfOrganisation } from "@/lib/actions/tenant.actions";
+import { isTenantManagerOfOrganisation } from "@/lib/services/tenantAccess.service";
 import { getCertificationByEventId } from "@/lib/actions/certification.actions";
 import { getBankTransferStats } from "@/lib/actions/banktransfer.actions";
 import { getUserWorkByEventId, useUser } from "@/lib/actions/user.actions";

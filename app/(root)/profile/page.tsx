@@ -2,6 +2,7 @@ import { getEventsByUser } from "@/lib/actions/event.actions";
 import { getOrdersByUser } from "@/lib/actions/order.actions";
 import { useUser } from "@/lib/actions/user.actions";
 import { getOrganisationsByUser } from "@/lib/actions/organisation.actions";
+import { getMyTenantMemberships } from "@/lib/actions/tenant.actions";
 import { IOrder } from "@/lib/database/models/order.model";
 import { SearchParamProps } from "@/types";
 import { getTranslations } from "next-intl/server";
@@ -20,10 +21,11 @@ const ProfilePage = async (props: SearchParamProps) => {
   const ordersPage = Number(searchParams?.ordersPage) || 1;
   const eventsPage = Number(searchParams?.eventsPage) || 1;
 
-  const [orders, organizedEvents, organisations, t, tCard] = await Promise.all([
+  const [orders, organizedEvents, organisations, tenants, t, tCard] = await Promise.all([
     getOrdersByUser({ userId, page: ordersPage }),
     getEventsByUser({ userId, page: eventsPage }),
     getOrganisationsByUser(userId),
+    getMyTenantMemberships(userId.toString()),
     getTranslations("profile"),
     getTranslations("organisationCard"),
   ]);
@@ -161,6 +163,17 @@ const ProfilePage = async (props: SearchParamProps) => {
       sponsors: t("sidebar.sponsors"),
       customFields: t("sidebar.customFields"),
     },
+    tenants: {
+      title: t("tenants.title"),
+      description: t("tenants.description"),
+      open: t("tenants.open"),
+      inactive: t("tenants.inactive"),
+      roles: {
+        owner: t("tenants.roles.owner"),
+        manager: t("tenants.roles.manager"),
+        viewer: t("tenants.roles.viewer"),
+      },
+    },
     organisationCard: {
       noDescription: tCard("noDescription"),
       member: tCard("member"),
@@ -181,6 +194,7 @@ const ProfilePage = async (props: SearchParamProps) => {
       eventsPage={eventsPage}
       eventsTotalPages={organizedEvents?.totalPages || 1}
       organisations={organisations}
+      tenants={tenants}
       translations={translations}
     />
   );

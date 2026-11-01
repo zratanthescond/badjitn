@@ -3212,6 +3212,17 @@
     }
   },
   "profile": {
+    "tenants": {
+      "title": "Mes espaces client",
+      "description": "Vous avez été ajouté comme membre de ces clients. Accédez à leur back office.",
+      "open": "Ouvrir",
+      "inactive": "abonnement inactif",
+      "roles": {
+        "owner": "Propriétaire",
+        "manager": "Gestionnaire",
+        "viewer": "Lecteur"
+      }
+    },
     "addCustomRequiredInfo": "Ajouter des informations requises personnalisées",
     "emptyCustomFields": "Aucune information requise personnalisée n'a encore été ajoutée.",
     "createNewEvent": "Créer un nouvel événement",

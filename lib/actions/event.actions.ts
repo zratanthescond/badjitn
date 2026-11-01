@@ -21,6 +21,8 @@ import Report from "../database/models/report.model";
 import Order from "../database/models/order.model";
 import Attendance from "../database/models/attendance.model";
 import { verifyAdmin, verifyOrganizerOrAdmin } from "./auth.actions";
+import { isTenantManagerOfOrganisation } from "../services/tenantAccess.service";
+import { assertTenantCanCreateEvent } from "../services/tenantQuota.service";
 
 // HELPERS
 const getCategoryByName = async (name: string) => {
@@ -87,13 +89,19 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
     const isCreator = org.creator.toString() === userId;
     const isAdmin = org.admins.some((adminId: any) => adminId.toString() === userId);
 
-    if (!isCreator && !isAdmin) {
+    // Owners/managers of the client (tenant) that owns this organisation may also create events.
+    const isTenantManager =
+      !isCreator && !isAdmin && (await isTenantManagerOfOrganisation(organisationId, userId));
+
+    if (!isCreator && !isAdmin && !isTenantManager) {
       throw new Error("You do not have permission to create events for this organisation");
     }
 
     if (!org.isVerified) {
       throw new Error("This organisation must be verified by an admin before you can create events.");
     }
+
+    await assertTenantCanCreateEvent(organisationId, event.startDateTime);
 
     const slug = await generateUniqueSlug(event.title);
 
