@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import Tenant, { TenantMemberRole, TenantPlan, TenantSubscriptionStatus } from "@/lib/database/models/tenant.model";
 import Organisation from "@/lib/database/models/organisation.model";
+import Event from "@/lib/database/models/event.model";
 import User from "@/lib/database/models/user.model";
 import { handleError } from "@/lib/utils";
 import { verifyAdmin, verifyUser } from "./auth.actions";
@@ -80,6 +81,51 @@ export async function getMyTenants() {
         handleError(error);
         return [];
     }
+}
+
+// ==========================================
+// BACK OFFICE READS (scoped to the caller's tenant)
+// ==========================================
+export async function getTenantOrganisations(tenantSlug: string) {
+    const { tenant } = await checkTenantAccess(tenantSlug, "viewer");
+    await connectToDatabase();
+
+    const organisations = await Organisation.find({ tenant: tenant._id })
+        .select("name slug subdomain logo isVerified createdAt")
+        .sort({ name: 1 })
+        .lean<any[]>();
+
+    const counts = await Event.aggregate([
+        { $match: { organisation: { $in: organisations.map((o) => o._id) } } },
+        {
+            $group: {
+                _id: "$organisation",
+                total: { $sum: 1 },
+                upcoming: { $sum: { $cond: [{ $gte: ["$startDateTime", new Date()] }, 1, 0] } },
+            },
+        },
+    ]);
+    const countMap = new Map(counts.map((c) => [c._id.toString(), c]));
+
+    return JSON.parse(
+        JSON.stringify(
+            organisations.map((o) => ({
+                ...o,
+                eventCount: countMap.get(o._id.toString())?.total || 0,
+                upcomingEventCount: countMap.get(o._id.toString())?.upcoming || 0,
+            }))
+        )
+    );
+}
+
+export async function getTenantTeam(tenantSlug: string) {
+    const { tenant } = await checkTenantAccess(tenantSlug, "viewer");
+    await connectToDatabase();
+    const doc = await Tenant.findById(tenant._id)
+        .populate("members.user", "firstName lastName email photo")
+        .select("members")
+        .lean<any>();
+    return JSON.parse(JSON.stringify(doc?.members || []));
 }
 
 // ==========================================
@@ -275,6 +321,10 @@ export async function addTenantMember(tenantId: string, userId: string, role: Te
 
         const existing = tenant.members.find((m: any) => m.user.toString() === userId);
         if (existing) {
+            if (existing.role === "owner" && role !== "owner" && caller.role !== "admin") {
+                const owners = tenant.members.filter((m: any) => m.role === "owner").length;
+                if (owners <= 1) throw new Error("Impossible de rétrograder le dernier propriétaire.");
+            }
             existing.role = role;
         } else {
             tenant.members.push({ user: user._id, role, addedAt: new Date() });

@@ -4505,6 +4505,168 @@
     "banUser": "Bannir l'utilisateur",
     "close": "Fermer"
   },
+  "pro": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "organisations": "Organisations",
+      "team": "Équipe"
+    },
+    "roles": {
+      "owner": "Propriétaire",
+      "manager": "Gestionnaire",
+      "viewer": "Lecteur"
+    },
+    "dashboard": {
+
+      "title": "Tableau de bord",
+
+      "subtitle": "Statistiques consolidées de toutes vos organisations.",
+
+      "error": "Impossible de charger les statistiques.",
+
+      "noData": "Aucune donnée sur cette période.",
+
+      "noUpcoming": "Aucun événement à venir.",
+
+      "filters": {
+
+        "period": "Période",
+
+        "organisation": "Organisation",
+
+        "allOrganisations": "Toutes les organisations",
+
+        "periods": {
+
+          "7": "7 derniers jours",
+
+          "30": "30 derniers jours",
+
+          "90": "90 derniers jours",
+
+          "365": "12 derniers mois",
+
+          "all": "Depuis le début"
+
+        }
+
+      },
+
+      "kpis": {
+
+        "organisations": "Organisations",
+
+        "events": "Événements",
+
+        "eventsHint": "{upcoming} à venir · {past} passés",
+
+        "orders": "Inscriptions",
+
+        "revenue": "Chiffre d'affaires",
+
+        "averageOrder": "Panier moyen : {value}",
+
+        "otherCurrencies": "Autres devises : {list}",
+
+        "attendance": "Taux de présence",
+
+        "attended": "{count} participants scannés",
+
+        "upcoming": "Événements à venir"
+
+      },
+
+      "timeline": {
+
+        "title": "Évolution",
+
+        "orders": "Inscriptions",
+
+        "revenue": "Chiffre d'affaires",
+
+        "empty": "Pas assez de données pour afficher l'évolution.",
+
+        "primaryOnly": "Le chiffre d'affaires affiché est en {currency} uniquement."
+
+      },
+
+      "breakdown": {
+
+        "organisation": "Par organisation",
+
+        "type": "Par type de paiement",
+
+        "category": "Par catégorie de participant"
+
+      },
+
+      "types": {
+
+        "free": "Gratuit",
+
+        "paid": "Payé en ligne",
+
+        "hosted": "Invité",
+
+        "doorpay": "Paiement sur place",
+
+        "bank_transfer": "Virement bancaire"
+
+      },
+
+      "categories": {
+
+        "attendee": "Participant",
+
+        "speaker": "Intervenant",
+
+        "sponsor": "Sponsor",
+
+        "staff": "Staff"
+
+      },
+
+      "topEvents": "Top 5 des événements",
+
+      "upcomingEvents": "Prochains événements"
+
+    },
+
+    "menu": "Menu",
+    "poweredBy": "Propulsé par Badgi",
+    "readOnlyBanner": "L'abonnement de ce client n'est pas actif : le back office est en lecture seule.",
+    "accessDenied": {
+      "title": "Accès refusé",
+      "description": "Vous n'avez pas accès à ce back office. Vérifiez que vous êtes connecté avec le bon compte.",
+      "back": "Retour à Badgi"
+    },
+    "home": {
+      "welcome": "Bienvenue, {name}",
+      "subtitle": "Vue d'ensemble de vos organisations et de vos événements.",
+      "organisations": "Organisations",
+      "events": "Événements",
+      "upcoming": "À venir"
+    },
+    "organisations": {
+      "title": "Organisations",
+      "quota": "{used} sur {max} organisations utilisées",
+      "events": "Événements",
+      "upcoming": "À venir",
+      "emptyTitle": "Aucune organisation",
+      "emptyDescription": "Aucune organisation n'est rattachée à votre compte client. Contactez Badgi pour en ajouter."
+    },
+    "team": {
+      "title": "Équipe",
+      "subtitle": "Les personnes qui ont accès à ce back office.",
+      "remove": "Retirer",
+      "removed": "Membre retiré",
+      "added": "Membre ajouté",
+      "addTitle": "Ajouter un membre",
+      "search": "Rechercher un utilisateur (nom, email)",
+      "ownerOnly": "Seul un propriétaire peut gérer l'équipe.",
+      "error": "Erreur"
+    }
+  },
   "tenantsAdministration": {
     "title": "Clients (laboratoires)",
     "description": "Gérez les clients, leurs organisations, leurs responsables et leur abonnement.",

@@ -1,16 +1,32 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
+// Extracts tenant (client back office) slug from <slug>.pro.localhost,
+// <slug>.pro.lvh.me (local dev) or <slug>.pro.badgi.net (prod)
+function extractTenantSubdomain(host: string): string | null {
+  const hostname = host.split(":")[0]; // strip port
+  const suffixes = [".pro.localhost", ".pro.lvh.me", ".pro.badgi.net"];
+  for (const suffix of suffixes) {
+    if (hostname.endsWith(suffix)) {
+      const sub = hostname.slice(0, -suffix.length);
+      // single label only: a.b.pro.badgi.net is not a valid tenant
+      return sub && !sub.includes(".") ? sub : null;
+    }
+  }
+  return null;
+}
+
 // Extracts org slug from *.localhost, *.lvh.me (local dev) or *.badgi.net (prod)
 function extractOrgSubdomain(host: string): string | null {
   const hostname = host.split(":")[0]; // strip port
-  const SKIP = ["www", "api", "app", "localhost", "badgi"];
+  const SKIP = ["www", "api", "app", "localhost", "badgi", "pro"];
 
   const suffixes = [".localhost", ".lvh.me", ".badgi.net"];
   for (const suffix of suffixes) {
     if (hostname.endsWith(suffix)) {
       const sub = hostname.slice(0, -suffix.length);
-      return sub && !SKIP.includes(sub) ? sub : null;
+      // multi-level hosts (e.g. x.pro) never map to an organisation
+      return sub && !sub.includes(".") && !SKIP.includes(sub) ? sub : null;
     }
   }
   return null;
@@ -68,6 +84,39 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   }
 
   const host = req.headers.get("host") ?? "";
+
+  // Client (tenant) back office: <slug>.pro.badgi.net -> /pro/<slug>/...
+  // Must run before the organisation subdomain branch.
+  const tenantSlug = extractTenantSubdomain(host);
+  if (tenantSlug) {
+    const { pathname, search } = req.nextUrl;
+    const isPassthrough =
+      pathname.startsWith("/api") ||
+      pathname.startsWith("/_next") ||
+      /^\/(?:[a-z]{2}\/)?sign-(in|up)/.test(pathname);
+    if (isPassthrough) return NextResponse.next();
+
+    const { userId } = await auth();
+    if (!userId) {
+      const signInUrl = new URL("/sign-in", req.url);
+      signInUrl.searchParams.set("redirect_url", pathname + search);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    // Already prefixed (e.g. internal navigation): do not double-prefix.
+    if (pathname === `/pro/${tenantSlug}` || pathname.startsWith(`/pro/${tenantSlug}/`)) {
+      return NextResponse.next();
+    }
+    const url = req.nextUrl.clone();
+    url.pathname = `/pro/${tenantSlug}${pathname === "/" ? "" : pathname}`;
+    return NextResponse.rewrite(url);
+  }
+
+  // The tenant back office is only reachable through its subdomain.
+  if (req.nextUrl.pathname === "/pro" || req.nextUrl.pathname.startsWith("/pro/")) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   const orgSlug = extractOrgSubdomain(host);
 
   if (orgSlug) {

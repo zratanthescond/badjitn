@@ -4462,6 +4462,168 @@
     "banUser": "Bloquear usuario",
     "close": "Cerrar"
   },
+  "pro": {
+    "nav": {
+      "dashboard": "Panel",
+      "organisations": "Organizaciones",
+      "team": "Equipo"
+    },
+    "roles": {
+      "owner": "Propietario",
+      "manager": "Gestor",
+      "viewer": "Lector"
+    },
+    "dashboard": {
+
+      "title": "Panel",
+
+      "subtitle": "Estadísticas consolidadas de todas sus organizaciones.",
+
+      "error": "No se pudieron cargar las estadísticas.",
+
+      "noData": "Sin datos en este periodo.",
+
+      "noUpcoming": "No hay eventos próximos.",
+
+      "filters": {
+
+        "period": "Periodo",
+
+        "organisation": "Organización",
+
+        "allOrganisations": "Todas las organizaciones",
+
+        "periods": {
+
+          "7": "Últimos 7 días",
+
+          "30": "Últimos 30 días",
+
+          "90": "Últimos 90 días",
+
+          "365": "Últimos 12 meses",
+
+          "all": "Desde el inicio"
+
+        }
+
+      },
+
+      "kpis": {
+
+        "organisations": "Organizaciones",
+
+        "events": "Eventos",
+
+        "eventsHint": "{upcoming} próximos · {past} pasados",
+
+        "orders": "Inscripciones",
+
+        "revenue": "Ingresos",
+
+        "averageOrder": "Pedido medio: {value}",
+
+        "otherCurrencies": "Otras monedas: {list}",
+
+        "attendance": "Tasa de asistencia",
+
+        "attended": "{count} asistentes escaneados",
+
+        "upcoming": "Eventos próximos"
+
+      },
+
+      "timeline": {
+
+        "title": "Evolución",
+
+        "orders": "Inscripciones",
+
+        "revenue": "Ingresos",
+
+        "empty": "No hay datos suficientes para mostrar la evolución.",
+
+        "primaryOnly": "Ingresos mostrados solo en {currency}."
+
+      },
+
+      "breakdown": {
+
+        "organisation": "Por organización",
+
+        "type": "Por tipo de pago",
+
+        "category": "Por categoría de participante"
+
+      },
+
+      "types": {
+
+        "free": "Gratis",
+
+        "paid": "Pagado en línea",
+
+        "hosted": "Invitado",
+
+        "doorpay": "Pago en puerta",
+
+        "bank_transfer": "Transferencia bancaria"
+
+      },
+
+      "categories": {
+
+        "attendee": "Asistente",
+
+        "speaker": "Ponente",
+
+        "sponsor": "Patrocinador",
+
+        "staff": "Staff"
+
+      },
+
+      "topEvents": "Top 5 de eventos",
+
+      "upcomingEvents": "Próximos eventos"
+
+    },
+
+    "menu": "Menú",
+    "poweredBy": "Con tecnología de Badgi",
+    "readOnlyBanner": "La suscripción de este cliente no está activa: el back office es de solo lectura.",
+    "accessDenied": {
+      "title": "Acceso denegado",
+      "description": "No tiene acceso a este back office. Compruebe que ha iniciado sesión con la cuenta correcta.",
+      "back": "Volver a Badgi"
+    },
+    "home": {
+      "welcome": "Bienvenido, {name}",
+      "subtitle": "Resumen de sus organizaciones y eventos.",
+      "organisations": "Organizaciones",
+      "events": "Eventos",
+      "upcoming": "Próximos"
+    },
+    "organisations": {
+      "title": "Organizaciones",
+      "quota": "{used} de {max} organizaciones usadas",
+      "events": "Eventos",
+      "upcoming": "Próximos",
+      "emptyTitle": "Ninguna organización",
+      "emptyDescription": "No hay ninguna organización vinculada a su cuenta de cliente. Contacte con Badgi para añadir una."
+    },
+    "team": {
+      "title": "Equipo",
+      "subtitle": "Personas con acceso a este back office.",
+      "remove": "Quitar",
+      "removed": "Miembro eliminado",
+      "added": "Miembro añadido",
+      "addTitle": "Añadir un miembro",
+      "search": "Buscar un usuario (nombre, email)",
+      "ownerOnly": "Solo un propietario puede gestionar el equipo.",
+      "error": "Error"
+    }
+  },
   "tenantsAdministration": {
     "title": "Clientes (laboratorios)",
     "description": "Gestione los clientes, sus organizaciones, responsables y suscripción.",

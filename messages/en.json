@@ -4462,6 +4462,168 @@
     "banUser": "Ban user",
     "close": "Close"
   },
+  "pro": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "organisations": "Organisations",
+      "team": "Team"
+    },
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "viewer": "Viewer"
+    },
+    "dashboard": {
+
+      "title": "Dashboard",
+
+      "subtitle": "Consolidated statistics across all your organisations.",
+
+      "error": "Could not load the statistics.",
+
+      "noData": "No data for this period.",
+
+      "noUpcoming": "No upcoming events.",
+
+      "filters": {
+
+        "period": "Period",
+
+        "organisation": "Organisation",
+
+        "allOrganisations": "All organisations",
+
+        "periods": {
+
+          "7": "Last 7 days",
+
+          "30": "Last 30 days",
+
+          "90": "Last 90 days",
+
+          "365": "Last 12 months",
+
+          "all": "All time"
+
+        }
+
+      },
+
+      "kpis": {
+
+        "organisations": "Organisations",
+
+        "events": "Events",
+
+        "eventsHint": "{upcoming} upcoming · {past} past",
+
+        "orders": "Registrations",
+
+        "revenue": "Revenue",
+
+        "averageOrder": "Average order: {value}",
+
+        "otherCurrencies": "Other currencies: {list}",
+
+        "attendance": "Attendance rate",
+
+        "attended": "{count} attendees scanned",
+
+        "upcoming": "Upcoming events"
+
+      },
+
+      "timeline": {
+
+        "title": "Trend",
+
+        "orders": "Registrations",
+
+        "revenue": "Revenue",
+
+        "empty": "Not enough data to show the trend.",
+
+        "primaryOnly": "Revenue shown in {currency} only."
+
+      },
+
+      "breakdown": {
+
+        "organisation": "By organisation",
+
+        "type": "By payment type",
+
+        "category": "By attendee category"
+
+      },
+
+      "types": {
+
+        "free": "Free",
+
+        "paid": "Paid online",
+
+        "hosted": "Hosted",
+
+        "doorpay": "Pay at the door",
+
+        "bank_transfer": "Bank transfer"
+
+      },
+
+      "categories": {
+
+        "attendee": "Attendee",
+
+        "speaker": "Speaker",
+
+        "sponsor": "Sponsor",
+
+        "staff": "Staff"
+
+      },
+
+      "topEvents": "Top 5 events",
+
+      "upcomingEvents": "Upcoming events"
+
+    },
+
+    "menu": "Menu",
+    "poweredBy": "Powered by Badgi",
+    "readOnlyBanner": "This client's subscription is not active: the back office is read-only.",
+    "accessDenied": {
+      "title": "Access denied",
+      "description": "You do not have access to this back office. Make sure you are signed in with the right account.",
+      "back": "Back to Badgi"
+    },
+    "home": {
+      "welcome": "Welcome, {name}",
+      "subtitle": "An overview of your organisations and events.",
+      "organisations": "Organisations",
+      "events": "Events",
+      "upcoming": "Upcoming"
+    },
+    "organisations": {
+      "title": "Organisations",
+      "quota": "{used} of {max} organisations used",
+      "events": "Events",
+      "upcoming": "Upcoming",
+      "emptyTitle": "No organisation",
+      "emptyDescription": "No organisation is attached to your client account. Contact Badgi to add one."
+    },
+    "team": {
+      "title": "Team",
+      "subtitle": "People who have access to this back office.",
+      "remove": "Remove",
+      "removed": "Member removed",
+      "added": "Member added",
+      "addTitle": "Add a member",
+      "search": "Search a user (name, email)",
+      "ownerOnly": "Only an owner can manage the team.",
+      "error": "Error"
+    }
+  },
   "tenantsAdministration": {
     "title": "Clients (labs)",
     "description": "Manage clients, their organisations, managers and subscription.",
