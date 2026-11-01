@@ -4223,7 +4223,9 @@
       "aiTools": "????? ?????? ?????????",
       "aiToolsShort": "????",
       "invitations": "دعوات",
-      "invitationsShort": "دعوات"
+      "invitationsShort": "دعوات",
+      "tenants": "العملاء",
+      "tenantsShort": "العملاء"
     }
   },
   "serverAdmin": {
@@ -4459,6 +4461,70 @@
     "unbanUser": "????? ??? ????????",
     "banUser": "??? ????????",
     "close": "?????"
+  },
+  "tenantsAdministration": {
+    "title": "العملاء (المختبرات)",
+    "description": "إدارة العملاء ومؤسساتهم ومسؤوليهم واشتراكهم.",
+    "table": {
+      "client": "العميل",
+      "plan": "الخطة",
+      "organisations": "المؤسسات",
+      "members": "الأعضاء",
+      "status": "الحالة",
+      "actions": "إجراءات"
+    },
+    "status": {
+      "trial": "تجريبي",
+      "active": "نشط",
+      "suspended": "موقوف",
+      "expired": "منتهي"
+    },
+    "roles": {
+      "owner": "مالك",
+      "manager": "مدير",
+      "viewer": "قارئ"
+    },
+    "actions": {
+      "create": "إنشاء عميل",
+      "manage": "إدارة",
+      "save": "حفظ",
+      "attach": "ربط",
+      "detach": "فصل",
+      "remove": "إزالة",
+      "delete": "حذف العميل"
+    },
+    "create": {
+      "title": "عميل جديد",
+      "description": "أنشئ بطاقة المختبر. ستكون لوحة التحكم الخاصة به متاحة على نطاقه الفرعي."
+    },
+    "fields": {
+      "name": "اسم العميل",
+      "subdomain": "النطاق الفرعي",
+      "subdomainHint": "أحرف صغيرة وأرقام وشرطات. لا يمكن تغييره لاحقًا.",
+      "plan": "الخطة",
+      "status": "حالة الاشتراك",
+      "contactEmail": "البريد الإلكتروني للتواصل",
+      "maxOrganisations": "الحد الأقصى للمؤسسات",
+      "maxEventsPerYear": "الحد الأقصى للفعاليات / سنة",
+      "endsAt": "نهاية الاشتراك"
+    },
+    "manage": {
+      "settings": "الاشتراك والحصص",
+      "organisations": "المؤسسات",
+      "members": "الأعضاء",
+      "noOrganisations": "لا توجد مؤسسة مرتبطة.",
+      "selectOrganisation": "اختر مؤسسة",
+      "searchUser": "ابحث عن مستخدم (الاسم، البريد)",
+      "confirmDelete": "حذف العميل {name}؟ سيتم الاحتفاظ بمؤسساته."
+    },
+    "toast": {
+      "created": "تم إنشاء العميل",
+      "saved": "تم حفظ التغييرات",
+      "attached": "تم ربط المؤسسة",
+      "memberAdded": "تمت إضافة العضو",
+      "deleted": "تم حذف العميل",
+      "error": "خطأ"
+    }
   },
   "organisationsAdministration": {
     "title": "?????? ?? ????????",

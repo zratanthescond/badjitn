@@ -4223,7 +4223,9 @@
       "aiTools": "AI tools",
       "aiToolsShort": "AI tools",
       "invitations": "Invitations",
-      "invitationsShort": "Invites"
+      "invitationsShort": "Invites",
+      "tenants": "Clients",
+      "tenantsShort": "Clients"
     }
   },
   "serverAdmin": {
@@ -4459,6 +4461,70 @@
     "unbanUser": "Unban user",
     "banUser": "Ban user",
     "close": "Close"
+  },
+  "tenantsAdministration": {
+    "title": "Clients (labs)",
+    "description": "Manage clients, their organisations, managers and subscription.",
+    "table": {
+      "client": "Client",
+      "plan": "Plan",
+      "organisations": "Organisations",
+      "members": "Members",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "trial": "Trial",
+      "active": "Active",
+      "suspended": "Suspended",
+      "expired": "Expired"
+    },
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "viewer": "Viewer"
+    },
+    "actions": {
+      "create": "Create client",
+      "manage": "Manage",
+      "save": "Save",
+      "attach": "Attach",
+      "detach": "Detach",
+      "remove": "Remove",
+      "delete": "Delete client"
+    },
+    "create": {
+      "title": "New client",
+      "description": "Create the lab's record. Its back office will be available on its own subdomain."
+    },
+    "fields": {
+      "name": "Client name",
+      "subdomain": "Subdomain",
+      "subdomainHint": "Lowercase letters, digits and dashes. Cannot be changed later.",
+      "plan": "Plan",
+      "status": "Subscription status",
+      "contactEmail": "Contact email",
+      "maxOrganisations": "Max organisations",
+      "maxEventsPerYear": "Max events / year",
+      "endsAt": "Subscription end"
+    },
+    "manage": {
+      "settings": "Subscription and quotas",
+      "organisations": "Organisations",
+      "members": "Members",
+      "noOrganisations": "No organisation attached.",
+      "selectOrganisation": "Select an organisation",
+      "searchUser": "Search a user (name, email)",
+      "confirmDelete": "Delete client {name}? Its organisations will be kept."
+    },
+    "toast": {
+      "created": "Client created",
+      "saved": "Changes saved",
+      "attached": "Organisation attached",
+      "memberAdded": "Member added",
+      "deleted": "Client deleted",
+      "error": "Error"
+    }
   },
   "organisationsAdministration": {
     "title": "Organisation verification",

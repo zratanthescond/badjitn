@@ -1,13 +1,15 @@
 import { Schema, model, models, Document } from "mongoose";
 
-export const TENANT_MEMBER_ROLES = ["owner", "manager", "viewer"] as const;
-export type TenantMemberRole = (typeof TENANT_MEMBER_ROLES)[number];
+import {
+    TENANT_MEMBER_ROLES,
+    TENANT_PLANS,
+    TENANT_SUBSCRIPTION_STATUSES,
+    type TenantMemberRole,
+    type TenantPlan,
+    type TenantSubscriptionStatus,
+} from "@/constants/plans";
 
-export const TENANT_PLANS = ["starter", "pro", "enterprise"] as const;
-export type TenantPlan = (typeof TENANT_PLANS)[number];
-
-export const TENANT_SUBSCRIPTION_STATUSES = ["trial", "active", "suspended", "expired"] as const;
-export type TenantSubscriptionStatus = (typeof TENANT_SUBSCRIPTION_STATUSES)[number];
+export type { TenantMemberRole, TenantPlan, TenantSubscriptionStatus };
 
 export interface ITenantMember {
     user: Schema.Types.ObjectId;

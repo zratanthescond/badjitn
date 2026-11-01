@@ -4266,7 +4266,9 @@
       "aiTools": "Outils IA",
       "aiToolsShort": "IA",
       "invitations": "Invitations",
-      "invitationsShort": "Invit."
+      "invitationsShort": "Invit.",
+      "tenants": "Clients",
+      "tenantsShort": "Clients"
     }
   },
   "serverAdmin": {
@@ -4502,6 +4504,70 @@
     "unbanUser": "Debannir l'utilisateur",
     "banUser": "Bannir l'utilisateur",
     "close": "Fermer"
+  },
+  "tenantsAdministration": {
+    "title": "Clients (laboratoires)",
+    "description": "Gérez les clients, leurs organisations, leurs responsables et leur abonnement.",
+    "table": {
+      "client": "Client",
+      "plan": "Plan",
+      "organisations": "Organisations",
+      "members": "Membres",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "status": {
+      "trial": "Essai",
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "expired": "Expiré"
+    },
+    "roles": {
+      "owner": "Propriétaire",
+      "manager": "Gestionnaire",
+      "viewer": "Lecteur"
+    },
+    "actions": {
+      "create": "Créer un client",
+      "manage": "Gérer",
+      "save": "Enregistrer",
+      "attach": "Rattacher",
+      "detach": "Détacher",
+      "remove": "Retirer",
+      "delete": "Supprimer le client"
+    },
+    "create": {
+      "title": "Nouveau client",
+      "description": "Créez la fiche du laboratoire. Son back office sera disponible sur son sous-domaine."
+    },
+    "fields": {
+      "name": "Nom du client",
+      "subdomain": "Sous-domaine",
+      "subdomainHint": "Lettres minuscules, chiffres et tirets. Non modifiable ensuite.",
+      "plan": "Plan",
+      "status": "Statut de l'abonnement",
+      "contactEmail": "Email de contact",
+      "maxOrganisations": "Organisations max.",
+      "maxEventsPerYear": "Événements max. / an",
+      "endsAt": "Fin d'abonnement"
+    },
+    "manage": {
+      "settings": "Abonnement et quotas",
+      "organisations": "Organisations",
+      "members": "Membres",
+      "noOrganisations": "Aucune organisation rattachée.",
+      "selectOrganisation": "Choisir une organisation",
+      "searchUser": "Rechercher un utilisateur (nom, email)",
+      "confirmDelete": "Supprimer le client {name} ? Ses organisations seront conservées."
+    },
+    "toast": {
+      "created": "Client créé",
+      "saved": "Modifications enregistrées",
+      "attached": "Organisation rattachée",
+      "memberAdded": "Membre ajouté",
+      "deleted": "Client supprimé",
+      "error": "Erreur"
+    }
   },
   "organisationsAdministration": {
     "title": "Verification des organisations",

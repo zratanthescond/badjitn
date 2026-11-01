@@ -4223,7 +4223,9 @@
       "aiTools": "Herramientas IA",
       "aiToolsShort": "IA",
       "invitations": "Invitaciones",
-      "invitationsShort": "Invit."
+      "invitationsShort": "Invit.",
+      "tenants": "Clientes",
+      "tenantsShort": "Clientes"
     }
   },
   "serverAdmin": {
@@ -4459,6 +4461,70 @@
     "unbanUser": "Desbloquear usuario",
     "banUser": "Bloquear usuario",
     "close": "Cerrar"
+  },
+  "tenantsAdministration": {
+    "title": "Clientes (laboratorios)",
+    "description": "Gestione los clientes, sus organizaciones, responsables y suscripción.",
+    "table": {
+      "client": "Cliente",
+      "plan": "Plan",
+      "organisations": "Organizaciones",
+      "members": "Miembros",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "status": {
+      "trial": "Prueba",
+      "active": "Activo",
+      "suspended": "Suspendido",
+      "expired": "Caducado"
+    },
+    "roles": {
+      "owner": "Propietario",
+      "manager": "Gestor",
+      "viewer": "Lector"
+    },
+    "actions": {
+      "create": "Crear cliente",
+      "manage": "Gestionar",
+      "save": "Guardar",
+      "attach": "Vincular",
+      "detach": "Desvincular",
+      "remove": "Quitar",
+      "delete": "Eliminar cliente"
+    },
+    "create": {
+      "title": "Nuevo cliente",
+      "description": "Cree la ficha del laboratorio. Su back office estará disponible en su subdominio."
+    },
+    "fields": {
+      "name": "Nombre del cliente",
+      "subdomain": "Subdominio",
+      "subdomainHint": "Minúsculas, números y guiones. No se puede cambiar después.",
+      "plan": "Plan",
+      "status": "Estado de la suscripción",
+      "contactEmail": "Email de contacto",
+      "maxOrganisations": "Máx. organizaciones",
+      "maxEventsPerYear": "Máx. eventos / año",
+      "endsAt": "Fin de suscripción"
+    },
+    "manage": {
+      "settings": "Suscripción y cuotas",
+      "organisations": "Organizaciones",
+      "members": "Miembros",
+      "noOrganisations": "Ninguna organización vinculada.",
+      "selectOrganisation": "Elegir una organización",
+      "searchUser": "Buscar un usuario (nombre, email)",
+      "confirmDelete": "¿Eliminar al cliente {name}? Sus organizaciones se conservarán."
+    },
+    "toast": {
+      "created": "Cliente creado",
+      "saved": "Cambios guardados",
+      "attached": "Organización vinculada",
+      "memberAdded": "Miembro añadido",
+      "deleted": "Cliente eliminado",
+      "error": "Error"
+    }
   },
   "organisationsAdministration": {
     "title": "Verificacion de organizaciones",
