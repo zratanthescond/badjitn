@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Building2, CalendarDays, LayoutDashboard, Menu, TriangleAlert, Users } from "lucide-react";
+import { Building2, CalendarDays, LayoutDashboard, Menu, Settings, TriangleAlert, Users } from "lucide-react";
 import { AdminThemeScope } from "@/components/admin/ui/AdminThemeScope";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,38 @@ const NAV = [
   { key: "organisations", href: "/organisations", icon: Building2 },
   { key: "events", href: "/events", icon: CalendarDays },
   { key: "team", href: "/team", icon: Users },
+  { key: "settings", href: "/settings", icon: Settings },
 ] as const;
+
+// "#RRGGBB" -> CSS-variable triplet "H S% L%" (the format used by the theme), plus a readable
+// foreground for text drawn on top of it. Returns null for anything that is not a valid hex color.
+function themeVarsFromHex(hex?: string): Record<string, string> | null {
+  if (!hex || !/^#[0-9a-fA-F]{6}$/.test(hex)) return null;
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  const d = max - min;
+  let h = 0;
+  let s = 0;
+  if (d !== 0) {
+    s = d / (1 - Math.abs(2 * l - 1));
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+  }
+  const hsl = `${h} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return {
+    "--primary": hsl,
+    "--ring": hsl,
+    "--primary-foreground": luminance > 0.6 ? "220 45% 8%" : "0 0% 100%",
+  };
+}
 
 export default function ProShell({ tenant, role, children }: ProShellProps) {
   const t = useTranslations("pro");
@@ -41,6 +72,7 @@ export default function ProShell({ tenant, role, children }: ProShellProps) {
   const isActive = (href: string) => (href === "/" ? current === "/" : current.startsWith(href));
 
   const accent = tenant.primaryColor || undefined;
+  const themeVars = themeVarsFromHex(tenant.primaryColor);
   const readOnly = tenant.status === "suspended" || tenant.status === "expired";
 
   const nav = (
@@ -88,7 +120,10 @@ export default function ProShell({ tenant, role, children }: ProShellProps) {
 
   return (
     <AdminThemeScope>
-      <div className="flex min-h-screen w-full bg-background text-foreground">
+      <div
+        className="flex min-h-screen w-full bg-background text-foreground"
+        style={themeVars as React.CSSProperties | undefined}
+      >
         {/* Desktop sidebar */}
         <aside className="hidden w-64 shrink-0 flex-col gap-6 border-r border-border bg-card p-4 lg:flex">
           {brand}

@@ -4476,6 +4476,7 @@
   "pro": {
     "nav": {
       "dashboard": "Dashboard",
+      "settings": "Settings",
       "events": "Events",
       "organisations": "Organisations",
       "team": "Team"
@@ -4716,6 +4717,178 @@
 
 
     },
+
+
+    "settings": {
+
+
+
+      "title": "Settings",
+
+
+
+      "subtitle": "Branding, contact and subscription for your space.",
+
+
+
+      "saved": "Settings saved",
+
+
+
+      "error": "Error",
+
+
+
+      "save": "Save",
+
+
+
+      "ownerOnly": "Only an owner can edit these settings.",
+
+
+
+      "branding": {
+
+
+
+        "title": "Branding",
+
+
+
+        "description": "Your logo and color personalise your back office.",
+
+
+
+        "logo": "Logo",
+
+
+
+        "logoPlaceholder": "Drop a logo",
+
+
+
+        "color": "Main color",
+
+
+
+        "reset": "Reset",
+
+
+
+        "colorInvalid": "Expected format: #RRGGBB",
+
+
+
+        "colorHint": "Applied to buttons and active items. Leave empty for the default color."
+
+
+
+      },
+
+
+
+      "contact": {
+
+
+
+        "title": "Contact",
+
+
+
+        "description": "The person Badgi can reach for your account.",
+
+
+
+        "name": "Name",
+
+
+
+        "email": "Email",
+
+
+
+        "phone": "Phone"
+
+
+
+      },
+
+
+
+      "plan": {
+
+
+
+        "title": "Subscription",
+
+
+
+        "description": "Managed by Badgi. This information is read-only.",
+
+
+
+        "plan": "Plan",
+
+
+
+        "status": "Status",
+
+
+
+        "endsAt": "Subscription end",
+
+
+
+        "noEnd": "No end date",
+
+
+
+        "statuses": {
+
+
+
+          "trial": "Trial",
+
+
+
+          "active": "Active",
+
+
+
+          "suspended": "Suspended",
+
+
+
+          "expired": "Expired"
+
+
+
+        },
+
+
+
+        "organisations": "Organisations",
+
+
+
+        "eventsYear": "Events in {year}",
+
+
+
+        "ordersPerEvent": "Registration limit per event: {max}.",
+
+
+
+        "contactUs": "To change your plan or quotas, contact Badgi."
+
+
+
+      }
+
+
+
+    },
+
 
 
     "menu": "Menu",

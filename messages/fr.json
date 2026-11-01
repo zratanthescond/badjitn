@@ -4519,6 +4519,7 @@
   "pro": {
     "nav": {
       "dashboard": "Tableau de bord",
+      "settings": "Paramètres",
       "events": "Événements",
       "organisations": "Organisations",
       "team": "Équipe"
@@ -4759,6 +4760,178 @@
 
 
     },
+
+
+    "settings": {
+
+
+
+      "title": "Paramètres",
+
+
+
+      "subtitle": "Identité visuelle, contact et abonnement de votre espace.",
+
+
+
+      "saved": "Paramètres enregistrés",
+
+
+
+      "error": "Erreur",
+
+
+
+      "save": "Enregistrer",
+
+
+
+      "ownerOnly": "Seul un propriétaire peut modifier ces paramètres.",
+
+
+
+      "branding": {
+
+
+
+        "title": "Identité visuelle",
+
+
+
+        "description": "Le logo et la couleur personnalisent votre back office.",
+
+
+
+        "logo": "Logo",
+
+
+
+        "logoPlaceholder": "Déposer un logo",
+
+
+
+        "color": "Couleur principale",
+
+
+
+        "reset": "Réinitialiser",
+
+
+
+        "colorInvalid": "Format attendu : #RRGGBB",
+
+
+
+        "colorHint": "Appliquée aux boutons et aux éléments actifs. Laissez vide pour la couleur par défaut."
+
+
+
+      },
+
+
+
+      "contact": {
+
+
+
+        "title": "Contact",
+
+
+
+        "description": "La personne que Badgi peut joindre pour votre compte.",
+
+
+
+        "name": "Nom",
+
+
+
+        "email": "Email",
+
+
+
+        "phone": "Téléphone"
+
+
+
+      },
+
+
+
+      "plan": {
+
+
+
+        "title": "Abonnement",
+
+
+
+        "description": "Géré par Badgi. Ces informations sont en lecture seule.",
+
+
+
+        "plan": "Plan",
+
+
+
+        "status": "Statut",
+
+
+
+        "endsAt": "Fin d'abonnement",
+
+
+
+        "noEnd": "Sans date de fin",
+
+
+
+        "statuses": {
+
+
+
+          "trial": "Essai",
+
+
+
+          "active": "Actif",
+
+
+
+          "suspended": "Suspendu",
+
+
+
+          "expired": "Expiré"
+
+
+
+        },
+
+
+
+        "organisations": "Organisations",
+
+
+
+        "eventsYear": "Événements en {year}",
+
+
+
+        "ordersPerEvent": "Limite d'inscriptions par événement : {max}.",
+
+
+
+        "contactUs": "Pour changer de plan ou de quotas, contactez Badgi."
+
+
+
+      }
+
+
+
+    },
+
 
 
     "menu": "Menu",

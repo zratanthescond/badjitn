@@ -106,6 +106,98 @@ export async function getMyTenantMemberships(userId: string) {
 }
 
 // ==========================================
+// SETTINGS (branding, contact, plan read-only)
+// ==========================================
+export async function getTenantSettings(tenantSlug: string) {
+    const { tenant, role } = await checkTenantAccess(tenantSlug, "viewer");
+    await connectToDatabase();
+
+    const orgIds = (await Organisation.find({ tenant: tenant._id }).select("_id").lean<any[]>()).map((o) => o._id);
+    const year = new Date().getFullYear();
+    const eventsThisYear = orgIds.length
+        ? await Event.countDocuments({
+              organisation: { $in: orgIds },
+              startDateTime: { $gte: new Date(year, 0, 1), $lt: new Date(year + 1, 0, 1) },
+          })
+        : 0;
+
+    return {
+        role,
+        url: getTenantUrl(tenant.slug),
+        year,
+        settings: {
+            name: tenant.name,
+            slug: tenant.slug,
+            logo: tenant.logo || "",
+            primaryColor: tenant.primaryColor || "",
+            contact: {
+                name: tenant.contact?.name || "",
+                email: tenant.contact?.email || "",
+                phone: tenant.contact?.phone || "",
+            },
+        },
+        plan: {
+            plan: tenant.plan,
+            limits: tenant.limits,
+            status: tenant.subscription?.status,
+            endsAt: tenant.subscription?.endsAt || null,
+        },
+        usage: { organisations: orgIds.length, eventsThisYear },
+    };
+}
+
+const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Only owners can edit. Plan, quotas and status stay admin-only (adminUpdateTenant).
+export async function updateTenantSettings(
+    tenantSlug: string,
+    input: {
+        logo?: string;
+        primaryColor?: string;
+        contact?: { name?: string; email?: string; phone?: string };
+    }
+) {
+    try {
+        const { tenant } = await checkTenantAccess(tenantSlug, "owner");
+        await connectToDatabase();
+
+        const logo = (input.logo || "").trim();
+        if (logo && !/^(https?:\/\/|\/)/i.test(logo)) throw new Error("Logo invalide.");
+        if (logo.length > 2000) throw new Error("Logo invalide.");
+
+        const primaryColor = (input.primaryColor || "").trim();
+        if (primaryColor && !HEX_COLOR.test(primaryColor)) throw new Error("Couleur invalide (format #RRGGBB).");
+
+        const clip = (value: string | undefined, max: number) => (value || "").trim().slice(0, max);
+        const email = clip(input.contact?.email, 200);
+        if (email && !EMAIL.test(email)) throw new Error("Email de contact invalide.");
+
+        // Empty values are stored as unset so the default branding applies again.
+        const set: Record<string, string> = {
+            "contact.name": clip(input.contact?.name, 120),
+            "contact.email": email,
+            "contact.phone": clip(input.contact?.phone, 40),
+        };
+        const unset: Record<string, ""> = {};
+        if (logo) set.logo = logo;
+        else unset.logo = "";
+        if (primaryColor) set.primaryColor = primaryColor;
+        else unset.primaryColor = "";
+
+        await Tenant.updateOne(
+            { _id: tenant._id },
+            Object.keys(unset).length ? { $set: set, $unset: unset } : { $set: set }
+        );
+
+        revalidatePath(`/pro/${tenant.slug}`, "layout");
+        return { success: true };
+    } catch (error) {
+        handleError(error);
+    }
+}
+
+// ==========================================
 // BACK OFFICE READS (scoped to the caller's tenant)
 // ==========================================
 export async function getTenantOrganisations(tenantSlug: string) {
