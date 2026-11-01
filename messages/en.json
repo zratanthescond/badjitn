@@ -4465,6 +4465,7 @@
   "pro": {
     "nav": {
       "dashboard": "Dashboard",
+      "events": "Events",
       "organisations": "Organisations",
       "team": "Team"
     },
@@ -4588,6 +4589,123 @@
       "upcomingEvents": "Upcoming events"
 
     },
+
+    "events": {
+
+
+      "title": "Events",
+
+
+      "count": "{count} event(s)",
+
+
+      "search": "Search an event",
+
+
+      "organisation": "Organisation",
+
+
+      "allOrganisations": "All organisations",
+
+
+      "statusLabel": "Status",
+
+
+      "status": {
+
+
+        "all": "All",
+
+
+        "upcoming": "Upcoming",
+
+
+        "past": "Past"
+
+
+      },
+
+
+      "apply": "Filter",
+
+
+      "free": "Free",
+
+
+      "emptyTitle": "No events",
+
+
+      "emptyDescription": "No event matches these filters.",
+
+
+      "previous": "Previous",
+
+
+      "next": "Next",
+
+
+      "pageOf": "Page {page} of {pages}"
+
+
+    },
+
+
+    "eventDetail": {
+
+
+      "back": "Back to events",
+
+
+      "publicPage": "Public page",
+
+
+      "manage": "Manage registrations",
+
+
+      "kpis": {
+
+
+        "orders": "Registrations",
+
+
+        "participants": "Unique participants",
+
+
+        "revenue": "Revenue",
+
+
+        "averageOrder": "Average order: {value}",
+
+
+        "attendance": "Attendance rate",
+
+
+        "scanned": "{count} attendees scanned"
+
+
+      },
+
+
+      "byType": "By payment type",
+
+
+      "byCategory": "By category",
+
+
+      "byPlan": "By plan",
+
+
+      "scanPoints": "Scan points",
+
+
+      "scansByHour": "Scans by hour",
+
+
+      "noScans": "No scans recorded."
+
+
+    },
+
 
     "menu": "Menu",
     "poweredBy": "Powered by Badgi",

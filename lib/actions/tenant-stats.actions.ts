@@ -5,7 +5,9 @@ import Event from "@/lib/database/models/event.model";
 import Order from "@/lib/database/models/order.model";
 import Attendance from "@/lib/database/models/attendance.model";
 import Organisation from "@/lib/database/models/organisation.model";
+import { isValidObjectId } from "mongoose";
 import { getCurrencyCodeByCountry } from "@/lib/utils";
+import { getEventReportData } from "./event.actions";
 import { checkTenantAccess } from "./tenant.actions";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -242,6 +244,153 @@ export async function getTenantDashboardStats(tenantSlug: string, filters: Tenan
                 .slice(0, 5)
                 .map(withStats),
             organisationOptions: tenantOrgs.map((o) => ({ id: o._id.toString(), name: o.name })),
+        })
+    );
+}
+
+// ==========================================
+// EVENTS LIST (paginated, scoped to the tenant)
+// ==========================================
+export type TenantEventsFilters = {
+    orgId?: string;
+    status?: "all" | "upcoming" | "past";
+    q?: string;
+    page?: number;
+};
+
+const PAGE_SIZE = 20;
+
+const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+export async function getTenantEvents(tenantSlug: string, filters: TenantEventsFilters = {}) {
+    const { tenant } = await checkTenantAccess(tenantSlug, "viewer");
+    await connectToDatabase();
+
+    const tenantOrgs = await Organisation.find({ tenant: tenant._id }).select("name").lean<any[]>();
+    const scoped = filters.orgId ? tenantOrgs.filter((o) => o._id.toString() === filters.orgId) : tenantOrgs;
+    const orgName = new Map(tenantOrgs.map((o) => [o._id.toString(), o.name as string]));
+
+    const query: Record<string, any> = { organisation: { $in: scoped.map((o) => o._id) } };
+    const now = new Date();
+    if (filters.status === "upcoming") query.startDateTime = { $gte: now };
+    if (filters.status === "past") query.startDateTime = { $lt: now };
+    const q = filters.q?.trim().slice(0, 100);
+    if (q) query.title = { $regex: escapeRegex(q), $options: "i" };
+
+    const page = Math.max(1, Math.floor(filters.page || 1));
+    const [total, events] = await Promise.all([
+        Event.countDocuments(query),
+        Event.find(query)
+            .select("title imageUrl organisation startDateTime endDateTime isFree country location")
+            .sort({ startDateTime: -1 })
+            .skip((page - 1) * PAGE_SIZE)
+            .limit(PAGE_SIZE)
+            .lean<any[]>(),
+    ]);
+
+    const counts = events.length
+        ? await Order.aggregate([
+              { $match: { event: { $in: events.map((e) => e._id) } } },
+              {
+                  $group: {
+                      _id: "$event",
+                      orders: { $sum: 1 },
+                      revenue: { $sum: { $ifNull: ["$totalAmount", 0] } },
+                  },
+              },
+          ])
+        : [];
+    const countMap = new Map(counts.map((c: any) => [c._id.toString(), c]));
+
+    return JSON.parse(
+        JSON.stringify({
+            events: events.map((e) => ({
+                id: e._id.toString(),
+                title: e.title,
+                imageUrl: e.imageUrl,
+                organisation: orgName.get(e.organisation.toString()) || "",
+                startDateTime: e.startDateTime,
+                endDateTime: e.endDateTime,
+                isFree: !!e.isFree,
+                currency: getCurrencyCodeByCountry(e.country, e.location),
+                orders: countMap.get(e._id.toString())?.orders || 0,
+                revenue: countMap.get(e._id.toString())?.revenue || 0,
+            })),
+            total,
+            page,
+            pages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+            organisationOptions: tenantOrgs.map((o) => ({ id: o._id.toString(), name: o.name })),
+        })
+    );
+}
+
+// ==========================================
+// EVENT DETAIL (aggregates only: no participant personal data)
+// ==========================================
+export async function getTenantEventDetail(tenantSlug: string, eventId: string) {
+    const { tenant } = await checkTenantAccess(tenantSlug, "viewer");
+    await connectToDatabase();
+
+    if (!isValidObjectId(eventId)) return null;
+
+    const orgs = await Organisation.find({ tenant: tenant._id }).select("name").lean<any[]>();
+    // Isolation: an event outside the tenant behaves exactly like a missing one.
+    const event = await Event.findOne({ _id: eventId, organisation: { $in: orgs.map((o) => o._id) } })
+        .select("title imageUrl organisation startDateTime endDateTime isFree country location")
+        .lean<any>();
+    if (!event) return null;
+
+    const report = await getEventReportData(eventId);
+    const stats = report?.stats;
+    if (!stats) return null;
+
+    // Report trend is bucketed by 3h: fold it into days to match the dashboard chart.
+    const days = new Map<string, { orders: number; revenue: number }>();
+    for (const p of stats.orderTrend || []) {
+        const date = String(p.date).slice(0, 10);
+        const d = days.get(date) || { orders: 0, revenue: 0 };
+        d.orders += p.orders;
+        d.revenue += p.revenue;
+        days.set(date, d);
+    }
+    const timeline = Array.from(days.entries())
+        .sort((a, b) => (a[0] > b[0] ? 1 : -1))
+        .map(([date, d]) => ({ date, orders: d.orders, revenue: Math.round(d.revenue * 100) / 100 }));
+
+    return JSON.parse(
+        JSON.stringify({
+            event: {
+                id: event._id.toString(),
+                title: event.title,
+                imageUrl: event.imageUrl,
+                startDateTime: event.startDateTime,
+                endDateTime: event.endDateTime,
+                isFree: !!event.isFree,
+                organisation: orgs.find((o) => o._id.toString() === event.organisation.toString())?.name || "",
+            },
+            currency: getCurrencyCodeByCountry(event.country, event.location),
+            stats: {
+                totalOrders: stats.totalOrders,
+                totalRevenue: stats.totalRevenue,
+                uniqueBuyers: stats.uniqueBuyers,
+                uniqueScannedAttendees: stats.uniqueScannedAttendees,
+                attendanceRate: stats.attendanceRate,
+                averageOrderValue: stats.averageOrderValue,
+                ordersByType: stats.ordersByType,
+                ordersByCategory: stats.ordersByCategory,
+                revenueByType: stats.revenueByType,
+                scanActivityByHour: stats.scanActivityByHour,
+                topPricePlans: (stats.topPricePlans || []).slice(0, 8).map((p: any) => ({
+                    name: p.name,
+                    orders: p.orders,
+                    revenue: p.revenue,
+                })),
+            },
+            scanPoints: Object.entries(report.scanPointData || {}).map(([name, v]: [string, any]) => ({
+                name,
+                count: v.count,
+            })),
+            timeline,
         })
     );
 }

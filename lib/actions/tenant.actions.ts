@@ -60,6 +60,18 @@ export async function getTenantOrganisationIds(tenantId: string): Promise<string
     return orgs.map((o) => o._id.toString());
 }
 
+// True when the user is an owner/manager of the client (tenant) that owns this organisation.
+// Used to open existing organiser pages (e.g. /orders) to client managers only.
+export async function isTenantManagerOfOrganisation(organisationId: string, userId: string): Promise<boolean> {
+    await connectToDatabase();
+    const org = await Organisation.findById(organisationId).select("tenant").lean<any>();
+    if (!org?.tenant) return false;
+    return !!(await Tenant.exists({
+        _id: org.tenant,
+        members: { $elemMatch: { user: userId, role: { $in: ["owner", "manager"] } } },
+    }));
+}
+
 // Non-throwing helper for page-level guards: returns null when the caller has no access.
 export async function getTenantForCurrentUser(tenantSlug: string, minRole: TenantMemberRole = "viewer") {
     try {

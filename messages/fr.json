@@ -4508,6 +4508,7 @@
   "pro": {
     "nav": {
       "dashboard": "Tableau de bord",
+      "events": "Événements",
       "organisations": "Organisations",
       "team": "Équipe"
     },
@@ -4631,6 +4632,123 @@
       "upcomingEvents": "Prochains événements"
 
     },
+
+    "events": {
+
+
+      "title": "Événements",
+
+
+      "count": "{count} événement(s)",
+
+
+      "search": "Rechercher un événement",
+
+
+      "organisation": "Organisation",
+
+
+      "allOrganisations": "Toutes les organisations",
+
+
+      "statusLabel": "Statut",
+
+
+      "status": {
+
+
+        "all": "Tous",
+
+
+        "upcoming": "À venir",
+
+
+        "past": "Passés"
+
+
+      },
+
+
+      "apply": "Filtrer",
+
+
+      "free": "Gratuit",
+
+
+      "emptyTitle": "Aucun événement",
+
+
+      "emptyDescription": "Aucun événement ne correspond à ces filtres.",
+
+
+      "previous": "Précédent",
+
+
+      "next": "Suivant",
+
+
+      "pageOf": "Page {page} sur {pages}"
+
+
+    },
+
+
+    "eventDetail": {
+
+
+      "back": "Retour aux événements",
+
+
+      "publicPage": "Page publique",
+
+
+      "manage": "Gérer les inscriptions",
+
+
+      "kpis": {
+
+
+        "orders": "Inscriptions",
+
+
+        "participants": "Participants uniques",
+
+
+        "revenue": "Chiffre d'affaires",
+
+
+        "averageOrder": "Panier moyen : {value}",
+
+
+        "attendance": "Taux de présence",
+
+
+        "scanned": "{count} participants scannés"
+
+
+      },
+
+
+      "byType": "Par type de paiement",
+
+
+      "byCategory": "Par catégorie",
+
+
+      "byPlan": "Par formule",
+
+
+      "scanPoints": "Points de scan",
+
+
+      "scansByHour": "Scans par heure",
+
+
+      "noScans": "Aucun scan enregistré."
+
+
+    },
+
 
     "menu": "Menu",
     "poweredBy": "Propulsé par Badgi",

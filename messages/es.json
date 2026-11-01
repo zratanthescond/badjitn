@@ -4465,6 +4465,7 @@
   "pro": {
     "nav": {
       "dashboard": "Panel",
+      "events": "Eventos",
       "organisations": "Organizaciones",
       "team": "Equipo"
     },
@@ -4588,6 +4589,123 @@
       "upcomingEvents": "Próximos eventos"
 
     },
+
+    "events": {
+
+
+      "title": "Eventos",
+
+
+      "count": "{count} evento(s)",
+
+
+      "search": "Buscar un evento",
+
+
+      "organisation": "Organización",
+
+
+      "allOrganisations": "Todas las organizaciones",
+
+
+      "statusLabel": "Estado",
+
+
+      "status": {
+
+
+        "all": "Todos",
+
+
+        "upcoming": "Próximos",
+
+
+        "past": "Pasados"
+
+
+      },
+
+
+      "apply": "Filtrar",
+
+
+      "free": "Gratis",
+
+
+      "emptyTitle": "Sin eventos",
+
+
+      "emptyDescription": "Ningún evento coincide con estos filtros.",
+
+
+      "previous": "Anterior",
+
+
+      "next": "Siguiente",
+
+
+      "pageOf": "Página {page} de {pages}"
+
+
+    },
+
+
+    "eventDetail": {
+
+
+      "back": "Volver a eventos",
+
+
+      "publicPage": "Página pública",
+
+
+      "manage": "Gestionar inscripciones",
+
+
+      "kpis": {
+
+
+        "orders": "Inscripciones",
+
+
+        "participants": "Participantes únicos",
+
+
+        "revenue": "Ingresos",
+
+
+        "averageOrder": "Pedido medio: {value}",
+
+
+        "attendance": "Tasa de asistencia",
+
+
+        "scanned": "{count} asistentes escaneados"
+
+
+      },
+
+
+      "byType": "Por tipo de pago",
+
+
+      "byCategory": "Por categoría",
+
+
+      "byPlan": "Por tarifa",
+
+
+      "scanPoints": "Puntos de escaneo",
+
+
+      "scansByHour": "Escaneos por hora",
+
+
+      "noScans": "Ningún escaneo registrado."
+
+
+    },
+
 
     "menu": "Menú",
     "poweredBy": "Con tecnología de Badgi",

@@ -13,6 +13,7 @@ import { redirect } from "next/navigation";
 
 import { getOrdersByEvent } from "@/lib/actions/order.actions";
 import { getEventById } from "@/lib/actions/event.actions";
+import { isTenantManagerOfOrganisation } from "@/lib/actions/tenant.actions";
 import { getCertificationByEventId } from "@/lib/actions/certification.actions";
 import { getBankTransferStats } from "@/lib/actions/banktransfer.actions";
 import { getUserWorkByEventId, useUser } from "@/lib/actions/user.actions";
@@ -41,7 +42,15 @@ const Orders = async (props: SearchParamProps) => {
     }
     const isOrganizer = eventData.organizer?._id?.toString() === user._id.toString();
     const isAdmin = user.role === "admin";
+    let hasOrgAccess = false;
     if (!isOrganizer && !isAdmin) {
+      // Owners/managers of the client (tenant) that owns the event's organisation.
+      const orgId = eventData.organisation?._id ?? eventData.organisation;
+      if (orgId) {
+        hasOrgAccess = await isTenantManagerOfOrganisation(orgId.toString(), user._id.toString());
+      }
+    }
+    if (!isOrganizer && !isAdmin && !hasOrgAccess) {
       redirect("/");
     }
   } else {

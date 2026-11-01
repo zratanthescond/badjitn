@@ -5,15 +5,6 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {
   Building2,
   CalendarClock,
   CalendarDays,
@@ -22,6 +13,7 @@ import {
   Ticket,
   Wallet,
 } from "lucide-react";
+import TimelineChart from "@/components/pro/TimelineChart";
 import { StatCard } from "@/components/admin/ui/StatCard";
 import { AdminEmptyState } from "@/components/admin/ui/AdminEmptyState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -29,12 +21,10 @@ import { cn } from "@/lib/utils";
 import { getTenantDashboardStats } from "@/lib/actions/tenant-stats.actions";
 
 type Period = "7" | "30" | "90" | "365" | "all";
-type Metric = "orders" | "revenue";
 type Money = { currency: string; amount: number };
 
 const PERIODS: Period[] = ["7", "30", "90", "365", "all"];
 const ALL = "__all__";
-const COLOR = "#0059bb";
 
 const isoDay = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -50,7 +40,6 @@ export default function TenantDashboard({ tenantSlug }: { tenantSlug: string }) 
   const locale = useLocale();
   const [period, setPeriod] = useState<Period>("30");
   const [orgId, setOrgId] = useState<string>(ALL);
-  const [metric, setMetric] = useState<Metric>("orders");
 
   // Round "to" to the day so the query key is stable between renders.
   const range = useMemo(() => periodRange(period), [period]);
@@ -68,8 +57,6 @@ export default function TenantDashboard({ tenantSlug }: { tenantSlug: string }) 
   const money = (amount: number, currency: string) =>
     new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 2 }).format(amount);
   const number = (value: number) => new Intl.NumberFormat(locale).format(value);
-  const shortDate = (value: string | Date) =>
-    new Intl.DateTimeFormat(locale, { day: "2-digit", month: "short" }).format(new Date(value));
   const fullDate = (value: string | Date) =>
     new Intl.DateTimeFormat(locale, { day: "2-digit", month: "short", year: "numeric" }).format(new Date(value));
   const labelOf = (ns: "types" | "categories", key: string) => (t.has(`${ns}.${key}`) ? t(`${ns}.${key}`) : key);
@@ -176,89 +163,7 @@ export default function TenantDashboard({ tenantSlug }: { tenantSlug: string }) 
       </div>
 
       {/* Timeline */}
-      <section className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold text-foreground">{t("timeline.title")}</h2>
-          <div className="flex rounded-lg border border-border p-0.5 text-xs">
-            {(["orders", "revenue"] as Metric[]).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setMetric(m)}
-                aria-pressed={metric === m}
-                className={cn(
-                  "rounded-md px-3 py-1 font-medium transition-colors",
-                  metric === m ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {t(`timeline.${m}`)}
-              </button>
-            ))}
-          </div>
-        </div>
-        {timeline.length === 0 ? (
-          <div className="flex h-[260px] items-center justify-center text-sm text-muted-foreground">
-            {t("timeline.empty")}
-          </div>
-        ) : (
-          <div className="h-[260px] w-full" role="img" aria-label={t("timeline.title")}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={timeline} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="proTimeline" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={COLOR} stopOpacity={0.28} />
-                    <stop offset="95%" stopColor={COLOR} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.25} vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={shortDate}
-                  stroke="currentColor"
-                  className="text-muted-foreground"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  minTickGap={24}
-                />
-                <YAxis
-                  stroke="currentColor"
-                  className="text-muted-foreground"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  allowDecimals={metric === "revenue"}
-                  width={48}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    borderColor: "hsl(var(--border))",
-                    borderRadius: "8px",
-                    color: "hsl(var(--foreground))",
-                  }}
-                  labelFormatter={(label: any) => fullDate(label as string)}
-                  formatter={(value: any) => [
-                    metric === "revenue" ? money(Number(value), primary) : number(Number(value)),
-                    t(`timeline.${metric}`),
-                  ]}
-                />
-                <Area
-                  type="monotone"
-                  dataKey={metric}
-                  stroke={COLOR}
-                  strokeWidth={2.5}
-                  fill="url(#proTimeline)"
-                  animationDuration={600}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-        {metric === "revenue" && otherRevenue.length > 0 && (
-          <p className="mt-2 text-xs text-muted-foreground">{t("timeline.primaryOnly", { currency: primary })}</p>
-        )}
-      </section>
+      <TimelineChart timeline={timeline} currency={primary} primaryOnlyNote={otherRevenue.length > 0} />
 
       {/* Breakdowns */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">

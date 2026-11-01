@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Building2, LayoutDashboard, Menu, TriangleAlert, Users } from "lucide-react";
+import { Building2, CalendarDays, LayoutDashboard, Menu, TriangleAlert, Users } from "lucide-react";
 import { AdminThemeScope } from "@/components/admin/ui/AdminThemeScope";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ interface ProShellProps {
 const NAV = [
   { key: "dashboard", href: "/", icon: LayoutDashboard },
   { key: "organisations", href: "/organisations", icon: Building2 },
+  { key: "events", href: "/events", icon: CalendarDays },
   { key: "team", href: "/team", icon: Users },
 ] as const;
 

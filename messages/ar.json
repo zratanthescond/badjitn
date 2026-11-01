@@ -4465,6 +4465,7 @@
   "pro": {
     "nav": {
       "dashboard": "لوحة التحكم",
+      "events": "الفعاليات",
       "organisations": "المؤسسات",
       "team": "الفريق"
     },
@@ -4588,6 +4589,123 @@
       "upcomingEvents": "الفعاليات القادمة"
 
     },
+
+    "events": {
+
+
+      "title": "الفعاليات",
+
+
+      "count": "{count} فعالية",
+
+
+      "search": "ابحث عن فعالية",
+
+
+      "organisation": "المؤسسة",
+
+
+      "allOrganisations": "كل المؤسسات",
+
+
+      "statusLabel": "الحالة",
+
+
+      "status": {
+
+
+        "all": "الكل",
+
+
+        "upcoming": "القادمة",
+
+
+        "past": "السابقة"
+
+
+      },
+
+
+      "apply": "تصفية",
+
+
+      "free": "مجاني",
+
+
+      "emptyTitle": "لا توجد فعاليات",
+
+
+      "emptyDescription": "لا توجد فعالية تطابق هذه المرشحات.",
+
+
+      "previous": "السابق",
+
+
+      "next": "التالي",
+
+
+      "pageOf": "صفحة {page} من {pages}"
+
+
+    },
+
+
+    "eventDetail": {
+
+
+      "back": "العودة إلى الفعاليات",
+
+
+      "publicPage": "الصفحة العامة",
+
+
+      "manage": "إدارة التسجيلات",
+
+
+      "kpis": {
+
+
+        "orders": "التسجيلات",
+
+
+        "participants": "مشاركون فريدون",
+
+
+        "revenue": "الإيرادات",
+
+
+        "averageOrder": "متوسط الطلب: {value}",
+
+
+        "attendance": "نسبة الحضور",
+
+
+        "scanned": "{count} مشارك تم مسحه"
+
+
+      },
+
+
+      "byType": "حسب نوع الدفع",
+
+
+      "byCategory": "حسب الفئة",
+
+
+      "byPlan": "حسب الباقة",
+
+
+      "scanPoints": "نقاط المسح",
+
+
+      "scansByHour": "عمليات المسح حسب الساعة",
+
+
+      "noScans": "لا توجد عمليات مسح مسجلة."
+
+
+    },
+
 
     "menu": "القائمة",
     "poweredBy": "مدعوم من Badgi",
