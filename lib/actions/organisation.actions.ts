@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/database";
 import Organisation from "@/lib/database/models/organisation.model";
 import User from "@/lib/database/models/user.model";
+import Tenant from "@/lib/database/models/tenant.model";
 import { handleError } from "@/lib/utils";
 import { verifyAdmin } from "./auth.actions";
 
@@ -420,10 +421,20 @@ export async function checkOrgPermission(
             (adminId: any) => adminId.toString() === userId
         );
 
+        // Owners/managers of the client (tenant) owning this organisation get full access.
+        // Viewers are read-only and are handled by the tenant back office itself.
+        let isTenantMember = false;
+        if (!isCreator && !isAdmin && organisation.tenant) {
+            isTenantMember = !!(await Tenant.exists({
+                _id: organisation.tenant,
+                members: { $elemMatch: { user: userId, role: { $in: ["owner", "manager"] } } },
+            }));
+        }
+
         return {
             isCreator,
             isAdmin,
-            hasAccess: isCreator || isAdmin,
+            hasAccess: isCreator || isAdmin || isTenantMember,
         };
     } catch (error) {
         return { isCreator: false, isAdmin: false, hasAccess: false };

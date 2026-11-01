@@ -14,6 +14,19 @@ export async function verifyAdmin() {
   return user;
 }
 
+// Verify the caller is a platform admin or a sup_organ (tenant back office user).
+// Tenant-level access (which tenant, which member role) is checked separately.
+export async function verifySupOrgan() {
+  const user = await useUser();
+  if (!user) {
+    throw new Error("Unauthorized: Please sign in.");
+  }
+  if (user.role !== "admin" && user.role !== "sup_organ") {
+    throw new Error("Forbidden: Sup-organ access required.");
+  }
+  return user;
+}
+
 // Verify the caller is either an admin or the organizer of a specific event
 export async function verifyOrganizerOrAdmin(eventId: string) {
   const user = await useUser();

@@ -1,4 +1,8 @@
 import { Schema, model, models, Document } from "mongoose";
+
+export const USER_ROLES = ["user", "admin", "sup_organ"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
+
 export interface IUser extends Document {
   clerkId: string;
   email: string;
@@ -16,7 +20,7 @@ export interface IUser extends Document {
   emailTocken: string;
   isActive: boolean;
   new: boolean;
-  role: "user" | "admin";
+  role: UserRole;
   isBanned: boolean;
 }
 const UserSchema = new Schema({
@@ -42,7 +46,7 @@ const UserSchema = new Schema({
   emailTocken: { type: String },
   isActive: { type: Boolean, default: false },
   new: { type: Boolean, default: true },
-  role: { type: String, default: "user" },
+  role: { type: String, enum: USER_ROLES, default: "user" },
   isBanned: { type: Boolean, default: false },
 });
 
