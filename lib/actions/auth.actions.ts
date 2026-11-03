@@ -1,6 +1,7 @@
 import { useUser } from "./user.actions";
 import { connectToDatabase } from "../database";
 import Event from "../database/models/event.model";
+import Organisation from "../database/models/organisation.model";
 
 // Verify the caller is an authenticated administrator
 export async function verifyAdmin() {
@@ -30,8 +31,21 @@ export async function verifyOrganizerOrAdmin(eventId: string) {
     throw new Error("Event not found");
   }
   
-  const isOrganizer = event.organizer?.toString() === user._id.toString();
-  if (!isOrganizer) {
+  const userId = user._id.toString();
+  const isOrganizer = event.organizer?.toString() === userId;
+
+  // Members of the event's organisation (creator or added members) have the same access
+  let hasOrgAccess = false;
+  if (!isOrganizer && event.organisation) {
+    const org = await Organisation.findById(event.organisation).select("creator admins");
+    if (org) {
+      hasOrgAccess =
+        org.creator?.toString() === userId ||
+        (org.admins ?? []).some((id: any) => id.toString() === userId);
+    }
+  }
+
+  if (!isOrganizer && !hasOrgAccess) {
     throw new Error("Forbidden: You are not authorized to manage this event.");
   }
   return user;

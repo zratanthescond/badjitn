@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 
 import { getOrdersByEvent } from "@/lib/actions/order.actions";
 import { getEventById } from "@/lib/actions/event.actions";
+import { checkOrgPermission } from "@/lib/actions/organisation.actions";
 import { getCertificationByEventId } from "@/lib/actions/certification.actions";
 import { getUserWorkByEventId, useUser } from "@/lib/actions/user.actions";
 import OrdersEvolutionChart from "@/components/admin/OrdersEvolutionChart";
@@ -38,7 +39,15 @@ const Orders = async (props: SearchParamProps) => {
     }
     const isOrganizer = eventData.organizer?._id?.toString() === user._id.toString();
     const isAdmin = user.role === "admin";
-    if (!isOrganizer && !isAdmin) {
+    let hasOrgAccess = false;
+    if (!isOrganizer && !isAdmin && eventData.organisation?._id) {
+      const permission = await checkOrgPermission(
+        eventData.organisation._id,
+        user._id.toString()
+      );
+      hasOrgAccess = permission.hasAccess;
+    }
+    if (!isOrganizer && !isAdmin && !hasOrgAccess) {
       redirect("/");
     }
   } else {
