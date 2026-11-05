@@ -87,6 +87,7 @@ export interface IEvent extends Document {
     totalWordLimit?: number;
   };
   allowGuestRegistration?: boolean;
+  registrationClosed?: boolean;
   disabledBaseFields?: string[];
   showProfileButton?: boolean;
   showReturnButton?: boolean;
@@ -259,6 +260,8 @@ const EventSchema = new Schema({
     totalWordLimit: { type: Number },
   },
   allowGuestRegistration: { type: Boolean, default: true },
+  // When true, no new registration can be made (UI hidden + rejected server-side).
+  registrationClosed: { type: Boolean, default: false },
   disabledBaseFields: { type: [String], default: [] },
   city: { type: String },
   village: { type: String },

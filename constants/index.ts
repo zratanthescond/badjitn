@@ -45,6 +45,7 @@ export const eventDefaultValues = {
   workSubmissionDeadline: null as Date | null,
   posterSubmissionDeadline: null as Date | null,
   allowGuestRegistration: true,
+  registrationClosed: false,
   disabledBaseFields: [] as string[],
   city: "",
   village: "",

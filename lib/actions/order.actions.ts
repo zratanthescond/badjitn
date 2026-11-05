@@ -34,8 +34,11 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
   try {
     await connectToDatabase();
     const event = await Event.findById(order.eventId).select(
-      "country location showWorkSubmissionPopup"
+      "country location showWorkSubmissionPopup registrationClosed"
     );
+    if (event?.registrationClosed) {
+      throw new Error("Registrations are closed for this event.");
+    }
     const price = order.isFree ? 0 : Number(order.price) * 100;
     const currency = getCurrencyCodeByCountry(event?.country, event?.location).toLowerCase();
     const baseUrl =
@@ -85,8 +88,11 @@ export const createOrder = async (order: CreateOrderParams) => {
       : null;
 
     const event = await Event.findById(order.eventId).select(
-      "title country location discount"
+      "title country location discount registrationClosed"
     );
+    if (event?.registrationClosed) {
+      throw new Error("Registrations are closed for this event.");
+    }
 
     // Last-moment duplicate guard: the client already checks this before submitting,
     // but that check-then-act is racy under double submission (double click, retry,

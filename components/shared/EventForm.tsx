@@ -111,6 +111,7 @@ const EventForm = ({
         categoryId: (event.category as any)?._id || (event as any).categoryId || "",
         country: event.country || "TUN",
         allowGuestRegistration: event.allowGuestRegistration ?? true,
+        registrationClosed: event.registrationClosed ?? false,
         startDateTime: new Date(event.startDateTime),
         endDateTime: new Date(event.endDateTime),
         workSubmissionDeadline: event.workSubmissionDeadline
@@ -240,6 +241,12 @@ const EventForm = ({
   const guestRegistrationDescription = t.has("guestRegistration.description")
     ? t("guestRegistration.description")
     : "If enabled, attendees can complete their registration without signing in to the app.";
+  const registrationClosedTitle = t.has("registrationClosed.title")
+    ? t("registrationClosed.title")
+    : "Close registrations";
+  const registrationClosedDescription = t.has("registrationClosed.description")
+    ? t("registrationClosed.description")
+    : "If enabled, the registration form is hidden and no new registration can be made for this event.";
   const editorPlaceholder = t("eventDescriptionPlaceholder");
   const locale = useLocale();
   const selectedCountry = form.watch("country") || "TUN";
@@ -1379,6 +1386,38 @@ const EventForm = ({
                             </FormLabel>
                             <FormDescription>
                               {guestRegistrationDescription}
+                            </FormDescription>
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="registrationClosed"
+                    render={({ field }) => (
+                      <FormItem className="mt-4">
+                        <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/40 p-4">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === true}
+                              onCheckedChange={(checked) =>
+                                field.onChange(checked === true)
+                              }
+                              id="registrationClosed"
+                              className="mt-1"
+                            />
+                          </FormControl>
+                          <div className="space-y-1">
+                            <FormLabel
+                              htmlFor="registrationClosed"
+                              className="cursor-pointer"
+                            >
+                              {registrationClosedTitle}
+                            </FormLabel>
+                            <FormDescription>
+                              {registrationClosedDescription}
                             </FormDescription>
                           </div>
                         </div>

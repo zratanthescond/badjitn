@@ -40,7 +40,8 @@ const CheckoutButton = ({
   const { userId } = useAuth();
   const t = useTranslations("eventPrice");
 
-  const hasEventFinished = new Date(event.endDateTime) < new Date();
+  const hasEventFinished =
+    new Date(event.endDateTime) < new Date() || event.registrationClosed === true;
 
   const baseFee = event.price ? parseFloat(event.price) : 0;
   const planSum =

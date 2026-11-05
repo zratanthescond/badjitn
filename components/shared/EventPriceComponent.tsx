@@ -793,7 +793,8 @@ export default function EventPriceComponent({ event }: { event: IEvent }) {
     village: registrationValues.village || "",
   } satisfies ClientInfo;
 
-  const isAvailable = () => new Date(event.endDateTime) > new Date();
+  const isAvailable = () =>
+    new Date(event.endDateTime) > new Date() && event.registrationClosed !== true;
 
   const builtRegistrationInfo = useMemo<RegistrationInfoItem[]>(() => {
     const items = visibleRegistrationFields.map((field) => ({

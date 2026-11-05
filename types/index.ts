@@ -104,6 +104,7 @@ export type CreateEventParams = {
     workSubmissionDeadline?: Date | null;
     posterSubmissionDeadline?: Date | null;
     allowGuestRegistration?: boolean;
+    registrationClosed?: boolean;
     disabledBaseFields?: string[];
     city?: string;
     village?: string;
@@ -156,6 +157,7 @@ export type UpdateEventParams = {
     workSubmissionDeadline?: Date | null;
     posterSubmissionDeadline?: Date | null;
     allowGuestRegistration?: boolean;
+    registrationClosed?: boolean;
     disabledBaseFields?: string[];
     city?: string;
     village?: string;
@@ -248,6 +250,7 @@ export type Event = {
   workSubmissionDeadline?: Date | string | null;
   posterSubmissionDeadline?: Date | string | null;
   allowGuestRegistration?: boolean;
+  registrationClosed?: boolean;
   disabledBaseFields?: string[];
   city?: string;
   village?: string;
