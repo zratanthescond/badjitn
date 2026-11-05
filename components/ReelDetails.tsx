@@ -35,6 +35,7 @@ import {
   Globe,
   ArrowUp,
   LayoutList,
+  AlertCircle,
 } from "lucide-react";
 import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
@@ -466,6 +467,18 @@ export default function ReelDetails({ event }: ReelDetailsProps) {
       case "location":
         return <EventLocationComponent event={event as any} />;
       case "registration":
+        if ((event as any).registrationClosed === true) {
+          return (
+            <div className="flex h-full items-center justify-center p-6">
+              <div className="flex items-center gap-3 rounded-2xl border border-red-900/30 bg-black/30 p-4">
+                <AlertCircle size={18} className="text-red-400" />
+                <p className="font-medium text-red-300">
+                  Les inscriptions sont fermées pour cet événement.
+                </p>
+              </div>
+            </div>
+          );
+        }
         return <EventPriceComponent event={event as any} />;
       case "programme":
         return <ProgrammeComponent />;
