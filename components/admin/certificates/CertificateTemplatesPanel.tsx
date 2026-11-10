@@ -112,6 +112,7 @@ export function CertificateTemplatesPanel({
                                                 eventStart: event.start,
                                                 eventEnd: event.end,
                                                 typeName: template.name,
+                                                workTitle: t("designer.sampleWorkTitle"),
                                                 issueDate: new Date(),
                                                 certificateId: template._id,
                                                 verifyUrl: "https://badgi.net",

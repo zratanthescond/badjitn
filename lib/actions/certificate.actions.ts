@@ -7,6 +7,7 @@ import CertificateTemplate from "@/lib/database/models/certificate-template.mode
 import Event from "@/lib/database/models/event.model";
 import Order from "@/lib/database/models/order.model";
 import User from "@/lib/database/models/user.model";
+import EventWork from "@/lib/database/models/work.model";
 import { verifyOrganizerOrAdmin } from "./auth.actions";
 import { useUser } from "./user.actions";
 import { getAttendeesByEvent } from "./badge.actions";
@@ -141,17 +142,78 @@ async function loadOrderPlans(filter: Record<string, unknown>) {
   return plansByOrder;
 }
 
+// E-posters of an event, each attached to the registration it belongs to.
+// Works materialized at checkout carry their orderId; works submitted from the
+// portal only carry the author's userId, so those go to that user's first
+// registration. Rejected and untitled works never get a certificate.
+const WORK_RANK: Record<string, number> = { approved: 0, submitted: 1, draft: 2 };
+
+type EventWorkRef = { workId: string; orderId: string; title: string; status: string };
+
+async function loadEventWorks(eventId: string) {
+  const eventObjectId = new ObjectId(eventId);
+  const [orders, works] = await Promise.all([
+    Order.find({ event: eventObjectId }, { buyer: 1 }).sort({ orderNumber: 1, createdAt: 1 }).lean(),
+    EventWork.find(
+      { eventId: eventObjectId, summaryStatus: { $ne: "rejected" }, title: { $nin: [null, ""] } },
+      { title: 1, orderId: 1, userId: 1, summaryStatus: 1 }
+    )
+      .sort({ resumeIndex: 1, submissionNumber: 1, createdAt: 1 })
+      .lean(),
+  ]);
+
+  const orderIds = new Set((orders as any[]).map((o) => String(o._id)));
+  const firstOrderOfBuyer = new Map<string, string>();
+  for (const order of orders as any[]) {
+    if (order.buyer && !firstOrderOfBuyer.has(String(order.buyer))) firstOrderOfBuyer.set(String(order.buyer), String(order._id));
+  }
+
+  const result: EventWorkRef[] = [];
+  for (const work of works as any[]) {
+    const orderId =
+      work.orderId && orderIds.has(String(work.orderId))
+        ? String(work.orderId)
+        : work.userId
+          ? firstOrderOfBuyer.get(String(work.userId))
+          : undefined;
+    if (!orderId) continue;
+    result.push({ workId: String(work._id), orderId, title: String(work.title).trim(), status: work.summaryStatus });
+  }
+  return result;
+}
+
+// Best e-poster title of each registration, for certificates that are not tied
+// to one specific work (one certificate per person).
+const bestTitleByOrder = (works: EventWorkRef[]) => {
+  const best = new Map<string, EventWorkRef>();
+  for (const work of works) {
+    const current = best.get(work.orderId);
+    if (!current || (WORK_RANK[work.status] ?? 9) < (WORK_RANK[current.status] ?? 9)) best.set(work.orderId, work);
+  }
+  return new Map(Array.from(best, ([orderId, work]) => [orderId, work.title]));
+};
+
 export async function getCertificateCandidates(eventId: string) {
   await verifyOrganizerOrAdmin(eventId);
   const attendees = (await getAttendeesByEvent(eventId)) || [];
-  const plansByOrder = await loadOrderPlans({ event: new ObjectId(eventId) });
-  return attendees.map((a: any) => ({
-    orderId: a.orderId || a._id,
-    name: a.name,
-    email: a.email || "",
-    category: a.category,
-    plans: plansByOrder.get(String(a.orderId || a._id)) || [],
-  }));
+  const [plansByOrder, works] = await Promise.all([loadOrderPlans({ event: new ObjectId(eventId) }), loadEventWorks(eventId)]);
+  const titles = bestTitleByOrder(works);
+  const worksByOrder = new Map<string, { workId: string; title: string; status: string }[]>();
+  for (const { orderId, ...work } of works) {
+    worksByOrder.set(orderId, [...(worksByOrder.get(orderId) || []), work]);
+  }
+  return attendees.map((a: any) => {
+    const orderId = String(a.orderId || a._id);
+    return {
+      orderId,
+      name: a.name,
+      email: a.email || "",
+      category: a.category,
+      plans: plansByOrder.get(orderId) || [],
+      workTitle: titles.get(orderId) || "",
+      works: worksByOrder.get(orderId) || [],
+    };
+  });
 }
 
 export async function getIssuedCertificates(eventId: string) {
@@ -161,16 +223,27 @@ export async function getIssuedCertificates(eventId: string) {
     .sort({ createdAt: -1 })
     .lean();
   const orderIds = certificates.map((c: any) => c.orderId).filter(Boolean);
-  const plansByOrder = orderIds.length
-    ? await loadOrderPlans({ _id: { $in: orderIds }, event: new ObjectId(eventId) })
-    : new Map<string, CertificatePlanChoice[]>();
+  const needsWorks = certificates.some((c: any) => c.workTitle == null && (c.workId || c.orderId));
+  const [plansByOrder, works] = await Promise.all([
+    orderIds.length
+      ? loadOrderPlans({ _id: { $in: orderIds }, event: new ObjectId(eventId) })
+      : new Map<string, CertificatePlanChoice[]>(),
+    needsWorks ? loadEventWorks(eventId) : ([] as EventWorkRef[]),
+  ]);
+  const titleByWork = new Map(works.map((w) => [w.workId, w.title]));
+  const titleByOrder = bestTitleByOrder(works);
   return toPlain(certificates).map((c: any) => ({
     _id: c._id,
     templateId: c.templateId,
     orderId: c.orderId || null,
+    workId: c.workId || null,
     plans: (c.orderId && plansByOrder.get(String(c.orderId))) || [],
     recipientName: c.recipientName || "",
     recipientEmail: c.recipientEmail || "",
+    // Certificates issued before the title was stored fall back to the live work title.
+    workTitle:
+      c.workTitle ??
+      ((c.workId ? titleByWork.get(String(c.workId)) : c.orderId && titleByOrder.get(String(c.orderId))) || ""),
     emailStatus: c.emailStatus || "none",
     emailSentAt: c.emailSentAt || null,
     emailError: c.emailError || "",
@@ -179,7 +252,7 @@ export async function getIssuedCertificates(eventId: string) {
   }));
 }
 
-export type IssueRecipient = { orderId?: string; name: string; email?: string };
+export type IssueRecipient = { orderId?: string; workId?: string; name: string; email?: string; workTitle?: string };
 
 export async function issueCertificates({
   eventId,
@@ -199,12 +272,20 @@ export async function issueCertificates({
 
     const existing = await Certificate.find(
       { eventId: eventObjectId, templateId: template._id, source: "issued" },
-      { orderId: 1, recipientName: 1, recipientEmail: 1 }
+      { orderId: 1, workId: 1, recipientName: 1, recipientEmail: 1 }
     ).lean();
-    const existingOrders = new Set(existing.filter((c: any) => c.orderId).map((c: any) => String(c.orderId)));
+    // One certificate per e-poster: a work-bound certificate is unique per work,
+    // the others stay unique per registration / manual recipient.
+    const existingWorks = new Set(existing.filter((c: any) => c.workId).map((c: any) => String(c.workId)));
+    const existingOrders = new Set(existing.filter((c: any) => c.orderId && !c.workId).map((c: any) => String(c.orderId)));
     const existingManual = new Set(
-      existing.map((c: any) => `${(c.recipientName || "").trim().toLowerCase()}|${c.recipientEmail || ""}`)
+      existing.filter((c: any) => !c.workId).map((c: any) => `${(c.recipientName || "").trim().toLowerCase()}|${c.recipientEmail || ""}`)
     );
+
+    // Titles and registrations come from the works themselves, not from the client.
+    const requestedWorkIds = recipients.map((r) => r.workId).filter((id): id is string => !!id && ObjectId.isValid(id));
+    const eventWorks = requestedWorkIds.length ? await loadEventWorks(eventId) : [];
+    const workById = new Map(eventWorks.map((w) => [w.workId, w]));
 
     const emails = Array.from(new Set(recipients.map((r) => normalizeEmail(r.email)).filter(Boolean)));
     const users = emails.length ? await User.find({ email: { $in: emails } }, { _id: 1, email: 1 }).lean() : [];
@@ -220,22 +301,41 @@ export async function issueCertificates({
         continue;
       }
       const email = normalizeEmail(recipient.email);
-      const manualKey = `${name.toLowerCase()}|${email}`;
-      if ((recipient.orderId && existingOrders.has(recipient.orderId)) || existingManual.has(manualKey)) {
-        skipped++;
-        continue;
+      let orderId = recipient.orderId;
+      let workTitle = recipient.workTitle?.trim() || undefined;
+      let workId: string | undefined;
+
+      if (recipient.workId) {
+        const work = workById.get(recipient.workId);
+        if (!work || existingWorks.has(work.workId)) {
+          skipped++;
+          continue;
+        }
+        existingWorks.add(work.workId);
+        workId = work.workId;
+        orderId = work.orderId;
+        workTitle = work.title;
+      } else {
+        const manualKey = `${name.toLowerCase()}|${email}`;
+        if ((orderId && existingOrders.has(orderId)) || existingManual.has(manualKey)) {
+          skipped++;
+          continue;
+        }
+        if (orderId) existingOrders.add(orderId);
+        existingManual.add(manualKey);
       }
-      if (recipient.orderId) existingOrders.add(recipient.orderId);
-      existingManual.add(manualKey);
+
       docs.push({
         eventId: eventObjectId,
         templateId: template._id,
         source: "issued",
         status: "approved",
         approvedAt: now,
-        orderId: recipient.orderId ? new ObjectId(recipient.orderId) : undefined,
+        orderId: orderId ? new ObjectId(orderId) : undefined,
+        workId: workId ? new ObjectId(workId) : undefined,
         recipientName: name,
         recipientEmail: email || undefined,
+        workTitle,
         userId: email ? userByEmail.get(email) : undefined,
         emailStatus: "none",
       });
@@ -258,7 +358,10 @@ async function loadIssuedForEvent(ids: string[]) {
   return certificates;
 }
 
-export async function updateIssuedCertificate(id: string, { recipientName, recipientEmail }: { recipientName: string; recipientEmail?: string }) {
+export async function updateIssuedCertificate(
+  id: string,
+  { recipientName, recipientEmail, workTitle }: { recipientName: string; recipientEmail?: string; workTitle?: string }
+) {
   try {
     const [certificate] = await loadIssuedForEvent([id]);
     if (!certificate) return { error: "NOT_FOUND" };
@@ -267,6 +370,8 @@ export async function updateIssuedCertificate(id: string, { recipientName, recip
     const email = normalizeEmail(recipientEmail);
     certificate.recipientName = name;
     certificate.recipientEmail = email || undefined;
+    // An explicit empty string is kept so it does not fall back to the work title.
+    if (workTitle !== undefined) certificate.workTitle = workTitle.trim();
     if (email) {
       const user = await User.findOne({ email }, { _id: 1 });
       certificate.userId = user?._id;
@@ -327,10 +432,20 @@ async function resolveCertificateView(certificate: any) {
     if (user) recipientName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
   }
 
+  let workTitle: string = certificate.workTitle ?? "";
+  if (certificate.workTitle == null && (certificate.workId || certificate.orderId)) {
+    const works = await loadEventWorks(String(certificate.eventId));
+    workTitle =
+      (certificate.workId
+        ? works.find((w) => w.workId === String(certificate.workId))?.title
+        : bestTitleByOrder(works).get(String(certificate.orderId))) || "";
+  }
+
   return toPlain({
     certificate: {
       _id: certificate._id,
       recipientName,
+      workTitle,
       issuedAt: certificate.approvedAt || certificate.createdAt,
       source: certificate.source || "request",
     },

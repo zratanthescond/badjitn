@@ -24,7 +24,7 @@ const FALLBACK_TEMPLATE: CertificateTemplateData & { name: string } = {
 }
 
 export type CertificateViewData = {
-    certificate: { _id: string; recipientName: string; issuedAt: string }
+    certificate: { _id: string; recipientName: string; workTitle?: string; issuedAt: string }
     template: (CertificateTemplateData & { name: string }) | null
     event: { title: string; startDateTime?: string; endDateTime?: string; locationName?: string } | null
 }
@@ -54,6 +54,7 @@ export function CertificateViewer({ view }: { view: CertificateViewData }) {
         eventStart: view.event?.startDateTime,
         eventEnd: view.event?.endDateTime,
         typeName: template.name,
+        workTitle: view.certificate.workTitle,
         issueDate: view.certificate.issuedAt,
         certificateId: view.certificate._id,
         verifyUrl: certificateVerifyUrl(view.certificate._id),

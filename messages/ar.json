@@ -4893,7 +4893,7 @@
       "sampleNamePlaceholder": "اسم تجريبي",
       "properties": "الخصائص",
       "content": "المحتوى",
-      "variablesHint": "المتغيرات: '{name}'، '{name_no_title}'، '{event_title}'، '{event_date}'، '{certificate_type}'، '{issue_date}'",
+      "variablesHint": "المتغيرات: '{name}'، '{name_no_title}'، '{event_title}'، '{event_date}'، '{certificate_type}'، '{issue_date}'، '{work_title}'",
       "font": "الخط",
       "size": "الحجم",
       "color": "اللون",
@@ -4910,7 +4910,9 @@
       "imageError": "تعذّرت قراءة هذه الصورة.",
       "nameRequired": "أدخل اسماً لنوع الشهادة.",
       "saveFailed": "فشل الحفظ.",
-      "saved": "تم حفظ نوع الشهادة."
+      "saved": "تم حفظ نوع الشهادة.",
+      "fieldWorkTitle": "عنوان الملصق الإلكتروني",
+      "sampleWorkTitle": "عنوان الملصق الإلكتروني المقدَّم"
     },
     "types": {
       "title": "أنواع الشهادات",
@@ -4944,7 +4946,10 @@
       "add": "إضافة",
       "confirm": "{count, plural, =0 {إسناد} one {إسناد لشخص واحد} other {إسناد إلى # أشخاص}}",
       "done": "{created, plural, =0 {لم تُنشأ أي شهادة} one {تم إنشاء شهادة واحدة} other {تم إنشاء # شهادات}}{skipped, plural, =0 {.} other {، وتم تجاهل # موجودة.}}",
-      "failed": "فشل الإسناد."
+      "failed": "فشل الإسناد.",
+      "manualWorkTitle": "عنوان الملصق الإلكتروني (اختياري)",
+      "descriptionPerWork": "يعرض هذا النوع عنوان الملصق الإلكتروني: تُنشأ شهادة لكل ملصق (تُستبعد الملصقات المرفوضة).",
+      "noWorks": "لا توجد ملصقات إلكترونية مقدَّمة لهذا الحدث."
     },
     "planFilter": {
       "label": "تصفية حسب الخطة",
@@ -4981,7 +4986,9 @@
       "missingEmail": "{count, plural, one {تم تجاهل شهادة واحدة بدون بريد.} other {تم تجاهل # شهادات بدون بريد.}}",
       "confirmDelete": "{count, plural, one {حذف هذه الشهادة؟ سيتوقف رابطها عن العمل.} other {حذف هذه الشهادات (#)؟ ستتوقف روابطها عن العمل.}}",
       "deleted": "{count, plural, one {تم حذف شهادة واحدة.} other {تم حذف # شهادات.}}",
-      "actionFailed": "فشل الإجراء."
+      "actionFailed": "فشل الإجراء.",
+      "workTitle": "عنوان الملصق الإلكتروني",
+      "workTitlePlaceholder": "العنوان المعروض عبر '{work_title}'"
     },
     "printer": {
       "documentTitle": "الشهادات",

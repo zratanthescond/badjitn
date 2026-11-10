@@ -22,6 +22,7 @@ import {
     Italic,
     Loader2,
     Monitor,
+    Presentation,
     QrCode,
     RotateCcw,
     Save,
@@ -100,6 +101,7 @@ export function CertificateDesigner({ eventId, template, eventDetails, onSaved, 
         eventStart: eventDetails.start,
         eventEnd: eventDetails.end,
         typeName: name || t("designer.typeNamePlaceholder"),
+        workTitle: t("designer.sampleWorkTitle"),
         issueDate: new Date(),
         certificateId: "000000000000000000000000",
         verifyUrl: "https://badgi.net/certificates/…",
@@ -283,6 +285,15 @@ export function CertificateDesigner({ eventId, template, eventDetails, onSaved, 
                                 <Button variant="secondary" size="sm" className="h-auto py-2 flex-col gap-1" onClick={() => addText("{issue_date}", { fontSize: 12 })}>
                                     <Calendar className="w-4 h-4" />
                                     <span className="text-[10px]">{t("designer.fieldIssueDate")}</span>
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="col-span-2 h-auto py-2 flex-col gap-1"
+                                    onClick={() => addText("{work_title}", { fontSize: 18, fontStyle: "italic", width: 600, height: 60, x: Math.round(CANVAS_W / 2 - 300) })}
+                                >
+                                    <Presentation className="w-4 h-4" />
+                                    <span className="text-[10px]">{t("designer.fieldWorkTitle")}</span>
                                 </Button>
                             </div>
                         </div>

@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { toast } from "@/hooks/use-toast"
@@ -28,9 +29,11 @@ type Issued = {
     _id: string
     templateId: string
     orderId: string | null
+    workId: string | null
     plans: PlanChoice[]
     recipientName: string
     recipientEmail: string
+    workTitle: string
     emailStatus: "none" | "queued" | "sent" | "failed"
     emailSentAt: string | null
     emailError: string
@@ -65,6 +68,7 @@ export function IssuedCertificatesPanel({
     const [editing, setEditing] = useState<Issued | null>(null)
     const [editName, setEditName] = useState("")
     const [editEmail, setEditEmail] = useState("")
+    const [editWorkTitle, setEditWorkTitle] = useState("")
     const [printing, setPrinting] = useState<PrintableCertificate[] | null>(null)
     const [busy, setBusy] = useState(false)
 
@@ -85,7 +89,11 @@ export function IssuedCertificatesPanel({
                 (!q || c.recipientName.toLowerCase().includes(q) || c.recipientEmail.includes(q))
         )
     }, [forTemplate, search, planFilter])
-    const issuedOrderIds = useMemo(() => new Set(forTemplate.map((c) => c.orderId).filter(Boolean) as string[]), [forTemplate])
+    const issuedOrderIds = useMemo(
+        () => new Set(forTemplate.filter((c) => !c.workId).map((c) => c.orderId).filter(Boolean) as string[]),
+        [forTemplate]
+    )
+    const issuedWorkIds = useMemo(() => new Set(forTemplate.map((c) => c.workId).filter(Boolean) as string[]), [forTemplate])
     const selectedRows = filtered.filter((c) => selected.has(c._id))
     const allSelected = filtered.length > 0 && filtered.every((c) => selected.has(c._id))
 
@@ -116,7 +124,7 @@ export function IssuedCertificatesPanel({
 
     const openPrint = (rows: Issued[]) => {
         if (!activeTemplate) return
-        setPrinting(rows.map((c) => ({ _id: c._id, recipientName: c.recipientName, issuedAt: c.createdAt, template: activeTemplate })))
+        setPrinting(rows.map((c) => ({ _id: c._id, recipientName: c.recipientName, workTitle: c.workTitle, issuedAt: c.createdAt, template: activeTemplate })))
     }
 
     const sendEmails = async (rows: Issued[]) => {
@@ -152,7 +160,7 @@ export function IssuedCertificatesPanel({
     const saveEdit = async () => {
         if (!editing) return
         setBusy(true)
-        const result = await updateIssuedCertificate(editing._id, { recipientName: editName, recipientEmail: editEmail })
+        const result = await updateIssuedCertificate(editing._id, { recipientName: editName, recipientEmail: editEmail, workTitle: editWorkTitle })
         setBusy(false)
         if (!result || "error" in result) {
             toast({ title: t("issued.actionFailed"), variant: "destructive" })
@@ -243,6 +251,7 @@ export function IssuedCertificatesPanel({
                                         <td className="p-3 font-medium">
                                             {c.recipientName}
                                             {c.hasAccount && <Badge variant="outline" className="ml-2 text-[10px]">{t("issued.hasAccount")}</Badge>}
+                                            {c.workTitle && <p className="text-xs font-normal text-muted-foreground line-clamp-1" title={c.workTitle}>{c.workTitle}</p>}
                                         </td>
                                         <td className="p-3 text-muted-foreground">{c.recipientEmail || "—"}</td>
                                         <td className="p-3">
@@ -268,7 +277,7 @@ export function IssuedCertificatesPanel({
                                                     variant="ghost"
                                                     className="h-8 w-8"
                                                     title={t("issued.edit")}
-                                                    onClick={() => { setEditing(c); setEditName(c.recipientName); setEditEmail(c.recipientEmail) }}
+                                                    onClick={() => { setEditing(c); setEditName(c.recipientName); setEditEmail(c.recipientEmail); setEditWorkTitle(c.workTitle) }}
                                                 >
                                                     <Pencil className="w-4 h-4" />
                                                 </Button>
@@ -292,6 +301,7 @@ export function IssuedCertificatesPanel({
                     eventId={eventId}
                     template={activeTemplate}
                     alreadyIssuedOrderIds={issuedOrderIds}
+                    alreadyIssuedWorkIds={issuedWorkIds}
                     onIssued={refresh}
                 />
             )}
@@ -309,6 +319,10 @@ export function IssuedCertificatesPanel({
                         <div className="space-y-1">
                             <Label>{t("issued.colEmail")}</Label>
                             <Input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} />
+                        </div>
+                        <div className="space-y-1">
+                            <Label>{t("issued.workTitle")}</Label>
+                            <Textarea rows={3} value={editWorkTitle} onChange={(e) => setEditWorkTitle(e.target.value)} placeholder={t("issued.workTitlePlaceholder")} />
                         </div>
                     </div>
                     <DialogFooter>

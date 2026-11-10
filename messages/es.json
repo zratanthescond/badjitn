@@ -4893,7 +4893,7 @@
       "sampleNamePlaceholder": "Nombre de ejemplo",
       "properties": "Propiedades",
       "content": "Contenido",
-      "variablesHint": "Variables: '{name}', '{name_no_title}', '{event_title}', '{event_date}', '{certificate_type}', '{issue_date}'",
+      "variablesHint": "Variables: '{name}', '{name_no_title}', '{event_title}', '{event_date}', '{certificate_type}', '{issue_date}', '{work_title}'",
       "font": "Fuente",
       "size": "Tamaño",
       "color": "Color",
@@ -4910,7 +4910,9 @@
       "imageError": "No se pudo leer esta imagen.",
       "nameRequired": "Asigne un nombre a este tipo de certificado.",
       "saveFailed": "No se pudo guardar.",
-      "saved": "Tipo de certificado guardado."
+      "saved": "Tipo de certificado guardado.",
+      "fieldWorkTitle": "Título e-póster",
+      "sampleWorkTitle": "Título del e-póster presentado"
     },
     "types": {
       "title": "Tipos de certificados",
@@ -4944,7 +4946,10 @@
       "add": "Añadir",
       "confirm": "{count, plural, =0 {Asignar} one {Asignar a # persona} other {Asignar a # personas}}",
       "done": "{created, plural, =0 {Ningún certificado creado} one {# certificado creado} other {# certificados creados}}{skipped, plural, =0 {.} other {, # existentes omitidos.}}",
-      "failed": "La asignación falló."
+      "failed": "La asignación falló.",
+      "manualWorkTitle": "Título e-póster (opcional)",
+      "descriptionPerWork": "Este tipo muestra el título del e-póster: se crea un certificado por e-póster (se excluyen los e-pósters rechazados).",
+      "noWorks": "No hay e-pósters enviados para este evento."
     },
     "planFilter": {
       "label": "Filtrar por plan",
@@ -4981,7 +4986,9 @@
       "missingEmail": "{count, plural, one {Se omitió # certificado sin email.} other {Se omitieron # certificados sin email.}}",
       "confirmDelete": "{count, plural, one {¿Eliminar este certificado? Su enlace dejará de funcionar.} other {¿Eliminar estos # certificados? Sus enlaces dejarán de funcionar.}}",
       "deleted": "{count, plural, one {# certificado eliminado.} other {# certificados eliminados.}}",
-      "actionFailed": "La acción falló."
+      "actionFailed": "La acción falló.",
+      "workTitle": "Título e-póster",
+      "workTitlePlaceholder": "Título mostrado con '{work_title}'"
     },
     "printer": {
       "documentTitle": "Certificados",

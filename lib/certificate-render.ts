@@ -10,6 +10,7 @@ export type CertificateRenderData = {
   eventStart?: string | Date | null;
   eventEnd?: string | Date | null;
   typeName: string;
+  workTitle?: string | null;
   issueDate?: string | Date | null;
   certificateId: string;
   verifyUrl: string;
@@ -43,6 +44,7 @@ export const fillCertificatePlaceholders = (text: string, data: CertificateRende
     .replace(/{event_title}/g, data.eventTitle || "")
     .replace(/{event_date}/g, formatEventDates(data.eventStart, data.eventEnd, locale))
     .replace(/{certificate_type}/g, data.typeName || "")
+    .replace(/{work_title}/g, data.workTitle || "")
     .replace(/{issue_date}/g, data.issueDate ? new Date(data.issueDate).toLocaleDateString(locale) : "")
     .replace(/{verify_url}/g, data.verifyUrl || "")
     .replace(/{qr_code}/g, data.certificateId || "");
