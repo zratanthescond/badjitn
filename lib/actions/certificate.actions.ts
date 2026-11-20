@@ -144,19 +144,21 @@ async function loadOrderPlans(filter: Record<string, unknown>) {
 
 // E-posters of an event, each attached to the registration it belongs to.
 // Works materialized at checkout carry their orderId; works submitted from the
-// portal only carry the author's userId, so those go to that user's first
-// registration. Rejected and untitled works never get a certificate.
+// portal only carry the author's userId and are matched in resolveOrder below.
+// Rejected and untitled works never get a certificate.
 const WORK_RANK: Record<string, number> = { approved: 0, submitted: 1, draft: 2 };
+
+const REGISTRATION_EMAIL_FIELDS = ["email", "e-mail", "courriel"];
 
 type EventWorkRef = { workId: string; orderId: string; title: string; status: string };
 
 async function loadEventWorks(eventId: string) {
   const eventObjectId = new ObjectId(eventId);
   const [orders, works] = await Promise.all([
-    Order.find({ event: eventObjectId }, { buyer: 1 }).sort({ orderNumber: 1, createdAt: 1 }).lean(),
+    Order.find({ event: eventObjectId }, { buyer: 1, requiredUserInfo: 1 }).sort({ orderNumber: 1, createdAt: 1 }).lean(),
     EventWork.find(
       { eventId: eventObjectId, summaryStatus: { $ne: "rejected" }, title: { $nin: [null, ""] } },
-      { title: 1, orderId: 1, userId: 1, summaryStatus: 1 }
+      { title: 1, orderId: 1, userId: 1, summaryStatus: 1, "clientInfo.correspondenceEmail": 1 }
     )
       .sort({ resumeIndex: 1, submissionNumber: 1, createdAt: 1 })
       .lean(),
@@ -164,18 +166,54 @@ async function loadEventWorks(eventId: string) {
 
   const orderIds = new Set((orders as any[]).map((o) => String(o._id)));
   const firstOrderOfBuyer = new Map<string, string>();
+  const firstOrderOfEmail = new Map<string, string>();
   for (const order of orders as any[]) {
-    if (order.buyer && !firstOrderOfBuyer.has(String(order.buyer))) firstOrderOfBuyer.set(String(order.buyer), String(order._id));
+    const id = String(order._id);
+    if (order.buyer && !firstOrderOfBuyer.has(String(order.buyer))) firstOrderOfBuyer.set(String(order.buyer), id);
+    // Same email fields the attendee list reads (lib/actions/badge.actions.ts).
+    const emailField = (order.requiredUserInfo || []).find((f: any) =>
+      REGISTRATION_EMAIL_FIELDS.includes(String(f?.field || "").toLowerCase()) ||
+      REGISTRATION_EMAIL_FIELDS.includes(String(f?.label || "").toLowerCase())
+    );
+    const email = normalizeEmail(emailField?.value);
+    if (email && !firstOrderOfEmail.has(email)) firstOrderOfEmail.set(email, id);
   }
+
+  // Registration already used by another of the author's works.
+  const linkedOrderOfUser = new Map<string, string>();
+  for (const work of works as any[]) {
+    if (work.userId && work.orderId && orderIds.has(String(work.orderId)) && !linkedOrderOfUser.has(String(work.userId))) {
+      linkedOrderOfUser.set(String(work.userId), String(work.orderId));
+    }
+  }
+
+  const unlinkedUserIds = Array.from(
+    new Set((works as any[]).filter((w) => w.userId && !(w.orderId && orderIds.has(String(w.orderId)))).map((w) => String(w.userId)))
+  );
+  const users = unlinkedUserIds.length
+    ? await User.find({ _id: { $in: unlinkedUserIds.map((id) => new ObjectId(id)) } }, { email: 1 }).lean()
+    : [];
+  const emailOfUser = new Map((users as any[]).map((u) => [String(u._id), normalizeEmail(u.email)]));
+
+  // Works submitted from the participant portal carry no orderId, and registrations
+  // made without an account carry no buyer: fall back to the author's other works,
+  // then to the account email, then to the correspondence email of the work.
+  const resolveOrder = (work: any): string | undefined => {
+    if (work.orderId && orderIds.has(String(work.orderId))) return String(work.orderId);
+    const userId = work.userId ? String(work.userId) : "";
+    const accountEmail = userId ? emailOfUser.get(userId) : "";
+    const correspondenceEmail = normalizeEmail(work.clientInfo?.correspondenceEmail);
+    return (
+      (userId && (firstOrderOfBuyer.get(userId) || linkedOrderOfUser.get(userId))) ||
+      (accountEmail && firstOrderOfEmail.get(accountEmail)) ||
+      (correspondenceEmail && firstOrderOfEmail.get(correspondenceEmail)) ||
+      undefined
+    );
+  };
 
   const result: EventWorkRef[] = [];
   for (const work of works as any[]) {
-    const orderId =
-      work.orderId && orderIds.has(String(work.orderId))
-        ? String(work.orderId)
-        : work.userId
-          ? firstOrderOfBuyer.get(String(work.userId))
-          : undefined;
+    const orderId = resolveOrder(work);
     if (!orderId) continue;
     result.push({ workId: String(work._id), orderId, title: String(work.title).trim(), status: work.summaryStatus });
   }
