@@ -1559,6 +1559,7 @@
       "registrationTrend": "Registration trend (3h)",
       "planStats": "Plan statistics",
       "participantsList": "Participants list",
+      "registrationInfo": "Registrant information",
       "participantsByPlan": "Participants by plan"
     },
     "charts": {
@@ -1596,6 +1597,7 @@
       "revenue": "Revenue",
       "weight": "Weight",
       "participations": "Participations",
+      "number": "No.",
       "fullName": "Full name",
       "email": "Email",
       "phone": "Phone",

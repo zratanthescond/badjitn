@@ -1559,6 +1559,7 @@
       "registrationTrend": "تطور التسجيلات (3 ساعات)",
       "planStats": "إحصائيات الخطط",
       "participantsList": "قائمة المشاركين",
+      "registrationInfo": "معلومات المسجلين",
       "participantsByPlan": "المشاركون حسب الخطة"
     },
     "charts": {
@@ -1596,6 +1597,7 @@
       "revenue": "الإيراد",
       "weight": "الوزن",
       "participations": "المشاركات",
+      "number": "رقم",
       "fullName": "الاسم الكامل",
       "email": "البريد الإلكتروني",
       "phone": "الهاتف",

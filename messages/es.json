@@ -1559,6 +1559,7 @@
       "registrationTrend": "Evolución de las inscripciones (3 h)",
       "planStats": "Estadísticas de los planes",
       "participantsList": "Lista de participantes",
+      "registrationInfo": "Información de los inscritos",
       "participantsByPlan": "Participantes por plan"
     },
     "charts": {
@@ -1596,6 +1597,7 @@
       "revenue": "Ingresos",
       "weight": "Peso",
       "participations": "Participaciones",
+      "number": "N.º",
       "fullName": "Nombre completo",
       "email": "Correo electrónico",
       "phone": "Teléfono",

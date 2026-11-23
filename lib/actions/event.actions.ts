@@ -684,6 +684,25 @@ export async function getEventReportData(eventId: string) {
       scanActivityByHour[hour] = (scanActivityByHour[hour] || 0) + 1;
     });
 
+    // Answers to the event's own registration fields (specialty, accommodation,
+    // transfer…), one report column per configured field. Phone-like fields are
+    // left out: they already feed the phone column.
+    const PHONE_KEYWORDS = [
+      "phone", "telephone", "téléphone", "phone_number", "mobile", "celulaire",
+      "numéro de téléphone", "phone number", "portable", "gsm", "tel", "tél",
+      "téléphone / whatsapp",
+    ];
+    const normalizeKey = (value: any) => String(value ?? "").trim().toLowerCase();
+    const registrationFields: { key: string; label: string }[] = (event.customRegistrationFields || [])
+      .map((cf: any) => ({ key: normalizeKey(cf?.label), label: String(cf?.label ?? "").trim() }))
+      .filter((f: any) => f.key && !PHONE_KEYWORDS.includes(f.key));
+    if (
+      !registrationFields.some((f) => f.key === "jobtitle") &&
+      orders.some((o: any) => o.requiredUserInfo?.some((i: any) => i.field === "jobTitle" && i.value?.trim()))
+    ) {
+      registrationFields.unshift({ key: "jobtitle", label: event.jobTitleLabel?.trim() || "Fonction / Spécialité" });
+    }
+
     const participantsList: any[] = [];
     const participantsByPlan: Record<string, any[]> = {};
 
@@ -704,7 +723,7 @@ export async function getEventReportData(eventId: string) {
         const lName = getInfo(["lastname", "last_name", "nom", "familyname", "last name", "family name"]);
         const fullName = getInfo(["name", "fullname", "nomcomplet", "full name", "nom complet"]);
         const email = getInfo(["email", "e-mail", "courriel"]);
-        const phone = getInfo(["phone", "telephone", "téléphone", "phone_number", "mobile", "celulaire", "numéro de téléphone", "phone number"]);
+        const phone = getInfo(PHONE_KEYWORDS);
         const city = getInfo(["city", "ville", "village", "town", "gouvernorat", "republic"]);
 
         if (fullName) userName = fullName;
@@ -730,8 +749,18 @@ export async function getEventReportData(eventId: string) {
         amount: Number(detail.price || 0) || Number(o.totalAmount || 0),
       }));
 
+      const registrationInfo: Record<string, string> = {};
+      registrationFields.forEach(({ key }) => {
+        const answer = (o.requiredUserInfo || []).find(
+          (i: any) => normalizeKey(i.field) === key || normalizeKey(i.label) === key
+        );
+        registrationInfo[key] = String(answer?.value ?? "").trim();
+      });
+
       // Merged participant for the main list
       const mergedParticipant = {
+        number: o.orderNumber ?? null,
+        registrationInfo,
         name: userName,
         email: userEmail,
         phone: userPhone,
@@ -792,6 +821,7 @@ export async function getEventReportData(eventId: string) {
         orderTrend,
         highlights,
         participantsList,
+        registrationFields,
         participantsByPlan,
       },
       scanPointData,
