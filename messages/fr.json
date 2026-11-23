@@ -1563,6 +1563,7 @@
       "registrationTrend": "Évolution des inscriptions (3h)",
       "planStats": "Statistiques des plans",
       "participantsList": "Liste des Participants",
+      "registrationInfo": "Informations des inscrits",
       "participantsByPlan": "Participants par Plan"
     },
     "charts": {
@@ -1600,6 +1601,7 @@
       "revenue": "Revenu",
       "weight": "Poids",
       "participations": "Participations",
+      "number": "N°",
       "fullName": "Nom complet",
       "email": "Email",
       "phone": "Téléphone",
@@ -5466,7 +5468,7 @@
       "sampleNamePlaceholder": "Nom d'exemple",
       "properties": "Propriétés",
       "content": "Contenu",
-      "variablesHint": "Variables : '{name}', '{name_no_title}', '{event_title}', '{event_date}', '{certificate_type}', '{issue_date}'",
+      "variablesHint": "Variables : '{name}', '{name_no_title}', '{event_title}', '{event_date}', '{certificate_type}', '{issue_date}', '{work_title}'",
       "font": "Police",
       "size": "Taille",
       "color": "Couleur",
@@ -5483,7 +5485,9 @@
       "imageError": "Impossible de lire cette image.",
       "nameRequired": "Donnez un nom à ce type de certificat.",
       "saveFailed": "L'enregistrement a échoué.",
-      "saved": "Type de certificat enregistré."
+      "saved": "Type de certificat enregistré.",
+      "fieldWorkTitle": "Titre e-poster",
+      "sampleWorkTitle": "Titre de l'e-poster présenté"
     },
     "types": {
       "title": "Types de certificats",
@@ -5517,7 +5521,10 @@
       "add": "Ajouter",
       "confirm": "{count, plural, =0 {Attribuer} one {Attribuer à # personne} other {Attribuer à # personnes}}",
       "done": "{created, plural, =0 {Aucun certificat créé} one {# certificat créé} other {# certificats créés}}{skipped, plural, =0 {.} other {, # déjà existant(s) ignoré(s).}}",
-      "failed": "L'attribution a échoué."
+      "failed": "L'attribution a échoué.",
+      "manualWorkTitle": "Titre e-poster (optionnel)",
+      "descriptionPerWork": "Ce type affiche le titre de l'e-poster : un certificat est créé pour chaque e-poster (les e-posters refusés sont exclus).",
+      "noWorks": "Aucun e-poster soumis pour cet événement."
     },
     "planFilter": {
       "label": "Filtrer par plan",
@@ -5554,7 +5561,9 @@
       "missingEmail": "{count, plural, one {# certificat sans email a été ignoré.} other {# certificats sans email ont été ignorés.}}",
       "confirmDelete": "{count, plural, one {Supprimer ce certificat ? Son lien ne fonctionnera plus.} other {Supprimer ces # certificats ? Leurs liens ne fonctionneront plus.}}",
       "deleted": "{count, plural, one {# certificat supprimé.} other {# certificats supprimés.}}",
-      "actionFailed": "L'action a échoué."
+      "actionFailed": "L'action a échoué.",
+      "workTitle": "Titre e-poster",
+      "workTitlePlaceholder": "Titre affiché via '{work_title}'"
     },
     "printer": {
       "documentTitle": "Certificats",

@@ -146,7 +146,24 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
 
   const typeMax = useMemo(() => getMapMax(stats?.ordersByType), [stats?.ordersByType]);
   const categoryMax = useMemo(() => getMapMax(stats?.ordersByCategory), [stats?.ordersByCategory]);
-  const hourMax = useMemo(() => getMapMax(stats?.scanActivityByHour), [stats?.scanActivityByHour]);
+  // Built from the entries on the client so hours follow the viewer's timezone
+  // (like the scan times listed below), covering every hour between the first
+  // and last scan.
+  const scanHours = useMemo<[number, number][]>(() => {
+    const counts = new Array<number>(24).fill(0);
+    Object.values(scanPointData).forEach((point: any) =>
+      (point?.entries || []).forEach((entry: any) => {
+        counts[new Date(entry.scannedAt).getHours()] += 1;
+      })
+    );
+    const active = counts.flatMap((count, hour) => (count > 0 ? [hour] : []));
+    if (active.length === 0) return [];
+    const first = active[0];
+    return counts
+      .slice(first, active[active.length - 1] + 1)
+      .map((count, i): [number, number] => [first + i, count]);
+  }, [scanPointData]);
+  const hourMax = Math.max(1, ...scanHours.map(([, count]) => count));
 
   const highlights = useMemo(() => {
     if (!stats || Number(stats.totalOrders || 0) === 0) return [t("highlights.noOrders")];
@@ -316,14 +333,11 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                     <div className="rounded-xl border border-slate-200 bg-white p-3 no-split">
                       <div className="text-sm font-semibold text-slate-700 mb-2">{t("charts.scanHourlyTitle")}</div>
                       <div className="grid gap-1">
-                        {Object.entries(stats?.scanActivityByHour || {})
-                          .filter(([h]) => Number(h) % 3 === 0)
-                          .map(([hour, count]) => {
-                            const value = Number(count || 0);
-                            const width = Math.max(5, (value / hourMax) * 100);
+                        {scanHours.map(([hour, value]) => {
+                            const width = value === 0 ? 0 : Math.max(5, (value / hourMax) * 100);
                             return (
                               <div key={hour} className="grid grid-cols-[40px_1fr_36px] items-center gap-2 text-xs">
-                                <span className="text-slate-500">{hour}h</span>
+                                <span className="text-slate-500">{String(hour).padStart(2, "0")}h</span>
                                 <div className="h-2 rounded-full bg-slate-200 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-sky-600" style={{ width: `${width}%` }} /></div>
                                 <span className="text-right font-semibold text-slate-700">{value}</span>
                               </div>
@@ -418,6 +432,38 @@ export default function EventReportDialog({ eventId, isOpen, onClose }: EventRep
                             </td>
                             {!isFreeEvent && <td className="px-2.5 py-2 text-right text-slate-700 font-semibold">{currency.format(p.totalAmount)}</td>}
                             <td className="px-2.5 py-2 text-slate-700 whitespace-nowrap">{formatDateTime(p.createdAt).dateOnly}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {stats?.registrationFields?.length > 0 && stats?.participantsList?.length > 0 && (
+                <div className="mb-6 report-section">
+                  <h3 className="text-base font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">{tx("sections.registrationInfo", "Informations des inscrits")}</h3>
+                  <div className="overflow-x-auto rounded-xl border border-slate-200">
+                    <table className="w-full border-collapse text-[10px] report-table">
+                      <thead>
+                        <tr>
+                          <th className="bg-slate-100 px-2 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.number", "N°")}</th>
+                          <th className="bg-slate-100 px-2 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.fullName", "Nom complet")}</th>
+                          <th className="bg-slate-100 px-2 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{tx("tableHeaders.phone", "Téléphone")}</th>
+                          {stats.registrationFields.map((field: any) => (
+                            <th key={field.key} className="bg-slate-100 px-2 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">{field.label}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {stats.participantsList.map((p: any, idx: number) => (
+                          <tr key={`ri-${idx}`} className="no-split-row border-b border-slate-100">
+                            <td className="px-2 py-1.5 text-slate-500">{p.number ?? "-"}</td>
+                            <td className="px-2 py-1.5 text-slate-700 font-medium">{p.name}</td>
+                            <td className="px-2 py-1.5 text-slate-700 whitespace-nowrap">{p.phone}</td>
+                            {stats.registrationFields.map((field: any) => (
+                              <td key={field.key} className="px-2 py-1.5 text-slate-700">{p.registrationInfo?.[field.key] || "-"}</td>
+                            ))}
                           </tr>
                         ))}
                       </tbody>

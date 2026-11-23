@@ -34,6 +34,7 @@ import {
   Loader2,
   ArrowUp,
   ChevronRight,
+  AlertCircle,
 } from "lucide-react";
 import EventLocationComponent from "./shared/eventLocationComponent";
 import EventPriceComponent from "./shared/EventPriceComponent";
@@ -193,6 +194,7 @@ export default function ReelDetails({ event, variant = "panel" }: ReelDetailsPro
   const hasProgramme = !!event.programme && event.programme.length > 0;
   const hasAuthorsCv = !!event.authorsCv && event.authorsCv.length > 0;
   const canRegister = !event.url;
+  const registrationClosed = event.registrationClosed === true;
 
   const priceLabel = event.isFree
     ? tx("free", "Gratuit")
@@ -276,6 +278,15 @@ export default function ReelDetails({ event, variant = "panel" }: ReelDetailsPro
   // ---- Main event page (continuous scroll, section anchors) ---------------
   const sections = (
     <>
+      {canRegister && !isPast && registrationClosed && (
+        <div role="status" className="flex items-center gap-3 rounded-2xl border border-[#FDA29B] bg-[#FEE4E2] p-4">
+          <AlertCircle className="h-5 w-5 shrink-0 text-[#B42318]" aria-hidden="true" />
+          <p className="text-sm font-semibold text-[#B42318]">
+            {tx("registrationClosed", "Les inscriptions sont fermées pour cet événement.")}
+          </p>
+        </div>
+      )}
+
       <Section id="about">
         <h2 className="text-xl font-bold text-[#15152B] mb-3">{tx("about", "À propos")}</h2>
         <div className="prose prose-slate max-w-none break-all text-sm md:text-base text-[#3B3D55] leading-[1.65]">
@@ -357,7 +368,7 @@ export default function ReelDetails({ event, variant = "panel" }: ReelDetailsPro
     </>
   );
 
-  const showRegistrationCta = canRegister && !isPast;
+  const showRegistrationCta = canRegister && !isPast && !registrationClosed;
 
   // Hero media — the event's imageUrl can be a static poster, an HLS stream
   // or an mp4/webm file (same field the swipeable reels feed plays from).

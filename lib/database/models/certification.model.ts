@@ -11,6 +11,10 @@ export interface ICertificate extends Document {
   recipientName?: string;
   // Stored lowercased: lets someone who signs up later with this email find it.
   recipientEmail?: string;
+  // E-poster / abstract title printed through the {work_title} placeholder.
+  workTitle?: string;
+  // Set when the certificate belongs to one e-poster (one certificate per work).
+  workId?: Schema.Types.ObjectId;
   emailStatus: "none" | "queued" | "sent" | "failed";
   emailQueuedAt?: Date;
   emailSentAt?: Date;
@@ -35,6 +39,8 @@ const CertificateSchema = new Schema<ICertificate>(
     orderId: { type: Schema.Types.ObjectId, ref: "Order", required: false },
     recipientName: { type: String },
     recipientEmail: { type: String, lowercase: true, trim: true, index: true },
+    workTitle: { type: String, trim: true },
+    workId: { type: Schema.Types.ObjectId, ref: "EventWork", required: false },
     emailStatus: {
       type: String,
       enum: ["none", "queued", "sent", "failed"],

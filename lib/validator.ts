@@ -90,6 +90,7 @@ export const eventFormSchema = z
       })
       .optional(),
     allowGuestRegistration: z.boolean().optional().default(true),
+    registrationClosed: z.boolean().optional().default(false),
     disabledBaseFields: z.array(z.string()).optional().default([]),
     city: z.string().optional(),
     village: z.string().optional(),

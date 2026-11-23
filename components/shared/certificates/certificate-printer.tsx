@@ -11,6 +11,7 @@ import { CertificateCanvas, type CertificateTemplateData } from "./certificate-c
 export type PrintableCertificate = {
     _id: string
     recipientName: string
+    workTitle?: string
     issuedAt?: string | Date
     template: CertificateTemplateData & { name: string }
 }
@@ -68,6 +69,7 @@ export function CertificatePrinter({
                                     eventStart: event.start,
                                     eventEnd: event.end,
                                     typeName: cert.template.name,
+                                    workTitle: cert.workTitle,
                                     issueDate: cert.issuedAt,
                                     certificateId: cert._id,
                                     verifyUrl: certificateVerifyUrl(cert._id),

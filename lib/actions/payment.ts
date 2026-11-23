@@ -55,6 +55,15 @@ export async function submitBankTransfer(input: BankTransferInput): Promise<Bank
       }
     }
 
+    await connectToDatabase()
+    const closedCheck = await Event.findById(eventId).select("registrationClosed").lean()
+    if ((closedCheck as any)?.registrationClosed) {
+      return {
+        success: false,
+        message: 'Registrations are closed for this event.',
+      }
+    }
+
     // Validate that at least one submission method is provided
     if (!transferId && !screenshotBase64 && !inputScreenshotUrl) {
       return {

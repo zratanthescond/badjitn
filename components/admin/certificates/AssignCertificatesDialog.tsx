@@ -14,7 +14,22 @@ import { toast } from "@/hooks/use-toast"
 import { getCertificateCandidates, issueCertificates, type IssueRecipient } from "@/lib/actions/certificate.actions"
 import { ALL_PLANS, PlanFilterSelect, matchesPlanFilter, type PlanChoice } from "./PlanFilterSelect"
 
-type Candidate = { orderId: string; name: string; email: string; category: string; plans: PlanChoice[] }
+type CandidateWork = { workId: string; title: string; status: string }
+type Candidate = {
+    orderId: string
+    name: string
+    email: string
+    category: string
+    plans: PlanChoice[]
+    workTitle: string
+    works: CandidateWork[]
+}
+// One selectable line: a registration, or one of its e-posters in per-poster mode.
+type Row = Candidate & { key: string; workId?: string }
+
+// A design that prints the e-poster title gets one certificate per e-poster.
+export const isPerWorkTemplate = (template: any) =>
+    (template?.elements || []).some((el: any) => typeof el?.content === "string" && el.content.includes("{work_title}"))
 
 export function AssignCertificatesDialog({
     open,
@@ -22,6 +37,7 @@ export function AssignCertificatesDialog({
     eventId,
     template,
     alreadyIssuedOrderIds,
+    alreadyIssuedWorkIds,
     onIssued,
 }: {
     open: boolean
@@ -29,15 +45,17 @@ export function AssignCertificatesDialog({
     eventId: string
     template: any
     alreadyIssuedOrderIds: Set<string>
+    alreadyIssuedWorkIds: Set<string>
     onIssued: () => void
 }) {
     const t = useTranslations("certificates")
     const [search, setSearch] = useState("")
     const [planFilter, setPlanFilter] = useState(ALL_PLANS)
     const [selected, setSelected] = useState<Set<string>>(new Set())
-    const [manual, setManual] = useState<{ name: string; email: string }[]>([])
+    const [manual, setManual] = useState<{ name: string; email: string; workTitle: string }[]>([])
     const [manualName, setManualName] = useState("")
     const [manualEmail, setManualEmail] = useState("")
+    const [manualWorkTitle, setManualWorkTitle] = useState("")
     const [isIssuing, setIsIssuing] = useState(false)
 
     const { data: candidates = [], isLoading } = useQuery<Candidate[]>({
@@ -46,17 +64,28 @@ export function AssignCertificatesDialog({
         enabled: open,
     })
 
+    const perWork = isPerWorkTemplate(template)
+
+    const rows = useMemo<Row[]>(
+        () =>
+            perWork
+                ? candidates.flatMap((c) => c.works.map((w) => ({ ...c, key: w.workId, workId: w.workId, workTitle: w.title })))
+                : candidates.map((c) => ({ ...c, key: c.orderId })),
+        [candidates, perWork]
+    )
+
     const filtered = useMemo(() => {
         const q = search.trim().toLowerCase()
-        return candidates.filter(
+        return rows.filter(
             (c) =>
                 matchesPlanFilter(c.plans, planFilter) &&
-                (!q || c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q))
+                (!q || c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.workTitle.toLowerCase().includes(q))
         )
-    }, [candidates, search, planFilter])
+    }, [rows, search, planFilter])
 
-    const selectable = filtered.filter((c) => !alreadyIssuedOrderIds.has(c.orderId))
-    const allFilteredSelected = selectable.length > 0 && selectable.every((c) => selected.has(c.orderId))
+    const isIssued = (row: Row) => (row.workId ? alreadyIssuedWorkIds.has(row.workId) : alreadyIssuedOrderIds.has(row.orderId))
+    const selectable = filtered.filter((c) => !isIssued(c))
+    const allFilteredSelected = selectable.length > 0 && selectable.every((c) => selected.has(c.key))
 
     const toggle = (orderId: string) =>
         setSelected((prev) => {
@@ -69,17 +98,18 @@ export function AssignCertificatesDialog({
     const toggleAllFiltered = () =>
         setSelected((prev) => {
             const next = new Set(prev)
-            if (allFilteredSelected) selectable.forEach((c) => next.delete(c.orderId))
-            else selectable.forEach((c) => next.add(c.orderId))
+            if (allFilteredSelected) selectable.forEach((c) => next.delete(c.key))
+            else selectable.forEach((c) => next.add(c.key))
             return next
         })
 
     const addManual = () => {
         const name = manualName.trim()
         if (!name) return
-        setManual((prev) => [...prev, { name, email: manualEmail.trim() }])
+        setManual((prev) => [...prev, { name, email: manualEmail.trim(), workTitle: manualWorkTitle.trim() }])
         setManualName("")
         setManualEmail("")
+        setManualWorkTitle("")
     }
 
     const reset = () => {
@@ -89,13 +119,16 @@ export function AssignCertificatesDialog({
         setPlanFilter(ALL_PLANS)
         setManualName("")
         setManualEmail("")
+        setManualWorkTitle("")
     }
 
     const total = selected.size + manual.length
 
     const handleIssue = async () => {
         const recipients: IssueRecipient[] = [
-            ...candidates.filter((c) => selected.has(c.orderId)).map((c) => ({ orderId: c.orderId, name: c.name, email: c.email })),
+            ...rows
+                .filter((c) => selected.has(c.key))
+                .map((c) => ({ orderId: c.orderId, workId: c.workId, name: c.name, email: c.email, workTitle: c.workTitle })),
             ...manual,
         ]
         setIsIssuing(true)
@@ -116,7 +149,7 @@ export function AssignCertificatesDialog({
             <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col">
                 <DialogHeader>
                     <DialogTitle>{t("assign.title", { type: template?.name || "" })}</DialogTitle>
-                    <DialogDescription>{t("assign.description")}</DialogDescription>
+                    <DialogDescription>{t(perWork ? "assign.descriptionPerWork" : "assign.description")}</DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-3 flex-1 min-h-0 flex flex-col">
@@ -138,20 +171,26 @@ export function AssignCertificatesDialog({
                                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
                             </div>
                         ) : filtered.length === 0 ? (
-                            <p className="p-6 text-center text-sm text-muted-foreground">{t("assign.noParticipants")}</p>
+                            <p className="p-6 text-center text-sm text-muted-foreground">{t(perWork ? "assign.noWorks" : "assign.noParticipants")}</p>
                         ) : (
                             <div className="divide-y">
                                 {filtered.map((c) => {
-                                    const issued = alreadyIssuedOrderIds.has(c.orderId)
+                                    const issued = isIssued(c)
                                     return (
                                         <label
-                                            key={c.orderId}
+                                            key={c.key}
                                             className={`flex items-center gap-3 px-3 py-2 text-sm ${issued ? "opacity-50" : "cursor-pointer hover:bg-muted/50"}`}
                                         >
-                                            <Checkbox checked={issued || selected.has(c.orderId)} disabled={issued} onCheckedChange={() => toggle(c.orderId)} />
+                                            <Checkbox checked={issued || selected.has(c.key)} disabled={issued} onCheckedChange={() => toggle(c.key)} />
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium truncate">{c.name}</p>
                                                 <p className="text-xs text-muted-foreground truncate">{c.email || t("assign.noEmail")}</p>
+                                                {(perWork || c.works.length > 0) && c.workTitle && (
+                                                    <p className="text-xs text-primary/80 italic truncate" title={c.workTitle}>
+                                                        {c.workTitle}
+                                                        {!perWork && c.works.length > 1 && ` (+${c.works.length - 1})`}
+                                                    </p>
+                                                )}
                                             </div>
                                             {issued ? (
                                                 <Badge variant="secondary">{t("assign.alreadyIssued")}</Badge>
@@ -178,6 +217,7 @@ export function AssignCertificatesDialog({
                                 {t("assign.add")}
                             </Button>
                         </div>
+                        <Input value={manualWorkTitle} onChange={(e) => setManualWorkTitle(e.target.value)} placeholder={t("assign.manualWorkTitle")} onKeyDown={(e) => e.key === "Enter" && addManual()} />
                         {manual.length > 0 && (
                             <div className="flex flex-wrap gap-2">
                                 {manual.map((m, i) => (

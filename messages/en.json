@@ -1559,6 +1559,7 @@
       "registrationTrend": "Registration trend (3h)",
       "planStats": "Plan statistics",
       "participantsList": "Participants list",
+      "registrationInfo": "Registrant information",
       "participantsByPlan": "Participants by plan"
     },
     "charts": {
@@ -1596,6 +1597,7 @@
       "revenue": "Revenue",
       "weight": "Weight",
       "participations": "Participations",
+      "number": "No.",
       "fullName": "Full name",
       "email": "Email",
       "phone": "Phone",
@@ -5423,7 +5425,7 @@
       "sampleNamePlaceholder": "Sample name",
       "properties": "Properties",
       "content": "Content",
-      "variablesHint": "Variables: '{name}', '{name_no_title}', '{event_title}', '{event_date}', '{certificate_type}', '{issue_date}'",
+      "variablesHint": "Variables: '{name}', '{name_no_title}', '{event_title}', '{event_date}', '{certificate_type}', '{issue_date}', '{work_title}'",
       "font": "Font",
       "size": "Size",
       "color": "Color",
@@ -5440,7 +5442,9 @@
       "imageError": "Could not read this image.",
       "nameRequired": "Give this certificate type a name.",
       "saveFailed": "Saving failed.",
-      "saved": "Certificate type saved."
+      "saved": "Certificate type saved.",
+      "fieldWorkTitle": "E-poster title",
+      "sampleWorkTitle": "Title of the presented e-poster"
     },
     "types": {
       "title": "Certificate types",
@@ -5474,7 +5478,10 @@
       "add": "Add",
       "confirm": "{count, plural, =0 {Assign} one {Assign to # person} other {Assign to # people}}",
       "done": "{created, plural, =0 {No certificates created} one {# certificate created} other {# certificates created}}{skipped, plural, =0 {.} other {, # existing skipped.}}",
-      "failed": "Assignment failed."
+      "failed": "Assignment failed.",
+      "manualWorkTitle": "E-poster title (optional)",
+      "descriptionPerWork": "This type shows the e-poster title: one certificate is created per e-poster (rejected e-posters are excluded).",
+      "noWorks": "No e-posters submitted for this event."
     },
     "planFilter": {
       "label": "Filter by plan",
@@ -5511,7 +5518,9 @@
       "missingEmail": "{count, plural, one {# certificate without email was skipped.} other {# certificates without email were skipped.}}",
       "confirmDelete": "{count, plural, one {Delete this certificate? Its link will stop working.} other {Delete these # certificates? Their links will stop working.}}",
       "deleted": "{count, plural, one {# certificate deleted.} other {# certificates deleted.}}",
-      "actionFailed": "The action failed."
+      "actionFailed": "The action failed.",
+      "workTitle": "E-poster title",
+      "workTitlePlaceholder": "Title shown through '{work_title}'"
     },
     "printer": {
       "documentTitle": "Certificates",
