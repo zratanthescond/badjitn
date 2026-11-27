@@ -691,6 +691,10 @@
       "title": "Aucune Certification Trouvée"
     },
     "searchPlaceholder": "Rechercher par ID, demandeur ou événement...",
+    "filters": {
+      "resultsLabel": "résultat(s)",
+      "statusAll": "Statut — Tous"
+    },
     "stats": {
       "approved": "Approuvés",
       "pending": "En Attente",
@@ -2830,7 +2834,10 @@
     "stats": {
       "totalOrders": "Total des inscriptions",
       "totalRevenue": "Chiffre d'Affaires Total",
-      "uniqueBuyers": "Participants Uniques"
+      "uniqueBuyers": "Participants Uniques",
+      "actionable": "À valider",
+      "actionableHint": "virements et remises en attente",
+      "uniqueParticipantsHint": "participants uniques"
     },
     "subtitle": "Suivre et gerer toutes les inscriptions de l'evenement",
     "table": {
@@ -2842,8 +2849,37 @@
         "eventTitle": "Titre de l'Événement",
         "orderId": "Reference",
         "number": "Numéro",
-        "ticketType": "Modalite d'acces"
+        "ticketType": "Modalite d'acces",
+        "plan": "Formule",
+        "paymentStatus": "Statut paiement",
+        "category": "Catégorie"
       }
+    },
+    "filters": {
+      "searchPlaceholder": "Nom, e-mail, référence, formule…",
+      "resultsLabel": "résultat(s)",
+      "reset": "Réinitialiser les filtres",
+      "typeAll": "Type — Tous",
+      "categoryAll": "Catégorie — Toutes",
+      "statusAll": "Statut — Tous"
+    },
+    "paymentStatus": {
+      "paid": "Payé",
+      "pendingEligibility": "En attente de validation",
+      "rejectedEligibility": "Remise refusée",
+      "pendingTransfer": "Virement à vérifier",
+      "doorpay": "Paiement sur place",
+      "hosted": "Pris en charge",
+      "free": "Gratuit"
+    },
+    "categories": {
+      "attendee": "Participant",
+      "speaker": "Orateur",
+      "sponsor": "Sponsor",
+      "staff": "Staff"
+    },
+    "planBreakdown": {
+      "title": "Répartition des formules"
     },
     "ticketTypes": {
       "doorpay": "Inscription sur place",
@@ -2940,8 +2976,10 @@
     "stats": {
       "certifications": "Certifications",
       "totalOrders": "Total des inscriptions",
-      "works": "Éléments de Travail"
+      "works": "Éléments de Travail",
+      "pendingTransfers": "Virements à valider"
     },
+    "backToProfile": "Mon profil",
     "subtitle": "Gerer les inscriptions, certifications et affectations de travail",
     "tabs": {
       "certificationAdministration": "Administration des Certifications",
@@ -3176,6 +3214,17 @@
     }
   },
   "profile": {
+    "tenants": {
+      "title": "Mes espaces client",
+      "description": "Vous avez été ajouté comme membre de ces clients. Accédez à leur back office.",
+      "open": "Ouvrir",
+      "inactive": "abonnement inactif",
+      "roles": {
+        "owner": "Propriétaire",
+        "manager": "Gestionnaire",
+        "viewer": "Lecteur"
+      }
+    },
     "addCustomRequiredInfo": "Ajouter des informations requises personnalisées",
     "emptyCustomFields": "Aucune information requise personnalisée n'a encore été ajoutée.",
     "createNewEvent": "Créer un nouvel événement",
@@ -3785,6 +3834,11 @@
       "toastPartialDescription": "{sent} envoyé(s), {failed} en échec : {titles}",
       "toastErrorTitle": "Échec de l'envoi groupé"
     },
+    "filters": {
+      "resultsLabel": "résultat(s)",
+      "statusAll": "Statut — Tous",
+      "pendingRegistration": "En attente d'inscription"
+    },
     "categories": {
       "add": "Ajouter une nouvelle catégorie",
       "name": "Nom de la catégorie",
@@ -4225,7 +4279,9 @@
       "aiTools": "Outils IA",
       "aiToolsShort": "IA",
       "invitations": "Invitations",
-      "invitationsShort": "Invit."
+      "invitationsShort": "Invit.",
+      "tenants": "Clients",
+      "tenantsShort": "Clients"
     }
   },
   "serverAdmin": {
@@ -4461,6 +4517,523 @@
     "unbanUser": "Debannir l'utilisateur",
     "banUser": "Bannir l'utilisateur",
     "close": "Fermer"
+  },
+  "pro": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "settings": "Paramètres",
+      "events": "Événements",
+      "organisations": "Organisations",
+      "team": "Équipe"
+    },
+    "roles": {
+      "owner": "Propriétaire",
+      "manager": "Gestionnaire",
+      "viewer": "Lecteur"
+    },
+    "dashboard": {
+
+      "title": "Tableau de bord",
+
+      "subtitle": "Statistiques consolidées de toutes vos organisations.",
+
+      "error": "Impossible de charger les statistiques.",
+
+      "noData": "Aucune donnée sur cette période.",
+
+      "noUpcoming": "Aucun événement à venir.",
+
+      "filters": {
+
+        "period": "Période",
+
+        "organisation": "Organisation",
+
+        "allOrganisations": "Toutes les organisations",
+
+        "periods": {
+
+          "7": "7 derniers jours",
+
+          "30": "30 derniers jours",
+
+          "90": "90 derniers jours",
+
+          "365": "12 derniers mois",
+
+          "all": "Depuis le début"
+
+        }
+
+      },
+
+      "kpis": {
+
+        "organisations": "Organisations",
+
+        "events": "Événements",
+
+        "eventsHint": "{upcoming} à venir · {past} passés",
+
+        "orders": "Inscriptions",
+
+        "revenue": "Chiffre d'affaires",
+
+        "averageOrder": "Panier moyen : {value}",
+
+        "otherCurrencies": "Autres devises : {list}",
+
+        "attendance": "Taux de présence",
+
+        "attended": "{count} participants scannés",
+
+        "upcoming": "Événements à venir"
+
+      },
+
+      "timeline": {
+
+        "title": "Évolution",
+
+        "orders": "Inscriptions",
+
+        "revenue": "Chiffre d'affaires",
+
+        "empty": "Pas assez de données pour afficher l'évolution.",
+
+        "primaryOnly": "Le chiffre d'affaires affiché est en {currency} uniquement."
+
+      },
+
+      "breakdown": {
+
+        "organisation": "Par organisation",
+
+        "type": "Par type de paiement",
+
+        "category": "Par catégorie de participant"
+
+      },
+
+      "types": {
+
+        "free": "Gratuit",
+
+        "paid": "Payé en ligne",
+
+        "hosted": "Invité",
+
+        "doorpay": "Paiement sur place",
+
+        "bank_transfer": "Virement bancaire"
+
+      },
+
+      "categories": {
+
+        "attendee": "Participant",
+
+        "speaker": "Intervenant",
+
+        "sponsor": "Sponsor",
+
+        "staff": "Staff"
+
+      },
+
+      "topEvents": "Top 5 des événements",
+
+      "upcomingEvents": "Prochains événements"
+
+    },
+
+    "events": {
+
+
+      "title": "Événements",
+
+
+      "count": "{count} événement(s)",
+
+
+      "search": "Rechercher un événement",
+
+
+      "organisation": "Organisation",
+
+
+      "allOrganisations": "Toutes les organisations",
+
+
+      "statusLabel": "Statut",
+
+
+      "status": {
+
+
+        "all": "Tous",
+
+
+        "upcoming": "À venir",
+
+
+        "past": "Passés"
+
+
+      },
+
+
+      "apply": "Filtrer",
+
+
+      "free": "Gratuit",
+
+
+      "emptyTitle": "Aucun événement",
+
+
+      "emptyDescription": "Aucun événement ne correspond à ces filtres.",
+
+
+      "previous": "Précédent",
+
+
+      "next": "Suivant",
+
+
+      "pageOf": "Page {page} sur {pages}"
+
+
+    },
+
+
+    "eventDetail": {
+
+
+      "back": "Retour aux événements",
+
+
+      "publicPage": "Page publique",
+
+
+      "manage": "Gérer les inscriptions",
+
+
+      "kpis": {
+
+
+        "orders": "Inscriptions",
+
+
+        "participants": "Participants uniques",
+
+
+        "revenue": "Chiffre d'affaires",
+
+
+        "averageOrder": "Panier moyen : {value}",
+
+
+        "attendance": "Taux de présence",
+
+
+        "scanned": "{count} participants scannés"
+
+
+      },
+
+
+      "byType": "Par type de paiement",
+
+
+      "byCategory": "Par catégorie",
+
+
+      "byPlan": "Par formule",
+
+
+      "scanPoints": "Points de scan",
+
+
+      "scansByHour": "Scans par heure",
+
+
+      "noScans": "Aucun scan enregistré."
+
+
+    },
+
+
+    "settings": {
+
+
+
+      "title": "Paramètres",
+
+
+
+      "subtitle": "Identité visuelle, contact et abonnement de votre espace.",
+
+
+
+      "saved": "Paramètres enregistrés",
+
+
+
+      "error": "Erreur",
+
+
+
+      "save": "Enregistrer",
+
+
+
+      "ownerOnly": "Seul un propriétaire peut modifier ces paramètres.",
+
+
+
+      "branding": {
+
+
+
+        "title": "Identité visuelle",
+
+
+
+        "description": "Le logo et la couleur personnalisent votre back office.",
+
+
+
+        "logo": "Logo",
+
+
+
+        "logoPlaceholder": "Déposer un logo",
+
+
+
+        "color": "Couleur principale",
+
+
+
+        "reset": "Réinitialiser",
+
+
+
+        "colorInvalid": "Format attendu : #RRGGBB",
+
+
+
+        "colorHint": "Appliquée aux boutons et aux éléments actifs. Laissez vide pour la couleur par défaut."
+
+
+
+      },
+
+
+
+      "contact": {
+
+
+
+        "title": "Contact",
+
+
+
+        "description": "La personne que Badgi peut joindre pour votre compte.",
+
+
+
+        "name": "Nom",
+
+
+
+        "email": "Email",
+
+
+
+        "phone": "Téléphone"
+
+
+
+      },
+
+
+
+      "plan": {
+
+
+
+        "title": "Abonnement",
+
+
+
+        "description": "Géré par Badgi. Ces informations sont en lecture seule.",
+
+
+
+        "plan": "Plan",
+
+
+
+        "status": "Statut",
+
+
+
+        "endsAt": "Fin d'abonnement",
+
+
+
+        "noEnd": "Sans date de fin",
+
+
+
+        "statuses": {
+
+
+
+          "trial": "Essai",
+
+
+
+          "active": "Actif",
+
+
+
+          "suspended": "Suspendu",
+
+
+
+          "expired": "Expiré"
+
+
+
+        },
+
+
+
+        "organisations": "Organisations",
+
+
+
+        "eventsYear": "Événements en {year}",
+
+
+
+        "ordersPerEvent": "Limite d'inscriptions par événement : {max}.",
+
+
+
+        "contactUs": "Pour changer de plan ou de quotas, contactez Badgi."
+
+
+
+      }
+
+
+
+    },
+
+
+
+    "menu": "Menu",
+    "poweredBy": "Propulsé par Badgi",
+    "readOnlyBanner": "L'abonnement de ce client n'est pas actif : le back office est en lecture seule.",
+    "accessDenied": {
+      "title": "Accès refusé",
+      "description": "Vous n'avez pas accès à ce back office. Vérifiez que vous êtes connecté avec le bon compte.",
+      "back": "Retour à Badgi"
+    },
+    "home": {
+      "welcome": "Bienvenue, {name}",
+      "subtitle": "Vue d'ensemble de vos organisations et de vos événements.",
+      "organisations": "Organisations",
+      "events": "Événements",
+      "upcoming": "À venir"
+    },
+    "organisations": {
+      "title": "Organisations",
+      "quota": "{used} sur {max} organisations utilisées",
+      "events": "Événements",
+      "upcoming": "À venir",
+      "emptyTitle": "Aucune organisation",
+      "emptyDescription": "Aucune organisation n'est rattachée à votre compte client. Contactez Badgi pour en ajouter."
+    },
+    "team": {
+      "title": "Équipe",
+      "subtitle": "Les personnes qui ont accès à ce back office.",
+      "remove": "Retirer",
+      "removed": "Membre retiré",
+      "added": "Membre ajouté",
+      "addTitle": "Ajouter un membre",
+      "search": "Rechercher un utilisateur (nom, email)",
+      "ownerOnly": "Seul un propriétaire peut gérer l'équipe.",
+      "error": "Erreur"
+    }
+  },
+  "tenantsAdministration": {
+    "title": "Clients (laboratoires)",
+    "description": "Gérez les clients, leurs organisations, leurs responsables et leur abonnement.",
+    "table": {
+      "client": "Client",
+      "plan": "Plan",
+      "organisations": "Organisations",
+      "members": "Membres",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "status": {
+      "trial": "Essai",
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "expired": "Expiré"
+    },
+    "roles": {
+      "owner": "Propriétaire",
+      "manager": "Gestionnaire",
+      "viewer": "Lecteur"
+    },
+    "actions": {
+      "create": "Créer un client",
+      "manage": "Gérer",
+      "save": "Enregistrer",
+      "attach": "Rattacher",
+      "detach": "Détacher",
+      "remove": "Retirer",
+      "delete": "Supprimer le client"
+    },
+    "create": {
+      "title": "Nouveau client",
+      "description": "Créez la fiche du laboratoire. Son back office sera disponible sur son sous-domaine."
+    },
+    "fields": {
+      "name": "Nom du client",
+      "subdomain": "Sous-domaine",
+      "subdomainHint": "Lettres minuscules, chiffres et tirets. Non modifiable ensuite.",
+      "plan": "Plan",
+      "status": "Statut de l'abonnement",
+      "contactEmail": "Email de contact",
+      "maxOrganisations": "Organisations max.",
+      "maxEventsPerYear": "Événements max. / an",
+      "endsAt": "Fin d'abonnement"
+    },
+    "manage": {
+      "settings": "Abonnement et quotas",
+      "organisations": "Organisations",
+      "members": "Membres",
+      "noOrganisations": "Aucune organisation rattachée.",
+      "selectOrganisation": "Choisir une organisation",
+      "searchUser": "Rechercher un utilisateur (nom, email)",
+      "confirmDelete": "Supprimer le client {name} ? Ses organisations seront conservées."
+    },
+    "toast": {
+      "created": "Client créé",
+      "saved": "Modifications enregistrées",
+      "attached": "Organisation rattachée",
+      "memberAdded": "Membre ajouté",
+      "deleted": "Client supprimé",
+      "error": "Erreur"
+    }
   },
   "organisationsAdministration": {
     "title": "Verification des organisations",

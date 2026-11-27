@@ -70,6 +70,21 @@ module.exports = {
           DEFAULT: "hsl(var(--card) / <alpha-value>)",
           foreground: "hsl(var(--card-foreground) / <alpha-value>)",
         },
+        // Backoffice-only semantic tokens ("Clinical Precision" theme). Only
+        // meaningful inside the `.admin-theme` scope (see app/globals.css) —
+        // used exclusively by components/admin/**.
+        admin: {
+          navy: "hsl(var(--admin-navy) / <alpha-value>)",
+          "navy-soft": "hsl(var(--admin-navy-soft) / <alpha-value>)",
+          success: "hsl(var(--admin-success) / <alpha-value>)",
+          "success-soft": "hsl(var(--admin-success-soft) / <alpha-value>)",
+          warning: "hsl(var(--admin-warning) / <alpha-value>)",
+          "warning-soft": "hsl(var(--admin-warning-soft) / <alpha-value>)",
+          "critical-soft": "hsl(var(--admin-critical-soft) / <alpha-value>)",
+          "accent-soft": "hsl(var(--admin-accent-soft) / <alpha-value>)",
+          "accent-soft-foreground":
+            "hsl(var(--admin-accent-soft-foreground) / <alpha-value>)",
+        },
       },
       fontFamily: {
         poppins: ["var(--font-poppins)"],

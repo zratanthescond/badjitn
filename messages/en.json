@@ -3176,6 +3176,17 @@
     }
   },
   "profile": {
+    "tenants": {
+      "title": "My client spaces",
+      "description": "You have been added as a member of these clients. Open their back office.",
+      "open": "Open",
+      "inactive": "subscription inactive",
+      "roles": {
+        "owner": "Owner",
+        "manager": "Manager",
+        "viewer": "Viewer"
+      }
+    },
     "addCustomRequiredInfo": "Add Custom Required Information",
     "emptyCustomFields": "No custom required information has been added yet.",
     "createNewEvent": "Create New Event",
@@ -4225,7 +4236,9 @@
       "aiTools": "AI tools",
       "aiToolsShort": "AI tools",
       "invitations": "Invitations",
-      "invitationsShort": "Invites"
+      "invitationsShort": "Invites",
+      "tenants": "Clients",
+      "tenantsShort": "Clients"
     }
   },
   "serverAdmin": {
@@ -4461,6 +4474,523 @@
     "unbanUser": "Unban user",
     "banUser": "Ban user",
     "close": "Close"
+  },
+  "pro": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "settings": "Settings",
+      "events": "Events",
+      "organisations": "Organisations",
+      "team": "Team"
+    },
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "viewer": "Viewer"
+    },
+    "dashboard": {
+
+      "title": "Dashboard",
+
+      "subtitle": "Consolidated statistics across all your organisations.",
+
+      "error": "Could not load the statistics.",
+
+      "noData": "No data for this period.",
+
+      "noUpcoming": "No upcoming events.",
+
+      "filters": {
+
+        "period": "Period",
+
+        "organisation": "Organisation",
+
+        "allOrganisations": "All organisations",
+
+        "periods": {
+
+          "7": "Last 7 days",
+
+          "30": "Last 30 days",
+
+          "90": "Last 90 days",
+
+          "365": "Last 12 months",
+
+          "all": "All time"
+
+        }
+
+      },
+
+      "kpis": {
+
+        "organisations": "Organisations",
+
+        "events": "Events",
+
+        "eventsHint": "{upcoming} upcoming · {past} past",
+
+        "orders": "Registrations",
+
+        "revenue": "Revenue",
+
+        "averageOrder": "Average order: {value}",
+
+        "otherCurrencies": "Other currencies: {list}",
+
+        "attendance": "Attendance rate",
+
+        "attended": "{count} attendees scanned",
+
+        "upcoming": "Upcoming events"
+
+      },
+
+      "timeline": {
+
+        "title": "Trend",
+
+        "orders": "Registrations",
+
+        "revenue": "Revenue",
+
+        "empty": "Not enough data to show the trend.",
+
+        "primaryOnly": "Revenue shown in {currency} only."
+
+      },
+
+      "breakdown": {
+
+        "organisation": "By organisation",
+
+        "type": "By payment type",
+
+        "category": "By attendee category"
+
+      },
+
+      "types": {
+
+        "free": "Free",
+
+        "paid": "Paid online",
+
+        "hosted": "Hosted",
+
+        "doorpay": "Pay at the door",
+
+        "bank_transfer": "Bank transfer"
+
+      },
+
+      "categories": {
+
+        "attendee": "Attendee",
+
+        "speaker": "Speaker",
+
+        "sponsor": "Sponsor",
+
+        "staff": "Staff"
+
+      },
+
+      "topEvents": "Top 5 events",
+
+      "upcomingEvents": "Upcoming events"
+
+    },
+
+    "events": {
+
+
+      "title": "Events",
+
+
+      "count": "{count} event(s)",
+
+
+      "search": "Search an event",
+
+
+      "organisation": "Organisation",
+
+
+      "allOrganisations": "All organisations",
+
+
+      "statusLabel": "Status",
+
+
+      "status": {
+
+
+        "all": "All",
+
+
+        "upcoming": "Upcoming",
+
+
+        "past": "Past"
+
+
+      },
+
+
+      "apply": "Filter",
+
+
+      "free": "Free",
+
+
+      "emptyTitle": "No events",
+
+
+      "emptyDescription": "No event matches these filters.",
+
+
+      "previous": "Previous",
+
+
+      "next": "Next",
+
+
+      "pageOf": "Page {page} of {pages}"
+
+
+    },
+
+
+    "eventDetail": {
+
+
+      "back": "Back to events",
+
+
+      "publicPage": "Public page",
+
+
+      "manage": "Manage registrations",
+
+
+      "kpis": {
+
+
+        "orders": "Registrations",
+
+
+        "participants": "Unique participants",
+
+
+        "revenue": "Revenue",
+
+
+        "averageOrder": "Average order: {value}",
+
+
+        "attendance": "Attendance rate",
+
+
+        "scanned": "{count} attendees scanned"
+
+
+      },
+
+
+      "byType": "By payment type",
+
+
+      "byCategory": "By category",
+
+
+      "byPlan": "By plan",
+
+
+      "scanPoints": "Scan points",
+
+
+      "scansByHour": "Scans by hour",
+
+
+      "noScans": "No scans recorded."
+
+
+    },
+
+
+    "settings": {
+
+
+
+      "title": "Settings",
+
+
+
+      "subtitle": "Branding, contact and subscription for your space.",
+
+
+
+      "saved": "Settings saved",
+
+
+
+      "error": "Error",
+
+
+
+      "save": "Save",
+
+
+
+      "ownerOnly": "Only an owner can edit these settings.",
+
+
+
+      "branding": {
+
+
+
+        "title": "Branding",
+
+
+
+        "description": "Your logo and color personalise your back office.",
+
+
+
+        "logo": "Logo",
+
+
+
+        "logoPlaceholder": "Drop a logo",
+
+
+
+        "color": "Main color",
+
+
+
+        "reset": "Reset",
+
+
+
+        "colorInvalid": "Expected format: #RRGGBB",
+
+
+
+        "colorHint": "Applied to buttons and active items. Leave empty for the default color."
+
+
+
+      },
+
+
+
+      "contact": {
+
+
+
+        "title": "Contact",
+
+
+
+        "description": "The person Badgi can reach for your account.",
+
+
+
+        "name": "Name",
+
+
+
+        "email": "Email",
+
+
+
+        "phone": "Phone"
+
+
+
+      },
+
+
+
+      "plan": {
+
+
+
+        "title": "Subscription",
+
+
+
+        "description": "Managed by Badgi. This information is read-only.",
+
+
+
+        "plan": "Plan",
+
+
+
+        "status": "Status",
+
+
+
+        "endsAt": "Subscription end",
+
+
+
+        "noEnd": "No end date",
+
+
+
+        "statuses": {
+
+
+
+          "trial": "Trial",
+
+
+
+          "active": "Active",
+
+
+
+          "suspended": "Suspended",
+
+
+
+          "expired": "Expired"
+
+
+
+        },
+
+
+
+        "organisations": "Organisations",
+
+
+
+        "eventsYear": "Events in {year}",
+
+
+
+        "ordersPerEvent": "Registration limit per event: {max}.",
+
+
+
+        "contactUs": "To change your plan or quotas, contact Badgi."
+
+
+
+      }
+
+
+
+    },
+
+
+
+    "menu": "Menu",
+    "poweredBy": "Powered by Badgi",
+    "readOnlyBanner": "This client's subscription is not active: the back office is read-only.",
+    "accessDenied": {
+      "title": "Access denied",
+      "description": "You do not have access to this back office. Make sure you are signed in with the right account.",
+      "back": "Back to Badgi"
+    },
+    "home": {
+      "welcome": "Welcome, {name}",
+      "subtitle": "An overview of your organisations and events.",
+      "organisations": "Organisations",
+      "events": "Events",
+      "upcoming": "Upcoming"
+    },
+    "organisations": {
+      "title": "Organisations",
+      "quota": "{used} of {max} organisations used",
+      "events": "Events",
+      "upcoming": "Upcoming",
+      "emptyTitle": "No organisation",
+      "emptyDescription": "No organisation is attached to your client account. Contact Badgi to add one."
+    },
+    "team": {
+      "title": "Team",
+      "subtitle": "People who have access to this back office.",
+      "remove": "Remove",
+      "removed": "Member removed",
+      "added": "Member added",
+      "addTitle": "Add a member",
+      "search": "Search a user (name, email)",
+      "ownerOnly": "Only an owner can manage the team.",
+      "error": "Error"
+    }
+  },
+  "tenantsAdministration": {
+    "title": "Clients (labs)",
+    "description": "Manage clients, their organisations, managers and subscription.",
+    "table": {
+      "client": "Client",
+      "plan": "Plan",
+      "organisations": "Organisations",
+      "members": "Members",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "trial": "Trial",
+      "active": "Active",
+      "suspended": "Suspended",
+      "expired": "Expired"
+    },
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "viewer": "Viewer"
+    },
+    "actions": {
+      "create": "Create client",
+      "manage": "Manage",
+      "save": "Save",
+      "attach": "Attach",
+      "detach": "Detach",
+      "remove": "Remove",
+      "delete": "Delete client"
+    },
+    "create": {
+      "title": "New client",
+      "description": "Create the lab's record. Its back office will be available on its own subdomain."
+    },
+    "fields": {
+      "name": "Client name",
+      "subdomain": "Subdomain",
+      "subdomainHint": "Lowercase letters, digits and dashes. Cannot be changed later.",
+      "plan": "Plan",
+      "status": "Subscription status",
+      "contactEmail": "Contact email",
+      "maxOrganisations": "Max organisations",
+      "maxEventsPerYear": "Max events / year",
+      "endsAt": "Subscription end"
+    },
+    "manage": {
+      "settings": "Subscription and quotas",
+      "organisations": "Organisations",
+      "members": "Members",
+      "noOrganisations": "No organisation attached.",
+      "selectOrganisation": "Select an organisation",
+      "searchUser": "Search a user (name, email)",
+      "confirmDelete": "Delete client {name}? Its organisations will be kept."
+    },
+    "toast": {
+      "created": "Client created",
+      "saved": "Changes saved",
+      "attached": "Organisation attached",
+      "memberAdded": "Member added",
+      "deleted": "Client deleted",
+      "error": "Error"
+    }
   },
   "organisationsAdministration": {
     "title": "Organisation verification",

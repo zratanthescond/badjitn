@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
     LayoutDashboard,
+    Briefcase,
     Ticket,
     CalendarDays,
     Building2,
@@ -201,6 +202,13 @@ interface TranslationStrings {
         sponsors: string;
         customFields: string;
     };
+    tenants: {
+        title: string;
+        description: string;
+        open: string;
+        inactive: string;
+        roles: { owner: string; manager: string; viewer: string };
+    };
     organisationCard: {
         noDescription: string;
         member: string;
@@ -220,6 +228,15 @@ interface ProfileDashboardProps {
     eventsPage: number;
     eventsTotalPages: number;
     organisations: any[];
+    /** Clients (labs) the user is a member of, each with a link to its back office. */
+    tenants?: {
+        _id: string;
+        name: string;
+        logo: string;
+        status: string;
+        role: "owner" | "manager" | "viewer";
+        url: string;
+    }[];
     translations: TranslationStrings;
 }
 
@@ -235,6 +252,7 @@ export default function ProfileDashboard({
     eventsPage,
     eventsTotalPages,
     organisations,
+    tenants = [],
     translations,
 }: ProfileDashboardProps) {
     const tCertificates = useTranslations("certificates");
@@ -508,6 +526,49 @@ export default function ProfileDashboard({
                                     {translations.welcomeBack.replace("{name}", user?.firstName || "")}
                                 </p>
                             </div>
+
+                            {/* Client spaces: shown only when the user was added as a member of a client (lab) */}
+                            {tenants.length > 0 && (
+                                <div className="glass bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-indigo-200/40 dark:border-indigo-700/30 rounded-2xl p-5">
+                                    <h3 className="font-semibold flex items-center gap-2">
+                                        <Briefcase className="h-4 w-4 text-indigo-500" />
+                                        {translations.tenants.title}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground mt-1 mb-4">
+                                        {translations.tenants.description}
+                                    </p>
+                                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {tenants.map((tenant) => (
+                                            <li key={tenant._id}>
+                                                <a
+                                                    href={tenant.url}
+                                                    className="flex items-center gap-3 p-3 rounded-xl border border-border/40 hover:border-indigo-300/50 dark:hover:border-indigo-700/50 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all group"
+                                                >
+                                                    {tenant.logo ? (
+                                                        <img src={tenant.logo} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                                                    ) : (
+                                                        <div className="p-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+                                                            <Briefcase className="h-5 w-5" />
+                                                        </div>
+                                                    )}
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-sm font-semibold truncate">{tenant.name}</p>
+                                                        <p className="text-xs text-muted-foreground">
+                                                            {translations.tenants.roles[tenant.role]}
+                                                            {(tenant.status === "suspended" || tenant.status === "expired") &&
+                                                                ` · ${translations.tenants.inactive}`}
+                                                        </p>
+                                                    </div>
+                                                    <span className="flex items-center gap-1 text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                                                        {translations.tenants.open}
+                                                        <ExternalLink className="h-3.5 w-3.5" />
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
                             {/* Stats Grid */}
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

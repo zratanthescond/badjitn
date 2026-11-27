@@ -18,6 +18,7 @@ import { useUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 
 import { Syne, Outfit } from "next/font/google";
+import ChatTrigger from "@/components/shared/ChatTrigger";
 import NextIntlProvider from "@/components/providers/NextIntlProvider";
 
 const poppins = Poppins({
@@ -209,6 +210,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <ClientProvider clerkLocale={localization}>
               <TooltipProvider>{children}</TooltipProvider>
+              <ChatTrigger />
 
               <Toaster />
             </ClientProvider>

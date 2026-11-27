@@ -3,7 +3,7 @@
 import { SearchParamProps } from "@/types";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Flag, Shapes, Users, Building2, Sparkles, Mail } from "lucide-react";
+import { Flag, Shapes, Users, Building2, Sparkles, Mail, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -15,6 +15,7 @@ import CategorieAdministration from "@/components/admin/CategorieAdministration"
 import OrganisationsAdministration from "@/components/admin/OrganisationsAdministration";
 import AIToolAdministration from "@/components/admin/AIToolAdministration";
 import InvitationAdministration from "@/components/admin/InvitationAdministration";
+import TenantsAdministration from "@/components/admin/TenantsAdministration";
 import { useTranslations } from "next-intl";
 
 const Orders = (props: SearchParamProps) => {
@@ -37,6 +38,8 @@ const Orders = (props: SearchParamProps) => {
         return <AIToolAdministration />;
       case "invitations":
         return <InvitationAdministration />;
+      case "tenants":
+        return <TenantsAdministration />;
       default:
         return <UsersAdministration />;
     }
@@ -61,7 +64,7 @@ const Orders = (props: SearchParamProps) => {
         className="w-full !rounded-full"
         onValueChange={(value) => setValue(value)}
       >
-        <TabsList className="grid w-full grid-cols-6 mb-4 sm:mb-6 rounded-full">
+        <TabsList className="grid w-full grid-cols-7 mb-4 sm:mb-6 rounded-full">
           <TabsTrigger
             value="users"
             className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-card rounded-full"
@@ -77,6 +80,14 @@ const Orders = (props: SearchParamProps) => {
             <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">{t("tabs.organisations")}</span>
             <span className="sm:hidden">{t("tabs.organisationsShort")}</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="tenants"
+            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-card rounded-full"
+          >
+            <Briefcase className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">{t("tabs.tenants")}</span>
+            <span className="sm:hidden">{t("tabs.tenantsShort")}</span>
           </TabsTrigger>
           <TabsTrigger
             value="reports"

@@ -24,6 +24,8 @@ export interface IOrganisation extends Document {
     };
     creator: Schema.Types.ObjectId;
     admins: Schema.Types.ObjectId[];
+    /** Client (lab) owning this organisation, if any. Unset for regular organisations. */
+    tenant?: Schema.Types.ObjectId;
     isVerified: boolean;
     createdAt: Date;
 }
@@ -59,6 +61,7 @@ const OrganisationSchema = new Schema<IOrganisation>({
     },
     creator: { type: Schema.Types.ObjectId, ref: "User", required: true },
     admins: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    tenant: { type: Schema.Types.ObjectId, ref: "Tenant", index: true },
     isVerified: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
 });

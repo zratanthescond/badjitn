@@ -30,7 +30,9 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full glass-panel border-b border-white/10 transition-all duration-500 ease-elite-spring px-3 md:px-6">
-      <div className="flex h-14 md:h-18 items-center justify-between max-w-7xl mx-auto">
+      {/* `h-18` isn't a real Tailwind size (no-op) — use `h-20` so the header's
+          actual height matches the `mt-20` offset other pages already use. */}
+      <div className="flex h-14 md:h-20 items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center transition-all duration-300 hover:scale-105 active:scale-95">
             <Image

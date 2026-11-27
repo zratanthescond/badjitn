@@ -1,13 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Globe } from "lucide-react";
-import { XProfileCard } from "../shared/Xprofile";
 import ReelDetails from "../ReelDetails";
 import SponsorsSection from "../shared/SponsorSection";
 import HLSPlayer from "../shared/phone/HlsPlayer";
-import { useTranslations } from "next-intl";
 import type { Event } from "./types";
 
 interface VideoDetailsPanelProps {
@@ -23,9 +18,6 @@ export function VideoDetailsPanel({
   onClose,
   isMobile = false,
 }: VideoDetailsPanelProps) {
-  const t = useTranslations("shorts.details");
-  const c = useTranslations("category");
-
   const panelClasses = `
     ${isVisible
       ? "flex top-0 md:top-auto h-full md:h-full glass-panel w-full shadow-2xl"
@@ -41,19 +33,6 @@ export function VideoDetailsPanel({
     <div className={panelClasses} style={{ minWidth: 0 }}>
       <div className="w-full h-full overflow-y-auto no-scrollbar overflow-x-hidden">
         <div className="p-4 space-y-4 text-slate-900 dark:text-white max-w-full overflow-hidden">
-          {/* Profile Section */}
-          <div className="flex flex-row items-start justify-between w-full overflow-hidden">
-            <XProfileCard
-              username={video.organisation?.name || `${video.organizer.firstName} ${video.organizer.lastName}`}
-              avatarUrl={video.organisation?.logo}
-              isVerified={video.organisation?.isVerified || false}
-              handle={video.organisation?.slug || video.organizer.username}
-              organization={video.organisation?.name || ""}
-              bio={""}
-              className="w-full max-w-full"
-            />
-          </div>
-
           {/* Sponsors Section */}
           {video.sponsors && video.sponsors.length > 0 && (
             <div className="flex flex-row items-center justify-between w-full overflow-hidden">
@@ -61,33 +40,8 @@ export function VideoDetailsPanel({
             </div>
           )}
 
-
-          {/* Category and Website */}
-          <div className="flex flex-row items-center justify-between gap-4 flex-wrap w-full overflow-hidden">
-            <div className="flex gap-2">
-              <Badge className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white border-0 transition-all duration-200">
-                {c(video?.category?.name || "all") || t("allCategories")}
-              </Badge>
-            </div>
-
-            {video.url && (
-              <a
-                href={video.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-link"
-              >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-sm flex flex-row rounded-full items-center glass-control text-foreground transition-all duration-200 hover:scale-105 bg-transparent"
-                >
-                  <Globe className="mr-2 h-4 w-4" />
-                  {t("visitWebsite")}
-                </Button>
-              </a>
-            )}
-          </div>
+          {/* Organizer, category badge and "visit website" link are shown
+              once, in ReelDetails' own hero below — not duplicated here. */}
 
           {isMobile && (
             <div className="md:hidden overflow-hidden rounded-2xl border border-border/60 shadow-xl">
@@ -123,8 +77,9 @@ export function VideoDetailsPanel({
             </div>
           )}
 
-          {/* Event Details */}
-          <div className="bg-slate-900/5 dark:bg-white/5 rounded-2xl p-4 backdrop-blur-sm border border-slate-900/5 dark:border-white/5 w-full overflow-hidden">
+          {/* Event Details — ReelDetails owns its own flat background/cards now,
+              so this wrapper stays unstyled to avoid stacking a second card. */}
+          <div className="w-full overflow-hidden rounded-2xl">
             <ReelDetails event={video as any} />
           </div>
         </div>

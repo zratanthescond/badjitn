@@ -3176,6 +3176,17 @@
     }
   },
   "profile": {
+    "tenants": {
+      "title": "Mis espacios de cliente",
+      "description": "Ha sido añadido como miembro de estos clientes. Acceda a su back office.",
+      "open": "Abrir",
+      "inactive": "suscripción inactiva",
+      "roles": {
+        "owner": "Propietario",
+        "manager": "Gestor",
+        "viewer": "Lector"
+      }
+    },
     "addCustomRequiredInfo": "Añadir información requerida personalizada",
     "emptyCustomFields": "Aún no se ha añadido información requerida personalizada.",
     "createNewEvent": "Crear nuevo evento",
@@ -4225,7 +4236,9 @@
       "aiTools": "Herramientas IA",
       "aiToolsShort": "IA",
       "invitations": "Invitaciones",
-      "invitationsShort": "Invit."
+      "invitationsShort": "Invit.",
+      "tenants": "Clientes",
+      "tenantsShort": "Clientes"
     }
   },
   "serverAdmin": {
@@ -4461,6 +4474,523 @@
     "unbanUser": "Desbloquear usuario",
     "banUser": "Bloquear usuario",
     "close": "Cerrar"
+  },
+  "pro": {
+    "nav": {
+      "dashboard": "Panel",
+      "settings": "Ajustes",
+      "events": "Eventos",
+      "organisations": "Organizaciones",
+      "team": "Equipo"
+    },
+    "roles": {
+      "owner": "Propietario",
+      "manager": "Gestor",
+      "viewer": "Lector"
+    },
+    "dashboard": {
+
+      "title": "Panel",
+
+      "subtitle": "Estadísticas consolidadas de todas sus organizaciones.",
+
+      "error": "No se pudieron cargar las estadísticas.",
+
+      "noData": "Sin datos en este periodo.",
+
+      "noUpcoming": "No hay eventos próximos.",
+
+      "filters": {
+
+        "period": "Periodo",
+
+        "organisation": "Organización",
+
+        "allOrganisations": "Todas las organizaciones",
+
+        "periods": {
+
+          "7": "Últimos 7 días",
+
+          "30": "Últimos 30 días",
+
+          "90": "Últimos 90 días",
+
+          "365": "Últimos 12 meses",
+
+          "all": "Desde el inicio"
+
+        }
+
+      },
+
+      "kpis": {
+
+        "organisations": "Organizaciones",
+
+        "events": "Eventos",
+
+        "eventsHint": "{upcoming} próximos · {past} pasados",
+
+        "orders": "Inscripciones",
+
+        "revenue": "Ingresos",
+
+        "averageOrder": "Pedido medio: {value}",
+
+        "otherCurrencies": "Otras monedas: {list}",
+
+        "attendance": "Tasa de asistencia",
+
+        "attended": "{count} asistentes escaneados",
+
+        "upcoming": "Eventos próximos"
+
+      },
+
+      "timeline": {
+
+        "title": "Evolución",
+
+        "orders": "Inscripciones",
+
+        "revenue": "Ingresos",
+
+        "empty": "No hay datos suficientes para mostrar la evolución.",
+
+        "primaryOnly": "Ingresos mostrados solo en {currency}."
+
+      },
+
+      "breakdown": {
+
+        "organisation": "Por organización",
+
+        "type": "Por tipo de pago",
+
+        "category": "Por categoría de participante"
+
+      },
+
+      "types": {
+
+        "free": "Gratis",
+
+        "paid": "Pagado en línea",
+
+        "hosted": "Invitado",
+
+        "doorpay": "Pago en puerta",
+
+        "bank_transfer": "Transferencia bancaria"
+
+      },
+
+      "categories": {
+
+        "attendee": "Asistente",
+
+        "speaker": "Ponente",
+
+        "sponsor": "Patrocinador",
+
+        "staff": "Staff"
+
+      },
+
+      "topEvents": "Top 5 de eventos",
+
+      "upcomingEvents": "Próximos eventos"
+
+    },
+
+    "events": {
+
+
+      "title": "Eventos",
+
+
+      "count": "{count} evento(s)",
+
+
+      "search": "Buscar un evento",
+
+
+      "organisation": "Organización",
+
+
+      "allOrganisations": "Todas las organizaciones",
+
+
+      "statusLabel": "Estado",
+
+
+      "status": {
+
+
+        "all": "Todos",
+
+
+        "upcoming": "Próximos",
+
+
+        "past": "Pasados"
+
+
+      },
+
+
+      "apply": "Filtrar",
+
+
+      "free": "Gratis",
+
+
+      "emptyTitle": "Sin eventos",
+
+
+      "emptyDescription": "Ningún evento coincide con estos filtros.",
+
+
+      "previous": "Anterior",
+
+
+      "next": "Siguiente",
+
+
+      "pageOf": "Página {page} de {pages}"
+
+
+    },
+
+
+    "eventDetail": {
+
+
+      "back": "Volver a eventos",
+
+
+      "publicPage": "Página pública",
+
+
+      "manage": "Gestionar inscripciones",
+
+
+      "kpis": {
+
+
+        "orders": "Inscripciones",
+
+
+        "participants": "Participantes únicos",
+
+
+        "revenue": "Ingresos",
+
+
+        "averageOrder": "Pedido medio: {value}",
+
+
+        "attendance": "Tasa de asistencia",
+
+
+        "scanned": "{count} asistentes escaneados"
+
+
+      },
+
+
+      "byType": "Por tipo de pago",
+
+
+      "byCategory": "Por categoría",
+
+
+      "byPlan": "Por tarifa",
+
+
+      "scanPoints": "Puntos de escaneo",
+
+
+      "scansByHour": "Escaneos por hora",
+
+
+      "noScans": "Ningún escaneo registrado."
+
+
+    },
+
+
+    "settings": {
+
+
+
+      "title": "Ajustes",
+
+
+
+      "subtitle": "Identidad visual, contacto y suscripción de su espacio.",
+
+
+
+      "saved": "Ajustes guardados",
+
+
+
+      "error": "Error",
+
+
+
+      "save": "Guardar",
+
+
+
+      "ownerOnly": "Solo un propietario puede modificar estos ajustes.",
+
+
+
+      "branding": {
+
+
+
+        "title": "Identidad visual",
+
+
+
+        "description": "El logotipo y el color personalizan su back office.",
+
+
+
+        "logo": "Logotipo",
+
+
+
+        "logoPlaceholder": "Suelte un logotipo",
+
+
+
+        "color": "Color principal",
+
+
+
+        "reset": "Restablecer",
+
+
+
+        "colorInvalid": "Formato esperado: #RRGGBB",
+
+
+
+        "colorHint": "Se aplica a los botones y elementos activos. Déjelo vacío para el color predeterminado."
+
+
+
+      },
+
+
+
+      "contact": {
+
+
+
+        "title": "Contacto",
+
+
+
+        "description": "La persona con la que Badgi puede contactar para su cuenta.",
+
+
+
+        "name": "Nombre",
+
+
+
+        "email": "Email",
+
+
+
+        "phone": "Teléfono"
+
+
+
+      },
+
+
+
+      "plan": {
+
+
+
+        "title": "Suscripción",
+
+
+
+        "description": "Gestionada por Badgi. Esta información es de solo lectura.",
+
+
+
+        "plan": "Plan",
+
+
+
+        "status": "Estado",
+
+
+
+        "endsAt": "Fin de suscripción",
+
+
+
+        "noEnd": "Sin fecha de fin",
+
+
+
+        "statuses": {
+
+
+
+          "trial": "Prueba",
+
+
+
+          "active": "Activo",
+
+
+
+          "suspended": "Suspendido",
+
+
+
+          "expired": "Caducado"
+
+
+
+        },
+
+
+
+        "organisations": "Organizaciones",
+
+
+
+        "eventsYear": "Eventos en {year}",
+
+
+
+        "ordersPerEvent": "Límite de inscripciones por evento: {max}.",
+
+
+
+        "contactUs": "Para cambiar de plan o de cuotas, contacte con Badgi."
+
+
+
+      }
+
+
+
+    },
+
+
+
+    "menu": "Menú",
+    "poweredBy": "Con tecnología de Badgi",
+    "readOnlyBanner": "La suscripción de este cliente no está activa: el back office es de solo lectura.",
+    "accessDenied": {
+      "title": "Acceso denegado",
+      "description": "No tiene acceso a este back office. Compruebe que ha iniciado sesión con la cuenta correcta.",
+      "back": "Volver a Badgi"
+    },
+    "home": {
+      "welcome": "Bienvenido, {name}",
+      "subtitle": "Resumen de sus organizaciones y eventos.",
+      "organisations": "Organizaciones",
+      "events": "Eventos",
+      "upcoming": "Próximos"
+    },
+    "organisations": {
+      "title": "Organizaciones",
+      "quota": "{used} de {max} organizaciones usadas",
+      "events": "Eventos",
+      "upcoming": "Próximos",
+      "emptyTitle": "Ninguna organización",
+      "emptyDescription": "No hay ninguna organización vinculada a su cuenta de cliente. Contacte con Badgi para añadir una."
+    },
+    "team": {
+      "title": "Equipo",
+      "subtitle": "Personas con acceso a este back office.",
+      "remove": "Quitar",
+      "removed": "Miembro eliminado",
+      "added": "Miembro añadido",
+      "addTitle": "Añadir un miembro",
+      "search": "Buscar un usuario (nombre, email)",
+      "ownerOnly": "Solo un propietario puede gestionar el equipo.",
+      "error": "Error"
+    }
+  },
+  "tenantsAdministration": {
+    "title": "Clientes (laboratorios)",
+    "description": "Gestione los clientes, sus organizaciones, responsables y suscripción.",
+    "table": {
+      "client": "Cliente",
+      "plan": "Plan",
+      "organisations": "Organizaciones",
+      "members": "Miembros",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "status": {
+      "trial": "Prueba",
+      "active": "Activo",
+      "suspended": "Suspendido",
+      "expired": "Caducado"
+    },
+    "roles": {
+      "owner": "Propietario",
+      "manager": "Gestor",
+      "viewer": "Lector"
+    },
+    "actions": {
+      "create": "Crear cliente",
+      "manage": "Gestionar",
+      "save": "Guardar",
+      "attach": "Vincular",
+      "detach": "Desvincular",
+      "remove": "Quitar",
+      "delete": "Eliminar cliente"
+    },
+    "create": {
+      "title": "Nuevo cliente",
+      "description": "Cree la ficha del laboratorio. Su back office estará disponible en su subdominio."
+    },
+    "fields": {
+      "name": "Nombre del cliente",
+      "subdomain": "Subdominio",
+      "subdomainHint": "Minúsculas, números y guiones. No se puede cambiar después.",
+      "plan": "Plan",
+      "status": "Estado de la suscripción",
+      "contactEmail": "Email de contacto",
+      "maxOrganisations": "Máx. organizaciones",
+      "maxEventsPerYear": "Máx. eventos / año",
+      "endsAt": "Fin de suscripción"
+    },
+    "manage": {
+      "settings": "Suscripción y cuotas",
+      "organisations": "Organizaciones",
+      "members": "Miembros",
+      "noOrganisations": "Ninguna organización vinculada.",
+      "selectOrganisation": "Elegir una organización",
+      "searchUser": "Buscar un usuario (nombre, email)",
+      "confirmDelete": "¿Eliminar al cliente {name}? Sus organizaciones se conservarán."
+    },
+    "toast": {
+      "created": "Cliente creado",
+      "saved": "Cambios guardados",
+      "attached": "Organización vinculada",
+      "memberAdded": "Miembro añadido",
+      "deleted": "Cliente eliminado",
+      "error": "Error"
+    }
   },
   "organisationsAdministration": {
     "title": "Verificacion de organizaciones",
